@@ -1,8 +1,8 @@
 # OOGA Team Contract
 
-### TEAM NAME
+### It's Thyme to Eat: Salad
 
-### Alana, Aksel, Tatum, Gage, Jacob, Billy, Palo
+### Alana, Aksel, Tatum, Gage, Jacob, Billy, Palo, Luke
 
 ## As a project team, we promise to:
 
