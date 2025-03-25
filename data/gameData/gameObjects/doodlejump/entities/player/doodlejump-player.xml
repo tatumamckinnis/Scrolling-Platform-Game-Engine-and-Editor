@@ -17,6 +17,5 @@ height  => sprite height (may be trimmed)
     <frame name="shoot_jump.png" x="310" y="0" width="62" height="60"/>
     </frames>
     <animations>
-
     </animations>
 </sprite>
