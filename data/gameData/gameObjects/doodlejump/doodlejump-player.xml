@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
+<!-- $TexturePacker:SmartUpdate:eb41ca328cebdbc65ddbb79d78ac35cf:585511970b8dcece51de52cf174704f5:fe7d83bc503716f4f70f0cb2b8bd2ce6$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+pX => x pos of the pivot point (relative to sprite width)
+pY => y pos of the pivot point (relative to sprite height)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+with polygon mode enabled:
+vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
+verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
+triangles  => sprite triangulation, 3 vertex indices per triangle
+-->
+<TextureAtlas imagePath="doodlejump-player.png" width="372" height="60">
+    <sprite n="left.png" x="0" y="0" w="62" h="60"/>
+    <sprite n="left_jump.png" x="62" y="0" w="62" h="60"/>
+    <sprite n="right.png" x="124" y="0" w="62" h="60"/>
+    <sprite n="right_jump.png" x="186" y="0" w="62" h="60"/>
+    <sprite n="shoot.png" x="248" y="0" w="62" h="60"/>
+    <sprite n="shoot_jump.png" x="310" y="0" w="62" h="60"/>
+</TextureAtlas>
