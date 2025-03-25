@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+map => the map node
+layer => the layer
+-->
+<map>
+  <layer name="backGround" width="10" height="5">
+    <data encoding="csv">
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+    </data>
+  </layer>
+  <layer name="foreground" width="10" height="5">
+    <data encoding="csv">
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      1,2,3,4,5,1,2,3,4,5
+    </data>
+  </layer>
+  <layer name="entities" width="10" height="5">
+    <data encoding="csv">
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,12,0,0
+      0,111,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+    </data>
+  </layer>
+  <layer name="events" width="10" height="5">
+    <data encoding="csv">
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+      0,0,0,0,0,0,0,0,0,0
+    </data>
+  </layer>
+  <game name="dinosaurgame">
+  <objectGroup name="entities">
+    <object type="player" gid="111" spriteFile="dinosaur.xml" spriteName="Dino">
+      <properties>
+      </properties>
+    </object>
+    <object type="enemies" gid="12" spriteFile="bird.xml" spriteName="Bird">
+      <properties>
+      </properties>
+    </object>
+  </objectGroup>
+    <objectGroup name="blocks">
+      <object type="" gid="1" spriteFile="track.xml" spriteName="track-0" />
+      <object type="" gid="2" spriteFile="track.xml" spriteName="track-1" />
+      <object type="" gid="3" spriteFile="track.xml" spriteName="track-2" />
+      <object type="" gid="4" spriteFile="track.xml" spriteName="track-3" />
+      <object type="" gid="5" spriteFile="track.xml" spriteName="track-4" />
+    </objectGroup>
+  </game>
+</map>

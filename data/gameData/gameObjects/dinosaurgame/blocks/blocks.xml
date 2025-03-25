@@ -17,4 +17,5 @@ height  => sprite height
   <sprite name="SmallCactus1" x="1416" y="0" width="40" height="71"/>
   <sprite name="SmallCactus2" x="1534" y="0" width="68" height="71"/>
   <sprite name="SmallCactus3" x="1652" y="0" width="105" height="71"/>
+  <sprite name="Track" ></sprite>
 </spriteFile>

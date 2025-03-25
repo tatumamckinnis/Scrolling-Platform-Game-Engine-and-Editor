@@ -34,13 +34,11 @@ layer => the layer
     </data>
   </layer>
   <objectGroup name="Entities">
-    <object name="player" gid="111">
+    <object name="player" spriteData="" gid="111">
       <properties>
 
       </properties>
-      <animations>
-
-      </animations>
     </object>
+
   </objectGroup>
 </map>
