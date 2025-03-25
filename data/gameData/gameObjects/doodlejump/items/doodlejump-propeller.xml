@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:20438566948be5dd8c4c10bfe59717c2:93f3ab0043738c14fef415270c8a4119:bb32da283a744adee1f7bfe525d2b984$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
-pX => x pos of the pivot point (relative to sprite width)
-pY => y pos of the pivot point (relative to sprite height)
-oX => sprite's x-corner offset (only available if trimmed)
-oY => sprite's y-corner offset (only available if trimmed)
-oW => sprite's original width (only available if trimmed)
-oH => sprite's original height (only available if trimmed)
-r => 'y' only set if sprite is rotated
-with polygon mode enabled:
-vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
-verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
-triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
-<TextureAtlas imagePath="doodlejump-propeller.png" width="128" height="32">
-    <sprite n="doodlejump-propeller-0.png" x="0" y="0" w="32" h="32"/>
-    <sprite n="doodlejump-propeller-1.png" x="32" y="0" w="32" h="32"/>
-    <sprite n="doodlejump-propeller-2.png" x="64" y="0" w="32" h="32"/>
-    <sprite n="doodlejump-propeller-3.png" x="96" y="0" w="32" h="32"/>
-</TextureAtlas>
+<sprite imagePath="doodlejump-propeller.png" width="128" height="32">
+    <frame name="doodlejump-propeller-0.png" x="0" y="0" width="32" height="32"/>
+    <frame name="doodlejump-propeller-1.png" x="32" y="0" width="32" height="32"/>
+    <frame name="doodlejump-propeller-2.png" x="64" y="0" width="32" height="32"/>
+    <frame name="doodlejump-propeller-3.png" x="96" y="0" width="32" height="32"/>
+</sprite>

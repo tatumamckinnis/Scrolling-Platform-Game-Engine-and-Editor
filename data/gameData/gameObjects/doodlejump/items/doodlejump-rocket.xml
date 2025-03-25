@@ -1,33 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:e6d51912904344dde3e2242c01c6bf33:c79a9b2c7bb642f8ff44eb01c83cc158:d9c37cdff997fb7e982bd8d72ab2f44e$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
-pX => x pos of the pivot point (relative to sprite width)
-pY => y pos of the pivot point (relative to sprite height)
-oX => sprite's x-corner offset (only available if trimmed)
-oY => sprite's y-corner offset (only available if trimmed)
-oW => sprite's original width (only available if trimmed)
-oH => sprite's original height (only available if trimmed)
-r => 'y' only set if sprite is rotated
-with polygon mode enabled:
-vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
-verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
-triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
-<TextureAtlas imagePath="doodlejump-rocket.png" width="320" height="64">
-    <sprite n="doodlejump-rocket-0.png" x="0" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-1.png" x="32" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-2.png" x="64" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-3.png" x="96" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-4.png" x="128" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-5.png" x="160" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-6.png" x="192" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-7.png" x="224" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-8.png" x="256" y="0" w="32" h="64"/>
-    <sprite n="doodlejump-rocket-9.png" x="288" y="0" w="32" h="64"/>
-</TextureAtlas>
+<sprite imagePath="doodlejump-rocket.png" width="320" height="64">
+    <frame name="doodlejump-rocket-0.png" x="0" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-1.png" x="32" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-2.png" x="64" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-3.png" x="96" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-4.png" x="128" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-5.png" x="160" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-6.png" x="192" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-7.png" x="224" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-8.png" x="256" y="0" width="32" height="64"/>
+    <frame name="doodlejump-rocket-9.png" x="288" y="0" width="32" height="64"/>
+</sprite>
