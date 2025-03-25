@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:f845a1c78fcd49923a478bcaeebf3a56:5cbfdafea0455f90ef6ab842c5b001d5:2cf5f71aec5af1db60782a6b30c1c210$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
-pX => x pos of the pivot point (relative to sprite width)
-pY => y pos of the pivot point (relative to sprite height)
-oX => sprite's x-corner offset (only available if trimmed)
-oY => sprite's y-corner offset (only available if trimmed)
-oW => sprite's original width (only available if trimmed)
-oH => sprite's original height (only available if trimmed)
-r => 'y' only set if sprite is rotated
-with polygon mode enabled:
-vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
-verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
-triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
 <TextureAtlas imagePath="supermario-items.png" width="1648" height="32">
     <sprite n="mushroom-red.png" x="0" y="0" w="16" h="16"/>

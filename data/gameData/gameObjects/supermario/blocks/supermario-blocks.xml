@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:e94ea0ff925963c7d8a0de7b168f5ef4:1dd5cdbc99db0a11f263d0b1206cc546:16ba5e25033397f10d42721e8c36bf14$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
-pX => x pos of the pivot point (relative to sprite width)
-pY => y pos of the pivot point (relative to sprite height)
-oX => sprite's x-corner offset (only available if trimmed)
-oY => sprite's y-corner offset (only available if trimmed)
-oW => sprite's original width (only available if trimmed)
-oH => sprite's original height (only available if trimmed)
-r => 'y' only set if sprite is rotated
-with polygon mode enabled:
-vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
-verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
-triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
 <TextureAtlas imagePath="supermario-blocks.png" width="1920" height="16">
     <frame name="overworld-random-flash-1" x="0" y="0" w="16" h="16"/>
