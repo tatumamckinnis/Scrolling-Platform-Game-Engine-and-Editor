@@ -1,38 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with TexturePacker https://www.codeandweb.com/texturepacker -->
-<!-- $TexturePacker:SmartUpdate:9ff8cc817be8c60c5e7d8816d0cdaab7:31c348a03c58c9cf73aab8e42880faa3:ccaaea90bd3daab845853130c71a2f56$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
-pX => x pos of the pivot point (relative to sprite width)
-pY => y pos of the pivot point (relative to sprite height)
-oX => sprite's x-corner offset (only available if trimmed)
-oY => sprite's y-corner offset (only available if trimmed)
-oW => sprite's original width (only available if trimmed)
-oH => sprite's original height (only available if trimmed)
-r => 'y' only set if sprite is rotated
-with polygon mode enabled:
-vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
-verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
-triangles  => sprite triangulation, 3 vertex indices per triangle
+///Do Not Use for level data
 -->
 <TextureAtlas imagePath="dinosaurgame-sprites.png" width="1770" height="101">
-    <sprite n="Bird1.png" x="0" y="0" w="97" h="68"/>
-    <sprite n="Bird2.png" x="118" y="0" w="93" h="62"/>
-    <sprite n="DinoDead.png" x="236" y="0" w="86" h="101"/>
-    <sprite n="DinoDuck1.png" x="354" y="0" w="118" h="60"/>
-    <sprite n="DinoDuck2.png" x="472" y="0" w="116" h="60"/>
-    <sprite n="DinoJump.png" x="590" y="0" w="88" h="94"/>
-    <sprite n="DinoRun1.png" x="708" y="0" w="87" h="94"/>
-    <sprite n="DinoRun2.png" x="826" y="0" w="88" h="94"/>
-    <sprite n="DinoStart.png" x="944" y="0" w="97" h="101"/>
-    <sprite n="LargeCactus1.png" x="1062" y="0" w="48" h="95"/>
-    <sprite n="LargeCactus2.png" x="1180" y="0" w="99" h="95"/>
-    <sprite n="LargeCactus3.png" x="1298" y="0" w="102" h="95"/>
-    <sprite n="SmallCactus1.png" x="1416" y="0" w="40" h="71"/>
-    <sprite n="SmallCactus2.png" x="1534" y="0" w="68" h="71"/>
-    <sprite n="SmallCactus3.png" x="1652" y="0" w="105" h="71"/>
+    <sprite n="Bird1" x="0" y="0" w="97" h="68"/>
+    <sprite n="Bird2" x="118" y="0" w="93" h="62"/>
+    <sprite n="DinoDead" x="236" y="0" w="86" h="101"/>
+    <sprite n="DinoDuck1" x="354" y="0" w="118" h="60"/>
+    <sprite n="DinoDuck2" x="472" y="0" w="116" h="60"/>
+    <sprite n="DinoJump" x="590" y="0" w="88" h="94"/>
+    <sprite n="DinoRun1" x="708" y="0" w="87" h="94"/>
+    <sprite n="DinoRun2" x="826" y="0" w="88" h="94"/>
+    <sprite n="DinoStart" x="944" y="0" w="97" h="101"/>
+    <sprite n="LargeCactus1" x="1062" y="0" w="48" h="95"/>
+    <sprite n="LargeCactus2" x="1180" y="0" w="99" h="95"/>
+    <sprite n="LargeCactus3" x="1298" y="0" w="102" h="95"/>
+    <sprite n="SmallCactus1" x="1416" y="0" w="40" h="71"/>
+    <sprite n="SmallCactus2" x="1534" y="0" w="68" h="71"/>
+    <sprite n="SmallCactus3" x="1652" y="0" w="105" h="71"/>
 </TextureAtlas>
