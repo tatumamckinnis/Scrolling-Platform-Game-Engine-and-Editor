@@ -2,7 +2,7 @@
 
 ### It's Thyme to Eat: Salad
 
-### Alana, Aksel, Tatum, Gage, Jacob, Billy, Palo, Luke
+### Alana, Aksel, Tatum, Gage, Jacob, Billy, Luke
 
 ## As a project team, we promise to:
 
