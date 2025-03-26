@@ -1,5 +1,5 @@
 # Fluxx Lab Discussion
-## Alana abz8, Tatum tam85, Aksel adb117, Palo pbs27, Gage gbd7, Billy wrm29, Jacob jay27, Luke lsn12
+## Alana abz8, Tatum tam85, Aksel adb117, Gage gbd7, Billy wrm29, Jacob jay27, Luke lsn12
 
 
 
