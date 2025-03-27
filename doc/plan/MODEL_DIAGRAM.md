@@ -1,6 +1,6 @@
 # OOGA Model Diagram
 ## It's Thyme to Eat: SALAD
-## Aksel Bell, Gage Garcia, Billy McCune, Tatum McKinnis, Luke Nam, Palo Silva, Jacob You, Alana Zinkin
+## Aksel Bell, Gage Garcia, Billy McCune, Tatum McKinnis, Luke Nam, Jacob You, Alana Zinkin
 
 ### Game Engine Back-End
 ```
