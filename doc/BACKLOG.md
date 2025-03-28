@@ -192,16 +192,25 @@ Use Case 6: (Editor) Destroy an object
 Name: Aksel
 
 Use Case 1: (Engine) Show opening splash screen
+1. User clicks on a file to load and then clicks "start game"
+2. A splash screen saying "PLAY GAMENAME" is displayed with the game's background
+
+When the initial "start game" is clicked, the background of the game is loaded and then a play splash screen is displayed. This will be an abstract class and just contains a button and some information such as high scores, current score, level, etc. When the game is played, the button "PLAY" will disappear. 
 
 Use Case 2: (Engine) Update score
+Player interacts with an object and during the goal API check (which will pass in this case), the user's score will be updated to reflect this. The goal controller then communicates with the view to update it's visual of the score.
 
 Use Case 3: (Engine) Show game over splash screen
+The play button that was displayed when the user first loaded a game now is toggled to appear as well as a game over sign. It is notified by the goal controller to do this change.
 
 Use Case 4: (Engine) Update entity position
+The game controller returns a list of game objects that have been updated and calls on the view to update these elements. The view then updates each element by calling getUpdatedObjects() and uses the internal rendering logic to redraw the objects. Specifically, the entity position will be updated based on the movement handler.
 
 Use Case 5: (Engine) Change camera position
+The camera object is treated like a game object. The model changes the camera x and y coordinates which it should display via the camera API. These coordinates are given to the frontend via the camera API and the frontend displays that portion of the fully rendered map.
 
 Use Case 6: (Engine) Entity animation
+A handler triggers certain events in the event chain that may trigger an animation. The object's visual data including sprite path is changed. Then the object is rendered according to the user case "update entity position"
 
 ### Team Member #5:
 

@@ -15,7 +15,12 @@ players, characters, physics, interaction rules, goals, and visual game elements
 8. The front-end of both the editor and the engine should not know how objects are represented in the back-end
 
 ### PRIMARY ARCHITECTURE
+We used the MVC architecture to encapsulate our backend and frontend. The game manager is the highest level class that contains the game timeline and controls the interactions between the model and view. We use a game controller API which calls all the phase controller (an abstract class) which has subclasses which execute a certain phase during the update (ie movement, collision, or physics). This is open to extension as developers can add a new type of phase controller which will call events when certain things happen. The events will be called in a chain called the event chain. This architecture allows developers to customize how different inputs are handled and define the way objects interact with each other.
 
+Game objects are also abstracted so changing their animations, object type (ie player or block), behaviors, etc are changed by adding configuration files that define the features. Flags objects are used to flag a point when the game settings can change (ie changing physics rules). 
+
+Our frontend works by rendering the whole map initially and then only displaying a certain part of the screen decided by the camera API. The camera API implements a strategy which tells it what behavior to do (ie continuously moving one direction or following the player). When objects are updated in the backend, the frontend is instructed to rerender the objects by their IDs.
 
 
 ### MODEL DIAGRAM
+[Model Diagram](ModelDiagram.pdf)
