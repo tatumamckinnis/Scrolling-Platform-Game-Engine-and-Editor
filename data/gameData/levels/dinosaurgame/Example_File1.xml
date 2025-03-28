@@ -3,23 +3,20 @@
 map => the map node
 layer => the layer
 -->
-<map>
+<!-- The map node is the main node: width and height in pixels -->
+<map width="500" height="500">
   <layer name="backGround" width="10" height="5">
     <data encoding="csv">
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
+
     </data>
   </layer>
   <layer name="foreground" width="10" height="5">
     <data encoding="csv">
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      0,0,0,0,0,0,0,0,0,0
-      1,2,3,4,5,1,2,3,4,5
+      <object gid="1" coordinates=""/>
+      <object gid="2" coordinates=""/>
+      <object gid="3" coordinates=""/>
+      <object gid="4" coordinates=""/>
+      <object gid="5" coordinates=""/>
     </data>
   </layer>
   <layer name="entities" width="10" height="5">
@@ -42,12 +39,28 @@ layer => the layer
   </layer>
   <game name="dinosaurgame">
   <objectGroup name="entities">
-    <object type="player" gid="111" spriteFile="dinosaur.xml" spriteName="Dino">
+<!--    Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
+<!--    Objects should also have a defined hit b-->
+    <object  spriteName="Dino" type="player" gid="111" spriteFile="dinosaur.xml">
+<!--   Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
+        <inputHandler>
+          <data keys="W,Up" responseID="" animation="jump"/>
+          <data keys="S,Down" responseID="" animation="duck-walk"/>
+        </inputHandler>
+        <collisionHandler>
+          <data GroupObjectType="entities/enemies" eventChainID="" />
+        </collisionHandler>
+
+        <physicsHandler>
+          <data />
+          <data />
+        </physicsHandler>
       </properties>
     </object>
-    <object type="enemies" gid="12" spriteFile="bird.xml" spriteName="Bird">
+    <object spriteName="Bird" type="enemies" gid="12" spriteFile="bird.xml">
       <properties>
+        <collision />
       </properties>
     </object>
   </objectGroup>
