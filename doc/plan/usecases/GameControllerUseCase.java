@@ -1,157 +1,77 @@
 /**
- * Use Case: User selects a new game to play from list of games
+ * Use Case: Add a new object to the editor's scene with specific default properties.
  * <p>
- * This use case demonstrates how the GameController API is used to: 1. Generate a new set of
- * GameObjects for a given level 2. Pass the set of Game Objects to the View for rendering purposes
- * 3. Update the state of the game engine one tick at a time on each iteration of the game
+ * This use case demonstrates how the EditorManagerAPI communicates with the view and the model. It
+ * allows the user to interact with the screen by adding a new object and populating it visually
+ * and in memory.
  * <p>
- * API Collaboration: - GameController ↔ GameObject: GameController will update the list of current
- * GameObjects on each "tick" of the game engine - GameController ↔ EngineFileAPI: loadLevel()
- * invokes EngineFileAPI to load new GameObjects when a level is selected - GameController ↔
- * LevelView: GameAppView calls getUpdatedObjects() to determine what objects and how to render
- * them
+ * API Collaboration:
+ * 1) EditorFileAPI is used to access any file operations such as save or load.
+ * 2) GameEditorView is used to populate the game object visually.
+ * 3) EditorLevel is communicated with to add the user's game object to the list of EditorGameObjects.
+ * 4) EditorObjectPropertiesView is displayed when the new object is placed, allowing users to edit the object.
  *
- * @author Alana Zinkin
+ * @author Aksel Bell
  */
 
-public class GameControllerUseCase {
+public class EditorAddObjectUseCase {
 
-  private GameAppView gameView;
-  private GameControllerAPI gameController;
-  private List<GameObject> gameObjects;
-  private Level level;
+  private GameEditorView editorView;
+  private EditorManagerAPI editorManager;
+  private EditorLevel editorLevel;
+  private EditorFileAPI fileAPI;
 
   /**
-   * Create and render opening Splash Screen
+   * Initialize the editor environment
    */
   public void setup() {
-    // Mmock implementations
-    gameView = new MockGameAppView();
-    gameManager = new MockGameManager();
-    gameController = new MockGameController();
-    fileParser = new MockFileParser();
-    gameObjects = new ArrayList<>();
-    createStartSplashScreen();
+    editorView = new MockGameEditorView();
+    editorManager = new MockEditorManager();
+    editorLevel = new MockEditorLevel();
+    fileAPI = new MockEditorFileAPI();
+    createEditorUI();
   }
 
   /**
-   * This is a mock method, which initializes the opening game splash screen Users can select a game
-   * from a list of drop downs and once selected, the selectLevel method is called
+   * Create UI components for adding a new object
    */
-  private void createStartSplashScreen() {
-    // The game view creates opening splash screen
-    ComboBox<String> levelOptions = new ComboBox<>();
-    String level = levelOptions.getValue();
-    // COLLABORATION #1: calls GameManager to select a level based on the drop down option selected
-    levelOptions.setOnAction(GameManager.selectLevel(level));
+  private void createEditorUI() {
+    Button addObjectButton = new Button("Add Object");
+    addObjectButton.setOnAction(e -> addNewObject());
+    editorView.addButton(addObjectButton);
   }
 
   /**
-   * Method of the GameManager class to select a level and update the vew accordingly
+   * Adds a new object with default properties to the editor scene.
+   */
+  public void addNewObject() {
+    EditorGameObject newObject = new EditorGameObject("DefaultType", 100, 100);
+    editorLevel.addGameObject(newObject);
+    editorView.renderGameObject(newObject);
+    displayObjectProperties(newObject);
+  }
+
+  /**
+   * Display the object properties editor for customization.
    *
-   * @param level - the level selected
+   * @param object - the newly added game object
    */
-  @Override
-  public void selectLevel(String level) {
-    LevelData levelData = fileParser.loadFileToEngine(level);
-    gameController.loadLevel(levelData);
-    gameView.updateView();
-    gameController.updateGameState();
-  }
-
-
-  /**
-   * GameView mock updateView method, which gets updated objects from the gameController
-   */
-  @Override
-  public void updateView() {
-    List<GameObject> gameObjects = gameController.getUpdatedObjects();
-    // COLLABORATION #2: collaborates with the gameView class to render the updated game objects
-    gameView.renderGameObjects(gameObjects);
+  private void displayObjectProperties(EditorGameObject object) {
+    EditorObjectPropertiesView propertiesView = new EditorObjectPropertiesView(object);
+    propertiesView.show();
   }
 
   /**
-   * Initializes the mock timeline
+   * Mock implementation of EditorGameObject
    */
-  private void initTimeline() {
-    Timeline timeline = new Timeline();
-    timeline.setCycleCount(Timeline.INDEFINITE);
-    timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> step())
-  }
-
-  /**
-   * When a user clicks the play button, the step method will be called on each tick The timeline
-   * will be initialized in a private method of the GameManager class
-   */
-  @Override
-  public void play() {
-    timeline.play();
-  }
-
-  /**
-   * Internal method of the GameManager class, which is called by the timeline Controlled by the
-   * GameManagerAPI
-   */
-  private void step() {
-    gameController.updateGameState();  // Update game logic
-    gameView.updateView() // Render updated game state
-  }
-
-  /**
-   * Mock GameObject class In a real implementation, this would implement a GameObject interface
-   */
-  private class MockGameObject implements GameObject {
-
+  private class EditorGameObject {
     String type;
-    int x;
-    int y;
+    int x, y;
 
-    MockGameObject(String type, int x, int y) {
+    EditorGameObject(String type, int x, int y) {
       this.type = type;
       this.x = x;
       this.y = y;
-    }
-  }
-
-  /**
-   * Mock implementation of GameControllerAPI
-   */
-  private class MockGameControllerAPI implements GameControllerAPI {
-
-    private List<GameObject> gameObjects;
-    private LevelData levelData;
-
-    MockGameControllerAPI() {
-      levelData = new MockLevelData();
-      gameObjects = levelData.getGameObjects();
-    }
-
-    @Override
-    public List<GameObject> getUpdatedObjects() {
-      List<GameObject> updatedObjects = new ArrayList<>();
-      for (GameObject obj : gameObjects) {
-        if (obj.isUpdated()) {
-          updatedObjects.add(obj);
-        }
-      }
-      gameObjects = updatedObjects;
-      return gameObjects;
-    }
-
-    @Override
-    public void updateGameState() {
-      for (GameObject obj : gameObjects) {
-        inputHandler.update(obj);
-        physicsHandler.update(obj);
-        collisionHandler.update(obj);
-      }
-      System.out.println("GameControllerAPI: Game state updated");
-    }
-
-    @Override
-    public void loadLevel(LevelData data) {
-      levelData = level.getLevelObjects();
-      System.out.println("GameControllerAPI: Level initialized with " + data);
     }
   }
 }
