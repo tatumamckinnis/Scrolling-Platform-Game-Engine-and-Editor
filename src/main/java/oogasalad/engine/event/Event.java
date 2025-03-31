@@ -7,6 +7,7 @@
  */
 package oogasalad.engine.event;
 
+import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;

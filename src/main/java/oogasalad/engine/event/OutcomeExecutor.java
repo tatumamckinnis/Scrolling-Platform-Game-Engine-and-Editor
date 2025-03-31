@@ -5,6 +5,7 @@
 package oogasalad.engine.event;
 import java.util.Map;
 import oogasalad.engine.controller.GameController;
+import oogasalad.engine.model.object.DynamicVariableCollection;
 
 public class OutcomeExecutor {
     private GameController gameController;

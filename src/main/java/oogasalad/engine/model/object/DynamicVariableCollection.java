@@ -13,7 +13,7 @@ import java.util.Map;
  * Use Cases: - Store health, score, power-up status, timers, etc. - Allow dynamic addition of new
  * gameplay variables during runtime - Retrieve or update variables using key-based access
  */
-public class DynamicVariableContainer {
+public class DynamicVariableCollection {
 
   // Core mapping from variable name → dynamic variable
   private final Map<String, DynamicVariable> myVariables;
@@ -21,7 +21,7 @@ public class DynamicVariableContainer {
   /**
    * Constructs a new, empty container for dynamic variables.
    */
-  public DynamicVariableContainer() {
+  public DynamicVariableCollection() {
     myVariables = new HashMap<>();
   }
 
