@@ -1,8 +1,18 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.zip.DataFormatException;
+<<<<<<< HEAD
+<<<<<<< HEAD
+import oogasalad.engine.model.object.GameObject;
+import oogasalad.file.parser.records.LevelData;
+=======
+import oogasalad.game.file.parser.records.LevelData;
+>>>>>>> origin/main
+=======
 import oogasalad.fileparser.records.LevelData;
+>>>>>>> origin/main
 
 public interface EngineFileAPI {
 
@@ -24,6 +34,6 @@ public interface EngineFileAPI {
    * @throws IOException         if the file cannot be read
    * @throws DataFormatException if the file's data cannot be interpreted into Engine objects
    */
-  public LevelData loadFileToEngine() throws IOException, DataFormatException;
+  public List<GameObject> loadFileToEngine(LevelData level) throws IOException, DataFormatException;
 
 }
