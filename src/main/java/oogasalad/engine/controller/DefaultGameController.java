@@ -3,17 +3,17 @@
  *
  */
 package oogasalad.engine.controller;
+import java.util.ArrayList;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.LevelData;
 
 import java.util.List;
-
+import oogasalad.file.parser.records.LevelData;
 
 
 public class DefaultGameController implements GameController {
     @Override
     public List<GameObject> getUpdatedObjects() {
-
+        return new ArrayList<>();
     }
 
     @Override
