@@ -9,7 +9,7 @@ import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import oogasalad.file.parser.records.LevelData;
+import oogasalad.game.file.parser.records.LevelData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
