@@ -1,8 +1,8 @@
 package oogasalad.engine.controller;
-import oogasalad.engine.model.GameObject;
-import oogasalad.engine.model.LevelData;
+import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
+import oogasalad.game.file.parser.records.LevelData;
 
 /**
  * Interface for interacting with GameControllers

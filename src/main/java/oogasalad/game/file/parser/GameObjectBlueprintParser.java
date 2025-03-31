@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
-import javafx.beans.property.StringProperty;
 import oogasalad.game.file.parser.exceptions.GameObjectParseException;
 import oogasalad.game.file.parser.records.GameObjectData;
 import org.w3c.dom.Element;

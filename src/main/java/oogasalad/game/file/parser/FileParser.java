@@ -1,11 +1,5 @@
 package oogasalad.game.file.parser;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import oogasalad.game.file.parser.records.LevelData;
-
 public class FileParser {
 //
 //  private GameObjectBlueprintParser myGmeObjectParser;
