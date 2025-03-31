@@ -1,4 +1,4 @@
-package oogasalad.game.file.parser.exceptions;
+package oogasalad.fileparser.exceptions;
 
 public class GameObjectParseException extends Exception {
   public GameObjectParseException(String message) {

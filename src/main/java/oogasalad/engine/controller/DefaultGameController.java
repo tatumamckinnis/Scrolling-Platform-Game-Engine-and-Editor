@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
-import oogasalad.game.file.parser.records.LevelData;
+import oogasalad.fileparser.records.LevelData;
 
 
 public class DefaultGameController implements GameController {

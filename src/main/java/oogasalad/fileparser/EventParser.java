@@ -1,4 +1,4 @@
-package oogasalad.game.file.parser;
+package oogasalad.fileparser;
 
 
 /**
