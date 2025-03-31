@@ -27,18 +27,21 @@ public class SplashComponentFactory {
 
   public Scene createSplashScene() {
     HBox root = new HBox();
+    int paneHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
 
     Pane leftPane = new Pane();
-    leftPane.setPrefSize(600, 600);
+    int leftPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
+    leftPane.setPrefSize(leftPaneWidth, paneHeight);
     leftPane.setStyle("-fx-background-color: lightblue;");
     leftPane.getChildren().add(createSplashLogo());
 
-    Pane rightPane = new Pane();
-    rightPane.setPrefSize(600, 600);
-    rightPane.setStyle("-fx-background-color: lightgreen;");
-    rightPane.getChildren().add(createSplashButtonBox());
+    Pane optionsPane = new Pane();
+    int rightPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.rightPane.width"));
+    optionsPane.setPrefSize(rightPaneWidth, paneHeight);
+    optionsPane.setStyle("-fx-background-color: lightgreen;");
+    optionsPane.getChildren().add(createSplashButtonBox());
 
-    root.getChildren().addAll(leftPane, rightPane);
+    root.getChildren().addAll(leftPane, optionsPane);
     return new Scene(root, 1200, 600);
   }
 
