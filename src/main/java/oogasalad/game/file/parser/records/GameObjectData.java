@@ -1,9 +1,14 @@
-package oogasalad.file.parser.records;
+package oogasalad.game.file.parser.records;
 
 import java.util.Map;
 
+/**
+ *
+ * @author Billy McCune
+ */
 public record GameObjectData(
     int id,
+    String gameName,
     String type,
     String group, //entities, blocks, backgrounds
     String spriteName,
@@ -11,8 +16,7 @@ public record GameObjectData(
     int x,
     int y,
     int layer, //z-layer or draw layer for background/foreground ordering
-    Map<String, String> physicsProperties,
-    Map<String, String> inputProperties,
-    Map<String, String> collisionProperties,
-    Map<String, String> variables
-) {}
+    Map <String, Map<String, String>> propertiesForObjectHandlersAndVariables
+) {
+
+}

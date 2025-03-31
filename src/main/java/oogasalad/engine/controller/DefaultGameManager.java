@@ -10,8 +10,12 @@ import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
+<<<<<<< HEAD
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.file.parser.records.LevelData;
+=======
+import oogasalad.game.file.parser.records.LevelData;
+>>>>>>> origin/main
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

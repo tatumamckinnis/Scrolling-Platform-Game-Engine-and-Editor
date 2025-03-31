@@ -3,8 +3,12 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.DataFormatException;
+<<<<<<< HEAD
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.file.parser.records.LevelData;
+=======
+import oogasalad.game.file.parser.records.LevelData;
+>>>>>>> origin/main
 
 public interface EngineFileAPI {
 
