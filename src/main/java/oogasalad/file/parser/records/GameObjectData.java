@@ -1,4 +1,4 @@
-package oogasalad.game.file.parser.records;
+package oogasalad.file.parser.records;
 
 import java.util.Map;
 

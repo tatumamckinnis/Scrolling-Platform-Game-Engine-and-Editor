@@ -1,4 +1,4 @@
-package oogasalad.game.file.parser.records;
+package oogasalad.file.parser.records;
 
 public record FrameData(
     String name,
