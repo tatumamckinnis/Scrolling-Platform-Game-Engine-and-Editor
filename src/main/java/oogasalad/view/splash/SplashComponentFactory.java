@@ -1,4 +1,4 @@
-package oogasalad;
+package oogasalad.view.splash;
 
 import java.io.IOException;
 import java.io.InputStream;
