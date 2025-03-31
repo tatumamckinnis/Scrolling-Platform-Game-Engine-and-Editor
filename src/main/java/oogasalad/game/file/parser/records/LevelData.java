@@ -1,6 +1,7 @@
 package oogasalad.game.file.parser.records;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -9,8 +10,7 @@ import java.util.List;
 public record LevelData(
     String name,
     List<GameObjectData> gameObjectBluePrintData,
-    List<GameObjectData> gameObjects,
-    //Map<Integer,GameObjectData>  or List<List<GameObjectData>> gameObjectsByLayer - cbtm,
+    Map<Integer,GameObjectData> gameObjectsByLayer,
     List<EventChainData> eventChains,
     List<SpriteSheetData> spriteSheets
 ) {}
