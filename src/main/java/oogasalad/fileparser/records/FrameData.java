@@ -1,4 +1,4 @@
-package oogasalad.game.file.parser.records;
+package oogasalad.fileparser.records;
 
 /**
  * Represents a single frame of a sprite animation or a static image used in the editor.

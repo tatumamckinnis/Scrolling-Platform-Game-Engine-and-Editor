@@ -1,6 +1,6 @@
 package oogasalad.engine.model.object;
 
-import oogasalad.game.file.parser.records.SpriteData;
+import oogasalad.fileparser.records.SpriteData;
 
 public abstract class GameObject {
   private final String uuid;

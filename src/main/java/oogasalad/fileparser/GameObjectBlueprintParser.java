@@ -1,11 +1,11 @@
-package oogasalad.game.file.parser;
+package oogasalad.fileparser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import oogasalad.game.file.parser.exceptions.GameObjectParseException;
-import oogasalad.game.file.parser.records.GameObjectData;
+import oogasalad.fileparser.exceptions.GameObjectParseException;
+import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

@@ -13,17 +13,17 @@ interact with each other -->
   </layer>
   <layer name="foreground" width="500" height="500" z="1">
     <data>
-      <object id="1" coordinates=""/>
-      <object id="2" coordinates=""/>
-      <object id="3" coordinates=""/>
-      <object id="4" coordinates=""/>
-      <object id="5" coordinates=""/>
+      <object id="1" coordinates="" uid=""/>
+      <object id="2" coordinates="" uid=""/>
+      <object id="3" coordinates="" uid=""/>
+      <object id="4" coordinates="" uid=""/>
+      <object id="5" coordinates="" uid=""/>
     </data>
   </layer>
   <layer name="entities" width="500" height="500" z="1">
     <data>
-      <object id="111" coordinates=""/>
-      <object id="12" coordinates=""/>
+      <object id="111" coordinates="(0,10)" uid="1"/>
+      <object id="12" coordinates="(50,200)" uid="2"/>
     </data>
   </layer>
   <layer name="events" width="500" height="500" z="1">
