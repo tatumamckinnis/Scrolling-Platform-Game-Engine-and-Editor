@@ -17,13 +17,10 @@ public class EventOutcome {
 
     private OutcomeType outcomeType;
 
-    //defines expected parameters for each outcome type
-    private Map<OutcomeType, Map<String, String>> outcomeParamMap;
-
     /**
-     * @return the associated parameter mapping for a specific outcome type
+     * @returns outcome type enum
      */
-    public Map<String, String> getOutcomeParamMap(OutcomeType outcomeType) {
-        return outcomeParamMap.get(outcomeType);
+    public OutcomeType getOutcomeType() {
+        return outcomeType;
     }
 }

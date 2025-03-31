@@ -7,6 +7,9 @@
 
 package oogasalad.engine.event;
 
+import old_editor_example.DynamicVariable;
+
+import java.util.List;
 import java.util.Map;
 
 public class EventCondition {
@@ -15,14 +18,11 @@ public class EventCondition {
      */
     public enum ConditionType {
         SPACE_KEY_PRESSED,
-        VAR_BELOW_CONDITION
+        VAR_BELOW_VALUE
     }
 
-    private ConditionType conditionType;
 
-    //stores expected parameter mapping for every conditionType
-    //ie VAR_BELOW_CONDITION -> <VAR, value>, <Condition, value>
-    private Map<ConditionType, Map<String, String>> paramMap;
+    private ConditionType conditionType;
 
     /**
      * get the type of condition
@@ -32,11 +32,5 @@ public class EventCondition {
         return conditionType;
     }
 
-    /**
-     * @param conditionType enum
-     * @return the associated expected parameter map
-     */
-    public Map<String, String> getParamMap(ConditionType conditionType) {
-        return paramMap.get(conditionType);
-    }
+
 }

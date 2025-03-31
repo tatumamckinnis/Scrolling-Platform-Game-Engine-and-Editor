@@ -14,22 +14,32 @@ import java.util.Map;
 
 public class Event {
     private GameObject gameObject;
-    private List<EventCondition> condition;
-    private List<EventOutcome> outcome;
-    private Map<String, String> params;
+    private List<EventCondition> conditions;
+    private List<EventOutcome> outcomes;
+    //stored within game object
+    private DynamicVariableCollection params;
 
     /**
      * Event constructor
      * @param gameObject -> object associated with the event
      * @param conditions -> List of Conditions that need to be met to execute events
      * @param outcomes -> List of Events to execute
-     * @param params -> Mapping of paramName -> paramValue
      */
-    public Event(GameObject gameObject, List<EventCondition> conditions, List<EventOutcome> outcomes, Map<String, String> params) {
+    public Event(GameObject gameObject, List<EventCondition> conditions, List<EventOutcome> outcomes) {
         this.gameObject = gameObject;
-        this.condition = conditions;
-        this.outcome = outcomes;
-        this.params = params;
+        this.conditions = conditions;
+        this.outcomes = outcomes;
+        this.params = gameObject.getParams();
     }
+
+    public List<EventCondition> getConditions() {
+        return this.conditions;
+    }
+
+    public List<EventOutcome> getOutcomes() {
+        return this.outcomes;
+    }
+
+
 
 }

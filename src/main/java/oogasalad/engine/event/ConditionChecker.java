@@ -3,6 +3,9 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
+import old_editor_example.DynamicVariable;
+
+import java.util.List;
 import java.util.Map;
 
 public class ConditionChecker {
@@ -10,10 +13,11 @@ public class ConditionChecker {
     /**
      * evaluates condition
      * @param conditionType -> type of condition
-     * @param params -> relevant paramater map: String paramName -> String value
+     * @param params -> collection of user-defined dynamic variables,
+     * requires use of predefined mapping of conditionType -> expected params
      * @return true or false
      */
-    public boolean checkCondition(EventCondition.ConditionType conditionType, Map<String, String> params) {
+    public boolean checkCondition(EventCondition.ConditionType conditionType, DynamicVariableCollection params) {
 
     }
 }

@@ -20,9 +20,9 @@ public class OutcomeExecutor {
     /**
      * executes outcome using parameter map using game controller
      * @param outcomeType
-     * @param param
+     * @param params Collection of user-defined dynamic variables
      */
-    public void executeOutcome(EventOutcome.OutcomeType outcomeType, Map<String, String> param) {
+    public void executeOutcome(EventOutcome.OutcomeType outcomeType, DynamicVariableCollection params) {
 
     }
 
