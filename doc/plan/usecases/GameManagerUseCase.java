@@ -48,7 +48,7 @@ public class GameManagerUseCase  {
     /**
      * Representing chain of events required to run game instance
      */
-    public void pause() {
+    public void play() {
         KeyCode key = GameView.getUserInput();
         EventChain eventChain = eventChainRegistry.getChain(key);
         EventAPI.execute(eventChain);
