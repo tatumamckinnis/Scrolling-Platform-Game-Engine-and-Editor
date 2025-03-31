@@ -5,13 +5,12 @@
  * Defined with map of parameters representing data for condition checker and outcome execution
  * @author Gage Garcia
  */
-package oogasalad.engine.model.event;
+package oogasalad.engine.event;
 
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 
 public class Event {
     private GameObject gameObject;

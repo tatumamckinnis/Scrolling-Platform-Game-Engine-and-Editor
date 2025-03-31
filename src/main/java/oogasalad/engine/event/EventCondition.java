@@ -5,7 +5,7 @@
  * @author Gage Garcia
  */
 
-package oogasalad.engine.model.event;
+package oogasalad.engine.event;
 
 import java.util.Map;
 
