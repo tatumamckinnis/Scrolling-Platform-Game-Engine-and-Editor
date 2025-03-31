@@ -2,7 +2,8 @@ package oogasalad.engine.controller;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;
-import oogasalad.game.file.parser.records.LevelData;
+import oogasalad.fileparser.FileParserAPI;
+import oogasalad.fileparser.records.LevelData;
 
 public class DefaultLevel implements LevelAPI {
 

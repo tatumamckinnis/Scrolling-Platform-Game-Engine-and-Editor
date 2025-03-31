@@ -4,8 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
+<<<<<<< HEAD
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.game.file.parser.records.LevelData;
+=======
+import oogasalad.fileparser.records.LevelData;
+>>>>>>> origin/main
 
 public class DefaultEngineFile implements EngineFileAPI {
 
