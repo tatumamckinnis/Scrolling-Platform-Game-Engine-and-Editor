@@ -1,7 +1,6 @@
 /**
  * Condition Object defining enums for valid conditions to check for
  * ConditionChecker controller will have logic for checking condition
- * Maintains mapping of required params to evaluate condition
  * @author Gage Garcia
  */
 
@@ -23,6 +22,14 @@ public class EventCondition {
 
 
     private ConditionType conditionType;
+
+    /**
+     * Constructor sets condition type
+     * @param conditionType
+     */
+    public EventCondition(ConditionType conditionType) {
+        this.conditionType = conditionType;
+    }
 
     /**
      * get the type of condition

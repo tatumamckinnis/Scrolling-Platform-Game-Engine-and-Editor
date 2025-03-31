@@ -18,6 +18,14 @@ public class EventOutcome {
     private OutcomeType outcomeType;
 
     /**
+     * Constructor sets outcome type
+     * @param outcomeType
+     */
+    public EventOutcome(OutcomeType outcomeType) {
+        this.outcomeType = outcomeType;
+    }
+
+    /**
      * @returns outcome type enum
      */
     public OutcomeType getOutcomeType() {
