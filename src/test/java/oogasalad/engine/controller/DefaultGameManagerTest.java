@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 
 class DefaultGameManagerTest {
 
-  private GameManager myGameManager;
+  private GameManagerAPI myGameManager;
   private Timeline myGameLoop;
   private EngineFileAPI myEngineFile;
-  private GameController myGameController;
+  private GameControllerAPI myGameController;
 
   @BeforeEach
   void setUp() {

@@ -7,7 +7,7 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
-public interface GameManager {
+public interface GameManagerAPI {
 
   /**
    * Initiates or resumes the game loop, updating the model and rendering the view at regular
@@ -30,6 +30,6 @@ public interface GameManager {
    * Loads a new level or game scene, possibly by calling into file loaders, parsing game data, and
    * updating the current model.
    */
-  public void loadLevel(String level) throws DataFormatException, IOException;
+  public void selectGame(String game, String category, String level) throws DataFormatException, IOException;
 
 }

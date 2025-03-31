@@ -3,17 +3,23 @@
  *
  */
 package oogasalad.engine.controller;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 import oogasalad.file.parser.records.LevelData;
 
 
-public class DefaultGameController implements GameController {
+public class DefaultGameController implements GameControllerAPI {
+
+    private List<GameObject> myGameObjects = new ArrayList<>();
+    private EngineFileAPI myEngineFile;
+
     @Override
-    public List<GameObject> getUpdatedObjects() {
-        return new ArrayList<>();
+    public List<GameObject> getObjects() {
+        return myGameObjects;
     }
 
     @Override
@@ -22,7 +28,7 @@ public class DefaultGameController implements GameController {
     }
 
     @Override
-    public void setLevelData(LevelData data) {
-
+    public void setLevelData(LevelData data) throws DataFormatException, IOException {
+        myGameObjects = myEngineFile.loadFileToEngine(data);
     }
 }
