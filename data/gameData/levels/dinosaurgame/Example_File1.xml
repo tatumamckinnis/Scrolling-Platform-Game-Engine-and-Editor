@@ -6,6 +6,7 @@ layer => the layer
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
 <map width="500" height="500">
+  <layers>
   <layer name="backGround" width="500" height="500" z="0">
     <data>
       <object id="3000" coordinates="(0,0)"/>
@@ -31,6 +32,7 @@ interact with each other -->
       <object id="" coordinates=""/>
     </data>
   </layer>
+  </layers>
   <game name="dinosaurgame">
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
@@ -81,27 +83,27 @@ eventChainID: The event chain id you want the collision to activate - defined la
   <object type="background" id="3000" spriteFile="" spriteName=""/>
     </objectGroup>
   </game>
-  <eventChains>
-    <eventChain id="JumpDino">
-      <event order="0" eventId="setVariableToVariable">
-        <parameters>
-          <param order="0" value="velocity.y"/>
-          <param order="1" value="jumpVelocity.y"/>
-        </parameters>
-      </event>
-      <event order="1" eventId="runAnimation">
-        <parameters>
-          <param order="0" value="jump"/>
-        </parameters>
-      </event>
-    </eventChain>
-    <eventChain id="DinoJump-PowerUp">
-      <event order="0" eventId="incrementVariableByValue">
-        <parameters>
-          <param order="0" value="jumpVelocity.y"/>
-          <param order="1" value="10"/>
-        </parameters>
-      </event>
-    </eventChain>
-  </eventChains>
+  <Events>
+    <Event name="jump" type="input" id="20">
+<!--     Enums for event type, condition, and outcome-->
+      <conditions>
+        <condition list="SPACE_KEY_PRESSED" />
+        <condition list="UP_ARROW_PRESSED" />
+      </conditions>
+
+      <outcomes list="JUMP"/>
+      <parameters>
+        <parameter name="velocity.y">5</parameter>
+        <parameter name="jumpType">Floaty</parameter>
+      </parameters>
+    </Event>
+    <Event name="" type="">
+      <condition/>
+      <outcome/>
+      <parameters>
+
+      </parameters>
+    </Event>
+
+  </Events>
 </map>
