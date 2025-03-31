@@ -23,7 +23,7 @@ public class EventOutcome {
     /**
      * @return the associated parameter mapping for a specific outcome type
      */
-    public Map<String, String> getOutcomeParamMap(OutcomeType) {
+    public Map<String, String> getOutcomeParamMap(OutcomeType outcomeType) {
         return outcomeParamMap.get(outcomeType);
     }
 }

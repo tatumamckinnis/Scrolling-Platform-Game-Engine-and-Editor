@@ -7,25 +7,27 @@
  */
 package oogasalad.engine.model.event;
 
+import oogasalad.engine.model.object.GameObject;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 
 public class Event {
-    private int gameObjectId;
+    private GameObject gameObject;
     private List<EventCondition> condition;
     private List<EventOutcome> outcome;
     private Map<String, String> params;
 
     /**
      * Event constructor
-     * @param gameObjectId -> object associated with the event
+     * @param gameObject -> object associated with the event
      * @param conditions -> List of Conditions that need to be met to execute events
      * @param outcomes -> List of Events to execute
      * @param params -> Mapping of paramName -> paramValue
      */
-    public Event(int gameObjectId, List<EventCondition> conditions, List<EventOutcome> outcomes, Map<String, String> params) {
-        this.gameObjectId = gameObjectId;
+    public Event(GameObject gameObject, List<EventCondition> conditions, List<EventOutcome> outcomes, Map<String, String> params) {
+        this.gameObject = gameObject;
         this.condition = conditions;
         this.outcome = outcomes;
         this.params = params;
