@@ -7,6 +7,11 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 
+/**
+ * API responsible for managing the game loop, including playing, pausing, and selecting a game
+ *
+ * @author Alana Zinkin
+ */
 public interface GameManagerAPI {
 
   /**
