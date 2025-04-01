@@ -85,16 +85,15 @@ public class GameObjectBlueprintParser {
 
       return new GameObjectData(
           id,
-          uuid,
-          gameName,
+          0, //gameName,
           type,
           groupName,
-          spriteData,
+          spriteName,
+          new SpriteData(null,0,0,0,0,null,null,null), //spriteFile,
           x,
           y,
           layer,
-          new ArrayList<EventData>() {
-          }
+          new ArrayList<>() //propertiesMap
       );
     } catch (NumberFormatException e) {
       throw new GameObjectParseException("error.number.format");
