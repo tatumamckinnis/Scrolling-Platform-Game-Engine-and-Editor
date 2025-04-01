@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
  * Unit tests for the EditorObject class.
  * @author Jacob You
  */
-class EditorLevelDataTest {
+class EditorObjectTest {
 
   private EditorLevelData mockEditorLevelData;
   private IdentityData sampleIdentityData;
