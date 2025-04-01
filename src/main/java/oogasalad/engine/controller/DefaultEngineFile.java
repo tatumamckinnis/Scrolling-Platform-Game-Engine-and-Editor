@@ -5,22 +5,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.exception.ObjectNotSupportedException;
-import oogasalad.engine.controller.gameobjectfactory.EnemyFactory;
-import oogasalad.engine.controller.gameobjectfactory.EntityFactory;
 import oogasalad.engine.controller.gameobjectfactory.GameObjectFactory;
-import oogasalad.engine.controller.gameobjectfactory.PlayerFactory;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
-import oogasalad.fileparser.records.SpriteData;
 
 public class DefaultEngineFile implements EngineFileAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFile.class.getPackageName() + "." + "GameManager");
+      DefaultEngineFile.class.getPackageName() + "." + "EngineFile");
+  private static final Logger LOG = Logger.getLogger(DefaultEngineFile.class.getName());
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -56,7 +54,8 @@ public class DefaultEngineFile implements EngineFileAPI {
       throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     for (GameObjectData gameObjectData : gameObjects) {
       String className =
-          factoryPackage + gameObjectData.type() + ENGINE_FILE_RESOURCES.getString("Factory");
+          factoryPackage + "." + gameObjectData.type() + ENGINE_FILE_RESOURCES.getString("Factory");
+      System.out.println(className);
       try {
         GameObject newObject = makeGameObjectFromFactory(gameObjectData, className);
         gameObjectList.add(newObject);
@@ -73,7 +72,7 @@ public class DefaultEngineFile implements EngineFileAPI {
     GameObjectFactory gameObjectFactory = (GameObjectFactory) clazz.getDeclaredConstructor()
         .newInstance();
     return gameObjectFactory.createGameObject(
-        String.valueOf(gameObjectData.id()), gameObjectData.type(), gameObjectData.group(),
+        String.valueOf(gameObjectData.uniqueId()), gameObjectData.type(), gameObjectData.group(),
         gameObjectData.spriteData(), new DynamicVariableCollection());
   }
 }

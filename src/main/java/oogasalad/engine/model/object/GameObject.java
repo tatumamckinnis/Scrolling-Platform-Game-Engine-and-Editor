@@ -21,4 +21,19 @@ public abstract class GameObject {
     return params;
   }
 
+  public String getUuid() {
+    return uuid;
+  }
+
+  public String getName() {
+    return myName;
+  }
+
+  public String getGroup() {
+    return myGroup;
+  }
+
+  public SpriteData getSpriteData() {
+    return mySpriteData;
+  }
 }

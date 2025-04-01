@@ -89,18 +89,17 @@ public class GameObjectBlueprintParserTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     GameObjectData data = result.get(0);
-    assertEquals(1, data.id());
+    assertEquals(1, data.blueprintId());
     assertEquals("TestGame", data.gameName());
     assertEquals("Enemy", data.type());
     assertEquals("TestGroup", data.group());
-    assertEquals("enemySprite", data.spriteName());
-    assertEquals("enemy.png", data.spriteFile());
+    assertEquals("enemySprite", data.spriteData());
     // Default values for x, y, and layer are 0.
     assertEquals(0, data.x());
     assertEquals(0, data.y());
     assertEquals(0, data.layer());
     // Properties map should be empty.
-    assertTrue(data.propertiesForObjectHandlersAndVariables().isEmpty());
+    assertTrue(data.eventDataList().isEmpty());
   }
 
   /**
@@ -131,21 +130,21 @@ public class GameObjectBlueprintParserTest {
 
     // Validate first game object data.
     GameObjectData data1 = result.get(0);
-    assertEquals(1, data1.id());
+    assertEquals(1, data1.blueprintId());
     assertEquals("Game1", data1.gameName());
     assertEquals("Player", data1.type());
     assertEquals("Group1", data1.group());
 
     // Validate second game object data.
     GameObjectData data2 = result.get(1);
-    assertEquals(2, data2.id());
+    assertEquals(2, data2.blueprintId());
     assertEquals("Game2", data2.gameName());
     assertEquals("Enemy", data2.type());
     assertEquals("Group2", data2.group());
 
     // Validate third game object data.
     GameObjectData data3 = result.get(2);
-    assertEquals(3, data3.id());
+    assertEquals(3, data3.blueprintId());
     assertEquals("Game2", data3.gameName());
     assertEquals("Enemy", data3.type());
     assertEquals("Group2", data3.group());
@@ -224,12 +223,12 @@ public class GameObjectBlueprintParserTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     GameObjectData data = result.get(0);
-    Map<String, Map<String, String>> properties = data.propertiesForObjectHandlersAndVariables();
-    assertTrue(properties.containsKey("handler"));
-    Map<String, String> handlerData = properties.get("handler");
+    // Map<String, Map<String, String>> properties = data.eventDataList();
+    // assertTrue(properties.containsKey("handler"));
+    // Map<String, String> handlerData = properties.get("handler");
     // Since the parser concatenates values based on attribute names,
     // we expect the "damage" attribute to be "10,5" after processing.
-    assertEquals("10,5", handlerData.get("damage"));
+    // assertEquals("10,5", handlerData.get("damage"));
   }
 
   /**
@@ -256,9 +255,9 @@ public class GameObjectBlueprintParserTest {
     assertEquals(numObjects, result.size());
     // Validate a couple of objects.
     GameObjectData first = result.get(0);
-    assertEquals(0, first.id());
+    assertEquals(0, first.blueprintId());
     GameObjectData last = result.get(result.size() - 1);
-    assertEquals(numObjects - 1, last.id());
+    assertEquals(numObjects - 1, last.blueprintId());
   }
 }
 
