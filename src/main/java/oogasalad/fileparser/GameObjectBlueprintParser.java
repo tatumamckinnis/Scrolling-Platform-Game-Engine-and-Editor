@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import oogasalad.fileparser.exceptions.GameObjectParseException;
 import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.SpriteData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -80,15 +81,15 @@ public class GameObjectBlueprintParser {
 
       return new GameObjectData(
           id,
-          gameName,
+          0, //gameName,
           type,
           groupName,
           spriteName,
-          spriteFile,
+          new SpriteData(null,0,0,0,0,null,null,null), //spriteFile,
           x,
           y,
           layer,
-          propertiesMap
+          new ArrayList<>() //propertiesMap
       );
     } catch (NumberFormatException e) {
       throw new GameObjectParseException("error.number.format");
