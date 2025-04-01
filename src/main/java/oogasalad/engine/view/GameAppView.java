@@ -16,6 +16,9 @@ public class GameAppView implements GameAppAPI {
   private Display currentDisplay;
   private Scene currentScene;
 
+  /**
+   * @see GameAppView#initialize(String)
+   */
   @Override
   public void initialize(String title) throws ViewInitializationException {
     SplashScreen splashScreen = new SplashScreen();
@@ -35,11 +38,19 @@ public class GameAppView implements GameAppAPI {
     currentScene = new Scene(currentDisplay, width, height);
   }
 
+  /**
+   * @see GameAppView#renderGameObjects(List)
+   */
   @Override
   public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
     currentDisplay.renderGameObjects(gameObjects);
   }
 
+  /**
+   * @see GameAppView#getCurrentInputs()
+   * @return
+   * @throws InputException
+   */
   @Override
   public List<String> getCurrentInputs() throws InputException {
     return List.of();

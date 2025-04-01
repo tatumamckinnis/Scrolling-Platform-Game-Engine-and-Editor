@@ -32,6 +32,9 @@ public class LevelView extends Display {
     this.isPaused = isPaused;
   }
 
+  /**
+   * @see Display#render()
+   */
   @Override
   public void render() {
     // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
@@ -57,6 +60,11 @@ public class LevelView extends Display {
     setInitialCameraPosition();
   }
 
+  /**
+   * Re-renders all game objects that have been updated in the backend.
+   * @param gameObjects a list of gameObjects with objects to be updated visually
+   * @throws RenderingException thrown if there is an error while rendering
+   */
   public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
     // loop thru all gameObjects, add them to this.getChildren if not already in, if they are then update them
     Random r = new Random();
@@ -70,6 +78,9 @@ public class LevelView extends Display {
     moveRight();
   }
 
+  /**
+   * Method to set camera fixed on portion of map.
+   */
   private void setInitialCameraPosition() {
     double translateX = -100;
     double translateY = -100;
@@ -78,6 +89,9 @@ public class LevelView extends Display {
     this.setTranslateY(-translateY);
   }
 
+  /**
+   * Sample method to move camera.
+   */
   private void moveRight() {
     double translateX = 1;
 
