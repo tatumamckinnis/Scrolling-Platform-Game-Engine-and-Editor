@@ -1,9 +1,11 @@
 package oogasalad.editor.model.data;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.object.EditorObject;
 
@@ -13,8 +15,19 @@ public class EditorLevelData {
 
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
-  private Map<UUID, EditorObject> myObjectdataMap;
+  private Map<UUID, EditorObject> myObjectDataMap;
   private Layer myCurrentLayer;
+
+  private static final Properties editorConfig = new Properties();
+  private static final String propertyFile = "/oogasalad/editor/properties/editorConfig.properties";
+
+  static {
+    try (InputStream is = EditorLevelData.class.getResourceAsStream(propertyFile)) {
+      editorConfig.load(is);
+    } catch (IOException e) {
+      e.printStackTrace(); // Do better logging later
+    }
+  }
 
   public EditorLevelData() {
     myGroups = new ArrayList<>();
@@ -46,9 +59,11 @@ public class EditorLevelData {
     myLayerDataMap.put(layer, new ArrayList<>());
   }
 
-  public EditorObject getEditorObject(double x, double y) {
-    for (List<EditorObject> objects : myLayerDataMap.values()) {
+  public EditorObject getEditorObject(UUID uuid) {
+    return myObjectDataMap.get(uuid);
+  }
 
-    }
+  public Properties getEditorConfig() {
+    return editorConfig;
   }
 }
