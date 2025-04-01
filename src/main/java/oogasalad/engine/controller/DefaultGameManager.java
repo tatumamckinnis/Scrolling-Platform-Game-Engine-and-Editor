@@ -18,6 +18,15 @@ import oogasalad.fileparser.records.LevelData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Default implementation of the {@link GameManagerAPI}, responsible for managing the game loop,
+ * loading levels, and controlling game flow such as play, pause, and restart.
+ *
+ * <p>It uses a {@link Timeline} to drive the game loop, relies on a {@link GameControllerAPI} to
+ * manage the internal game state, and interacts with file and level APIs to load game content.
+ *
+ * @author Alana Zinkin
+ */
 public class DefaultGameManager implements GameManagerAPI {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -33,7 +42,10 @@ public class DefaultGameManager implements GameManagerAPI {
   private LevelAPI myLevelAPI;
 
   /**
-   * Constructor for initializing a new Game Manager
+   * Constructs a new DefaultGameManager with the given file engine and game controller.
+   *
+   * @param engineFile     the engine file API implementation
+   * @param gameController the game controller to manage game objects and state
    */
   public DefaultGameManager(DefaultEngineFile engineFile, DefaultGameController gameController) {
     myGameLoop = initGameLoop();
@@ -42,10 +54,10 @@ public class DefaultGameManager implements GameManagerAPI {
   }
 
   /**
-   * initializes a new Timeline by setting CycleCount to indefinite and retrieving the frames per
-   * second from the Game Manager resource bundle
+   * Initializes the game loop using a {@link Timeline} that fires at a regular interval based on
+   * the configured frames per second in the resource bundle.
    *
-   * @return a new Timeline
+   * @return the initialized game loop timeline
    */
   private Timeline initGameLoop() {
     Timeline gameLoop = new Timeline();
@@ -57,40 +69,63 @@ public class DefaultGameManager implements GameManagerAPI {
     return gameLoop;
   }
 
+  /**
+   * Starts the game loop.
+   */
   @Override
   public void playGame() {
     myGameLoop.play();
   }
 
+  /**
+   * Pauses the game loop.
+   */
   @Override
   public void pauseGame() {
     myGameLoop.pause();
   }
 
-  //TODO: add implementation details for restarting a game and defining what restarting a game looks like
+  /**
+   * Restarts the game loop.
+   * <p>Note: Implementation details TBD. Currently stops the game loop.
+   */
   @Override
   public void restartGame() {
     myGameLoop.stop();
   }
 
+  /**
+   * Selects and loads the specified game based on the game name, category, and level.
+   *
+   * @param game     the name of the game
+   * @param category the game’s category
+   * @param level    the specific level to load
+   * @throws DataFormatException       if level data is malformed
+   * @throws IOException               if there is an issue reading level files
+   * @throws ClassNotFoundException    if a class referenced in the data is not found
+   * @throws InvocationTargetException if object instantiation fails
+   * @throws NoSuchMethodException     if the required constructor is missing
+   * @throws InstantiationException    if the object cannot be created
+   * @throws IllegalAccessException    if constructor access is restricted
+   */
   @Override
   public void selectGame(String game, String category, String level)
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
+      NoSuchMethodException, InstantiationException, IllegalAccessException {
     myLevelAPI.selectGame(game, category, level);
   }
 
   /**
-   * retrieves the game loop object
+   * Returns the internal {@link Timeline} game loop.
    *
-   * @return Timeline game loop object
+   * @return the game loop timeline
    */
   public Timeline getGameLoop() {
     return myGameLoop;
   }
 
   /**
-   * Is called by the game loop timeline on each "tick" of the game by updating the front-end and
-   * back-end simultaneously
+   * Called on each tick of the game loop. Delegates game state updates to the controller.
    */
   private void step() {
     myGameController.updateGameState();

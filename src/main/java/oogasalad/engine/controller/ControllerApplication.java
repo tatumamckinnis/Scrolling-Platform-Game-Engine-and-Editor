@@ -14,7 +14,11 @@ import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.fileparser.records.SpriteData;
 
-
+/**
+ * Test application for controller methods
+ *
+ * @author Alana Zinkin
+ */
 public class ControllerApplication extends Application {
 
   LevelData levelData;
