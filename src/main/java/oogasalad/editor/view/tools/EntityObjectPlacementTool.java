@@ -1,78 +1,79 @@
 package oogasalad.editor.view.tools;
 
-import javafx.scene.input.MouseEvent;
+import java.util.UUID;
+import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.view.EditorGameView;
-import oogasalad.editor.view.tools.objectfactory.EntityObjectFactory;
 
 /**
  * Tool for adding entity objects to the game scene.
  * This tool allows users to add a new game object to the scene.
  * Uses a factory to create appropriate game objects for different games.
  *
- * @author Tatum
+ * @author Tatum McKinnis
  */
-public class EntityObjectPlacementTool {
+public class EntityObjectPlacementTool implements ObjectPlacementTool{
   private final EditorGameView editorView;
-  //private final EditorManagerAPI editorManager;
-  private EntityObjectFactory objectFactory;
+  private final EditorDataAPI editorAPI;
+  private String entityType;
+  private String spritePath;
 
   /**
-   * Creates a new entity object placement tool
+   * Creates a new entity placement tool
    *
    * @param editorView The editor view to place objects on
-   * @param editorManager The editor manager to use for backend operations
-   * @param objectFactory The factory to create entity objects
+   * @param editorAPI The editor API to use for backend operations
+   * @param entityType The type of entity to create
+   * @param spritePath The path to the entity sprite
    */
-  public EntityObjectPlacementTool(EditorGameView editorView,
-      //EditorManagerAPI editorManager,
-      EntityObjectFactory objectFactory) {
+  public EntityObjectPlacementTool(EditorGameView editorView, EditorDataAPI editorAPI,
+      String entityType, String spritePath) {
     this.editorView = editorView;
-   // this.editorManager = editorManager;
-    this.objectFactory = objectFactory;
-
-    setupClickHandler();
+    this.editorAPI = editorAPI;
+    this.entityType = entityType;
+    this.spritePath = spritePath;
   }
 
   /**
-   * Sets the object factory for creating entity objects
-   * This allows switching between different types of games
+   * Sets the entity type to place
    *
-   * @param objectFactory The factory to create entity objects
+   * @param entityType The entity type
    */
-  public void setObjectFactory(EntityObjectFactory objectFactory) {
-    this.objectFactory = objectFactory;
+  public void setEntityType(String entityType) {
+    this.entityType = entityType;
   }
 
   /**
-   * Sets up the click handler for the editor view
-   */
-  private void setupClickHandler() {
-    editorView.setOnGridClick(this::handleGridClick);
-  }
-
-  /**
-   * Handles grid click events to place entities
+   * Sets the sprite path for the entity
    *
-   * @param event The mouse click event
+   * @param spritePath The path to the sprite
    */
-  private void handleGridClick(MouseEvent event) {
-    int gridX = (int)(event.getX() / editorView.getCellSize());
-    int gridY = (int)(event.getY() / editorView.getCellSize());
-    placeEntityAt(gridX, gridY);
+  public void setSpritePath(String spritePath) {
+    this.spritePath = spritePath;
   }
 
-  /**
-   * Places an entity object at the specified grid position
-   *
-   * @param gridX X-coordinate on the grid
-   * @param gridY Y-coordinate on the grid
-   */
-  public void placeEntityAt(int gridX, int gridY) {
+  @Override
+  public void placeObjectAt(int gridX, int gridY) {
     double x = gridX * editorView.getCellSize();
     double y = gridY * editorView.getCellSize();
 
-    //EditorObject entityObject = objectFactory.createEntityObject(x, y);
+    UUID newObjectId = editorAPI.createEditorObject();
 
-    //editorManager.addObject(entityObject);
+    editorAPI.getIdentityDataAPI().setName(newObjectId, "Entity_" + gridX + "_" + gridY);
+    editorAPI.getIdentityDataAPI().setGroup(newObjectId, entityType);
+
+    editorAPI.getSpriteDataAPI().setX(newObjectId, x);
+    editorAPI.getSpriteDataAPI().setY(newObjectId, y);
+    editorAPI.getSpriteDataAPI().setSpritePath(newObjectId, spritePath);
+
+    int cellSize = editorView.getCellSize();
+    editorAPI.getHitboxDataAPI().setX(newObjectId, x);
+    editorAPI.getHitboxDataAPI().setY(newObjectId, y);
+    editorAPI.getHitboxDataAPI().setWidth(newObjectId, cellSize);
+    editorAPI.getHitboxDataAPI().setHeight(newObjectId, cellSize);
+    editorAPI.getHitboxDataAPI().setShape(newObjectId, "RECTANGLE");
+
+    EditorObject object = editorAPI.getLevel().getEditorObject(newObjectId);
+    editorView.addObject(newObjectId, object, x, y);
   }
 }

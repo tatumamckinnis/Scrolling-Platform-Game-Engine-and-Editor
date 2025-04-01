@@ -7,9 +7,12 @@ import javafx.stage.Stage;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.view.GameAppView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GameSceneApplicationTest extends Application {
   GameAppView myCurrentView = new GameAppView();
+  private static final Logger LOG = LogManager.getLogger();
 
   @Override
   public void start(Stage primaryStage) throws ViewInitializationException {
@@ -17,7 +20,7 @@ public class GameSceneApplicationTest extends Application {
     Scene scene = myCurrentView.getCurrentScene();
     primaryStage.setScene(scene);
     primaryStage.show();
-
+    LOG.info("Starting GameSceneApplicationTest");
     startGameLoop();
   }
 

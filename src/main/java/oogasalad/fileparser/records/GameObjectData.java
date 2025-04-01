@@ -1,5 +1,6 @@
 package oogasalad.fileparser.records;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -7,16 +8,14 @@ import java.util.Map;
  * @author Billy McCune
  */
 public record GameObjectData(
-    int id,
+    int blueprintId,
+    int uniqueId,
     String gameName,
-    String type,
     String group, //entities, blocks, backgrounds
-    String spriteName,
-    String spriteFile,
+    String type,
+    SpriteData spriteData,
     int x,
     int y,
     int layer, //z-layer or draw layer for background/foreground ordering
-    Map <String, Map<String, String>> propertiesForObjectHandlersAndVariables
-) {
-
-}
+    List<EventData> eventDataList
+) { }
