@@ -17,6 +17,7 @@
  */
 package oogasalad.fileParsertests;
 
+import oogasalad.fileparser.records.EventData;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -223,12 +224,12 @@ public class GameObjectBlueprintParserTest {
     assertNotNull(result);
     assertEquals(1, result.size());
     GameObjectData data = result.get(0);
-    // Map<String, Map<String, String>> properties = data.eventDataList();
-    // assertTrue(properties.containsKey("handler"));
-    // Map<String, String> handlerData = properties.get("handler");
+    //Map<EventData> properties = data.eventDataList();
+    //assertTrue(properties.containsKey("handler"));
+    //Map<String, String> handlerData = properties.get("handler");
     // Since the parser concatenates values based on attribute names,
     // we expect the "damage" attribute to be "10,5" after processing.
-    // assertEquals("10,5", handlerData.get("damage"));
+    //assertEquals("10,5", handlerData.get("damage"));
   }
 
   /**
