@@ -1,4 +1,4 @@
-package main.java.oogasalad.view.editor.tools.objectfactory;
+package oogasalad.editor.view.tools.objectfactory;
 
 /**
  * Factory interface for creating entity objects

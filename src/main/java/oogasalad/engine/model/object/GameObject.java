@@ -7,9 +7,15 @@ public abstract class GameObject {
   private String myName;
   private String myGroup;
   private SpriteData mySpriteData;
+  private DynamicVariableCollection params;
 
-  public GameObject(String uuid) {
+  public GameObject(String uuid, DynamicVariableCollection params) {
     this.uuid = uuid;
+    this.params = params;
+  }
+
+  public DynamicVariableCollection getParams() {
+    return params;
   }
 
 }

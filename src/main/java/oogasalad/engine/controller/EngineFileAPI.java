@@ -6,6 +6,12 @@ import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
 
+/**
+ * Facilitates the translation and sending of data back and forth between the GameFileParser and the
+ * engine’s data storage system
+ *
+ * @author Alana Zinkin
+ */
 public interface EngineFileAPI {
 
   /**

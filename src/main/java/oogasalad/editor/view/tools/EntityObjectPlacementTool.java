@@ -1,9 +1,8 @@
-package main.java.oogasalad.view.editor.tools;
+package oogasalad.editor.view.tools;
 
 import javafx.scene.input.MouseEvent;
-import main.java.oogasalad.view.editor.EditorGameView;
-import main.java.oogasalad.view.editor.tools.objectfactory.EntityObjectFactory;
-
+import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.tools.objectfactory.EntityObjectFactory;
 
 /**
  * Tool for adding entity objects to the game scene.
