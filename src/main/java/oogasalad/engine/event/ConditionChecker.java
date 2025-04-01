@@ -19,6 +19,6 @@ public class ConditionChecker {
      * @return true or false
      */
     public boolean checkCondition(EventCondition.ConditionType conditionType, DynamicVariableCollection params) {
-
+        return false;
     }
 }

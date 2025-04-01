@@ -1,9 +1,9 @@
-package main.java.oogasalad.view.editor.tools;
+package oogasalad.editor.view.tools;
 
 
 import javafx.scene.input.MouseEvent;
-import main.java.oogasalad.view.editor.EditorGameView;
-import main.java.oogasalad.view.editor.tools.objectfactory.EnemyObjectFactory;
+import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.tools.objectfactory.EnemyObjectFactory;
 
 /**
  * Tool for adding enemy objects to the game scene.

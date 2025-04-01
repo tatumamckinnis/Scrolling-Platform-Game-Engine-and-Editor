@@ -2,24 +2,19 @@ package oogasalad;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import oogasalad.engine.view.Display;
-import oogasalad.engine.view.GameScene;
+import oogasalad.engine.exception.RenderingException;
+import oogasalad.engine.exception.ViewInitializationException;
+import oogasalad.engine.view.GameAppView;
 
 public class GameSceneApplicationTest extends Application {
-  GameScene myCurrentView = new GameScene();
+  GameAppView myCurrentView = new GameAppView();
 
   @Override
-  public void start(Stage primaryStage) {
-
-    Group root = new Group();
-
-    root.getChildren().add(myCurrentView);
-    myCurrentView.render();
-
-    Scene scene = new Scene(root, 500, 500);
+  public void start(Stage primaryStage) throws ViewInitializationException {
+    myCurrentView.initialize("Splash Screen");
+    Scene scene = myCurrentView.getCurrentScene();
     primaryStage.setScene(scene);
     primaryStage.show();
 
@@ -30,14 +25,18 @@ public class GameSceneApplicationTest extends Application {
     AnimationTimer gameLoop = new AnimationTimer() {
       @Override
       public void handle(long now) {
-        step();
+        try {
+          step();
+        } catch (RenderingException e) {
+          throw new RuntimeException(e);
+        }
       }
     };
     gameLoop.start();
   }
 
-  private void step() {
-//    myCurrentView.renderGameObjects(null);
+  private void step() throws RenderingException {
+    myCurrentView.renderGameObjects(null);
   }
 
   public static void main(String[] args) {
