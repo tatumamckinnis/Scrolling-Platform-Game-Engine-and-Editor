@@ -29,28 +29,8 @@ public class EditorDataAPI implements EditorDataAPIInterface {
     this.spriteAPI = new SpriteDataAPI(level);
   }
 
-  public void addInputData(UUID id) {
-    EditorObject object = level.getEditorObject(id);
-    if (object == null) { return; }
-    if (object.getInputData() == null) {
-      object.setInputData(new InputData(new HashMap<>()));
-    }
-  }
-
-  public void addPhysicsData(UUID id) {
-    EditorObject object = level.getEditorObject(id);
-    if (object == null) { return; }
-    if (object.getPhysicsData() == null) {
-      object.setPhysicsData(new PhysicsData(new HashMap<>()));
-    }
-  }
-
-  public void addCollisionData(UUID id) {
-    EditorObject object = level.getEditorObject(id);
-    if (object == null) { return; }
-    if (object.getCollisionData() == null) {
-      object.setCollisionData(new CollisionData(new HashMap<>()));
-    }
+  public UUID createEditorObject() {
+    return level.createEditorObject();
   }
 
   @Override

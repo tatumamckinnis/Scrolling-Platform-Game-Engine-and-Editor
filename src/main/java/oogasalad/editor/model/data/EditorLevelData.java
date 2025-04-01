@@ -1,9 +1,9 @@
 package oogasalad.editor.model.data;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,6 +34,19 @@ public class EditorLevelData {
   public EditorLevelData() {
     myGroups = new ArrayList<>();
     myLayers = new ArrayList<>();
+    myLayerDataMap = new HashMap<>();
+    myObjectDataMap = new HashMap<>();
+  }
+
+  public UUID createEditorObject() {
+    EditorObject newObject = new EditorObject(this);
+    myLayerDataMap.get(myCurrentLayer).add(newObject);
+    myObjectDataMap.put(newObject.getIdentityData().id(), newObject);
+    return newObject.getIdentityData().id();
+  }
+
+  public UUID createEditorObject(String prefab) {
+    return null; // Will eventually implement a Prefab API of sorts
   }
 
   public List<String> getGroups() {
