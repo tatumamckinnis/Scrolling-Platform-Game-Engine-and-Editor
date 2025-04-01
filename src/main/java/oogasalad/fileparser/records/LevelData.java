@@ -10,7 +10,5 @@ import java.util.Map;
 public record LevelData(
     String name,
     List<GameObjectData> gameObjectBluePrintData,
-    Map<Integer,List<GameObjectData>> gameObjectsByLayer,
-    List<EventChainData> eventChains,
-    List<SpriteSheetData> spriteSheets
+    Map<Integer,List<GameObjectData>> gameObjectsByLayer
 ) {}
