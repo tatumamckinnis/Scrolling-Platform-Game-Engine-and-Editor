@@ -4,6 +4,7 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
@@ -73,7 +74,8 @@ public class DefaultGameManager implements GameManagerAPI {
   }
 
   @Override
-  public void selectGame(String game, String category, String level) throws DataFormatException, IOException {
+  public void selectGame(String game, String category, String level)
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     myLevelAPI.selectGame(game, category, level);
   }
 

@@ -5,6 +5,7 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.zip.DataFormatException;
 
 /**
@@ -35,6 +36,7 @@ public interface GameManagerAPI {
    * Loads a new level or game scene, possibly by calling into file loaders, parsing game data, and
    * updating the current model.
    */
-  public void selectGame(String game, String category, String level) throws DataFormatException, IOException;
+  public void selectGame(String game, String category, String level)
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
 }

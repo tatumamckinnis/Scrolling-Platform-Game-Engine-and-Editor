@@ -4,6 +4,7 @@
  */
 package oogasalad.engine.controller;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
@@ -28,7 +29,8 @@ public class DefaultGameController implements GameControllerAPI {
     }
 
     @Override
-    public void setLevelData(LevelData data) throws DataFormatException, IOException {
+    public void setLevelData(LevelData data)
+        throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         myGameObjects = myEngineFile.loadFileToEngine(data);
     }
 }

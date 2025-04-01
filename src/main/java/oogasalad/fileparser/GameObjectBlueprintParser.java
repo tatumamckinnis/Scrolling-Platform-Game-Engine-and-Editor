@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import oogasalad.fileparser.exceptions.GameObjectParseException;
+import oogasalad.fileparser.records.EventData;
+import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.SpriteData;
 import org.w3c.dom.Element;
@@ -70,6 +72,8 @@ public class GameObjectBlueprintParser {
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
+      SpriteData spriteData = new SpriteData("Mario", 1, 1, 2, 4, new FrameData("Mario Paused", 1, 1, 2, 4), new ArrayList<>(), new ArrayList<>());
+      int uuid = Integer.parseInt(gameObjectNode.getAttribute("uuid"));
 
       // Default values for x, y, and layer
       int x = 0;
