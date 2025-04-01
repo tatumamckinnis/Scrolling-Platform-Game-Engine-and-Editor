@@ -1,4 +1,4 @@
-package oogasalad.view.editor;
+package oogasalad.editor.view;
 
 import java.io.IOException;
 import java.io.InputStream;
