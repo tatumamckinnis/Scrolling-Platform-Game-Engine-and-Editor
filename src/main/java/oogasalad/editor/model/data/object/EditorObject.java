@@ -16,20 +16,22 @@ public class EditorObject {
   private Properties editorConfig;
 
   public EditorObject(EditorLevelData level, IdentityData identity, InputData input,
-      PhysicsData physics,
-      CollisionData collision, SpriteData sprite, HitboxData hitbox) {
+      PhysicsData physics, CollisionData collision, SpriteData sprite, HitboxData hitbox) {
     this.level = level;
+    this.editorConfig = level.getEditorConfig();
+
     this.identity = identity;
     this.input = input;
     this.physics = physics;
     this.collision = collision;
     this.sprite = sprite;
     this.hitbox = hitbox;
-    this.editorConfig = level.getEditorConfig();
   }
 
   public EditorObject(EditorLevelData level) {
     this.level = level;
+    this.editorConfig = level.getEditorConfig();
+
     this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "");
     this.hitbox = new HitboxData(0, 0,
         Double.parseDouble(editorConfig.getProperty("defaultHitboxWidth")),
@@ -45,7 +47,7 @@ public class EditorObject {
     return identity;
   }
 
-  public void addIdentityData() {
+  public void setIdentityData(IdentityData identity) {
     this.identity = identity;
   }
 
