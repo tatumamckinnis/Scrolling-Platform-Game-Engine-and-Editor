@@ -11,8 +11,9 @@ public class EventOutcome {
      * Defines valid outcome types
      */
     public enum OutcomeType {
+        MOVE_RIGHT,
         JUMP,
-        DESTROY_OBJECT
+        LOSE_GAME
     }
 
     private OutcomeType outcomeType;
