@@ -1,8 +1,11 @@
 package oogasalad.engine.model.object;
 
-public class Enemy extends GameObject {
+import oogasalad.fileparser.records.SpriteData;
 
-  public Enemy(String uuid) {
-    super(uuid, null); // temp fix to allow running
+public class Enemy extends GameObject {
+  
+  public Enemy(String uuid, String name, String group,
+      SpriteData spriteData, DynamicVariableCollection params) {
+    super(uuid, name, group, spriteData, params);
   }
 }

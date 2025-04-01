@@ -9,8 +9,11 @@ public abstract class GameObject {
   private SpriteData mySpriteData;
   private DynamicVariableCollection params;
 
-  public GameObject(String uuid, DynamicVariableCollection params) {
+  public GameObject(String uuid, String name, String group, SpriteData spriteData, DynamicVariableCollection params) {
     this.uuid = uuid;
+    this.myName = name;
+    this.myGroup = group;
+    this.mySpriteData = spriteData;
     this.params = params;
   }
 

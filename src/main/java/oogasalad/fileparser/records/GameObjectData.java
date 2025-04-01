@@ -11,8 +11,7 @@ public record GameObjectData(
     String gameName,
     String type,
     String group, //entities, blocks, backgrounds
-    String spriteName,
-    String spriteFile,
+    SpriteData spriteData,
     int x,
     int y,
     int layer, //z-layer or draw layer for background/foreground ordering

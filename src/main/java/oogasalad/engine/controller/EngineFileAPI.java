@@ -1,6 +1,7 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
@@ -32,6 +33,7 @@ public interface EngineFileAPI {
    * @throws IOException         if the file cannot be read
    * @throws DataFormatException if the file's data cannot be interpreted into Engine objects
    */
-  public List<GameObject> loadFileToEngine(LevelData level) throws IOException, DataFormatException;
+  public List<GameObject> loadFileToEngine(LevelData level)
+      throws IOException, DataFormatException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
 }
