@@ -1,5 +1,6 @@
 package oogasalad.editor.model.data;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,13 +20,14 @@ public class EditorLevelData {
   private Layer myCurrentLayer;
 
   private static final Properties editorConfig = new Properties();
-  private static final String propertyFile = "/oogasalad/editor/properties/editorConfig.properties";
+  private static final String propertyFile = "oogasalad/config/editorConfig.properties";
 
   static {
-    try (InputStream is = EditorLevelData.class.getResourceAsStream(propertyFile)) {
+    try (InputStream is = Thread.currentThread().getContextClassLoader()
+        .getResourceAsStream(propertyFile)) {
       editorConfig.load(is);
     } catch (IOException e) {
-      e.printStackTrace(); // Do better logging later
+      e.printStackTrace();
     }
   }
 
