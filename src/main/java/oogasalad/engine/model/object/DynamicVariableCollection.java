@@ -12,6 +12,8 @@ import java.util.Map;
  * <p>
  * Use Cases: - Store health, score, power-up status, timers, etc. - Allow dynamic addition of new
  * gameplay variables during runtime - Retrieve or update variables using key-based access
+ *
+ * @author Alana Zinkin
  */
 public class DynamicVariableCollection {
 
