@@ -15,6 +15,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorDataAPI;
 
+import oogasalad.editor.view.tools.EnemyObjectPlacementTool;
+import oogasalad.editor.view.tools.EntityObjectPlacementTool;
+import oogasalad.editor.view.tools.ObjectPlacementTool;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.HBox;
+
+
 /**
  * The EditorComponentFactory creates UI panes for the editor manager to load.
  * This class has been extended to include property and input tab panels.
@@ -24,6 +32,11 @@ import oogasalad.editor.controller.EditorDataAPI;
 public class EditorComponentFactory {
   private static final String editorComponentPropertiesFilepath = "/oogasalad/screens/editorScene.properties";
   private static final Properties editorComponentProperties = new Properties();
+
+  private EditorGameView gameView;
+  private EntityObjectPlacementTool entityTool;
+  private EnemyObjectPlacementTool enemyTool;
+  private ObjectPlacementTool currentTool;
 
   private EditorDataAPI editorAPI;
   private InputTabController inputTabController;
@@ -91,33 +104,69 @@ public class EditorComponentFactory {
     Label mapLabel = new Label("Game Map");
     mapLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
-    // Create the game view
-    int cellSize = 32; // Default cell size
-    EditorGameView gameView = new EditorGameView(
-        mapPaneWidth - 40, // Leave some margin
-        height - 100, // Leave some margin
-        cellSize);
+    HBox toolbarBox = createToolbar();
 
-    // Add selection handler
-    gameView.setOnGridClick(event -> {
-      int gridX = (int)(event.getX() / gameView.getCellSize());
-      int gridY = (int)(event.getY() / gameView.getCellSize());
+    int cellSize = 32;
+    gameView = new EditorGameView(
+        mapPaneWidth - 40,
+        height - 150,
+        cellSize,
+        editorAPI);
 
-      // This would normally create or select an object at this position
-      // For demo purposes, we'll just use a dummy UUID
-      UUID selectedId = UUID.randomUUID();
-      setSelectedObject(selectedId);
-    });
+    entityTool = new EntityObjectPlacementTool(gameView, editorAPI, "PLAYER", "/path/to/player.png");
+    enemyTool = new EnemyObjectPlacementTool(gameView, editorAPI, "ENEMY", "/path/to/enemy.png");
+
+    currentTool = entityTool;
+    gameView.setCurrentTool(currentTool);
 
     VBox mapContent = new VBox(10);
     mapContent.setPadding(new Insets(20));
     mapContent.setAlignment(Pos.TOP_CENTER);
-    mapContent.getChildren().addAll(mapLabel, gameView);
+    mapContent.getChildren().addAll(mapLabel, toolbarBox, gameView);
 
     mapPane.setCenter(mapContent);
 
     return mapPane;
   }
+
+  /**
+   * Creates and returns an HBox toolbar containing toggle buttons
+   * for selecting different tools in the game editor.
+   *
+   * <p>The toolbar consists of two toggle buttons:
+   * one for adding entities and another for adding enemies.
+   * The buttons are grouped using a ToggleGroup to ensure that only
+   * one tool is selected at a time. The currently selected tool
+   * is updated when a button is clicked.</p>
+   *
+   * @return an HBox containing the toolbar with tool selection buttons
+   */
+  private HBox createToolbar() {
+    HBox toolbar = new HBox(10);
+    toolbar.setPadding(new Insets(10));
+    toolbar.setAlignment(Pos.CENTER);
+
+    ToggleGroup toolGroup = new ToggleGroup();
+
+    ToggleButton entityButton = new ToggleButton("Add Entity");
+    entityButton.setToggleGroup(toolGroup);
+    entityButton.setSelected(true);
+    entityButton.setOnAction(e -> {
+      currentTool = entityTool;
+      gameView.setCurrentTool(currentTool);
+    });
+
+    ToggleButton enemyButton = new ToggleButton("Add Enemy");
+    enemyButton.setToggleGroup(toolGroup);
+    enemyButton.setOnAction(e -> {
+      currentTool = enemyTool;
+      gameView.setCurrentTool(currentTool);
+    });
+
+    toolbar.getChildren().addAll(entityButton, enemyButton);
+    return toolbar;
+  }
+
 
   /**
    * Create the component pane that holds property and input tabs
