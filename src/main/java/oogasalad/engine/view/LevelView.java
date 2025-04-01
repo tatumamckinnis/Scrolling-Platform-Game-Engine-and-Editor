@@ -34,7 +34,7 @@ public class LevelView extends Display {
 
   @Override
   public void render() {
-    // should do nothing
+    // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
     Rectangle r1 = new Rectangle(50, 50, Color.RED);
     r1.setX(50);
     r1.setY(50);
@@ -52,12 +52,13 @@ public class LevelView extends Display {
 
     Text text = new Text(200, 200, "This is my level view");
     text.setId("3");
+
     this.getChildren().addAll(r1, r2, r3, text);
+    setInitialCameraPosition();
   }
 
   public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
-    // update any changed objects
-    // newClass.update(newObjectsToUpdate
+    // loop thru all gameObjects, add them to this.getChildren if not already in, if they are then update them
     Random r = new Random();
     int id = r.nextInt(3);
     for (Node node : this.getChildren()) {
@@ -66,5 +67,20 @@ public class LevelView extends Display {
         ((Rectangle) node).setFill(randomColor);
       }
     }
+    moveRight();
+  }
+
+  private void setInitialCameraPosition() {
+    double translateX = -100;
+    double translateY = -100;
+
+    this.setTranslateX(-translateX);
+    this.setTranslateY(-translateY);
+  }
+
+  private void moveRight() {
+    double translateX = 1;
+
+    this.setTranslateX(this.getTranslateX() - translateX);
   }
 }

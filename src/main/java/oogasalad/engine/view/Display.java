@@ -1,6 +1,9 @@
 package oogasalad.engine.view;
 
+import java.util.List;
 import javafx.scene.Group;
+import oogasalad.engine.exception.RenderingException;
+import oogasalad.engine.model.object.GameObject;
 
 /**
  * This is an abstract class representing any visual component in the game.
@@ -15,6 +18,13 @@ public abstract class Display extends Group {
    * It is used to show the content, layout, or other visual elements.
    */
   public abstract void render();
+
+  /**
+   * Allows a Display to render game objects onto the screen. Default implementation does nothing.
+   * Subclasses (like GameScene) can override this if needed.
+   */
+  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
+  }
 
   /**
    * This method will provide the option to hide the display from the scene.
