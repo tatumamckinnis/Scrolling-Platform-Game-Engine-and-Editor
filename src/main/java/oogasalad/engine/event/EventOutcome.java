@@ -13,6 +13,7 @@ public class EventOutcome {
     public enum OutcomeType {
         MOVE_RIGHT,
         JUMP,
+        APPLY_GRAVITY,
         LOSE_GAME
     }
 
