@@ -12,6 +12,7 @@ public class Layer {
     this.name = name;
     this.interactingLayers = new ArrayList<>();
     interactingLayers.add(this);
+    this.priority = 0;
   }
 
   public String getName() {
@@ -31,7 +32,9 @@ public class Layer {
   }
 
   public void removeInteractingLayer(Layer layer) {
-    this.interactingLayers.remove(layer); // Should not error even if layer does not exist
+    if (layer != this) { // Prevent removing self
+      this.interactingLayers.remove(layer); // Should not error even if layer does not exist
+    }
   }
 
   public int getPriority() {
