@@ -40,7 +40,7 @@ public class ControllerApplication extends Application {
 
 
     List<GameObject> expectedObjects = new ArrayList<>();
-    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", spriteData1, new DynamicVariableCollection(), new ArrayList<>()));
+    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", spriteData1, new HashMap<>(), new ArrayList<>()));
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
   }
 

@@ -5,6 +5,7 @@
 package oogasalad.engine.event;
 import oogasalad.engine.controller.GameControllerAPI;
 import oogasalad.engine.model.object.DynamicVariableCollection;
+import oogasalad.engine.model.object.GameObject;
 
 public class OutcomeExecutor {
     private GameControllerAPI gameController;
@@ -20,10 +21,13 @@ public class OutcomeExecutor {
     /**
      * executes outcome using parameter map using game controller
      * @param outcomeType
-     * @param params Collection of user-defined dynamic variables
+     * @param gameObject
      */
-    public void executeOutcome(EventOutcome.OutcomeType outcomeType, DynamicVariableCollection params) {
-
+    public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject) {
+        if (outcomeType == EventOutcome.OutcomeType.MOVE_RIGHT) {
+            int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "5"));
+            gameObject.setX(gameObject.getX() + dx);
+        }
     }
 
 }

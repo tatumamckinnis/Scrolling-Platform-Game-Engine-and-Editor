@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
+import java.util.Map;
 
 /**
  * Abstract representation of a game object within the engine. Stores identifying information,
@@ -25,12 +26,11 @@ public abstract class GameObject {
   private String myName;
   private String myGroup;
   private SpriteData mySpriteData;
-  private DynamicVariableCollection params;
+  private Map<String, String> myParams;
   private List<Event> myEvents;
 
-
   public GameObject(UUID uuid, int blueprintID, String type,  int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
-      DynamicVariableCollection params, List<Event> events) {
+      Map<String, String> params, List<Event> events) {
     this.uuid = uuid;
     this.myBlueprintID = blueprintID;
     this.myType = type;
@@ -42,37 +42,10 @@ public abstract class GameObject {
     this.myName = name;
     this.myGroup = group;
     this.mySpriteData = spriteData;
-    this.params = params;
+    this.myParams = params;
     this.myEvents = events;
   }
 
-  public int getBlueprintID() {
-    return myBlueprintID;
-  }
-
-  public String getType() {
-    return myType;
-  }
-
-  public int getHitBoxX() {
-    return myHitBoxX;
-  }
-
-  public int getHitBoxY() {
-    return myHitBoxY;
-  }
-
-  public int getHitBoxWidth() {
-    return myHitBoxWidth;
-  }
-
-  public int getHitBoxHeight() {
-    return myHitBoxHeight;
-  }
-
-  public int getLayer() {
-    return myLayer;
-  }
   /**
    * Returns the unique identifier of the object.
    *
@@ -82,43 +55,78 @@ public abstract class GameObject {
     return uuid.toString();
   }
 
-  /**
-   * Returns the display name of the object.
-   *
-   * @return the object's name
-   */
-  public String getName() {
-    return myName;
+  public int getBlueprintID() {
+    return myBlueprintID;
   }
 
-  /**
-   * Returns the group or category of the object.
-   *
-   * @return the object's group
-   */
-  public String getGroup() {
-    return myGroup;
+
+  public String getType() {
+    return myType;
   }
 
-  /**
-   * Returns the sprite data associated with the object.
-   *
-   * @return the object's SpriteData
-   */
-  public SpriteData getSpriteData() {
-    return mySpriteData;
+  public int getX() {
+    return myHitBoxX;
   }
 
+  public int getY() {
+    return myHitBoxY;
+  }
+
+  public int getWidth() {
+    return myHitBoxWidth;
+  }
+
+  public int getHeight() {
+    return myHitBoxHeight;
+  }
   /**
    * Returns the dynamic parameters associated with the object.
    *
    * @return the object's dynamic variable collection
    */
-  public DynamicVariableCollection getParams() {
-    return params;
+  public Map<String, String> getParams() {
+    return myParams;
+  }
+
+
+  public String getName() {
+    return myName;
+  }
+
+  public String getGroup() {
+    return myGroup;
+  }
+
+  public SpriteData getSpriteData() {
+    return mySpriteData;
+  }
+
+  public void setX(int xPos) {
+    this.myHitBoxX = xPos;
+  }
+
+  public void setY(int yPos) {
+    this.myHitBoxY = yPos;
+  }
+
+  public void setWidth(int width) {
+    this.myHitBoxWidth = width;
+  }
+
+  public void setHeight(int height) {
+    this.myHitBoxHeight = height;
+  }
+
+  public void setGroup(String group) {
+    this.myGroup = group;
+  }
+
+  public void setSpriteData(SpriteData spriteData) {
+    this.mySpriteData = spriteData;
   }
 
   public void setEvents(List<Event> events) {
     myEvents = events;
   }
+
 }

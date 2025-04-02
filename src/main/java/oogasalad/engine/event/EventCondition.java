@@ -16,8 +16,9 @@ public class EventCondition {
      * Define list of valid conditions enums
      */
     public enum ConditionType {
+        TRUE,
         SPACE_KEY_PRESSED,
-        VAR_BELOW_VALUE
+        COLLIDED_WITH_ENEMY
     }
 
 

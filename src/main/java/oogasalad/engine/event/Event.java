@@ -19,7 +19,7 @@ public class Event {
     private List<EventOutcome> outcomes;
     private EventType eventType;
     //stored within game object
-    private DynamicVariableCollection params;
+    private Map<String, String> params;
 
     public enum EventType {
         INPUT,
@@ -69,7 +69,15 @@ public class Event {
      *
      * @return this Event's gameobjects's user-defined parameters
      */
-    public DynamicVariableCollection getParams() {
+    public Map<String, String> getParams() {
         return params;
+    }
+
+    /**
+     *
+     * @return this Event's gameObject
+     */
+    public GameObject getGameObject() {
+        return gameObject;
     }
 }

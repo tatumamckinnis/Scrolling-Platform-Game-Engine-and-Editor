@@ -3,6 +3,7 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
       DefaultEngineFileConverter.class.getPackageName() + "." + "EngineFile");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
+  private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -65,19 +67,18 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects, Map<Integer, BlueprintData> bluePrintMap) {
     Map<String, GameObject> gameObjectMap = new HashMap<>();
     for (GameObjectData gameObjectData : gameObjects) {
-      String className = ENGINE_FILE_RESOURCES.getString("GameObjectFactoryPackageName") + "."
-          + bluePrintMap.get(gameObjectData.blueprintId()) + ENGINE_FILE_RESOURCES.getString(
-          "Factory");
-      GameObject newObject = makeGameObject(gameObjectData, className, bluePrintMap);
+      GameObject newObject = makeGameObject(gameObjectData, bluePrintMap);
       gameObjectMap.put(newObject.getUuid(), newObject);
     }
     return gameObjectMap;
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData, String className,
-      Map<Integer, BlueprintData> bluePrintMap) {
-
+  private GameObject makeGameObject(GameObjectData gameObjectData, Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
+    if (!SUPPORTED_OBJECT_TYPES.contains(blueprintData.type())) {
+      throw new ObjectNotSupportedException(ENGINE_FILE_RESOURCES.getString("ObjectNotSupported"));
+    }
+
     GameObject gameObject = new DefaultGameObject(gameObjectData.uniqueId(),
         gameObjectData.blueprintId(),
         blueprintData.type(),
@@ -89,7 +90,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         blueprintData.gameName(),
         blueprintData.group(),
         blueprintData.spriteData(),
-        new DynamicVariableCollection(),
+        new HashMap<>(),
         new ArrayList<>()
     );
 

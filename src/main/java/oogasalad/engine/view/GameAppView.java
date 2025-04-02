@@ -49,8 +49,6 @@ public class GameAppView implements GameAppAPI {
     currentDisplay = splashScreen;
 
     currentScene = new Scene(currentDisplay, width, height);
-    currentStage.setScene(currentScene);
-    currentStage.show();
   }
 
   /**
@@ -88,7 +86,7 @@ public class GameAppView implements GameAppAPI {
   }
 
   /**
-   * Returns the current scene. Called by the GameManager to set the starting Scene to be displayed.
+   * @return the current game scene.
    */
   public Scene getCurrentScene() {
     return currentScene;
