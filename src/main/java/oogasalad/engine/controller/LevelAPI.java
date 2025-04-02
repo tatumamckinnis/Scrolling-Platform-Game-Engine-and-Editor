@@ -21,4 +21,5 @@ public interface LevelAPI {
   public void selectGame(String game, String category, String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
+  public void selectFilePath(String filePath);
 }

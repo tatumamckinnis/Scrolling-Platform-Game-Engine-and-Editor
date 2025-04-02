@@ -134,6 +134,15 @@ public class DefaultGameManager implements GameManagerAPI {
     myLevelAPI.selectGame(game, category, level);
   }
 
+
+  /**
+   * default file selecting for sprint 1 demo
+   * @param filePath
+   */
+  public void selectDefaultGame(String filePath) {
+    myLevelAPI.selectFilePath(filePath);
+  }
+
   /**
    * Returns the internal {@link Timeline} game loop.
    *
