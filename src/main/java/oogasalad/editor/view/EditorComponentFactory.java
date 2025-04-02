@@ -38,8 +38,9 @@ public class EditorComponentFactory {
   private EnemyObjectPlacementTool enemyTool;
   private ObjectPlacementTool currentTool;
 
-  private EditorDataAPI editorAPI;
+  private EditorDataAPI editorDataAPI;
   private InputTabController inputTabController;
+  private EditorAppAPI editorAppAPI;
 
   // Keep track of the currently selected object
   private UUID selectedObjectId;
@@ -47,11 +48,12 @@ public class EditorComponentFactory {
   /**
    * Load the EditorComponentFactory
    *
-   * @param editorAPI The API for interacting with editor data
+   * @param editorDataAPI The API for interacting with editor data
    */
-  public EditorComponentFactory(EditorDataAPI editorAPI) {
-    this.editorAPI = editorAPI;
-    this.inputTabController = new InputTabController(editorAPI);
+  public EditorComponentFactory(EditorDataAPI editorDataAPI) {
+    this.editorDataAPI = editorDataAPI;
+    this.inputTabController = new InputTabController(editorDataAPI);
+    this.editorAppAPI = new EditorAppAPI(inputTabController);
 
     try {
       InputStream stream = getClass().getResourceAsStream(editorComponentPropertiesFilepath);
@@ -82,6 +84,8 @@ public class EditorComponentFactory {
     Pane mapPane = createMapPane(editorHeight);
     Pane componentsPane = createComponentPane(editorHeight);
 
+    EditorAppAPI editorAppAPI = new EditorAppAPI(inputTabController);
+
     root.setLeft(mapPane);
     root.setRight(componentsPane);
 
@@ -111,10 +115,11 @@ public class EditorComponentFactory {
         mapPaneWidth - 40,
         height - 150,
         cellSize,
-        editorAPI);
+        editorDataAPI,
+        editorAppAPI);
 
-    entityTool = new EntityObjectPlacementTool(gameView, editorAPI, "PLAYER", "/path/to/player.png");
-    enemyTool = new EnemyObjectPlacementTool(gameView, editorAPI, "ENEMY", "/path/to/enemy.png");
+    entityTool = new EntityObjectPlacementTool(gameView, editorDataAPI, "PLAYER", "/path/to/player.png");
+    enemyTool = new EnemyObjectPlacementTool(gameView, editorDataAPI, "ENEMY", "/path/to/enemy.png");
 
     currentTool = entityTool;
     gameView.setCurrentTool(currentTool);
@@ -221,17 +226,5 @@ public class EditorComponentFactory {
 
     propertiesPane.getChildren().add(placeholderLabel);
     return propertiesPane;
-  }
-
-  /**
-   * Set the currently selected game object
-   *
-   * @param objectId The UUID of the selected object
-   */
-  public void setSelectedObject(UUID objectId) {
-    this.selectedObjectId = objectId;
-    inputTabController.setSelectedObject(objectId);
-
-    // This would also update other components that depend on the selection
   }
 }

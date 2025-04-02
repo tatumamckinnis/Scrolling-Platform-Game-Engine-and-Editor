@@ -1,5 +1,7 @@
 package oogasalad.editor.view;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -29,8 +31,9 @@ public class EditorGameView extends Pane {
   private final int cellSize;
   private GraphicsContext gridGC;
   private GraphicsContext objectGC;
-  private EditorDataAPI editorAPI;
-  private Map<UUID, EditorObject> displayedObjects = new HashMap<>();
+  private EditorDataAPI editorDataAPI;
+  private EditorAppAPI editorAppAPI;
+  private List<UUID> displayedObjects = new ArrayList<>();
   private Map<UUID, Image> objectImages = new HashMap<>();
   private ObjectPlacementTool currentTool;
 
@@ -40,13 +43,14 @@ public class EditorGameView extends Pane {
    * @param width Width of the game area in pixels
    * @param height Height of the game area in pixels
    * @param cellSize Size of each grid cell in pixels
-   * @param editorAPI API for editor data access
+   * @param editorDataAPI API for editor data access
    */
-  public EditorGameView(int width, int height, int cellSize, EditorDataAPI editorAPI) {
+  public EditorGameView(int width, int height, int cellSize, EditorDataAPI editorDataAPI, EditorAppAPI editorAppAPI) {
     this.width = width;
     this.height = height;
     this.cellSize = cellSize;
-    this.editorAPI = editorAPI;
+    this.editorDataAPI = editorDataAPI;
+    this.editorAppAPI = editorAppAPI;
 
     initializeCanvases();
     drawGrid();
@@ -124,12 +128,11 @@ public class EditorGameView extends Pane {
    * Adds an object to the view
    *
    * @param id The UUID of the object
-   * @param object The editor object to add
-   * @param x The x-coordinate in pixels
-   * @param y The y-coordinate in pixels
    */
-  public void addObject(UUID id, EditorObject object, double x, double y) {
-    displayedObjects.put(id, object);
+  public void addObject(UUID id) {
+    displayedObjects.add(id);
+    editorAppAPI.setCurrentObjectID(id);
+    EditorObject object = editorDataAPI.getEditorObject(id);
 
     SpriteData spriteData = object.getSpriteData();
     if (spriteData != null && spriteData.getSpritePath() != null) {
@@ -140,8 +143,6 @@ public class EditorGameView extends Pane {
         System.err.println("Failed to load image: " + e.getMessage());
       }
     }
-
-
 
     redrawObjects();
   }
@@ -163,9 +164,9 @@ public class EditorGameView extends Pane {
   private void redrawObjects() {
     objectGC.clearRect(0, 0, width, height);
 
-    for (Map.Entry<UUID, EditorObject> entry : displayedObjects.entrySet()) {
-      UUID id = entry.getKey();
-      EditorObject object = entry.getValue();
+    for (UUID entry : displayedObjects) {
+      UUID id = entry;
+      EditorObject object = editorDataAPI.getEditorObject(id);
 
       SpriteData spriteData = object.getSpriteData();
       if (spriteData == null) continue;
