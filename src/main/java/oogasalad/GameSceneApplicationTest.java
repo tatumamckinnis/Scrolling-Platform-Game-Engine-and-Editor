@@ -19,11 +19,14 @@ public class GameSceneApplicationTest extends Application {
 
   /**
    * First initialize the view as a GameAppView with the stage passed in. Then call initialize.
+   * Finally, set the stage's scene and show it.
    */
   @Override
   public void start(Stage primaryStage) throws ViewInitializationException {
     myCurrentView = new GameAppView(primaryStage);
     myCurrentView.initialize("Splash Screen");
+    primaryStage.setScene(myCurrentView.getCurrentScene());
+    primaryStage.show();
 
     LOG.info("Starting GameSceneApplicationTest");
     startGameLoop();
