@@ -40,23 +40,19 @@ public class DefaultGameManager implements GameManagerAPI {
   private Timeline myGameLoop;
   private List<GameObject> myGameObjects;
   private GameControllerAPI myGameController;
-  private LevelData myLevelData;
-  private EngineFileConverterAPI myEngineFile;
-  private FileParserAPI myFileParser;
   private LevelAPI myLevelAPI;
   private GameAppView myView;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
    *
-   * @param engineFile     the engine file API implementation
    * @param gameController the game controller to manage game objects and state
    */
-  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController)
+  public DefaultGameManager(DefaultGameController gameController)
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myEngineFile = engineFile;
     myGameController = gameController;
+    myLevelAPI = new DefaultLevel();
 
     Stage primaryStage = new Stage();
     myView = new GameAppView(primaryStage, this);
