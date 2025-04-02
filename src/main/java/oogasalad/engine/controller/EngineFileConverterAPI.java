@@ -1,7 +1,8 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
@@ -12,7 +13,7 @@ import oogasalad.fileparser.records.LevelData;
  *
  * @author Alana Zinkin
  */
-public interface EngineFileAPI {
+public interface EngineFileConverterAPI {
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -32,6 +33,7 @@ public interface EngineFileAPI {
    * @throws IOException         if the file cannot be read
    * @throws DataFormatException if the file's data cannot be interpreted into Engine objects
    */
-  public List<GameObject> loadFileToEngine(LevelData level) throws IOException, DataFormatException;
+  public Map<String, GameObject> loadFileToEngine(LevelData level)
+      throws IOException, DataFormatException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 
 }

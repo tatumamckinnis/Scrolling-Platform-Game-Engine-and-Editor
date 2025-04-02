@@ -2,14 +2,23 @@ package oogasalad.editor.view;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.data.object.SpriteData;
+import oogasalad.editor.view.tools.ObjectPlacementTool;
 
 /**
  * Display a grid where visual game elements can be added and updated.
  * This component implements a configurable grid-based editor view for game designers.
- * Can be configured for different types of games through strategy objects rather than subclassing.
- *
  * @author Tatum McKinnis
  */
 public class EditorGameView extends Pane {
@@ -20,6 +29,10 @@ public class EditorGameView extends Pane {
   private final int cellSize;
   private GraphicsContext gridGC;
   private GraphicsContext objectGC;
+  private EditorDataAPI editorAPI;
+  private Map<UUID, EditorObject> displayedObjects = new HashMap<>();
+  private Map<UUID, Image> objectImages = new HashMap<>();
+  private ObjectPlacementTool currentTool;
 
   /**
    * Creates a new editor game view with the specified dimensions.
@@ -27,11 +40,13 @@ public class EditorGameView extends Pane {
    * @param width Width of the game area in pixels
    * @param height Height of the game area in pixels
    * @param cellSize Size of each grid cell in pixels
+   * @param editorAPI API for editor data access
    */
-  public EditorGameView(int width, int height, int cellSize) {
+  public EditorGameView(int width, int height, int cellSize, EditorDataAPI editorAPI) {
     this.width = width;
     this.height = height;
     this.cellSize = cellSize;
+    this.editorAPI = editorAPI;
 
     initializeCanvases();
     drawGrid();
@@ -53,16 +68,25 @@ public class EditorGameView extends Pane {
 
   /**
    * Draws the grid on the grid canvas
-   * Can be customized with different grid styles
    */
   public void drawGrid() {
-    gridGC.setFill(Color.WHITE); // Or any background color
+    gridGC.setFill(Color.WHITE);
     gridGC.fillRect(0, 0, width, height);
 
-    // Optionally draw a horizontl line or other game-specific background elements
     gridGC.setStroke(Color.LIGHTGRAY);
     gridGC.setLineWidth(1.0);
-    int horizonY = (int)(height * 0.7);
+
+    for (int x = 0; x <= width; x += cellSize) {
+      gridGC.strokeLine(x, 0, x, height);
+    }
+
+    for (int y = 0; y <= height; y += cellSize) {
+      gridGC.strokeLine(0, y, width, y);
+    }
+
+    int horizonY = (int)(height * 0.8);
+    gridGC.setStroke(Color.DARKGRAY);
+    gridGC.setLineWidth(2.0);
     gridGC.strokeLine(0, horizonY, width, horizonY);
   }
 
@@ -70,47 +94,97 @@ public class EditorGameView extends Pane {
    * Sets up mouse event handlers for the editor view
    */
   private void setupEventHandlers() {
-    objectCanvas.setOnMouseClicked(e -> {
-      int gridX = (int)(e.getX() / cellSize);
-      int gridY = (int)(e.getY() / cellSize);
-      handleGridClick(gridX, gridY);
-    });
+    objectCanvas.setOnMouseClicked(this::handleGridClick);
   }
 
   /**
    * Handles a click on the grid
-   * Default implementation that can be overridden by setting a custom handler
    *
-   * @param gridX The x-coordinate of the clicked cell
-   * @param gridY The y-coordinate of the clicked cell
+   * @param event The mouse click event
    */
-  protected void handleGridClick(int gridX, int gridY) {
-    System.out.println("Clicked at grid position: " + gridX + ", " + gridY);
+  private void handleGridClick(MouseEvent event) {
+    if (currentTool != null) {
+      int gridX = (int)(event.getX() / cellSize);
+      int gridY = (int)(event.getY() / cellSize);
+
+      currentTool.placeObjectAt(gridX, gridY);
+    }
   }
 
   /**
-   * Gets the GraphicsContext for the object canvas
+   * Sets the current object placement tool
    *
-   * @return The graphics context used for drawing objects
+   * @param tool The tool to use for placing objects
    */
-  public GraphicsContext getObjectGraphicsContext() {
-    return objectGC;
+  public void setCurrentTool(ObjectPlacementTool tool) {
+    this.currentTool = tool;
   }
 
   /**
-   * Gets the GraphicsContext for the grid canvas
+   * Adds an object to the view
    *
-   * @return The graphics context used for drawing the grid
+   * @param id The UUID of the object
+   * @param object The editor object to add
+   * @param x The x-coordinate in pixels
+   * @param y The y-coordinate in pixels
    */
-  public GraphicsContext getGridGraphicsContext() {
-    return gridGC;
+  public void addObject(UUID id, EditorObject object, double x, double y) {
+    displayedObjects.put(id, object);
+
+    SpriteData spriteData = object.getSpriteData();
+    if (spriteData != null && spriteData.spritePath() != null) {
+      try {
+        Image image = new Image(spriteData.spritePath());
+        objectImages.put(id, image);
+      } catch (Exception e) {
+        System.err.println("Failed to load image: " + e.getMessage());
+      }
+    }
+
+    redrawObjects();
   }
 
   /**
-   * Clears all objects from the canvas
+   * Removes an object from the view
+   *
+   * @param id The UUID of the object to remove
    */
-  public void clearObjects() {
+  public void removeObject(UUID id) {
+    displayedObjects.remove(id);
+    objectImages.remove(id);
+    redrawObjects();
+  }
+
+  /**
+   * Redraws all objects on the object canvas
+   */
+  private void redrawObjects() {
     objectGC.clearRect(0, 0, width, height);
+
+    for (Map.Entry<UUID, EditorObject> entry : displayedObjects.entrySet()) {
+      UUID id = entry.getKey();
+      EditorObject object = entry.getValue();
+
+      SpriteData spriteData = object.getSpriteData();
+      if (spriteData == null) continue;
+
+      double x = spriteData.x();
+      double y = spriteData.y();
+
+      if (objectImages.containsKey(id)) {
+        Image image = objectImages.get(id);
+        objectGC.drawImage(image, x, y, cellSize, cellSize);
+      } else {
+        objectGC.setFill(Color.LIGHTBLUE);
+        objectGC.fillRect(x, y, cellSize, cellSize);
+
+        objectGC.setFill(Color.BLACK);
+        objectGC.setFont(new Font(10));
+        objectGC.setTextAlign(TextAlignment.CENTER);
+        String type = object.getIdentityData().group();
+        objectGC.fillText(type, x + cellSize/2, y + cellSize/2);
+      }
+    }
   }
 
   /**
@@ -138,14 +212,5 @@ public class EditorGameView extends Pane {
    */
   public int getGridHeight() {
     return height;
-  }
-
-  /**
-   * Sets a new mouse click handler for the grid
-   *
-   * @param handler The event handler to set
-   */
-  public void setOnGridClick(javafx.event.EventHandler<javafx.scene.input.MouseEvent> handler) {
-    objectCanvas.setOnMouseClicked(handler);
   }
 }

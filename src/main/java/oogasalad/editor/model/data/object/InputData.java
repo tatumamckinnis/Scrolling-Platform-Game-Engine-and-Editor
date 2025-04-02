@@ -6,4 +6,4 @@ import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.EventType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 
-public record InputData(Map<EventType, Map<List<ConditionType>, List<OutcomeType>>> events) { }
+public record InputData(Map<String, EditorEvent> events) { }
