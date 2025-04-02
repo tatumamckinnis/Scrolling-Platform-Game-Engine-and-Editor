@@ -10,9 +10,13 @@ import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import oogasalad.engine.exception.RenderingException;
+import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.GameAppView;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +44,7 @@ public class DefaultGameManager implements GameManagerAPI {
   private EngineFileConverterAPI myEngineFile;
   private FileParserAPI myFileParser;
   private LevelAPI myLevelAPI;
+  private GameAppView myView;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
@@ -47,11 +52,19 @@ public class DefaultGameManager implements GameManagerAPI {
    * @param engineFile     the engine file API implementation
    * @param gameController the game controller to manage game objects and state
    */
-  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController) {
+  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController)
+      throws ViewInitializationException {
     myGameLoop = initGameLoop();
     myEngineFile = engineFile;
     myGameController = gameController;
+
+    Stage primaryStage = new Stage();
+    myView = new GameAppView(primaryStage, this);
+    myView.initialize();
+    primaryStage.setScene(myView.getCurrentScene());
+    primaryStage.show();
   }
+
 
   /**
    * Initializes the game loop using a {@link Timeline} that fires at a regular interval based on
@@ -65,7 +78,13 @@ public class DefaultGameManager implements GameManagerAPI {
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
     double secondDelay = 1.0 / framesPerSecond;
-    gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> step()));
+    gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
+      try {
+        step();
+      } catch (RenderingException ex) {
+        throw new RuntimeException(ex);
+      }
+    }));
     return gameLoop;
   }
 
@@ -115,6 +134,16 @@ public class DefaultGameManager implements GameManagerAPI {
     myLevelAPI.selectGame(game, category, level);
   }
 
+
+  /**
+   * default file selecting for sprint 1 demo
+   * @param filePath
+   */
+  @Override
+  public void selectDefaultGame(String filePath) {
+    myLevelAPI.selectFilePath(filePath);
+  }
+
   /**
    * Returns the internal {@link Timeline} game loop.
    *
@@ -127,7 +156,8 @@ public class DefaultGameManager implements GameManagerAPI {
   /**
    * Called on each tick of the game loop. Delegates game state updates to the controller.
    */
-  private void step() {
+  private void step() throws RenderingException {
     myGameController.updateGameState();
+    myView.renderGameObjects(null);
   }
 }

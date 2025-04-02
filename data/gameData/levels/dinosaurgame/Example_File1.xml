@@ -37,7 +37,7 @@ interact with each other -->
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
 <!-- Objects should also have a defined hit box-->
-    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="" hitBoxHeight="" hitBoxType="SQUARE" spriteDx="" spriteDy="" eventIDs="20">
+    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="" hitBoxHeight="" hitBoxShape="SQUARE" spriteDx="" spriteDy="" eventIDs="20">
 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
         <variables>

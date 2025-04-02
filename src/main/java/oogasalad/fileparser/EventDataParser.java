@@ -28,7 +28,6 @@ public class EventDataParser {
   }
 
   private EventData parseEventNode(Element eventElement) {
-    String name = eventElement.getAttribute("name");
     String type = eventElement.getAttribute("type");
     String id = eventElement.getAttribute("id");
 
@@ -41,7 +40,7 @@ public class EventDataParser {
     Map<String, String> parameters = parseParameters(
         (Element) eventElement.getElementsByTagName("parameters").item(0));
 
-    return new EventData(name, type, id, conditions, outcomes, parameters);
+    return new EventData( type, id, conditions, outcomes, parameters);
   }
 
   private List<List<String>> parseEventConditions(Element conditionsElement) {
