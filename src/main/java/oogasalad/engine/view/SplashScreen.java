@@ -11,6 +11,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Initial splash screen a user sees when running the game engine.
+ *
+ * @author Luke Nam, Aksel Bell
+ */
 public class SplashScreen extends Display {
   private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
