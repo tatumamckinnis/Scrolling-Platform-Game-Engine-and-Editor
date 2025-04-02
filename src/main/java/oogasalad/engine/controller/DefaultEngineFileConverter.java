@@ -1,7 +1,6 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,12 +10,12 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.exception.ObjectNotSupportedException;
-import oogasalad.engine.controller.gameobjectfactory.GameObjectFactory;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.DefaultGameObject;
-import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
@@ -79,6 +78,9 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
       throw new ObjectNotSupportedException(ENGINE_FILE_RESOURCES.getString("ObjectNotSupported"));
     }
 
+    Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
+    Map<String, AnimationData> animationMap = makeAnimationMap(blueprintData);
+
     GameObject gameObject = new DefaultGameObject(gameObjectData.uniqueId(),
         gameObjectData.blueprintId(),
         blueprintData.type(),
@@ -90,12 +92,32 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         blueprintData.gameName(),
         blueprintData.group(),
         blueprintData.spriteData(),
+        blueprintData.spriteData().baseImage(),
+        frameMap,
+        animationMap,
         blueprintData.objectProperties(),
-        new ArrayList<>()
+        new ArrayList<>(),
+        blueprintData.hitBoxData()
     );
 
     List<Event> events = EventConverter.convertEventData(gameObjectData, gameObject, bluePrintMap);
     gameObject.setEvents(events);
     return gameObject;
+  }
+
+  private static Map<String, FrameData> makeFrameMap(BlueprintData blueprintData) {
+    Map<String, FrameData> frameMap = new HashMap<>();
+    for (FrameData frameData: blueprintData.spriteData().frames()) {
+      frameMap.put(frameData.name(), frameData);
+    }
+    return frameMap;
+  }
+
+  private static Map<String, AnimationData> makeAnimationMap(BlueprintData blueprintData) {
+    Map<String, AnimationData> animationMap = new HashMap<>();
+    for (AnimationData animationData: blueprintData.spriteData().animations()) {
+      animationMap.put(animationData.name(), animationData);
+    }
+    return animationMap;
   }
 }

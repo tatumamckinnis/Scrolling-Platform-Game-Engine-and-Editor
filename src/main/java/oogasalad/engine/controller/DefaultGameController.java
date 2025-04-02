@@ -3,13 +3,9 @@
  */
 package oogasalad.engine.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
 import oogasalad.engine.event.DefaultEventHandler;
 import oogasalad.engine.event.Event;
@@ -56,6 +52,12 @@ public class DefaultGameController implements GameControllerAPI {
   public List<GameObject> getObjects() {
     return myGameObjects;
   }
+
+  @Override
+  public List<GameObjectRecord> getImmutableObjects() {
+    return makeGameObjectsImmutable();
+  }
+
 
   /**
    * Returns a map of all game objects currently loaded in the engine.
@@ -104,5 +106,20 @@ public class DefaultGameController implements GameControllerAPI {
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
     System.out.println(myGameObjects);
+  }
+
+  private List<GameObjectRecord> makeGameObjectsImmutable() {
+    List<GameObjectRecord> immutableObjects = new ArrayList<>();
+    for (GameObject gameObject : myGameObjects) {
+      GameObjectRecord record = new GameObjectRecord(
+          gameObject.getSpriteX(),
+          gameObject.getSpriteY(),
+          gameObject.getCurrentFrame()
+      );
+      if (gameObject.getCurrentFrame() != null) {
+        immutableObjects.add(record);
+      }
+    }
+    return immutableObjects;
   }
 }
