@@ -53,7 +53,7 @@ public class InputTabController {
     currentObject = object;
 
     if (objectId != null) {
-      editorAPI.getInputDataAPI().addInputData(objectId);
+      editorAPI.getInputDataAPI().createInputData(objectId);
     }
 
     if (object != null) {
@@ -73,7 +73,7 @@ public class InputTabController {
     currentObjectId = objectId;
 
     if (objectId != null) {
-      editorAPI.getInputDataAPI().addInputData(objectId);
+      editorAPI.getInputDataAPI().createInputData(objectId);
     }
 
     componentFactory.setCurrentObject(objectId, new DynamicVariableContainer());

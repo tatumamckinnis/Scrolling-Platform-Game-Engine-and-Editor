@@ -1,6 +1,8 @@
 package oogasalad.editor.model.data.object;
 
-import java.util.Map;
+public class CollisionData extends EditorEventData {
 
-public record CollisionData(Map<String, EditorEvent> events) {
+  public CollisionData() {
+    super();
+  }
 }

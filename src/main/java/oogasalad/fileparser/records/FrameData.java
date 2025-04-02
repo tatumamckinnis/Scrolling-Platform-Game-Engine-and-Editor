@@ -1,5 +1,7 @@
 package oogasalad.fileparser.records;
 
+import java.io.File;
+
 /**
  * Represents a single frame of a sprite animation or a static image used in the editor.
  *
@@ -21,5 +23,6 @@ public record FrameData(
     int x,
     int y,
     int width,
-    int height
+    int height,
+    File spriteFile
 ) {}

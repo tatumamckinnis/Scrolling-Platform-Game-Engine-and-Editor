@@ -2,6 +2,7 @@ package oogasalad.engine.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 
@@ -24,6 +25,17 @@ public interface GameControllerAPI {
    * @return a List of changed/updated GameObjects
    */
   List<GameObject> getObjects();
+
+  /**
+   * Returns a map of all game objects currently loaded in the engine.
+   *
+   * <p>The map uses each object's unique UUID as the key and the corresponding
+   * {@link GameObject} as the value. This allows for efficient lookup and manipulation of
+   * individual game objects by their identifier.
+   *
+   * @return a map of UUID strings to their associated {@link GameObject} instances
+   */
+  Map<String, GameObject> getGameObjectMap();
 
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller

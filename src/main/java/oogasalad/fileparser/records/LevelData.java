@@ -9,6 +9,6 @@ import java.util.Map;
  */
 public record LevelData(
     String name,
-    List<GameObjectData> gameObjectBluePrintData,
+    Map<Integer,BlueprintData> gameBluePrintData,
     Map<Integer,List<GameObjectData>> gameObjectsByLayer
 ) {}

@@ -1,5 +1,8 @@
 package oogasalad.engine.model.object;
 
+import java.util.List;
+import java.util.UUID;
+import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
 
 /**
@@ -11,17 +14,9 @@ import oogasalad.fileparser.records.SpriteData;
 public class Player extends GameObject {
 
 
-  /**
-   * default constructor for creating a player
-   *
-   * @param uuid       unique id for the object
-   * @param name       display name of the player
-   * @param group      that the object belongs to
-   * @param spriteData the visual information for the display
-   * @param params     dynamic variables associated with the entity's behavior
-   */
-  public Player(String uuid, String name, String group,
-      SpriteData spriteData, DynamicVariableCollection params) {
-    super(uuid, name, group, spriteData, params);
+  public Player(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+      DynamicVariableCollection params, List<Event> events) {
+    super(uuid, blueprintID, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight, layer, name, group, spriteData, params, events );
   }
+
 }

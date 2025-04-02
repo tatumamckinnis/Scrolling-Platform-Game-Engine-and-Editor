@@ -3,7 +3,6 @@ package oogasalad.editor.controller;
 import java.util.UUID;
 import oogasalad.editor.controller.api.HitboxDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.object.HitboxData;
 
 public class HitboxDataAPI implements HitboxDataAPIInterface {
   EditorLevelData level;
@@ -13,52 +12,52 @@ public class HitboxDataAPI implements HitboxDataAPIInterface {
   }
 
   @Override
-  public double getX(UUID id) {
-    return level.getEditorObject(id).getHitboxData().x();
+  public int getX(UUID id) {
+    return level.getEditorObject(id).getHitboxData().getX();
   }
 
   @Override
-  public double getY(UUID id) {
-    return level.getEditorObject(id).getHitboxData().y();
+  public int getY(UUID id) {
+    return level.getEditorObject(id).getHitboxData().getY();
   }
 
   @Override
-  public double getWidth(UUID id) {
-    return level.getEditorObject(id).getHitboxData().width();
+  public int getWidth(UUID id) {
+    return level.getEditorObject(id).getHitboxData().getWidth();
   }
 
   @Override
-  public double getHeight(UUID id) {
-    return level.getEditorObject(id).getHitboxData().height();
+  public int getHeight(UUID id) {
+    return level.getEditorObject(id).getHitboxData().getHeight();
   }
 
   @Override
   public String getShape(UUID id) {
-    return level.getEditorObject(id).getHitboxData().shape();
+    return level.getEditorObject(id).getHitboxData().getShape();
   }
 
   @Override
-  public void setX(UUID id, double x) {
-
+  public void setX(UUID id, int x) {
+    level.getEditorObject(id).getHitboxData().setX(x);
   }
 
   @Override
-  public void setY(UUID id, double y) {
-
+  public void setY(UUID id, int y) {
+    level.getEditorObject(id).getHitboxData().setY(y);
   }
 
   @Override
-  public void setWidth(UUID id, double width) {
-
+  public void setWidth(UUID id, int width) {
+    level.getEditorObject(id).getHitboxData().setWidth(width);
   }
 
   @Override
-  public void setHeight(UUID id, double height) {
-
+  public void setHeight(UUID id, int height) {
+    level.getEditorObject(id).getHitboxData().setHeight(height);
   }
 
   @Override
   public void setShape(UUID id, String shape) {
-
+    level.getEditorObject(id).getHitboxData().setShape(shape);
   }
 }

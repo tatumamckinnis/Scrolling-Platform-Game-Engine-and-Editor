@@ -37,39 +37,19 @@ interact with each other -->
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
 <!-- Objects should also have a defined hit box-->
-    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml">
+    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="" hitBoxHeight="" hitBoxType="SQUARE" spriteDx="" spriteDy="" eventIDs="20">
 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
-        <inputHandler>
-          <data keys="W,Up" eventChainID="jumpDino"/>
-          <data keys="S,Down" eventChainID="" animation="duck-walk"/>
-        </inputHandler>
-        <collisionHandler>
-<!-- collisionHandler data has three main tags:
-groupObjectInteraction: defines a group of objects that causes the object to call an event chain:
-using a file system format with commas files structure is defined as: objectGroup/objectType
- (if no object type defined then the whole object group will be added to the object list that activates the collision
-objectSpecificInteractionIDs: defines objects based on the object id for specific objects
-eventChainID: The event chain id you want the collision to activate - defined later -->
-          <data groupObjectInteraction="entities/enemies" objectSpecificInteractionIDs="1,3" eventChainID=""/>
-        </collisionHandler>
-        <physicsHandler>
-          <data name = "velocity.x" value = "0"/>
-          <data name = "velocity.y" value = "0"/>
-        </physicsHandler>
         <variables>
           <variable name = "jumpVelocity.y" value = "5"/>
-          <variable name = "animationStep" value="5"/>
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml">
-      <properties>
-        <physicsHandler>
+    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="" hitBoxHeight="" spriteDx="" spriteDy="" eventIDs="">
+        <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
-        </physicsHandler>
-      </properties>
+        </properties>
     </object>
   </objectGroup>
     <objectGroup name="blocks">
@@ -84,7 +64,7 @@ eventChainID: The event chain id you want the collision to activate - defined la
     </objectGroup>
   </game>
   <Events>
-    <Event name="jump" type="input" id="20">
+    <Event type="input" id="20">
 <!--     Enums for event type, condition, and outcome-->
       <conditions>
         <condition list="SPACE_KEY_PRESSED" />
@@ -97,13 +77,5 @@ eventChainID: The event chain id you want the collision to activate - defined la
         <parameter name="jumpType">Floaty</parameter>
       </parameters>
     </Event>
-    <Event name="" type="">
-      <condition/>
-      <outcome/>
-      <parameters>
-
-      </parameters>
-    </Event>
-
   </Events>
 </map>

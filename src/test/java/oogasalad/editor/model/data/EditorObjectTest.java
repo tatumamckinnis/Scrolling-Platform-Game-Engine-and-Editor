@@ -2,7 +2,6 @@ package oogasalad.editor.model.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.object.CollisionData;
@@ -39,9 +38,9 @@ class EditorObjectTest {
     mockEditorLevelData.getEditorConfig().setProperty("defaultHitboxHeight", "100");
     mockEditorLevelData.getEditorConfig().setProperty("defaultHitboxShape", "rectangle");
     sampleIdentityData = new IdentityData(UUID.randomUUID(), "TestName", "TestDescription");
-    sampleInputData = new InputData(new HashMap<>());
-    samplePhysicsData = new PhysicsData(new HashMap<>());
-    sampleCollisionData = new CollisionData(new HashMap<>());
+    sampleInputData = new InputData();
+    samplePhysicsData = new PhysicsData();
+    sampleCollisionData = new CollisionData();
     sampleSpriteData = new SpriteData(10, 20, "path/to/sprite");
     sampleHitboxData = new HitboxData(10, 20, 30, 40, "circle");
   }
@@ -75,20 +74,20 @@ class EditorObjectTest {
   void constructor_whenUsingSingleParameter_shouldUseDefaultProperties() {
     EditorObject editorObject = new EditorObject(mockEditorLevelData);
     assertNotNull(editorObject.getIdentityData());
-    assertEquals("Untitled", editorObject.getIdentityData().name());
-    assertEquals("", editorObject.getIdentityData().group());
+    assertEquals("Untitled", editorObject.getIdentityData().getName());
+    assertEquals("", editorObject.getIdentityData().getGroup());
     HitboxData hitboxData = editorObject.getHitboxData();
     assertNotNull(hitboxData);
-    assertEquals(0, hitboxData.x());
-    assertEquals(0, hitboxData.y());
-    assertEquals(50, hitboxData.width());
-    assertEquals(100, hitboxData.height());
-    assertEquals("rectangle", hitboxData.shape());
+    assertEquals(0, hitboxData.getX());
+    assertEquals(0, hitboxData.getY());
+    assertEquals(50, hitboxData.getWidth());
+    assertEquals(100, hitboxData.getHeight());
+    assertEquals("rectangle", hitboxData.getShape());
     SpriteData spriteData = editorObject.getSpriteData();
     assertNotNull(spriteData);
-    assertEquals(0, spriteData.x());
-    assertEquals(0, spriteData.y());
-    assertEquals("", spriteData.spritePath());
+    assertEquals(0, spriteData.getX());
+    assertEquals(0, spriteData.getY());
+    assertEquals("", spriteData.getSpritePath());
     assertNull(editorObject.getCollisionData());
     assertNull(editorObject.getPhysicsData());
     assertNull(editorObject.getInputData());

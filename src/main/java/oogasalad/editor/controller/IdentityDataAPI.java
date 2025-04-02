@@ -13,21 +13,21 @@ public class IdentityDataAPI implements IdentityDataAPIInterface {
 
   @Override
   public String getName(UUID id) {
-    return level.getEditorObject(id).getIdentityData().name();
+    return level.getEditorObject(id).getIdentityData().getName();
   }
 
   @Override
   public String getGroup(UUID id) {
-    return level.getEditorObject(id).getIdentityData().group();
+    return level.getEditorObject(id).getIdentityData().getGroup();
   }
 
   @Override
   public void setName(UUID id, String name) {
-
+    level.getEditorObject(id).getIdentityData().setName(name);
   }
 
   @Override
   public void setGroup(UUID id, String group) {
-
+    level.getEditorObject(id).getIdentityData().setGroup(group);
   }
 }

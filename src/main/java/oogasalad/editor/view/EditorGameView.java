@@ -132,14 +132,16 @@ public class EditorGameView extends Pane {
     displayedObjects.put(id, object);
 
     SpriteData spriteData = object.getSpriteData();
-    if (spriteData != null && spriteData.spritePath() != null) {
+    if (spriteData != null && spriteData.getSpritePath() != null) {
       try {
-        Image image = new Image(spriteData.spritePath());
+        Image image = new Image(spriteData.getSpritePath());
         objectImages.put(id, image);
       } catch (Exception e) {
         System.err.println("Failed to load image: " + e.getMessage());
       }
     }
+
+
 
     redrawObjects();
   }
@@ -168,8 +170,8 @@ public class EditorGameView extends Pane {
       SpriteData spriteData = object.getSpriteData();
       if (spriteData == null) continue;
 
-      double x = spriteData.x();
-      double y = spriteData.y();
+      double x = spriteData.getX();
+      double y = spriteData.getY();
 
       if (objectImages.containsKey(id)) {
         Image image = objectImages.get(id);
@@ -181,7 +183,7 @@ public class EditorGameView extends Pane {
         objectGC.setFill(Color.BLACK);
         objectGC.setFont(new Font(10));
         objectGC.setTextAlign(TextAlignment.CENTER);
-        String type = object.getIdentityData().group();
+        String type = object.getIdentityData().getGroup();
         objectGC.fillText(type, x + cellSize/2, y + cellSize/2);
       }
     }

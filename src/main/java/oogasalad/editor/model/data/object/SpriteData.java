@@ -1,3 +1,37 @@
 package oogasalad.editor.model.data.object;
 
-public record SpriteData(double x, double y, String spritePath) { }
+public class SpriteData {
+  private int x;
+  private int y;
+  private String spritePath;
+
+  public SpriteData(int x, int y, String spritePath) {
+    this.x = x;
+    this.y = y;
+    this.spritePath = spritePath;
+  }
+
+  public int getX() {
+    return x;
+  }
+
+  public int getY() {
+    return y;
+  }
+
+  public String getSpritePath() {
+    return spritePath;
+  }
+
+  public void setX(int x) {
+    this.x = x;
+  }
+
+  public void setY(int y) {
+    this.y = y;
+  }
+
+  public void setSpritePath(String spritePath) {
+    this.spritePath = spritePath;
+  }
+}
