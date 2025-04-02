@@ -2,10 +2,12 @@ package oogasalad.engine.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.event.EventCondition;
 import oogasalad.engine.event.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 
@@ -26,9 +28,9 @@ public class EventConverter {
    * @return a list of constructed {@link Event} objects
    */
   public static List<Event> convertEventData(GameObjectData gameObjectData,
-      GameObject gameObject) {
+      GameObject gameObject, Map<Integer, BlueprintData> bluePrintMap) {
     List<Event> events = new ArrayList<>();
-    for (EventData event : gameObjectData.eventDataList()) {
+    for (EventData event : bluePrintMap.get(gameObjectData.blueprintId()).eventDataList()) {
       Event e = makeEventObject(event, gameObject);
       events.add(e);
     }
