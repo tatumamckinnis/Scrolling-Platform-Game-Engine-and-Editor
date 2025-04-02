@@ -34,8 +34,8 @@ public class EditorObject {
 
     this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "");
     this.hitbox = new HitboxData(0, 0,
-        Double.parseDouble(editorConfig.getProperty("defaultHitboxWidth")),
-        Double.parseDouble(editorConfig.getProperty("defaultHitboxHeight")),
+        Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
+        Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
         editorConfig.getProperty("defaultHitboxShape"));
     this.sprite = new SpriteData(0,0,"");
     this.input = null;
@@ -58,6 +58,10 @@ public class EditorObject {
   public void setInputData(InputData input) {
     this.input = input;
   }
+  
+  public void createInputData() {
+    this.input = new InputData();
+  }
 
   public PhysicsData getPhysicsData() {
     return physics;
@@ -67,12 +71,20 @@ public class EditorObject {
     this.physics = physics;
   }
 
+  public void createPhysicsData() {
+    this.physics = new PhysicsData();
+  }
+
   public CollisionData getCollisionData() {
     return collision;
   }
 
   public void setCollisionData(CollisionData collision) {
     this.collision = collision;
+  }
+
+  public void createCollisionData() {
+    this.collision = new CollisionData();
   }
 
   public SpriteData getSpriteData() {

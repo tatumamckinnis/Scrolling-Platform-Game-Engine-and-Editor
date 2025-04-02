@@ -41,8 +41,8 @@ public class EditorLevelData {
   public UUID createEditorObject() {
     EditorObject newObject = new EditorObject(this);
     myLayerDataMap.get(myCurrentLayer).add(newObject);
-    myObjectDataMap.put(newObject.getIdentityData().id(), newObject);
-    return newObject.getIdentityData().id();
+    myObjectDataMap.put(newObject.getIdentityData().getId(), newObject);
+    return newObject.getIdentityData().getId();
   }
 
   public UUID createEditorObject(String prefab) {
