@@ -1,7 +1,7 @@
 package oogasalad.fileparser.records;
 
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public record GameObjectData(
     int blueprintId,
-    int uniqueId,
+    UUID uniqueId,
     String gameName,
     String group, //entities, blocks, backgrounds
     String type,

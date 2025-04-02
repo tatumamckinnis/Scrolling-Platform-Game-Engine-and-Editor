@@ -1,5 +1,8 @@
 package oogasalad.engine.model.object;
 
+import java.util.List;
+import java.util.UUID;
+import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
 
 /**
@@ -11,18 +14,9 @@ import oogasalad.fileparser.records.SpriteData;
  */
 public class Entity extends GameObject {
 
-  /**
-   * Constructs a new Entity with the specified properties.
-   *
-   * @param uuid unique identifier for this entity
-   * @param name the display name of the entity
-   * @param group the group or category the entity belongs to
-   * @param spriteData visual data used to render the entity
-   * @param params dynamic variables associated with the entity's behavior
-   */
-  public Entity(String uuid, String name, String group,
-      SpriteData spriteData, DynamicVariableCollection params) {
-    super(uuid, name, group, spriteData, params);
+  public Entity(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+      DynamicVariableCollection params, List<Event> events) {
+    super(uuid, blueprintID, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight, layer, name, group, spriteData, params, events );
   }
 }
 

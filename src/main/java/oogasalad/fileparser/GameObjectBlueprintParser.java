@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import oogasalad.fileparser.exceptions.GameObjectParseException;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.FrameData;
@@ -85,7 +86,7 @@ public class GameObjectBlueprintParser {
 
       return new GameObjectData(
           id,
-          0, //gameName,
+          new UUID(4, 1), //gameName,
           type,
           groupName,
           spriteName,
