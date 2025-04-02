@@ -1,6 +1,7 @@
 package oogasalad.fileparser.records;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -12,5 +13,5 @@ public record EventData(
     String eventId,
     List<List<String>> conditions,
     List<String> outcomes,
-    List<String> parameters
+    Map<String,String> parameters
 ) {}

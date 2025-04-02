@@ -2,6 +2,7 @@ package oogasalad.fileparser.records;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -9,13 +10,8 @@ import java.util.Map;
  */
 public record GameObjectData(
     int blueprintId,
-    int uniqueId,
-    String gameName,
-    String group, //entities, blocks, backgrounds
-    String type,
-    SpriteData spriteData,
+    UUID uniqueId,
     int x,
     int y,
-    int layer, //z-layer or draw layer for background/foreground ordering
-    List<EventData> eventDataList
-) { }
+    int layer //z-layer or draw layer for background/foreground ordering
+) {}
