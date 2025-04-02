@@ -5,6 +5,7 @@ package oogasalad.engine.event;
 
 import oogasalad.engine.controller.GameController;
 import oogasalad.engine.model.object.DynamicVariableCollection;
+import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 
@@ -20,20 +21,20 @@ public class DefaultEventHandler implements EventHandler {
         outcomeExecutor = new OutcomeExecutor(gameController);
     }
     /**
-     * process given event
+     * process given event, all conditions must be true to execute
      * @param event
      */
     public void handleEvent(Event event) {
-        DynamicVariableCollection params = event.getParams();
+        GameObject gameObject = event.getGameObject();
         boolean validEvent = true;
         for (EventCondition condition : event.getConditions()) {
-            if (!conditionChecker.checkCondition(condition.getConditionType(), params)) {
+            if (!conditionChecker.checkCondition(condition.getConditionType(), gameObject)) {
                 validEvent = false;
             }
         }
         if (validEvent) {
             for (EventOutcome outcome : event.getOutcomes()) {
-                outcomeExecutor.executeOutcome(outcome.getOutcomeType(), params);
+                outcomeExecutor.executeOutcome(outcome.getOutcomeType(), gameObject);
             }
         }
 
