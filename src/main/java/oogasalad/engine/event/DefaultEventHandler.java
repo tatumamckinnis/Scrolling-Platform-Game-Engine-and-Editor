@@ -27,8 +27,16 @@ public class DefaultEventHandler implements EventHandler {
     public void handleEvent(Event event) {
         GameObject gameObject = event.getGameObject();
         boolean validEvent = true;
-        for (EventCondition condition : event.getConditions()) {
-            if (!conditionChecker.checkCondition(condition.getConditionType(), gameObject)) {
+        List<List<EventCondition>> conditionGroups = event.getConditions();
+
+        for (List<EventCondition> conditionGroup : conditionGroups) {
+            boolean validGroup = false;
+            for (EventCondition eventCondition : conditionGroup) {
+                if (conditionChecker.checkCondition(eventCondition.getConditionType(), gameObject)) {
+                    validGroup = true;
+                }
+            }
+            if (validGroup == false) {
                 validEvent = false;
             }
         }
