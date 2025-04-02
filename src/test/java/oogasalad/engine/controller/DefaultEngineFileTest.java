@@ -37,6 +37,7 @@ class DefaultEngineFileTest {
     GameObjectData gameObject1 = new GameObjectData(1, new UUID(4, 1), 1, 1, 0);
     gameObjectBluePrintData.add(gameObject1);
     Map<Integer, List<GameObjectData>> gameObjectsByLayer = new HashMap<>();
+    gameObjectsByLayer.put(1, gameObjectBluePrintData);
     levelData = new LevelData("Super Mario Bros", bluePrintMap, gameObjectsByLayer);
   }
 
@@ -46,12 +47,12 @@ class DefaultEngineFileTest {
   }
 
   @Test
-  void loadFileToEngine()
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+  void loadFileToEngine() {
 
     List<GameObject> expectedObjects = new ArrayList<>();
     SpriteData expectedSpriteData1 = new SpriteData("Mario", new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new ArrayList<>(), new ArrayList<>());
     expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", expectedSpriteData1, new HashMap<>(), new ArrayList<>()));
+
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
     List<GameObject> myActualObjects = new ArrayList<>(actualObjects.values());
 
@@ -59,5 +60,6 @@ class DefaultEngineFileTest {
     assertEquals(expectedObjects.getFirst().getGroup(), myActualObjects.getFirst().getGroup());
     assertEquals(expectedObjects.getFirst().getSpriteData(), myActualObjects.getFirst().getSpriteData());
     assertEquals(expectedObjects.getFirst().getUuid(), myActualObjects.getFirst().getUuid());
+    assertEquals(expectedObjects.getFirst().getType(), myActualObjects.getFirst().getType());
   }
 }
