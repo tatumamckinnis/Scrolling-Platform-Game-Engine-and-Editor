@@ -4,8 +4,6 @@
 package oogasalad.engine.event;
 
 import oogasalad.engine.controller.GameControllerAPI;
-import oogasalad.engine.controller.GameManagerAPI;
-import oogasalad.engine.controller.InputProvider;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 
@@ -19,9 +17,8 @@ public class DefaultEventHandler implements EventHandler {
      * Initializes event handler
      * @param gameController
      */
-    public DefaultEventHandler(InputProvider inputProvider, GameControllerAPI gameController) {
+    public DefaultEventHandler(GameControllerAPI gameController) {
         outcomeExecutor = new OutcomeExecutor(gameController);
-        conditionChecker = new ConditionChecker(inputProvider);
     }
     /**
      * process given event, all conditions must be true to execute
