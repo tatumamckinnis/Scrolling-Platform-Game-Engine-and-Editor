@@ -3,8 +3,8 @@ package oogasalad.editor.view;
 import java.util.UUID;
 import javafx.scene.layout.Pane;
 import oogasalad.editor.controller.EditorDataAPI;
-import old_editor_example.DynamicVariableContainer;
-import old_editor_example.EditorObject;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.EditorObject;
 
 /**
  * Controller class for the Input tab in the editor.
