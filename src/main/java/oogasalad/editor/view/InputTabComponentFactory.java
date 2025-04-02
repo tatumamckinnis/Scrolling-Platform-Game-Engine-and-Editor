@@ -79,6 +79,15 @@ public class InputTabComponentFactory {
   }
 
   /**
+   * Sets the current object ID to the ID passed in.
+   *
+   * @param currentObjectId the ID to set the currentID to
+   */
+  public void setCurrentObjectId(UUID currentObjectId) {
+    this.currentObjectId = currentObjectId;
+  }
+
+  /**
    * Create the main panel for the input tab
    *
    * @return Panel containing all input tab components
@@ -246,19 +255,6 @@ public class InputTabComponentFactory {
 
     condOutBox.getChildren().addAll(conditionsBox, outcomesBox);
     return condOutBox;
-  }
-
-  /**
-   * Set the current game object to edit events for
-   *
-   * @param objectId UUID of the game object
-   * @param variables Dynamic variables container for the object
-   */
-  public void setCurrentObject(UUID objectId, DynamicVariableContainer variables) {
-    this.currentObjectId = objectId;
-    this.dynamicVariables = variables;
-    updateParameterComboBox();
-    refreshEventsList();
   }
 
   /**

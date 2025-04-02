@@ -3,13 +3,19 @@ package oogasalad.editor.view;
 import java.util.UUID;
 
 public class EditorAppAPI {
-  private static UUID currentObjectID;
+  private UUID currentObjectID;
+  private InputTabController inputTabController;
 
-  public static UUID getCurrentObjectID() {
+  public EditorAppAPI(InputTabController inputTabController) {
+    this.inputTabController = inputTabController;
+  }
+
+  public UUID getCurrentObjectID() {
     return currentObjectID;
   }
 
-  public static void setCurrentObjectID(UUID currentObjectID) {
-    EditorAppAPI.currentObjectID = currentObjectID;
+  public void setCurrentObjectID(UUID currentObjectID) {
+    this.currentObjectID = currentObjectID;
+    inputTabController.setCurrentObjectId(currentObjectID);
   }
 }

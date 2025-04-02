@@ -42,49 +42,8 @@ public class InputTabController {
     return componentFactory.createInputTabPanel();
   }
 
-  /**
-   * Set the currently selected game object
-   *
-   * @param objectId The UUID of the selected object
-   * @param object The editor object that was selected
-   */
-  public void setSelectedObject(UUID objectId, EditorObject object) {
-    currentObjectId = objectId;
-    currentObject = object;
-
-    if (objectId != null) {
-      editorAPI.getInputDataAPI().createInputData(objectId);
-    }
-
-    if (object != null) {
-      componentFactory.setCurrentObject(objectId, object.getDynamicVariables());
-    } else {
-      componentFactory.setCurrentObject(objectId, new DynamicVariableContainer());
-    }
-  }
-
-  /**
-   * Set the currently selected game object by ID only
-   * This is a compatibility method for when we don't have the EditorObject reference
-   *
-   * @param objectId The UUID of the selected object
-   */
-  public void setSelectedObject(UUID objectId) {
-    currentObjectId = objectId;
-
-    if (objectId != null) {
-      editorAPI.getInputDataAPI().createInputData(objectId);
-    }
-
-    componentFactory.setCurrentObject(objectId, new DynamicVariableContainer());
-  }
-
-  /**
-   * Clear the current selection
-   */
-  public void clearSelection() {
-    currentObjectId = null;
-    currentObject = null;
-    componentFactory.setCurrentObject(null, null);
+  public void setCurrentObjectId(UUID objectId) {
+    this.currentObject = currentObject;
+    componentFactory.setCurrentObjectId(objectId);
   }
 }
