@@ -8,7 +8,7 @@ import java.util.Map;
 public class DynamicVariableContainer {
   private Map<String, DynamicVariable> variables = new HashMap<>();
 
-  public void addVariable(DynamicVariable var) {
+  public void addVariable(old_editor_example.DynamicVariable var) {
     variables.put(var.getName(), var);
   }
 

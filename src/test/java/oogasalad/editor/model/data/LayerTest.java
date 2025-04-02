@@ -109,3 +109,4 @@ class LayerTest {
     assertTrue(layers.contains(anotherLayer));
   }
 }
+

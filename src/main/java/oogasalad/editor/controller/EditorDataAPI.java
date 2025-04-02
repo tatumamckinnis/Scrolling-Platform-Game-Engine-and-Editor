@@ -28,6 +28,8 @@ public class EditorDataAPI implements EditorDataAPIInterface {
     return level.createEditorObject();
   }
 
+  public EditorLevelData getLevel() { return level; }
+
   @Override
   public IdentityDataAPI getIdentityDataAPI() {
     return identityAPI;

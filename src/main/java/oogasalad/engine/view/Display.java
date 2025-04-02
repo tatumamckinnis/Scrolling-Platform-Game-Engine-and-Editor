@@ -1,7 +1,9 @@
 package oogasalad.engine.view;
 
+import java.util.List;
 import javafx.scene.Group;
-import javafx.scene.Node;
+import oogasalad.engine.exception.RenderingException;
+import oogasalad.engine.model.object.GameObject;
 
 /**
  * This is an abstract class representing any visual component in the game.
@@ -9,21 +11,20 @@ import javafx.scene.Node;
  *
  * @author Aksel Bell
  */
-public abstract class Display extends Node {
+public abstract class Display extends Group {
 
   /**
    * This method should be implemented by subclasses to render the display.
    * It is used to show the content, layout, or other visual elements.
-   *
-   * @param root the overarching root to add the desired visual elements to.
    */
-  public abstract void render(Group root);
+  public abstract void render();
 
   /**
-   * This method can be used to update any visual elements.
-   * For example, updating scores, health, or animation frames.
+   * Allows a Display to render game objects onto the screen. Default implementation does nothing.
+   * Subclasses (like GameScene) can override this if needed.
    */
-  public abstract void update();
+  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
+  }
 
   /**
    * This method will provide the option to hide the display from the scene.
@@ -44,6 +45,6 @@ public abstract class Display extends Node {
    * This method checks if the display is currently visible.
    */
   public boolean isCurrentlyVisible() {
-    return this.isVisible();  // Using Node's built-in isVisible method.
+    return this.isVisible();
   }
 }

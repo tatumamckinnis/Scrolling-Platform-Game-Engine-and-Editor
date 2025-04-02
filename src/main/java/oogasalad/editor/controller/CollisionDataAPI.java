@@ -1,5 +1,6 @@
 package oogasalad.editor.controller;
 
+import java.util.UUID;
 import oogasalad.editor.controller.api.EditorEventDataAPIAbstraction;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.EditorEventData;
@@ -17,5 +18,10 @@ public class CollisionDataAPI extends EditorEventDataAPIAbstraction {
 
   public CollisionDataAPI(EditorLevelData level) {
     super(level);
+  }
+
+  public void createCollisionData(UUID id) {
+    EditorObject object = super.getLevel().getEditorObject(id);
+    object.createCollisionData();
   }
 }

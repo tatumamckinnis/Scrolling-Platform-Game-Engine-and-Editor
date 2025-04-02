@@ -1,6 +1,7 @@
 package oogasalad.editor.controller.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.event_enum.ConditionType;
@@ -103,5 +104,39 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
       return data.getEvents().get(eventID).getOutcomes();
     }
     return null;
+  }
+
+  public Map<String, EditorEvent> getEvents(UUID id) {
+    EditorObject object = level.getEditorObject(id);
+    if (object == null) { return null; }
+
+    EditorEventData data = createDataIfAbsent(object);
+    return data.getEvents();
+  }
+
+  public String getEventOutcomeParameter(UUID id, String eventID, OutcomeType outcome) {
+    EditorObject object = level.getEditorObject(id);
+    if (object == null) { return null; }
+
+    EditorEventData data = createDataIfAbsent(object);
+    if (data.getEvents().containsKey(eventID)) {
+      return data.getEvents().get(eventID).getOutcomeParameter(outcome);
+    }
+    return null;
+  }
+
+  public String getEventConditionParameter(UUID id, String eventID, ConditionType condition) {
+    EditorObject object = level.getEditorObject(id);
+    if (object == null) { return null; }
+
+    EditorEventData data = createDataIfAbsent(object);
+    if (data.getEvents().containsKey(eventID)) {
+      return data.getEvents().get(eventID).getConditionParameter(condition);
+    }
+    return null;
+  }
+
+  protected EditorLevelData getLevel() {
+    return level;
   }
 }

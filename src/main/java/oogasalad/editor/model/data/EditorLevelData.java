@@ -36,11 +36,12 @@ public class EditorLevelData {
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
     myObjectDataMap = new HashMap<>();
+    myCurrentLayer = new Layer("default");
   }
 
   public UUID createEditorObject() {
     EditorObject newObject = new EditorObject(this);
-    myLayerDataMap.get(myCurrentLayer).add(newObject);
+    myLayerDataMap.getOrDefault(myCurrentLayer, new ArrayList<>()).add(newObject);
     myObjectDataMap.put(newObject.getIdentityData().getId(), newObject);
     return newObject.getIdentityData().getId();
   }

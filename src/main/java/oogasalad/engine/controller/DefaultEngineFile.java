@@ -14,6 +14,12 @@ import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
+/**
+ * Default implementation of the EngineFileAPI Used for converting the level data to game objects
+ * and event actions
+ *
+ * @author Alana Zinkin
+ */
 public class DefaultEngineFile implements EngineFileAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
