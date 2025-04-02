@@ -5,14 +5,17 @@ package oogasalad.engine.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import oogasalad.engine.exception.InputException;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
@@ -31,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Alana Zinkin
  */
-public class DefaultGameManager implements GameManagerAPI {
+public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
@@ -40,24 +43,25 @@ public class DefaultGameManager implements GameManagerAPI {
   private Timeline myGameLoop;
   private List<GameObject> myGameObjects;
   private GameControllerAPI myGameController;
-  private LevelData myLevelData;
-  private EngineFileConverterAPI myEngineFile;
-  private FileParserAPI myFileParser;
   private LevelAPI myLevelAPI;
   private GameAppView myView;
+  private static List<String> currentKeysPressed;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
    *
-   * @param engineFile     the engine file API implementation
    * @param gameController the game controller to manage game objects and state
    */
-  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController)
+  public DefaultGameManager()
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myEngineFile = engineFile;
-    myGameController = gameController;
+    myGameController = new DefaultGameController(this);
+    myLevelAPI = new DefaultLevel();
 
+    initializeMyView();
+  }
+
+  private void initializeMyView() throws ViewInitializationException {
     Stage primaryStage = new Stage();
     myView = new GameAppView(primaryStage, this);
     myView.initialize();
@@ -81,7 +85,7 @@ public class DefaultGameManager implements GameManagerAPI {
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
-      } catch (RenderingException ex) {
+      } catch (RenderingException | InputException ex) {
         throw new RuntimeException(ex);
       }
     }));
@@ -154,10 +158,32 @@ public class DefaultGameManager implements GameManagerAPI {
   }
 
   /**
+   *
+   * @param key string to check
+   * @return if that key is pressed
+   */
+  public boolean isKeyPressed(String key) {
+    return currentKeysPressed.contains(key);
+  }
+
+  /**
    * Called on each tick of the game loop. Delegates game state updates to the controller.
    */
-  private void step() throws RenderingException {
+  private void step() throws RenderingException, InputException {
+    updateInputList();
     myGameController.updateGameState();
-    myView.renderGameObjects(null);
+    myView.renderGameObjects(myGameController.getObjects());
   }
+
+  /**
+   * updates list of currently pressed keys using view api
+   */
+  private void updateInputList() throws InputException {
+    List<KeyCode> keyCodes = myView.getCurrentInputs();
+    currentKeysPressed = keyCodes.stream()
+            .map(KeyCode::toString) // Convert KeyCode to String
+            .toList(); // Collect into an immutable list
+  }
+
+
 }

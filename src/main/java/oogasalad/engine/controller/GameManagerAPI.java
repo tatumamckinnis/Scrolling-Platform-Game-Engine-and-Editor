@@ -40,4 +40,5 @@ public interface GameManagerAPI {
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   public void selectDefaultGame(String filePath);
+
 }

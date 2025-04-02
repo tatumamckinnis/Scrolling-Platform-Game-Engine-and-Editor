@@ -52,27 +52,23 @@ public class DefaultFileParser implements FileParserAPI {
    */
   public LevelData parseLevelFile(String filePath) {
     // Ensure the map has an entry for the provided filePath.
-    if (!mapOfGameLevels.containsKey(filePath)) {
-      // You might refresh the map here, e.g.:
-      // mapOfGameLevels = LevelsAPI.getMapOfLevels();
-    }
 
     // Remove the .xml extension to derive the level name.
 
     // Find the corresponding File from the map.
-    File levelFile = null;
-    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
-    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
-      for (File file : entry.getValue()) {
-          levelFile = file;
-          break;
-        }
-      if (levelFile != null){
-        break;}
-    }
-    if (levelFile == null) {
-      throw new RuntimeException("Level file " + levelFile.getName() + " not found for game " + filePath);
-    }
+    File levelFile = new File(filePath);
+//    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
+//    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
+//      for (File file : entry.getValue()) {
+//          levelFile = file;
+//          break;
+//        }
+//      if (levelFile != null){
+//        break;}
+//    }
+//    if (levelFile == null) {
+//      throw new RuntimeException("Level file " + levelFile.getName() + " not found for game " + filePath);
+//    }
 
     String levelName = levelFile.getName();
 

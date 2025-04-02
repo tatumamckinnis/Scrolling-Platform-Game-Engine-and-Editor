@@ -34,6 +34,9 @@ public abstract class GameObject {
   private SpriteData mySpriteData;
   private Map<String, String> myParams;
   private List<Event> myEvents;
+  private double xVelocity;
+  private double yVelocity;
+  private boolean isGrounded;
 
 
   /**
@@ -69,6 +72,12 @@ public abstract class GameObject {
     this.mySpriteData = spriteData;
     this.myParams = params;
     this.myEvents = events;
+  }
+
+  public void updatePosition() {
+    myHitBoxX += xVelocity;
+    myHitBoxY += yVelocity;
+    //check to make sure not too low?
   }
 
   /**
@@ -249,5 +258,29 @@ public abstract class GameObject {
    */
   public void setEvents(List<Event> events) {
     myEvents = events;
+  }
+
+  public double getXVelocity() {
+    return xVelocity;
+  }
+
+  public double getYVelocity() {
+    return yVelocity;
+  }
+
+  public void setXVelocity(double xVelocity) {
+    this.xVelocity = xVelocity;
+  }
+
+  public void setYVelocity(double yVelocity) {
+    this.yVelocity = yVelocity;
+  }
+
+  public boolean isGrounded() {
+    return isGrounded;
+  }
+
+  public void setGrounded(boolean grounded) {
+    isGrounded = grounded;
   }
 }

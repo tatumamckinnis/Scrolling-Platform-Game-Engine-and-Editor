@@ -14,8 +14,7 @@ class DefaultGameManagerTest {
 
   @BeforeEach
   void setUp() throws ViewInitializationException {
-    myGameManager = new DefaultGameManager((DefaultEngineFileConverter) myEngineFile, (DefaultGameController) myGameController);
-    myGameLoop = ((DefaultGameManager) myGameManager).getGameLoop();
+
   }
 
   @Test

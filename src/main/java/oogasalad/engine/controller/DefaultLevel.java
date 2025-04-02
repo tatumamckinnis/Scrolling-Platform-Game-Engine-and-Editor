@@ -3,6 +3,7 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.zip.DataFormatException;
+import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;
 
@@ -25,6 +26,9 @@ public class DefaultLevel implements LevelAPI {
    */
   private GameControllerAPI myGameController;
 
+  public DefaultLevel() {
+    myFileParser = new DefaultFileParser();
+  }
   /**
    * Selects a game level based on the provided game, category, and level identifiers.
    * <p>
