@@ -72,6 +72,6 @@ public class EnemyObjectPlacementTool implements ObjectPlacementTool {
     editorAPI.getHitboxDataAPI().setShape(newObjectId, "RECTANGLE");
 
     EditorObject object = editorAPI.getLevel().getEditorObject(newObjectId);
-    editorView.addObject(newObjectId, object, x, y);
+    editorView.addObject(newObjectId);
   }
 }

@@ -1,6 +1,5 @@
 package oogasalad.engine.model.object;
 
-import java.awt.Image;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,6 +41,10 @@ public abstract class GameObject {
   private Map<String, String> myParams;
   private List<Event> myEvents;
   private HitBoxData myHitBoxData;
+  private double xVelocity;
+  private double yVelocity;
+  private boolean isGrounded;
+
 
 
   /**
@@ -80,6 +83,12 @@ public abstract class GameObject {
     this.myAnimationMap = animationMap;
     this.myParams = params;
     this.myEvents = events;
+  }
+
+  public void updatePosition() {
+    myHitBoxX += xVelocity;
+    myHitBoxY += yVelocity;
+    //check to make sure not too low?
   }
 
   /**
@@ -261,6 +270,30 @@ public abstract class GameObject {
   }
 
   public void setCurrentFrame(String frameName) {
-    myCurrentFrame = myFrameMap.getOrDefault(frameName, null);
+    myCurrentFrame = myFrameMap.getOrDefault(frameName, null);}
+  
+  public double getXVelocity() {
+    return xVelocity;
   }
+
+  public double getYVelocity() {
+    return yVelocity;
+  }
+
+  public void setXVelocity(double xVelocity) {
+    this.xVelocity = xVelocity;
+  }
+
+  public void setYVelocity(double yVelocity) {
+    this.yVelocity = yVelocity;
+  }
+
+  public boolean isGrounded() {
+    return isGrounded;
+  }
+
+  public void setGrounded(boolean grounded) {
+    isGrounded = grounded;
+  }
+  
 }
