@@ -6,6 +6,11 @@
 
 package oogasalad.engine.event;
 
+import old_editor_example.DynamicVariable;
+
+import java.util.List;
+import java.util.Map;
+
 public class EventCondition {
     /**
      * Define list of valid conditions enums
