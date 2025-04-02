@@ -39,10 +39,6 @@ public class DefaultGameController implements GameControllerAPI {
    */
   private List<GameObject> myGameObjects;
 
-  /**
-   * Reference to the engine's file handling API
-   */
-  private EngineFileConverterAPI myConverter;
 
   /**
    * Returns the list of all {@link GameObject}s currently in the game.
@@ -94,7 +90,8 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void setLevelData(LevelData data) {
-    myGameObjectMap = myConverter.loadFileToEngine(data);
+    DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
+    myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
   }
 }
