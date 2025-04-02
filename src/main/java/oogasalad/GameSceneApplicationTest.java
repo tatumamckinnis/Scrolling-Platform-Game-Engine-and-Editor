@@ -10,16 +10,21 @@ import oogasalad.engine.view.GameAppView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * This is a test class showing how to use the splash screen.
+ */
 public class GameSceneApplicationTest extends Application {
-  GameAppView myCurrentView = new GameAppView();
+  private GameAppView myCurrentView;
   private static final Logger LOG = LogManager.getLogger();
 
+  /**
+   * First initialize the view as a GameAppView with the stage passed in. Then call initialize.
+   */
   @Override
   public void start(Stage primaryStage) throws ViewInitializationException {
+    myCurrentView = new GameAppView(primaryStage);
     myCurrentView.initialize("Splash Screen");
-    Scene scene = myCurrentView.getCurrentScene();
-    primaryStage.setScene(scene);
-    primaryStage.show();
+
     LOG.info("Starting GameSceneApplicationTest");
     startGameLoop();
   }
@@ -38,6 +43,9 @@ public class GameSceneApplicationTest extends Application {
     gameLoop.start();
   }
 
+  /**
+   * In the step function, call renderGameObjects on the view
+   */
   private void step() throws RenderingException {
     myCurrentView.renderGameObjects(null);
   }
