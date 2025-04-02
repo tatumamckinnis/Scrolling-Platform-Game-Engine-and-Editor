@@ -33,7 +33,7 @@ public class ConditionChecker {
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
             List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
             for (GameObject collidedObject : collidedObjects) {
-                if (collidedObject.getObjectType() == GameObject.ObjectType.ENEMY) {
+                if (collidedObject.getType().equals("Enemy")) {
                     return true;
                 }
             }

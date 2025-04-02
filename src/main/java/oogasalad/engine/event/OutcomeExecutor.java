@@ -26,7 +26,7 @@ public class OutcomeExecutor {
     public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject) {
         if (outcomeType == EventOutcome.OutcomeType.MOVE_RIGHT) {
             int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "5"));
-            gameObject.setX(gameObject.getxPos() + dx);
+            gameObject.setX(gameObject.getX() + dx);
         }
     }
 

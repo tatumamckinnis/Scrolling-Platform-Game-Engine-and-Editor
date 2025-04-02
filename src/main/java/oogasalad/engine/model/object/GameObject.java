@@ -1,7 +1,9 @@
 package oogasalad.engine.model.object;
 
+import java.util.List;
+import java.util.UUID;
+import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
-
 import java.util.Map;
 
 /**
@@ -13,69 +15,35 @@ import java.util.Map;
  */
 public abstract class GameObject {
 
-  /**
-   * Unique identifier for the game object
-   */
-  private final String uuid;
-  /**
-   * Name of the game object
-   */
+  private final UUID uuid;
+  private int myBlueprintID;
+  private String myType;
+  private int myHitBoxX;
+  private int myHitBoxY;
+  private int myHitBoxWidth;
+  private int myHitBoxHeight;
+  private int myLayer;
   private String myName;
-  /**
-   * Group or category to which the game object belongs
-   */
   private String myGroup;
-  /**
-   * Visual sprite data associated with the game object
-   */
   private SpriteData mySpriteData;
-  /**
-   * Dynamic parameters that describe the object's runtime state
-   */
-  private Map<String, String> params;
+  private Map<String, String> myParams;
+  private List<Event> myEvents;
 
-  private int xPos;
-
-  private int yPos;
-
-  private int hitboxLength;
-
-  private ObjectType objectType;
-
-  /**
-   * Constructs a new GameObject with the specified properties.
-   *
-   * @param uuid       unique identifier for this object
-   * @param name       the display name of the object
-   * @param group      the group or category the object belongs to
-   * @param spriteData visual data used to render the object
-   * @param params     dynamic variables associated with the object's behavior
-   */
-  public GameObject(String uuid, String name, String group, SpriteData spriteData,
-      Map<String, String> params, int xPos, int yPos, int hitboxLength, ObjectType objectType) {
+  public GameObject(UUID uuid, int blueprintID, String type,  int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+      Map<String, String> params, List<Event> events) {
     this.uuid = uuid;
+    this.myBlueprintID = blueprintID;
+    this.myType = type;
+    this.myHitBoxX = hitBoxX;
+    this.myHitBoxY = hitBoxY;
+    this.myHitBoxWidth = hitBoxWidth;
+    this.myHitBoxHeight = hitBoxHeight;
+    this.myLayer = layer;
     this.myName = name;
     this.myGroup = group;
     this.mySpriteData = spriteData;
-    this.params = params;
-    this.xPos = xPos;
-    this.yPos = yPos;
-    this.hitboxLength = hitboxLength;
-    this.objectType = objectType;
-  }
-
-  public enum ObjectType {
-    ENEMY,
-    PLATFORM
-  }
-
-  /**
-   * Returns the dynamic parameters associated with the object.
-   *
-   * @return the object's dynamic variable collection
-   */
-  public Map<String, String> getParams() {
-    return params;
+    this.myParams = params;
+    this.myEvents = events;
   }
 
   /**
@@ -84,54 +52,81 @@ public abstract class GameObject {
    * @return the object's UUID
    */
   public String getUuid() {
-    return uuid;
+    return uuid.toString();
   }
 
+  public int getBlueprintID() {
+    return myBlueprintID;
+  }
+
+
+  public String getType() {
+    return myType;
+  }
+
+  public int getX() {
+    return myHitBoxX;
+  }
+
+  public int getY() {
+    return myHitBoxY;
+  }
+
+  public int getWidth() {
+    return myHitBoxWidth;
+  }
+
+  public int getHeight() {
+    return myHitBoxHeight;
+  }
   /**
-   * Returns the display name of the object.
+   * Returns the dynamic parameters associated with the object.
    *
-   * @return the object's name
+   * @return the object's dynamic variable collection
    */
+  public Map<String, String> getParams() {
+    return myParams;
+  }
+
+
   public String getName() {
     return myName;
   }
 
-  /**
-   * Returns the group or category of the object.
-   *
-   * @return the object's group
-   */
   public String getGroup() {
     return myGroup;
   }
 
-  /**
-   * Returns the sprite data associated with the object.
-   *
-   * @return the object's SpriteData
-   */
   public SpriteData getSpriteData() {
     return mySpriteData;
   }
 
-  public int getxPos() {
-    return xPos;
-  }
-
-  public int getyPos() {
-    return yPos;
-  }
-
-  public int getHitboxLength() {
-    return hitboxLength;
-  }
-
-  public ObjectType getObjectType() {
-    return objectType;
-  }
-
   public void setX(int xPos) {
-    this.xPos = xPos;
+    this.myHitBoxX = xPos;
+  }
+
+  public void setY(int yPos) {
+    this.myHitBoxY = yPos;
+  }
+
+  public void setWidth(int width) {
+    this.myHitBoxWidth = width;
+  }
+
+  public void setHeight(int height) {
+    this.myHitBoxHeight = height;
+  }
+
+  public void setGroup(String group) {
+    this.myGroup = group;
+  }
+
+  public void setSpriteData(SpriteData spriteData) {
+    this.mySpriteData = spriteData;
+  }
+
+  public void setEvents(List<Event> events) {
+    myEvents = events;
   }
 
 }
