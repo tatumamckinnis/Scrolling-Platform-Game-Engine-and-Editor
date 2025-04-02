@@ -5,13 +5,14 @@
  */
 package oogasalad.engine.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class CollisionHandler {
     //underlying storage of an object -> the list of objects its colliding with
-    private Map<UUID, List<UUID>> collisionMap;
+    private Map<UUID, List<UUID>> collisionMap = new HashMap<>();
 
     /**
      * updates current state of collisions at a step
@@ -19,5 +20,14 @@ public class CollisionHandler {
      */
     public void updateCollisions(List<UUID> gameObjectIDs) {
         collisionMap.clear();
+    }
+
+    /**
+     *
+     * @param gameObjectID
+     * @return
+     */
+    public List<UUID> getCollisions(UUID gameObjectID) {
+        return collisionMap.get(gameObjectID);
     }
 }

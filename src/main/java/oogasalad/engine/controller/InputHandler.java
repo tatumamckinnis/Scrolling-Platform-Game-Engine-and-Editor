@@ -5,10 +5,11 @@
  */
 package oogasalad.engine.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InputHandler {
-    private List<Character> currentKeysPressed;
+    private static List<Character> currentKeysPressed = new ArrayList<>();
 
     /**
      *
