@@ -1,7 +1,10 @@
 package oogasalad.engine.view;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.GameManagerAPI;
@@ -22,6 +25,7 @@ public class GameAppView implements GameAppAPI {
   private Scene currentScene;
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
+  private final List<KeyCode> currentInputs = new ArrayList<>();
   private static final Logger LOG = LogManager.getLogger();
 
   /**
@@ -37,9 +41,9 @@ public class GameAppView implements GameAppAPI {
    */
   @Override
   public void initialize() throws ViewInitializationException {
-    SplashScreen splashScreen = new SplashScreen();
+    SplashScreen splashScreen = new SplashScreen(gameManager);
 
-    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other buttons
+    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other splash screen buttons buttons
       try {
         startGame();
       } catch (ViewInitializationException e) {
@@ -64,13 +68,10 @@ public class GameAppView implements GameAppAPI {
   }
 
   /**
-   * @see GameAppView#getCurrentInputs()
-   * @return
-   * @throws InputException
+   * @see GameAppAPI#getCurrentInputs()
    */
-  @Override
-  public List<String> getCurrentInputs() throws InputException {
-    return List.of();
+  public List<KeyCode> getCurrentInputs() throws InputException {
+    return Collections.unmodifiableList(currentInputs);
   }
 
   /**
@@ -80,22 +81,33 @@ public class GameAppView implements GameAppAPI {
    */
   private void startGame() throws ViewInitializationException {
     GameScene game = new GameScene();
-    game.setControlButtonsClicked(() -> { // TODO needs to take in list of functions
+
+    game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons in this function
           try {
             goToHome();
           } catch (ViewInitializationException e) {
             LOG.warn("Failed to start game: " + e.getMessage());
           }
         });
+    gameManager.playGame();
+
     currentDisplay = game;
     currentDisplay.render();
     currentScene.setRoot(currentDisplay);
 
     int newWidth = 500; // Change this to actual GameScene width
     int newHeight = 500; // Change this to actual GameScene height
-
     currentStage.setWidth(newWidth);
     currentStage.setHeight(newHeight);
+
+    currentScene.setOnKeyPressed(event -> {
+      KeyCode code = event.getCode();
+      if (!currentInputs.contains(code)) {
+        currentInputs.add(code);
+      }
+    });
+
+    currentScene.setOnKeyReleased(event -> currentInputs.remove(event.getCode()));
   }
 
   /**
