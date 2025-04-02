@@ -48,10 +48,9 @@ public class DefaultFileParser implements FileParserAPI {
    * </ul>
    *
    * @param filePath the key representing the game or level directory
-   * @param fileName the level file name (e.g., "Level1.xml")
    * @return a LevelData record representing the parsed level
    */
-  public LevelData parseLevelFile(String filePath, String fileName) {
+  public LevelData parseLevelFile(String filePath) {
     // Ensure the map has an entry for the provided filePath.
     if (!mapOfGameLevels.containsKey(filePath)) {
       // You might refresh the map here, e.g.:
@@ -59,23 +58,23 @@ public class DefaultFileParser implements FileParserAPI {
     }
 
     // Remove the .xml extension to derive the level name.
-    String levelName = fileName.replaceAll("\\.xml$", "");
 
     // Find the corresponding File from the map.
     File levelFile = null;
     Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
     for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
       for (File file : entry.getValue()) {
-        if (file.getName().equals(fileName)) {
           levelFile = file;
           break;
         }
-      }
-      if (levelFile != null) break;
+      if (levelFile != null){
+        break;}
     }
     if (levelFile == null) {
-      throw new RuntimeException("Level file " + fileName + " not found for game " + filePath);
+      throw new RuntimeException("Level file " + levelFile.getName() + " not found for game " + filePath);
     }
+
+    String levelName = levelFile.getName();
 
     try {
       // Parse the XML file.
@@ -100,7 +99,7 @@ public class DefaultFileParser implements FileParserAPI {
       return new LevelData(levelName, blueprintData, gameObjectsByLayer);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException("Error parsing level file " + fileName, e);
+      throw new RuntimeException("Error parsing level file ", e);
     }
   }
 }
