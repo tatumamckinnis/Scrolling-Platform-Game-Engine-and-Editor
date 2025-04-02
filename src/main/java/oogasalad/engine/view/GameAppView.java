@@ -2,10 +2,13 @@ package oogasalad.engine.view;
 
 import java.util.List;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 import oogasalad.engine.exception.InputException;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class represents the current view that a user sees. It implements the GameAppView API
@@ -15,6 +18,15 @@ import oogasalad.engine.model.object.GameObject;
 public class GameAppView implements GameAppAPI {
   private Display currentDisplay;
   private Scene currentScene;
+  private final Stage currentStage;
+  private static final Logger LOG = LogManager.getLogger();
+
+  /**
+   * Constructor to initialize the GameAppView with a Stage reference.
+   */
+  public GameAppView(Stage stage) {
+    this.currentStage = stage;
+  }
 
   /**
    * @see GameAppView#initialize(String)
@@ -27,15 +39,18 @@ public class GameAppView implements GameAppAPI {
       try {
         startGame();
       } catch (ViewInitializationException e) {
-        System.err.println("Failed to start game: " + e.getMessage()); // TODO change to log
+       LOG.warn("Failed to start game: " + e.getMessage());
       }
     });
 
     splashScreen.render();
-    currentDisplay = splashScreen;
     int width = splashScreen.getSplashWidth();
     int height = splashScreen.getSplashHeight();
+    currentDisplay = splashScreen;
+
     currentScene = new Scene(currentDisplay, width, height);
+    currentStage.setScene(currentScene);
+    currentStage.show();
   }
 
   /**
@@ -64,6 +79,12 @@ public class GameAppView implements GameAppAPI {
     currentDisplay = new GameScene();
     currentDisplay.render();
     currentScene.setRoot(currentDisplay);
+
+    int newWidth = 500; // Change this to actual GameScene width
+    int newHeight = 500; // Change this to actual GameScene height
+
+    currentStage.setWidth(newWidth);
+    currentStage.setHeight(newHeight);
   }
 
   /**

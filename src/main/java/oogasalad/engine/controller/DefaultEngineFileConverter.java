@@ -3,12 +3,15 @@ package oogasalad.engine.controller;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.exception.ObjectNotSupportedException;
 import oogasalad.engine.controller.gameobjectfactory.GameObjectFactory;
+import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.GameObjectData;
@@ -20,11 +23,11 @@ import oogasalad.fileparser.records.LevelData;
  *
  * @author Alana Zinkin
  */
-public class DefaultEngineFile implements EngineFileAPI {
+public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFile.class.getPackageName() + "." + "EngineFile");
-  private static final Logger LOG = Logger.getLogger(DefaultEngineFile.class.getName());
+      DefaultEngineFileConverter.class.getPackageName() + "." + "EngineFile");
+  private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -43,28 +46,25 @@ public class DefaultEngineFile implements EngineFileAPI {
    * Loads a new level or resumes saved progress by translating the standardized LevelData structure
    * created by the File Parser into the Engine’s runtime objects
    *
-   * @return list of newly instantiated GameObjects
+   * @return Map of the String of the UUID to the newly instantiated GameObject
    */
   @Override
-  public List<GameObject> loadFileToEngine(LevelData levelData)
+  public Map<String, GameObject> loadFileToEngine(LevelData levelData)
       throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-    List<GameObjectData> gameObjectBluePrints = levelData.gameObjectBluePrintData();
-    List<GameObject> gameObjectList = new ArrayList<>();
-    final String factoryPackage = ENGINE_FILE_RESOURCES.getString("FactoryPackage");
-    initGameObjectsList(gameObjectBluePrints, factoryPackage, gameObjectList);
-    return gameObjectList;
+    Map<String, GameObject> gameObjectMap = new HashMap<>();
+    initGameObjectsMap(levelData.gameObjectBluePrintData(), gameObjectMap);
+    return gameObjectMap;
   }
 
-  private void initGameObjectsList(List<GameObjectData> gameObjects, String factoryPackage,
-      List<GameObject> gameObjectList)
+  private void initGameObjectsMap(List<GameObjectData> gameObjects,
+      Map<String, GameObject> gameObjectMap)
       throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     for (GameObjectData gameObjectData : gameObjects) {
-      String className =
-          factoryPackage + "." + gameObjectData.type() + ENGINE_FILE_RESOURCES.getString("Factory");
-      System.out.println(className);
+      String className = ENGINE_FILE_RESOURCES.getString("GameObjectFactoryPackageName") + "."
+          + gameObjectData.type() + ENGINE_FILE_RESOURCES.getString("Factory");
       try {
-        GameObject newObject = makeGameObjectFromFactory(gameObjectData, className);
-        gameObjectList.add(newObject);
+        GameObject newObject = makeGameObject(gameObjectData, className);
+        gameObjectMap.put(newObject.getUuid(), newObject);
       } catch (ClassNotFoundException e) {
         throw new ObjectNotSupportedException(
             ENGINE_FILE_RESOURCES.getString("ObjectNotSupported"));
@@ -72,13 +72,28 @@ public class DefaultEngineFile implements EngineFileAPI {
     }
   }
 
-  private GameObject makeGameObjectFromFactory(GameObjectData gameObjectData, String className)
+  private GameObject makeGameObject(GameObjectData gameObjectData, String className)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    Class<?> clazz = Class.forName(className);
-    GameObjectFactory gameObjectFactory = (GameObjectFactory) clazz.getDeclaredConstructor()
+    Class<?> factoryClass = Class.forName(className);
+    GameObjectFactory gameObjectFactory = (GameObjectFactory) factoryClass.getDeclaredConstructor()
         .newInstance();
-    return gameObjectFactory.createGameObject(
-        String.valueOf(gameObjectData.uniqueId()), gameObjectData.type(), gameObjectData.group(),
-        gameObjectData.spriteData(), new DynamicVariableCollection());
+
+    GameObject gameObject = gameObjectFactory.createGameObject(gameObjectData.uniqueId(),
+        gameObjectData.blueprintId(),
+        gameObjectData.x(),
+        gameObjectData.y(),
+        gameObjectData.spriteData().width(),
+        gameObjectData.spriteData().height(),
+        gameObjectData.layer(),
+        gameObjectData.type(),
+        gameObjectData.group(),
+        gameObjectData.spriteData(),
+        new DynamicVariableCollection(),
+        new ArrayList<>()
+    );
+
+    List<Event> events = EventConverter.convertEventData(gameObjectData, gameObject);
+    gameObject.setEvents(events);
+    return gameObject;
   }
 }

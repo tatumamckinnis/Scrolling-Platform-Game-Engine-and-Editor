@@ -25,10 +25,6 @@ import java.util.List;
  */
 public record SpriteData(
     String name,
-    int x,
-    int y,
-    int width,
-    int height,
     FrameData baseImage,
     List<FrameData> frames,
     List<AnimationData> animations

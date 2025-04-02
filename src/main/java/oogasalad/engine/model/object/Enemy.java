@@ -1,5 +1,8 @@
 package oogasalad.engine.model.object;
 
+import java.util.List;
+import java.util.UUID;
+import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
 
 /**
@@ -11,18 +14,10 @@ import oogasalad.fileparser.records.SpriteData;
  */
 public class Enemy extends GameObject {
 
-  /**
-   * Constructs a new Enemy with the specified properties.
-   *
-   * @param uuid       unique identifier for this enemy
-   * @param name       the display name of the enemy
-   * @param group      the group or category the enemy belongs to
-   * @param spriteData visual data used to render the enemy
-   * @param params     dynamic variables associated with the enemy's behavior
-   */
-  public Enemy(String uuid, String name, String group,
-      SpriteData spriteData, DynamicVariableCollection params) {
-    super(uuid, name, group, spriteData, params);
+  public Enemy(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+      DynamicVariableCollection params, List<Event> events) {
+    super(uuid, blueprintID, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight, layer, name, group, spriteData, params, events );
   }
+
 }
 
