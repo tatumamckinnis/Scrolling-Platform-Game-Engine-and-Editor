@@ -65,7 +65,7 @@ public class SpriteDataParser {
    */
   private String loadGraphicsDataPath() {
     Properties properties = new Properties();
-    try (InputStream input = new FileInputStream("fileStructure.properties")) {
+    try (InputStream input = getClass().getClassLoader().getResourceAsStream("oogasalad/file/fileStructure.properties")) {
       properties.load(input);
     } catch (IOException e) {
       e.printStackTrace();
