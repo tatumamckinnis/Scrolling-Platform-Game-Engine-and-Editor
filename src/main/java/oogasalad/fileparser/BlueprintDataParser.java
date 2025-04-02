@@ -19,7 +19,6 @@ public class BlueprintDataParser {
   private String groupName = "";
   private String gameName = "";
   private SpriteDataParser mySpriteDataParser;
-  private EventDataParser myEventDataParser;
   private List<EventData> myEventDataList;
 
   public Map<Integer,BlueprintData> getBlueprintData(Element root, List<EventData> EventList) throws BlueprintParseException {
