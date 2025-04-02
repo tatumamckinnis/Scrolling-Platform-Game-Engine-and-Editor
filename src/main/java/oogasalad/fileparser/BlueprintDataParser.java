@@ -70,7 +70,7 @@ public class BlueprintDataParser {
         continue;
       }
       if (!(node instanceof Element)) {
-        throw new BlueprintParseException("error.gameObject.notElement");
+        continue;
       }
       Element gameObjectNode = (Element) node;
       gameObjectsGroupList.add(parseGameObjectData(gameObjectNode));

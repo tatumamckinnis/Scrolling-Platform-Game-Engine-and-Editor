@@ -5,6 +5,7 @@ package oogasalad.engine.controller;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -93,5 +94,6 @@ public class DefaultGameController implements GameControllerAPI {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
+    System.out.println(myGameObjects);
   }
 }

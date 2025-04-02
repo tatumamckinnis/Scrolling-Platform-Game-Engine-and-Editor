@@ -158,6 +158,6 @@ public class DefaultGameManager implements GameManagerAPI {
    */
   private void step() throws RenderingException {
     myGameController.updateGameState();
-    myView.renderGameObjects(null);
+    myView.renderGameObjects(myGameController.getObjects());
   }
 }
