@@ -14,6 +14,7 @@ import oogasalad.engine.controller.gameobjectfactory.GameObjectFactory;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
@@ -51,19 +52,24 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   @Override
   public Map<String, GameObject> loadFileToEngine(LevelData levelData)
       throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-    Map<String, GameObject> gameObjectMap = new HashMap<>();
-    initGameObjectsMap(levelData.gameObjectBluePrintData(), gameObjectMap);
-    return gameObjectMap;
+    Map<String, GameObject> gameObjectUUIDMap = new HashMap<>();
+    List<GameObjectData> gameObjectDataList = new ArrayList<>();
+    Map<Integer, BlueprintData> bluePrintMap = levelData.gameBluePrintData();
+    for (List<GameObjectData> gameObjects : levelData.gameObjectsByLayer().values()) {
+      gameObjectDataList.addAll(gameObjects);
+    }
+    initGameObjectsMap(gameObjectDataList, gameObjectUUIDMap, bluePrintMap);
+    return gameObjectUUIDMap;
   }
 
   private void initGameObjectsMap(List<GameObjectData> gameObjects,
-      Map<String, GameObject> gameObjectMap)
+      Map<String, GameObject> gameObjectMap, Map<Integer, BlueprintData> bluePrintMap)
       throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     for (GameObjectData gameObjectData : gameObjects) {
       String className = ENGINE_FILE_RESOURCES.getString("GameObjectFactoryPackageName") + "."
-          + gameObjectData.type() + ENGINE_FILE_RESOURCES.getString("Factory");
+          + bluePrintMap.get(gameObjectData.blueprintId()) + ENGINE_FILE_RESOURCES.getString("Factory");
       try {
-        GameObject newObject = makeGameObject(gameObjectData, className);
+        GameObject newObject = makeGameObject(gameObjectData, className, bluePrintMap);
         gameObjectMap.put(newObject.getUuid(), newObject);
       } catch (ClassNotFoundException e) {
         throw new ObjectNotSupportedException(
@@ -72,7 +78,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     }
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData, String className)
+  private GameObject makeGameObject(GameObjectData gameObjectData, String className, Map<Integer, BlueprintData> bluePrintMap)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     Class<?> factoryClass = Class.forName(className);
     GameObjectFactory gameObjectFactory = (GameObjectFactory) factoryClass.getDeclaredConstructor()
@@ -82,17 +88,17 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         gameObjectData.blueprintId(),
         gameObjectData.x(),
         gameObjectData.y(),
-        gameObjectData.spriteData().width(),
-        gameObjectData.spriteData().height(),
+        bluePrintMap.get(gameObjectData.blueprintId()).hitBoxData().hitBoxWidth(),
+        bluePrintMap.get(gameObjectData.blueprintId()).hitBoxData().hitBowHeight(),
         gameObjectData.layer(),
-        gameObjectData.type(),
-        gameObjectData.group(),
-        gameObjectData.spriteData(),
+        bluePrintMap.get(gameObjectData.blueprintId()).type(),
+        bluePrintMap.get(gameObjectData.blueprintId()).group(),
+        bluePrintMap.get(gameObjectData.blueprintId()).spriteData(),
         new DynamicVariableCollection(),
         new ArrayList<>()
     );
 
-    List<Event> events = EventConverter.convertEventData(gameObjectData, gameObject);
+    List<Event> events = EventConverter.convertEventData(gameObjectData, gameObject, bluePrintMap);
     gameObject.setEvents(events);
     return gameObject;
   }

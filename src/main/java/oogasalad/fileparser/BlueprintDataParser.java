@@ -78,7 +78,7 @@ public class BlueprintDataParser {
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
 
       // Create SpriteData from spriteName and spriteFile.
-      SpriteData spriteData = mySpriteDataParser.getSpriteData(spriteName,spriteFile);
+      SpriteData spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type, spriteName, spriteFile);
 
       // Parse HitBoxData from hitBoxWidth, hitBoxHeight, spriteDx, spriteDy.
       String hitBoxWidthStr = gameObjectNode.getAttribute("hitBoxWidth");

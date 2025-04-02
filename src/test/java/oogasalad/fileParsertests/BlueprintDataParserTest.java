@@ -17,6 +17,7 @@
  */
 package oogasalad.fileParsertests;
 
+import oogasalad.fileparser.records.BlueprintData;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +64,7 @@ public class BlueprintDataParserTest {
     Document doc = createDocumentFromString(xml);
     Element root = doc.getDocumentElement();
 
-    List<GameObjectData> result = parser.getLevelGameObjectData(root);
+    List<BlueprintData> result = parser.getLevelGameObjectData(root);
     assertNotNull(result);
     assertTrue(result.isEmpty());
   }
