@@ -43,4 +43,10 @@ public class DefaultLevel implements LevelAPI {
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }
+
+  @Override
+  public void selectFilePath(String filePath) {
+    LevelData levelData = myFileParser.parseLevelFile(filePath);
+    myGameController.setLevelData(levelData);
+  }
 }
