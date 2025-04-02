@@ -10,6 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import oogasalad.engine.controller.DefaultGameManager;
+import oogasalad.engine.controller.GameManagerAPI;
 
 /**
  * Initial splash screen a user sees when running the game engine.
@@ -22,8 +24,9 @@ public class SplashScreen extends Display {
   private int splashWidth;
   private int splashHeight;
   private Runnable onStartClicked;
+  private final GameManagerAPI gameManager;
 
-  public SplashScreen() {
+  public SplashScreen(GameManagerAPI gameManager) {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
       splashComponentProperties.load(stream);
@@ -32,6 +35,7 @@ public class SplashScreen extends Display {
     }
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
+    this.gameManager = gameManager;
   }
 
   @Override
@@ -146,11 +150,17 @@ public class SplashScreen extends Display {
       currButton.setPrefSize(buttonWidth, buttonHeight);
       currButton.setWrapText(true);
 
-      if (buttonIDs[i].equals("splashButtonStartEngine")) {
+      if (buttonIDs[i].equals("splashButtonStartEngine")) { // TODO make not hard coded and add other buttons
         currButton.setOnAction(event -> {
           if (onStartClicked != null) {
             onStartClicked.run();
           }
+        });
+      }
+
+      if (buttonIDs[i].equals("splashButtonGameType")) {
+        currButton.setOnAction(event -> {
+          gameManager.selectDefaultGame("data/gameData/levels/dinosaurgame/Example_File1.xml");
         });
       }
 

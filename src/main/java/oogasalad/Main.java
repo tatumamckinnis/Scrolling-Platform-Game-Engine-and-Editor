@@ -20,7 +20,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            GameManagerAPI manager = new DefaultGameManager(new DefaultEngineFileConverter(), new DefaultGameController());
+            GameManagerAPI manager = new DefaultGameManager(new DefaultGameController());
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
         }
