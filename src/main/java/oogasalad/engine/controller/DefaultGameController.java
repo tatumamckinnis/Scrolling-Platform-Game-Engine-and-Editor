@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import oogasalad.engine.event.DefaultEventHandler;
+import oogasalad.engine.event.Event;
+import oogasalad.engine.event.EventHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
 
@@ -73,7 +76,13 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    // To be implemented
+    EventHandler eventHandler = new DefaultEventHandler(this);
+    for (GameObject gameObject : myGameObjects) {
+      List<Event> objectEvents = gameObject.getEvents();
+      for (Event event : objectEvents) {
+        eventHandler.handleEvent(event);
+      }
+    }
   }
 
   /**
