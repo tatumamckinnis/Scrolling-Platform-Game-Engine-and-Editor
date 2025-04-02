@@ -7,7 +7,7 @@ w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
 ///Do Not Use for level data
 -->
-<TextureAtlas imagePath="dinosaurgame-sprites.png" width="1770" height="101">
+<TextureAtlas imagePath="dinosaurgame/dinosaurgame-sprites.png" width="1770" height="101">
     <sprite n="Bird1" x="0" y="0" w="97" h="68"/>
     <sprite n="Bird2" x="118" y="0" w="93" h="62"/>
     <sprite n="DinoDead" x="236" y="0" w="86" h="101"/>
