@@ -58,6 +58,10 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myGameController = new DefaultGameController(this);
     myLevelAPI = new DefaultLevel();
 
+    initializeMyView();
+  }
+
+  private void initializeMyView() throws ViewInitializationException {
     Stage primaryStage = new Stage();
     myView = new GameAppView(primaryStage, this);
     myView.initialize();
@@ -168,7 +172,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private void step() throws RenderingException, InputException {
     updateInputList();
     myGameController.updateGameState();
-    myView.renderGameObjects(null);
+    myView.renderGameObjects(myGameController.getObjects());
   }
 
   /**

@@ -9,16 +9,15 @@ interact with each other -->
   <layers>
   <layer name="backGround" width="500" height="500" z="0">
     <data>
-      <object id="3000" coordinates="(0,0)"/>
     </data>
   </layer>
   <layer name="foreground" width="500" height="500" z="1">
     <data>
-      <object id="1" coordinates="" uid=""/>
-      <object id="2" coordinates="" uid=""/>
-      <object id="3" coordinates="" uid=""/>
-      <object id="4" coordinates="" uid=""/>
-      <object id="5" coordinates="" uid=""/>
+      <object id="1" coordinates="(0,0)" uid="1"/>
+      <object id="2" coordinates="(0,0)" uid="2"/>
+      <object id="3" coordinates="(0,0)" uid="3"/>
+      <object id="4" coordinates="(0,0)" uid="4"/>
+      <object id="5" coordinates="(0,0)" uid="5"/>
     </data>
   </layer>
   <layer name="entities" width="500" height="500" z="1">
@@ -29,7 +28,6 @@ interact with each other -->
   </layer>
   <layer name="events" width="500" height="500" z="1">
     <data>
-      <object id="" coordinates=""/>
     </data>
   </layer>
   </layers>
@@ -60,7 +58,6 @@ interact with each other -->
       <object type="" id="5" spriteFile="track.xml" spriteName="track-4" />
     </objectGroup>
     <objectGroup name="backgrounds">
-  <object type="background" id="3000" spriteFile="" spriteName=""/>
     </objectGroup>
   </game>
   <Events>
