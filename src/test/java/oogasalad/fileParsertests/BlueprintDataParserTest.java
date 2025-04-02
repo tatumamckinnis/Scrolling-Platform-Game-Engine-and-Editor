@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import oogasalad.fileparser.GameObjectBlueprintParser;
+import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.exceptions.GameObjectParseException;
 import oogasalad.fileparser.records.GameObjectData;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,13 +33,13 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class GameObjectBlueprintParserTest {
+public class BlueprintDataParserTest {
 
-  private GameObjectBlueprintParser parser;
+  private BlueprintDataParser parser;
 
   @BeforeEach
   public void setup() {
-    parser = new GameObjectBlueprintParser();
+    parser = new BlueprintDataParser();
   }
 
   /**
