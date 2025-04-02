@@ -1,14 +1,11 @@
 package oogasalad.engine.view;
 
 import java.util.List;
-import javafx.scene.Group;
-import javafx.scene.text.Text;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
 import oogasalad.engine.view.components.NewGameComponents;
-import oogasalad.engine.view.components.ToolBar;
 
 /**
  * This class is the view for an active game. It manages rendering the game scene, displaying UI
@@ -17,7 +14,6 @@ import oogasalad.engine.view.components.ToolBar;
  * @author Aksel Bell
  */
 public class GameScene extends Display {
-  private ToolBar myToolBar;
   private GameControlPanel myGameControlPanel;
   private HUD myHUD;
   private NewGameComponents myNewGameButtons;
@@ -27,7 +23,6 @@ public class GameScene extends Display {
    * Initializes a game scene object.
    */
   public GameScene() {
-    this.myToolBar = new ToolBar();
     this.myGameControlPanel = new GameControlPanel();
     this.myHUD = new HUD();
     this.myNewGameButtons = new NewGameComponents();
@@ -69,7 +64,7 @@ public class GameScene extends Display {
    */
   @Override
   public void render() {
-    this.getChildren().addAll(myHUD, myToolBar, myGameControlPanel, myLevelView);
+    this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView);
     myLevelView.render();
   }
 }
