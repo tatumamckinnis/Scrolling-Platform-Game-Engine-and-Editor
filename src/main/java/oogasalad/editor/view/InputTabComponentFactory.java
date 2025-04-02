@@ -270,8 +270,7 @@ public class InputTabComponentFactory {
     }
 
     String eventId = eventIdField.getText();
-    inputAPI.addInputData(currentObjectId);
-    inputAPI.addInputEvent(currentObjectId, eventId);
+    inputAPI.addEvent(currentObjectId, eventId);
     refreshEventsList();
     eventIdField.clear();
   }
@@ -285,7 +284,7 @@ public class InputTabComponentFactory {
     }
 
     String selectedEventId = eventListView.getSelectionModel().getSelectedItem();
-    inputAPI.removeInputEvent(currentObjectId, selectedEventId);
+    inputAPI.removeEvent(currentObjectId, selectedEventId);
     refreshEventsList();
   }
 
@@ -302,7 +301,7 @@ public class InputTabComponentFactory {
     String eventId = eventListView.getSelectionModel().getSelectedItem();
     ConditionType condition = conditionComboBox.getSelectionModel().getSelectedItem();
 
-    inputAPI.addInputEventCondition(currentObjectId, eventId, condition);
+    inputAPI.addEventCondition(currentObjectId, eventId, condition);
     refreshConditionsList(eventId);
   }
 
@@ -320,7 +319,7 @@ public class InputTabComponentFactory {
     String conditionStr = conditionsListView.getSelectionModel().getSelectedItem();
     ConditionType condition = ConditionType.valueOf(conditionStr);
 
-    inputAPI.removeInputEventCondition(currentObjectId, eventId, condition);
+    inputAPI.removeEventCondition(currentObjectId, eventId, condition);
     refreshConditionsList(eventId);
   }
 
@@ -342,7 +341,7 @@ public class InputTabComponentFactory {
 
     // Here we would need to extend the API to handle parameters for outcomes
     // For now, we'll just add the outcome without parameter support in the API
-    inputAPI.addInputEventOutcome(currentObjectId, eventId, outcome);
+    inputAPI.addEventOutcome(currentObjectId, eventId, outcome);
 
     // In a full implementation, we would store the parameter with the outcome
     // inputAPI.setInputEventOutcomeParameter(currentObjectId, eventId, outcome, parameterName);
@@ -364,7 +363,7 @@ public class InputTabComponentFactory {
     String outcomeStr = outcomesListView.getSelectionModel().getSelectedItem();
     OutcomeType outcome = OutcomeType.valueOf(outcomeStr.split(" ")[0]);
 
-    inputAPI.removeInputEventOutcome(currentObjectId, eventId, outcome);
+    inputAPI.removeEventOutcome(currentObjectId, eventId, outcome);
     refreshOutcomesList(eventId);
   }
 
@@ -378,7 +377,7 @@ public class InputTabComponentFactory {
     eventListView.getItems().clear();
 
     if (currentObjectId != null) {
-      Map<String, EditorEvent> events = inputAPI.getInputEvents(currentObjectId);
+      Map<String, EditorEvent> events = inputAPI.getEvents(currentObjectId);
       if (events != null) {
         eventListView.getItems().addAll(events.keySet());
       }
@@ -402,7 +401,7 @@ public class InputTabComponentFactory {
     conditionsListView.getItems().clear();
 
     if (currentObjectId != null && eventId != null) {
-      var conditions = inputAPI.getInputEventConditions(currentObjectId, eventId);
+      var conditions = inputAPI.getEventConditions(currentObjectId, eventId);
       if (conditions != null) {
         conditions.forEach(condition ->
             conditionsListView.getItems().add(condition.toString()));
@@ -419,10 +418,10 @@ public class InputTabComponentFactory {
     outcomesListView.getItems().clear();
 
     if (currentObjectId != null && eventId != null) {
-      var outcomes = inputAPI.getInputEventOutcomes(currentObjectId, eventId);
+      var outcomes = inputAPI.getEventOutcomes(currentObjectId, eventId);
       if (outcomes != null) {
         outcomes.forEach(outcome -> {
-          String parameter = inputAPI.getInputEventOutcomeParameter(
+          String parameter = inputAPI.getEventOutcomeParameter(
               currentObjectId, eventId, outcome);
 
           if (parameter != null && !parameter.isEmpty()) {

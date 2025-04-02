@@ -6,9 +6,9 @@ import oogasalad.fileparser.records.LevelData;
 
 public class DefaultFileParser {
 
-  private GameObjectBlueprintParser myGmeObjectParser;
-  private EventParser myEventParser;
-  private SpriteParser mySpriteParser;
+  private BlueprintDataParser myGmeObjectParser;
+  private EventDataParser myEventDataParser;
+  private SpriteDataParser mySpriteDataParser;
   //Map is <The name of the game, <Name of Level Directory (used for level progression when you have a subdirectory
   // from the game EX: <SuperMario, <BaseGame, List of levels in the base game version>>
 

@@ -54,8 +54,8 @@ public class EntityObjectPlacementTool implements ObjectPlacementTool{
 
   @Override
   public void placeObjectAt(int gridX, int gridY) {
-    double x = gridX * editorView.getCellSize();
-    double y = gridY * editorView.getCellSize();
+    int x = gridX * editorView.getCellSize();
+    int y = gridY * editorView.getCellSize();
 
     UUID newObjectId = editorAPI.createEditorObject();
 

@@ -8,12 +8,12 @@ class DefaultGameManagerTest {
 
   private GameManagerAPI myGameManager;
   private Timeline myGameLoop;
-  private EngineFileAPI myEngineFile;
+  private EngineFileConverterAPI myEngineFile;
   private GameControllerAPI myGameController;
 
   @BeforeEach
   void setUp() {
-    myGameManager = new DefaultGameManager((DefaultEngineFile) myEngineFile, (DefaultGameController) myGameController);
+    myGameManager = new DefaultGameManager((DefaultEngineFileConverter) myEngineFile, (DefaultGameController) myGameController);
     myGameLoop = ((DefaultGameManager) myGameManager).getGameLoop();
   }
 

@@ -1,23 +1,27 @@
 package oogasalad.editor.controller;
 
-import java.util.HashMap;
 import java.util.UUID;
+import oogasalad.editor.controller.api.EditorEventDataAPIAbstraction;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.object.EditorEventData;
 import oogasalad.editor.model.data.object.EditorObject;
-import oogasalad.editor.model.data.object.PhysicsData;
 
-public class PhysicsDataAPI {
-  EditorLevelData level;
+public class PhysicsDataAPI extends EditorEventDataAPIAbstraction {
 
-  public PhysicsDataAPI(EditorLevelData level) {
-    this.level = level;
+  @Override
+  protected EditorEventData createDataIfAbsent(EditorObject object) {
+    if (object.getPhysicsData() == null) {
+      object.createPhysicsData();
+    }
+    return object.getPhysicsData();
   }
 
-  public void addPhysicsData(UUID id) {
-    EditorObject object = level.getEditorObject(id);
-    if (object == null) { return; }
-    if (object.getPhysicsData() == null) {
-      object.setPhysicsData(new PhysicsData(new HashMap<>()));
-    }
+  public PhysicsDataAPI(EditorLevelData level) {
+    super(level);
+  }
+
+  public void createPhysicsData(UUID id) {
+    EditorObject object = super.getLevel().getEditorObject(id);
+    object.createInputData();
   }
 }

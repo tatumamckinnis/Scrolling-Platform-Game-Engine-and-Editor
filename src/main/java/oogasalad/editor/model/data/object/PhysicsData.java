@@ -1,5 +1,8 @@
 package oogasalad.editor.model.data.object;
 
-import java.util.Map;
+public class PhysicsData extends EditorEventData {
 
-public record PhysicsData(Map<String, EditorEvent> events) { }
+  public PhysicsData() {
+    super();
+  }
+}

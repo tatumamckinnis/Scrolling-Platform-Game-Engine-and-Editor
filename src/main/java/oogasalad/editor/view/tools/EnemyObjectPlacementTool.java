@@ -4,6 +4,7 @@ import java.util.UUID;
 import oogasalad.editor.controller.EditorDataAPI;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.InputTabComponentFactory;
 
 /**
  * Tool for adding enemy objects to the game scene.
@@ -51,8 +52,8 @@ public class EnemyObjectPlacementTool implements ObjectPlacementTool {
 
   @Override
   public void placeObjectAt(int gridX, int gridY) {
-    double x = gridX * editorView.getCellSize();
-    double y = gridY * editorView.getCellSize();
+    int x = gridX * editorView.getCellSize();
+    int y = gridY * editorView.getCellSize();
 
     UUID newObjectId = editorAPI.createEditorObject();
 

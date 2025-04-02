@@ -37,7 +37,7 @@ public class DefaultGameManager implements GameManagerAPI {
   private List<GameObject> myGameObjects;
   private GameControllerAPI myGameController;
   private LevelData myLevelData;
-  private EngineFileAPI myEngineFile;
+  private EngineFileConverterAPI myEngineFile;
   private FileParserAPI myFileParser;
   private LevelAPI myLevelAPI;
 
@@ -47,7 +47,7 @@ public class DefaultGameManager implements GameManagerAPI {
    * @param engineFile     the engine file API implementation
    * @param gameController the game controller to manage game objects and state
    */
-  public DefaultGameManager(DefaultEngineFile engineFile, DefaultGameController gameController) {
+  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController) {
     myGameLoop = initGameLoop();
     myEngineFile = engineFile;
     myGameController = gameController;
