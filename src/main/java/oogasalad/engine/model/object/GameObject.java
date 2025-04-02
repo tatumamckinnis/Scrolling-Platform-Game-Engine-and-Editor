@@ -101,6 +101,10 @@ public abstract class GameObject {
     return mySpriteData;
   }
 
+  public List<Event> getEvents() {
+    return myEvents;
+  }
+
   public void setX(int xPos) {
     this.myHitBoxX = xPos;
   }
