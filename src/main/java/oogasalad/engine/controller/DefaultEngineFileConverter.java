@@ -90,7 +90,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         blueprintData.gameName(),
         blueprintData.group(),
         blueprintData.spriteData(),
-        new HashMap<>(),
+        blueprintData.objectProperties(),
         new ArrayList<>()
     );
 

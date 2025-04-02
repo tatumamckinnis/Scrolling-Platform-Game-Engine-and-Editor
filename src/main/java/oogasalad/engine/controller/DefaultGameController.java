@@ -82,19 +82,9 @@ public class DefaultGameController implements GameControllerAPI {
    * This method uses the {@link EngineFileConverterAPI} to parse and convert level data into game objects.
    *
    * @param data the level data to load
-   * @throws DataFormatException       if the level data format is incorrect
-   * @throws IOException               if there is an error reading the data
-   * @throws ClassNotFoundException    if a referenced class is not found
-   * @throws InvocationTargetException if an error occurs during object instantiation
-   * @throws NoSuchMethodException     if a required constructor is missing
-   * @throws InstantiationException    if an object cannot be instantiated
-   * @throws IllegalAccessException    if access to a constructor is denied
    */
   @Override
-  public void setLevelData(LevelData data)
-      throws DataFormatException, IOException, ClassNotFoundException,
-      InvocationTargetException, NoSuchMethodException,
-      InstantiationException, IllegalAccessException {
+  public void setLevelData(LevelData data) {
     myGameObjectMap = myConverter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
   }

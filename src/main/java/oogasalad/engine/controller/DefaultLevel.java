@@ -35,20 +35,10 @@ public class DefaultLevel implements LevelAPI {
    * @param game     the name of the game
    * @param category the category or world within the game
    * @param level    the specific level identifier
-   * @throws DataFormatException       if the level file has an invalid format
-   * @throws IOException               if there is an error reading the file
-   * @throws ClassNotFoundException    if a required class in the level data is missing
-   * @throws InvocationTargetException if an error occurs during object creation
-   * @throws NoSuchMethodException     if the constructor for a class is not found
-   * @throws InstantiationException    if an object cannot be instantiated
-   * @throws IllegalAccessException    if access to a constructor is denied
-   *
-   *  @author Alana Zinkin
+   * @author Alana Zinkin
    */
   @Override
-  public void selectGame(String game, String category, String level)
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
-      NoSuchMethodException, InstantiationException, IllegalAccessException {
+  public void selectGame(String game, String category, String level) {
     String filePath = game + "/" + category + "/" + level;
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
