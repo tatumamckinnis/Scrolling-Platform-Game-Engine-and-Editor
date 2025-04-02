@@ -35,6 +35,7 @@ public abstract class GameObject {
   private Map<String, String> myParams;
   private List<Event> myEvents;
 
+
   /**
    * Constructs a new GameObject with the provided attributes.
    *

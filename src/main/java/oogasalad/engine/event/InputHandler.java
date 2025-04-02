@@ -3,7 +3,7 @@
  * Provides method for condition checker to evaluate input conditions
  * @author Gage Garcia
  */
-package oogasalad.engine.controller;
+package oogasalad.engine.event;
 
 import java.util.ArrayList;
 import java.util.List;
