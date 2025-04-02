@@ -54,6 +54,10 @@ public class DefaultGameManager implements GameManagerAPI {
     myGameController = gameController;
     myLevelAPI = new DefaultLevel();
 
+    initializeMyView();
+  }
+
+  private void initializeMyView() throws ViewInitializationException {
     Stage primaryStage = new Stage();
     myView = new GameAppView(primaryStage, this);
     myView.initialize();
