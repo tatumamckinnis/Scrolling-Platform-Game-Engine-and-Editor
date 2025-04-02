@@ -22,7 +22,7 @@ public interface GameAppAPI {
    * @throws ViewInitializationException if the view cannot be initialized due to
    *      missing resources, hardware limitations, or window creation failures
    */
-  void initialize(String title) throws ViewInitializationException;
+  void initialize() throws ViewInitializationException;
 
   /**
    * Renders a list of game objects to the view.

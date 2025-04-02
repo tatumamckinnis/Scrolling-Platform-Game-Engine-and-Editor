@@ -59,12 +59,17 @@ public class GameScene extends Display {
     myLevelView.renderGameObjects(gameObjects);
   }
 
+  public void setControlButtonsClicked(Runnable function) {
+    myGameControlPanel.setOnHomeClicked(function);
+  }
+
   /**
    * @see Display#render()
    */
   @Override
   public void render() {
     this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView);
+    myGameControlPanel.render();
     myLevelView.render();
   }
 }
