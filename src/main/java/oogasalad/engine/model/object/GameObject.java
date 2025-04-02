@@ -1,9 +1,13 @@
 package oogasalad.engine.model.object;
 
+import java.awt.Image;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import oogasalad.engine.event.Event;
+import oogasalad.fileparser.records.AnimationData;
+import oogasalad.fileparser.records.FrameData;
+import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
 
 /**
@@ -31,9 +35,13 @@ public abstract class GameObject {
   private int myLayer;
   private String myName;
   private String myGroup;
+  private FrameData myCurrentFrame;
   private SpriteData mySpriteData;
+  private Map<String, FrameData> myFrameMap;
+  private Map<String, AnimationData> myAnimationMap;
   private Map<String, String> myParams;
   private List<Event> myEvents;
+  private HitBoxData myHitBoxData;
 
 
   /**
@@ -49,13 +57,12 @@ public abstract class GameObject {
    * @param layer the rendering layer of the object
    * @param name the display name of the object
    * @param group the group or category the object belongs to (e.g., "Background", "Enemies")
-   * @param spriteData sprite rendering metadata
    * @param params map of dynamic runtime parameters
    * @param events list of events associated with this object
    */
   public GameObject(UUID uuid, int blueprintID, String type, int hitBoxX, int hitBoxY,
-      int hitBoxWidth, int hitBoxHeight, int layer, String name, String group,
-      SpriteData spriteData, Map<String, String> params, List<Event> events) {
+      int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData, FrameData currentFrame, Map<String, FrameData> frameMap, Map<String, AnimationData> animationMap,
+      Map<String, String> params, List<Event> events, HitBoxData hitBoxData) {
     this.uuid = uuid;
     this.myBlueprintID = blueprintID;
     this.myType = type;
@@ -63,10 +70,14 @@ public abstract class GameObject {
     this.myHitBoxY = hitBoxY;
     this.myHitBoxWidth = hitBoxWidth;
     this.myHitBoxHeight = hitBoxHeight;
+    this.myHitBoxData = hitBoxData;
     this.myLayer = layer;
     this.myName = name;
     this.myGroup = group;
     this.mySpriteData = spriteData;
+    this.myCurrentFrame = currentFrame;
+    this.myFrameMap = frameMap;
+    this.myAnimationMap = animationMap;
     this.myParams = params;
     this.myEvents = events;
   }
@@ -134,6 +145,22 @@ public abstract class GameObject {
     return myHitBoxHeight;
   }
 
+  public FrameData getCurrentFrame() {
+    return myCurrentFrame;
+  }
+
+  public SpriteData getSpriteData() {
+    return mySpriteData;
+  }
+
+  public int getSpriteX() {
+    return myHitBoxX + myHitBoxData.spriteDx();
+  }
+
+  public int getSpriteY() {
+    return myHitBoxY + myHitBoxData.spriteDy();
+  }
+
   /**
    * Returns the layer on which the object should be rendered.
    *
@@ -159,15 +186,6 @@ public abstract class GameObject {
    */
   public String getGroup() {
     return myGroup;
-  }
-
-  /**
-   * Returns the sprite data associated with this object.
-   *
-   * @return sprite data
-   */
-  public SpriteData getSpriteData() {
-    return mySpriteData;
   }
 
   /**
@@ -234,20 +252,15 @@ public abstract class GameObject {
   }
 
   /**
-   * Updates the sprite data used to render this object.
-   *
-   * @param spriteData new sprite data
-   */
-  public void setSpriteData(SpriteData spriteData) {
-    this.mySpriteData = spriteData;
-  }
-
-  /**
    * Sets the list of events associated with this object.
    *
    * @param events list of events
    */
   public void setEvents(List<Event> events) {
     myEvents = events;
+  }
+
+  public void setCurrentFrame(String frameName) {
+    myCurrentFrame = myFrameMap.getOrDefault(frameName, null);
   }
 }

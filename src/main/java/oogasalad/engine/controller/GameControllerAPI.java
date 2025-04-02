@@ -27,6 +27,11 @@ public interface GameControllerAPI {
   List<GameObject> getObjects();
 
   /**
+   * @return list of records of game objects only containing relevant information for the view
+   */
+  List<GameObjectRecord> getImmutableObjects();
+
+  /**
    * Returns a map of all game objects currently loaded in the engine.
    *
    * <p>The map uses each object's unique UUID as the key and the corresponding
