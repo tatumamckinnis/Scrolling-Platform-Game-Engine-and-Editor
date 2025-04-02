@@ -39,9 +39,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
    * @throws DataFormatException if the data cannot be translated into the parser's model
    */
   @Override
-  public void saveLevelStatus() throws IOException, DataFormatException {
-
-  }
+  public void saveLevelStatus() throws IOException, DataFormatException {}
 
   /**
    * Loads a new level or resumes saved progress by translating the standardized LevelData structure
@@ -52,22 +50,25 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   @Override
   public Map<String, GameObject> loadFileToEngine(LevelData levelData)
       throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-    Map<String, GameObject> gameObjectUUIDMap = new HashMap<>();
-    List<GameObjectData> gameObjectDataList = new ArrayList<>();
     Map<Integer, BlueprintData> bluePrintMap = levelData.gameBluePrintData();
+    return initGameObjectsMap(convertObjectMapToList(levelData), bluePrintMap);
+  }
+
+  private static List<GameObjectData> convertObjectMapToList(LevelData levelData) {
+    List<GameObjectData> gameObjectDataList = new ArrayList<>();
     for (List<GameObjectData> gameObjects : levelData.gameObjectsByLayer().values()) {
       gameObjectDataList.addAll(gameObjects);
     }
-    initGameObjectsMap(gameObjectDataList, gameObjectUUIDMap, bluePrintMap);
-    return gameObjectUUIDMap;
+    return gameObjectDataList;
   }
 
-  private void initGameObjectsMap(List<GameObjectData> gameObjects,
-      Map<String, GameObject> gameObjectMap, Map<Integer, BlueprintData> bluePrintMap)
+  private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects, Map<Integer, BlueprintData> bluePrintMap)
       throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    Map<String, GameObject> gameObjectMap = new HashMap<>();
     for (GameObjectData gameObjectData : gameObjects) {
       String className = ENGINE_FILE_RESOURCES.getString("GameObjectFactoryPackageName") + "."
-          + bluePrintMap.get(gameObjectData.blueprintId()) + ENGINE_FILE_RESOURCES.getString("Factory");
+          + bluePrintMap.get(gameObjectData.blueprintId()) + ENGINE_FILE_RESOURCES.getString(
+          "Factory");
       try {
         GameObject newObject = makeGameObject(gameObjectData, className, bluePrintMap);
         gameObjectMap.put(newObject.getUuid(), newObject);
@@ -76,24 +77,27 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
             ENGINE_FILE_RESOURCES.getString("ObjectNotSupported"));
       }
     }
+    return gameObjectMap;
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData, String className, Map<Integer, BlueprintData> bluePrintMap)
+  private GameObject makeGameObject(GameObjectData gameObjectData, String className,
+      Map<Integer, BlueprintData> bluePrintMap)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     Class<?> factoryClass = Class.forName(className);
     GameObjectFactory gameObjectFactory = (GameObjectFactory) factoryClass.getDeclaredConstructor()
         .newInstance();
 
+    BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
     GameObject gameObject = gameObjectFactory.createGameObject(gameObjectData.uniqueId(),
         gameObjectData.blueprintId(),
         gameObjectData.x(),
         gameObjectData.y(),
-        bluePrintMap.get(gameObjectData.blueprintId()).hitBoxData().hitBoxWidth(),
-        bluePrintMap.get(gameObjectData.blueprintId()).hitBoxData().hitBowHeight(),
+        blueprintData.hitBoxData().hitBoxWidth(),
+        blueprintData.hitBoxData().hitBowHeight(),
         gameObjectData.layer(),
-        bluePrintMap.get(gameObjectData.blueprintId()).type(),
-        bluePrintMap.get(gameObjectData.blueprintId()).group(),
-        bluePrintMap.get(gameObjectData.blueprintId()).spriteData(),
+        blueprintData.type(),
+        blueprintData.group(),
+        blueprintData.spriteData(),
         new DynamicVariableCollection(),
         new ArrayList<>()
     );
