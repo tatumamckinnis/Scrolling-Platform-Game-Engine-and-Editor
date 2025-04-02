@@ -3,6 +3,8 @@ package oogasalad.engine.view;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import oogasalad.engine.controller.DefaultGameManager;
+import oogasalad.engine.controller.GameManagerAPI;
 import oogasalad.engine.exception.InputException;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.exception.ViewInitializationException;
@@ -19,23 +21,25 @@ public class GameAppView implements GameAppAPI {
   private Display currentDisplay;
   private Scene currentScene;
   private final Stage currentStage;
+  private final GameManagerAPI gameManager;
   private static final Logger LOG = LogManager.getLogger();
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
    */
-  public GameAppView(Stage stage) {
+  public GameAppView(Stage stage, GameManagerAPI gameManager) throws ViewInitializationException {
     this.currentStage = stage;
+    this.gameManager = gameManager;
   }
 
   /**
-   * @see GameAppView#initialize(String)
+   * @see GameAppView#initialize()
    */
   @Override
-  public void initialize(String title) throws ViewInitializationException {
+  public void initialize() throws ViewInitializationException {
     SplashScreen splashScreen = new SplashScreen();
 
-    splashScreen.setOnStartClicked(() -> {
+    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other buttons
       try {
         startGame();
       } catch (ViewInitializationException e) {
@@ -71,10 +75,19 @@ public class GameAppView implements GameAppAPI {
 
   /**
    * Starts a game by setting the current scene to a game scene.
+   * Defines functions for button routing.
    * @throws ViewInitializationException if errors with initialization.
    */
   private void startGame() throws ViewInitializationException {
-    currentDisplay = new GameScene();
+    GameScene game = new GameScene();
+    game.setControlButtonsClicked(() -> { // TODO needs to take in list of functions
+          try {
+            goToHome();
+          } catch (ViewInitializationException e) {
+            LOG.warn("Failed to start game: " + e.getMessage());
+          }
+        });
+    currentDisplay = game;
     currentDisplay.render();
     currentScene.setRoot(currentDisplay);
 
@@ -83,6 +96,16 @@ public class GameAppView implements GameAppAPI {
 
     currentStage.setWidth(newWidth);
     currentStage.setHeight(newHeight);
+  }
+
+  /**
+   * Returns any view to the homepage.
+   */
+  private void goToHome() throws ViewInitializationException {
+    initialize();
+    currentStage.setScene(currentScene);
+//    currentStage.setWidth(currentScene.getWidth());
+//    currentStage.setHeight(currentScene.getHeight());
   }
 
   /**

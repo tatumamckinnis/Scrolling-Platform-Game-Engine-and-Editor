@@ -3,15 +3,9 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
-import old_editor_example.DynamicVariable;
-import oogasalad.engine.controller.CollisionHandler;
-import oogasalad.engine.controller.InputHandler;
-import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class ConditionChecker {
     private InputHandler inputHandler = new InputHandler();

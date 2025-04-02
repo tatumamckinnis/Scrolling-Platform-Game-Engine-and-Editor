@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import oogasalad.engine.controller.DefaultEngineFileConverter;
+import oogasalad.engine.controller.DefaultGameController;
+import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.exception.ViewInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +22,8 @@ public class GameAppViewTest extends ApplicationTest {
   @Override
   public void start(Stage stage) throws ViewInitializationException {
     this.testStage = stage;
-    gameAppView = new GameAppView(testStage);
-    gameAppView.initialize("Test Splash Screen");
+    gameAppView = new GameAppView(testStage, new DefaultGameManager(new DefaultEngineFileConverter(), new DefaultGameController()));
+    gameAppView.initialize();
     testStage.setScene(gameAppView.getCurrentScene());
     testStage.show();
   }
