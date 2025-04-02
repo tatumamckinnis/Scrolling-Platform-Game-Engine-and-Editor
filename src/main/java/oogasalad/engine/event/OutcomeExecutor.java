@@ -3,18 +3,17 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
-import java.util.Map;
-import oogasalad.engine.controller.GameController;
+import oogasalad.engine.controller.GameControllerAPI;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 
 public class OutcomeExecutor {
-    private GameController gameController;
+    private GameControllerAPI gameController;
 
     /**
      * Initialize the executor with a game controller
      * @param gameController
      */
-    public OutcomeExecutor(GameController gameController) {
+    public OutcomeExecutor(GameControllerAPI gameController) {
         this.gameController = gameController;
     }
 

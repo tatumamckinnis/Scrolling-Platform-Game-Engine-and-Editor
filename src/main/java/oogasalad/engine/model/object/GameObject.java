@@ -1,5 +1,9 @@
 package oogasalad.engine.model.object;
 
+import java.util.List;
+import java.util.UUID;
+import oogasalad.editor.model.data.Layer;
+import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
 
 /**
@@ -11,61 +15,66 @@ import oogasalad.fileparser.records.SpriteData;
  */
 public abstract class GameObject {
 
-  /**
-   * Unique identifier for the game object
-   */
-  private final String uuid;
-  /**
-   * Name of the game object
-   */
+  private final UUID uuid;
+  private int myBlueprintID;
+  private int myHitBoxX;
+  private int myHitBoxY;
+  private int myHitBoxWidth;
+  private int myHitBoxHeight;
+  private int myLayer;
   private String myName;
-  /**
-   * Group or category to which the game object belongs
-   */
   private String myGroup;
-  /**
-   * Visual sprite data associated with the game object
-   */
   private SpriteData mySpriteData;
-  /**
-   * Dynamic parameters that describe the object's runtime state
-   */
   private DynamicVariableCollection params;
+  private List<Event> myEvents;
 
-  /**
-   * Constructs a new GameObject with the specified properties.
-   *
-   * @param uuid       unique identifier for this object
-   * @param name       the display name of the object
-   * @param group      the group or category the object belongs to
-   * @param spriteData visual data used to render the object
-   * @param params     dynamic variables associated with the object's behavior
-   */
-  public GameObject(String uuid, String name, String group, SpriteData spriteData,
-      DynamicVariableCollection params) {
+
+  public GameObject(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+      DynamicVariableCollection params, List<Event> events) {
     this.uuid = uuid;
+    this.myBlueprintID = blueprintID;
+    this.myHitBoxX = hitBoxX;
+    this.myHitBoxY = hitBoxY;
+    this.myHitBoxWidth = hitBoxWidth;
+    this.myHitBoxHeight = hitBoxHeight;
+    this.myLayer = layer;
     this.myName = name;
     this.myGroup = group;
     this.mySpriteData = spriteData;
     this.params = params;
+    this.myEvents = events;
   }
 
-  /**
-   * Returns the dynamic parameters associated with the object.
-   *
-   * @return the object's dynamic variable collection
-   */
-  public DynamicVariableCollection getParams() {
-    return params;
+  public int getBlueprintID() {
+    return myBlueprintID;
   }
 
+  public int getHitBoxX() {
+    return myHitBoxX;
+  }
+
+  public int getHitBoxY() {
+    return myHitBoxY;
+  }
+
+  public int getHitBoxWidth() {
+    return myHitBoxWidth;
+  }
+
+  public int getHitBoxHeight() {
+    return myHitBoxHeight;
+  }
+
+  public int getLayer() {
+    return myLayer;
+  }
   /**
    * Returns the unique identifier of the object.
    *
    * @return the object's UUID
    */
   public String getUuid() {
-    return uuid;
+    return uuid.toString();
   }
 
   /**
@@ -93,5 +102,18 @@ public abstract class GameObject {
    */
   public SpriteData getSpriteData() {
     return mySpriteData;
+  }
+
+  /**
+   * Returns the dynamic parameters associated with the object.
+   *
+   * @return the object's dynamic variable collection
+   */
+  public DynamicVariableCollection getParams() {
+    return params;
+  }
+
+  public void setEvents(List<Event> events) {
+    myEvents = events;
   }
 }

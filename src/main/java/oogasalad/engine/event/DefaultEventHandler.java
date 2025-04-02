@@ -3,7 +3,7 @@
  */
 package oogasalad.engine.event;
 
-import oogasalad.engine.controller.GameController;
+import oogasalad.engine.controller.GameControllerAPI;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class DefaultEventHandler implements EventHandler {
      * Initializes event handler
      * @param gameController
      */
-    public DefaultEventHandler(GameController gameController) {
+    public DefaultEventHandler(GameControllerAPI gameController) {
         outcomeExecutor = new OutcomeExecutor(gameController);
     }
     /**
