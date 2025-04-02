@@ -44,7 +44,7 @@ public class DefaultLevel implements LevelAPI {
    */
   @Override
   public void selectGame(String game, String category, String level) {
-    String filePath = game + "/" + category + "/" + level;
+    String filePath = "/Users/billym./oogasalad/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }

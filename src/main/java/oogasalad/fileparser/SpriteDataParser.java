@@ -51,11 +51,13 @@ public class SpriteDataParser {
 
   // Base path to the graphics data.
   private final String pathToGraphicsData;
+  private final String pathToSpriteData;
 
 
   // Constructor that loads the properties file and sets the graphics data path.
   public SpriteDataParser() {
-    this.pathToGraphicsData = loadGraphicsDataPath();
+    this.pathToGraphicsData = loadDataPaths()[0];
+    this.pathToSpriteData =  loadDataPaths()[1];
   }
 
   /**
@@ -63,17 +65,20 @@ public class SpriteDataParser {
    *
    * @return the full path to the graphics data as a String
    */
-  private String loadGraphicsDataPath() {
+  private String[] loadDataPaths() {
     Properties properties = new Properties();
     try (InputStream input = getClass().getClassLoader().getResourceAsStream("oogasalad/file/fileStructure.properties")) {
       properties.load(input);
     } catch (IOException e) {
       e.printStackTrace();
       // Return a default or empty string if loading fails.
-      return "";
+      return new String[0];
     }
     // Combine with the user directory if the property is relative.
-    return System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.graphics.data");
+    String[] paths = new String[properties.size()];
+    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.game.data");
+    paths[0] = System.getProperty("user.dir") + File.separator +properties.getProperty("path.to.graphics.data");
+    return paths;
   }
 
   /**
@@ -117,12 +122,17 @@ public class SpriteDataParser {
         throw new RuntimeException("Sprite with name " + spriteName
             + " not found in file " + filePath);
       }
-
       // Create a base image from the sprite element's attributes.
       int baseX = Integer.parseInt(targetSprite.getAttribute("x"));
       int baseY = Integer.parseInt(targetSprite.getAttribute("y"));
-      int baseWidth = Integer.parseInt(targetSprite.getAttribute("width"));
-      int baseHeight = Integer.parseInt(targetSprite.getAttribute("height"));
+      int baseWidth = 0;
+      int baseHeight = 0;
+      if (targetSprite.getAttribute("width") != "") {
+        baseWidth = Integer.parseInt(targetSprite.getAttribute("width"));
+      }
+      if (targetSprite.getAttribute("height") != "") {
+        baseHeight = Integer.parseInt(targetSprite.getAttribute("height"));
+      }
       FrameData baseImage = new FrameData(spriteName, baseX, baseY, baseWidth, baseHeight, spriteSheetFile);
 
       // Parse frames from the <frames> element.
@@ -167,7 +177,7 @@ public class SpriteDataParser {
    * @return the full file path as a String
    */
   private String buildFilePath(String gameName, String group, String type, String spriteFile) {
-    return pathToGraphicsData + File.separator + gameName + File.separator + group
+    return pathToSpriteData + File.separator + gameName + File.separator + group
         + File.separator + type + File.separator + spriteFile;
   }
 

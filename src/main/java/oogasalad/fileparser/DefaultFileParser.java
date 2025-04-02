@@ -19,7 +19,6 @@ public class DefaultFileParser implements FileParserAPI {
   private LayerDataParser layerDataParser;
   private BlueprintDataParser myGameObjectParser;
   private EventDataParser myEventDataParser;
-  private SpriteDataParser mySpriteDataParser;
   // Map structure: <Game Name, <Level Directory, List of Level Files>>
   private Map<String, Map<String, List<File>>> mapOfGameLevels;
 
@@ -28,7 +27,6 @@ public class DefaultFileParser implements FileParserAPI {
     layerDataParser = new LayerDataParser();
     myGameObjectParser = new BlueprintDataParser();
     myEventDataParser = new EventDataParser();
-    mySpriteDataParser = new SpriteDataParser();
     myEventDataParser = new EventDataParser();
     // Assume the map is populated via some Levels API:
     // mapOfGameLevels = LevelsAPI.getMapOfLevels();
@@ -56,7 +54,7 @@ public class DefaultFileParser implements FileParserAPI {
     // Remove the .xml extension to derive the level name.
 
     // Find the corresponding File from the map.
-    File levelFile = new File(filePath);
+    File levelFile = new File("/Users/billym./oogasalad/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
 //    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
 //    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
 //      for (File file : entry.getValue()) {
@@ -87,9 +85,21 @@ public class DefaultFileParser implements FileParserAPI {
       // Assume getBlueprintData returns a Map<Integer, BlueprintData>.
       Map<Integer,BlueprintData> blueprintData = myGameObjectParser.getBlueprintData(root,eventList);
       // Locate the layers element (assumed to be named "layers").
-      Element layersElement = (Element) root.getElementsByTagName("layers").item(0);
       // Use the LayerDataParser to extract game objects, organized by layer.
-      Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(layersElement);
+      Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(root);
+
+      System.out.println(eventList.size());
+      System.out.println(blueprintData.size());
+      System.out.println(gameObjectsByLayer.size());
+      for(Integer i : blueprintData.keySet()){
+        System.out.println(blueprintData.get(i));
+      }
+      for (Entry<Integer, List<GameObjectData>> entry : gameObjectsByLayer.entrySet()) {
+        System.out.println(entry.getKey());
+        for (GameObjectData gameObjectData : entry.getValue()) {
+          System.out.println(gameObjectData);
+        }
+      }
 
       // Construct and return the LevelData record.
       return new LevelData(levelName, blueprintData, gameObjectsByLayer);

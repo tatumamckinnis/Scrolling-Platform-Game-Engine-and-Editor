@@ -3,40 +3,55 @@ package oogasalad.fileparser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.w3c.dom.Element;
-import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 
 public class GameObjectDataParser {
 
+  /**
+   * Parses a game object XML element and creates a list of GameObjectData objects.
+   *
+   * @param gameObjectElement the XML element representing the game object
+   * @param z the z-index for the game object
+   * @return a list of GameObjectData objects created from the element
+   */
   public List<GameObjectData> getGameObjectData(Element gameObjectElement, int z) {
-      System.out.println(gameObjectElement.getAttribute("id"));
-      int blueprintID = Integer.parseInt(gameObjectElement.getAttribute("uid"));
-      UUID uuid = UUID.fromString(gameObjectElement.getAttribute("id"));
-      int x = Integer.parseInt(gameObjectElement.getAttribute("x"));
-      int y = Integer.parseInt(gameObjectElement.getAttribute("y"));
-      String uidList = gameObjectElement.getAttribute("uid");
-      String coordinates = gameObjectElement.getAttribute("coordinates");
-      String[] coordinatesList = coordinates.split(",");
-      List<GameObjectData> gameObjectDataList = new ArrayList<>();
-      int count = 0;
-      for (String uid : uidList.split(",")) {
-        for (String coordinate : coordinatesList) {
-          count = 0;
-          for (char c : coordinate.toCharArray()) {
-            if (Character.isDigit(c)) {
-              if (count == 0) {
-                x = Integer.parseInt(coordinate);
-                count++;
-              } else if (count == 1) {
-                y = Integer.parseInt(coordinate);
-                count++;
-              }
-            }
-          }
-        }
+    // Parse the blueprint id from the "id" attribute.
+    int blueprintID = Integer.parseInt(gameObjectElement.getAttribute("id"));
+
+    // Get the uid attribute and split by comma.
+    String uidAttr = gameObjectElement.getAttribute("uid");
+    String[] uidArray = uidAttr.split(",");
+
+    // Get the coordinates attribute.
+    String coordinates = gameObjectElement.getAttribute("coordinates");
+
+    // Create a list to hold the resulting game object data.
+    List<GameObjectData> gameObjectDataList = new ArrayList<>();
+
+    // Use a regex pattern to match coordinate pairs of the form (x,y).
+    Pattern pattern = Pattern.compile("\\((\\d+),(\\d+)\\)");
+    Matcher matcher = pattern.matcher(coordinates);
+
+    int index = 0;
+    while (matcher.find()) {
+      // Parse x and y as integers.
+      int x = Integer.parseInt(matcher.group(1));
+      int y = Integer.parseInt(matcher.group(2));
+
+      // Ensure we have a corresponding uid.
+      if (index < uidArray.length) {
+        UUID uuid = UUID.fromString(uidArray[index].trim());
         gameObjectDataList.add(new GameObjectData(blueprintID, uuid, x, y, z));
+      } else {
+        // Optionally handle the mismatch (e.g., log an error).
+        break;
       }
-      return gameObjectDataList;
+      index++;
+    }
+
+    return gameObjectDataList;
   }
 }

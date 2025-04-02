@@ -62,7 +62,7 @@ public class BlueprintDataParser {
 
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode) throws BlueprintParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
-    NodeList gameObjectNodes = objectGroupNode.getChildNodes();
+    NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
       Node node = gameObjectNodes.item(i);
       // Skip text nodes that are only whitespace
@@ -86,10 +86,12 @@ public class BlueprintDataParser {
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
-
       // Create SpriteData from spriteName and spriteFile.
-      SpriteData spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type, spriteName, spriteFile);
-
+      SpriteData spriteData = null;
+      if (!(gameName == null || gameName.isEmpty())) {
+        spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type,
+            spriteName, spriteFile);
+      }
       // Parse HitBoxData from hitBoxWidth, hitBoxHeight, spriteDx, spriteDy.
       String hitBoxWidthStr = gameObjectNode.getAttribute("hitBoxWidth");
       String hitBoxHeightStr = gameObjectNode.getAttribute("hitBoxHeight");
