@@ -28,7 +28,6 @@ public class DefaultLevel implements LevelAPI {
 
   public DefaultLevel() {
     myFileParser = new DefaultFileParser();
-    myGameController = new DefaultGameController();
   }
   /**
    * Selects a game level based on the provided game, category, and level identifiers.

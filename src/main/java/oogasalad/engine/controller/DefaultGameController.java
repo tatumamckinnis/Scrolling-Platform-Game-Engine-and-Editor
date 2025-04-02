@@ -13,6 +13,7 @@ import java.util.zip.DataFormatException;
 import oogasalad.engine.event.DefaultEventHandler;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.event.EventHandler;
+import oogasalad.engine.event.InputHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
 
@@ -27,7 +28,12 @@ import oogasalad.fileparser.records.LevelData;
  * @author Alana Zinkin
  */
 public class DefaultGameController implements GameControllerAPI {
+  private InputProvider inputProvider;
 
+  public DefaultGameController(InputProvider inputProvider) {
+    inputProvider = inputProvider;
+
+  }
 
   /**
    * Map of UUUID (as Strings) to GameObjects
@@ -72,7 +78,8 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    EventHandler eventHandler = new DefaultEventHandler(this);
+    EventHandler eventHandler = new DefaultEventHandler(inputProvider,this);
+    InputHandler inputHandler = new InputHandler();
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
