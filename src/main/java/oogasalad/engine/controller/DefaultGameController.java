@@ -78,7 +78,9 @@ public class DefaultGameController implements GameControllerAPI {
       for (Event event : objectEvents) {
         eventHandler.handleEvent(event);
       }
+      gameObject.updatePosition(); //process y velocity/xvelocity from gravity/jump
     }
+
   }
 
   /**
