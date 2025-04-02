@@ -22,7 +22,7 @@ public class GameAppViewTest extends ApplicationTest {
   @Override
   public void start(Stage stage) throws ViewInitializationException {
     this.testStage = stage;
-    gameAppView = new GameAppView(testStage, new DefaultGameManager(new DefaultGameController()));
+    gameAppView = new GameAppView(testStage, new DefaultGameManager());
     gameAppView.initialize();
     testStage.setScene(gameAppView.getCurrentScene());
     testStage.show();

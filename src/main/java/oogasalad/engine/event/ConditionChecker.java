@@ -3,13 +3,19 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
+import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 
 public class ConditionChecker {
-    private InputHandler inputHandler = new InputHandler();
-    private CollisionHandler collisionHandler = new CollisionHandler();
+    private CollisionHandler collisionHandler;
+    private InputProvider inputProvider;
+
+    public ConditionChecker(InputProvider inputProvider) {
+        this.inputProvider = inputProvider;
+    }
     /**
      * evaluates condition
      * @param conditionType -> type of condition
@@ -22,7 +28,7 @@ public class ConditionChecker {
             return true;
         }
         else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
-            return inputHandler.isKeyPressed(' ');
+            return inputProvider.isKeyPressed(" ");
         }
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
             List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);

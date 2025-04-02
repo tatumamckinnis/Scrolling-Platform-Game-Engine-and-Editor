@@ -1,4 +1,4 @@
-package old_editor_example;
+package oogasalad.editor.model.data.object;
 
 public class DynamicVariable {
   private String name;

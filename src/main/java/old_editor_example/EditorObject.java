@@ -1,5 +1,7 @@
 package old_editor_example;
 
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
+
 public class EditorObject {
   private IdentityData identity;
   private CollisionData collisionData;

@@ -16,9 +16,13 @@ import java.util.Map;
 
 public class CollisionHandler {
     //underlying storage of an object -> the list of objects its colliding with
-    private Map<GameObject, List<GameObject>> collisionMap = new HashMap<>();
-    private GameControllerAPI gameController = new DefaultGameController();
+    private Map<GameObject, List<GameObject>> collisionMap;
+    private GameControllerAPI gameController;
 
+    public CollisionHandler(GameControllerAPI gameController) {
+        this.gameController = gameController;
+        this.collisionMap = new HashMap<>();
+    }
     /**
      * updates current state of collisions at a step
      * Requires all gameObjects through their id's in a level
