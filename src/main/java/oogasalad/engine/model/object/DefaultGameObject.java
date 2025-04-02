@@ -11,12 +11,13 @@ import oogasalad.fileparser.records.SpriteData;
  *
  * @author Alana Zinkin
  */
-public class Player extends GameObject {
+public class DefaultGameObject extends GameObject {
 
 
-  public Player(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+  public DefaultGameObject(UUID uuid, int blueprintID, String type, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
       DynamicVariableCollection params, List<Event> events) {
-    super(uuid, blueprintID, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight, layer, name, group, spriteData, params, events );
+    super(uuid, blueprintID, type, hitBoxX, hitBoxY, hitBoxWidth, hitBoxHeight, layer, name, group,
+        spriteData, params, events);
   }
 
 }

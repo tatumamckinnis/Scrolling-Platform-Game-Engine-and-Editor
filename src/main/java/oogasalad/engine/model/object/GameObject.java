@@ -2,7 +2,6 @@ package oogasalad.engine.model.object;
 
 import java.util.List;
 import java.util.UUID;
-import oogasalad.editor.model.data.Layer;
 import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.SpriteData;
 
@@ -17,6 +16,7 @@ public abstract class GameObject {
 
   private final UUID uuid;
   private int myBlueprintID;
+  private String myType;
   private int myHitBoxX;
   private int myHitBoxY;
   private int myHitBoxWidth;
@@ -29,10 +29,11 @@ public abstract class GameObject {
   private List<Event> myEvents;
 
 
-  public GameObject(UUID uuid, int blueprintID, int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
+  public GameObject(UUID uuid, int blueprintID, String type,  int hitBoxX, int hitBoxY, int hitBoxWidth, int hitBoxHeight, int layer, String name, String group, SpriteData spriteData,
       DynamicVariableCollection params, List<Event> events) {
     this.uuid = uuid;
     this.myBlueprintID = blueprintID;
+    this.myType = type;
     this.myHitBoxX = hitBoxX;
     this.myHitBoxY = hitBoxY;
     this.myHitBoxWidth = hitBoxWidth;
@@ -47,6 +48,10 @@ public abstract class GameObject {
 
   public int getBlueprintID() {
     return myBlueprintID;
+  }
+
+  public String getType() {
+    return myType;
   }
 
   public int getHitBoxX() {

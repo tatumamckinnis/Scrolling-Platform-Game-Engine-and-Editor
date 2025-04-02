@@ -30,10 +30,7 @@ public interface EngineFileConverterAPI {
    * into a standardized data structure 2) Translating that structure into the Engine’s runtime
    * objects 3) Updating the current Engine state
    *
-   * @throws IOException         if the file cannot be read
-   * @throws DataFormatException if the file's data cannot be interpreted into Engine objects
    */
-  public Map<String, GameObject> loadFileToEngine(LevelData level)
-      throws IOException, DataFormatException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+  public Map<String, GameObject> loadFileToEngine(LevelData level) ;
 
 }

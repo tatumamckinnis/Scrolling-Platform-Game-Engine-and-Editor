@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.UUID;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import oogasalad.engine.model.object.DefaultGameObject;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.Player;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
@@ -40,7 +40,7 @@ public class ControllerApplication extends Application {
 
 
     List<GameObject> expectedObjects = new ArrayList<>();
-    expectedObjects.add(new Player(new UUID(4, 1), 1, 1, 1, 5, 10, 0, "Mario", "Player", spriteData1, new DynamicVariableCollection(), new ArrayList<>()));
+    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", spriteData1, new DynamicVariableCollection(), new ArrayList<>()));
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
   }
 

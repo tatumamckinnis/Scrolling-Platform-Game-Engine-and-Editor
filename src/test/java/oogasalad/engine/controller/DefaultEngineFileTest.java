@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.zip.DataFormatException;
+import oogasalad.engine.model.object.DefaultGameObject;
 import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.Player;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
@@ -51,7 +51,7 @@ class DefaultEngineFileTest {
 
     List<GameObject> expectedObjects = new ArrayList<>();
     SpriteData expectedSpriteData1 = new SpriteData("Mario", new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new ArrayList<>(), new ArrayList<>());
-    expectedObjects.add(new Player(new UUID(4, 1), 1, 1, 1, 5, 10, 0, "Mario", "Player", expectedSpriteData1, new DynamicVariableCollection(), new ArrayList<>()));
+    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", expectedSpriteData1, new DynamicVariableCollection(), new ArrayList<>()));
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
     List<GameObject> myActualObjects = new ArrayList<>(actualObjects.values());
 
