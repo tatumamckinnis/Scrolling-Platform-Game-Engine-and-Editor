@@ -83,12 +83,19 @@ public abstract class GameObject {
     this.myAnimationMap = animationMap;
     this.myParams = params;
     this.myEvents = events;
+    this.isGrounded = true;
   }
 
   public void updatePosition() {
     myHitBoxX += xVelocity;
     myHitBoxY += yVelocity;
+    System.out.println("dino yVelocity = " + yVelocity);
     //check to make sure not too low?
+    if (myHitBoxY >= 500-myHitBoxHeight) {
+      isGrounded = true;
+      myHitBoxY = 500-myHitBoxHeight;
+    }
+
   }
 
   /**
@@ -156,6 +163,18 @@ public abstract class GameObject {
 
   public FrameData getCurrentFrame() {
     return myCurrentFrame;
+  }
+
+  public int getHitBoxWidth() {
+    return myHitBoxWidth;
+  }
+
+  public int getHitBoxHeight() {
+    return myHitBoxHeight;
+  }
+
+  public HitBoxData getmyHitBoxData(){
+    return myHitBoxData;
   }
 
   public SpriteData getSpriteData() {

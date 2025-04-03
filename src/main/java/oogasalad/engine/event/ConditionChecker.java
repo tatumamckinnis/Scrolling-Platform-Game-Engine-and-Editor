@@ -3,10 +3,12 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
+import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.GameManagerAPI;
 import oogasalad.engine.controller.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class ConditionChecker {
@@ -28,7 +30,17 @@ public class ConditionChecker {
             return true;
         }
         else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
-            return inputProvider.isKeyPressed(" ");
+            System.out.println("SPACE KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.SPACE));
+            return inputProvider.isKeyPressed(KeyCode.SPACE);
+        }
+
+        else if (conditionType == EventCondition.ConditionType.UP_ARROW_PRESSED) {
+            System.out.println("UP ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
+            return inputProvider.isKeyPressed(KeyCode.UP);
+        }
+        else if (conditionType == EventCondition.ConditionType.W_KEY_PRESSED) {
+            System.out.println("W ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
+            return inputProvider.isKeyPressed(KeyCode.W);
         }
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
             List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);

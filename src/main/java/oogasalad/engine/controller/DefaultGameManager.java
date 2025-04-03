@@ -46,12 +46,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private GameControllerAPI myGameController;
   private LevelAPI myLevelAPI;
   private GameAppView myView;
-  private static List<String> currentKeysPressed;
+  private static List<KeyCode> currentKeysPressed;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
    *
-   * @param gameController the game controller to manage game objects and state
+   *
    */
   public DefaultGameManager()
       throws ViewInitializationException {
@@ -82,7 +82,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
-    double secondDelay = 1.0 / framesPerSecond;
+    double secondDelay = 1.0 / (framesPerSecond*4);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
@@ -160,11 +160,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   /**
    *
-   * @param key string to check
+   * @param  keyCode to check
    * @return if that key is pressed
    */
-  public boolean isKeyPressed(String key) {
-    return currentKeysPressed.contains(key);
+  public boolean isKeyPressed(KeyCode keyCode) {
+    return currentKeysPressed.contains(keyCode);
   }
 
   /**
@@ -180,10 +180,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    * updates list of currently pressed keys using view api
    */
   private void updateInputList() throws InputException {
-    List<KeyCode> keyCodes = myView.getCurrentInputs();
-    currentKeysPressed = keyCodes.stream()
-            .map(KeyCode::toString) // Convert KeyCode to String
-            .toList(); // Collect into an immutable list
+    currentKeysPressed = myView.getCurrentInputs();
+
   }
 
 

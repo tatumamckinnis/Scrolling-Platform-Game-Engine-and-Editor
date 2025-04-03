@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import oogasalad.Main;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
@@ -26,7 +25,7 @@ public class LevelView extends Display {
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private static final Logger LOG = LogManager.getLogger();
-  private Map<String,ImageView> spriteImageMap;
+  private Map<String,viewGameObject> spriteImageMap;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
@@ -53,9 +52,12 @@ public class LevelView extends Display {
   public void renderGameObjects(List<GameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
-    List<ImageView> sprites =  converter.convertGameObjects(gameObjects,spriteImageMap);
+    List<viewGameObject> sprites =  converter.convertGameObjects(gameObjects,spriteImageMap);
     spriteImageMap = converter.getImagetoUUIDMap();
-    this.getChildren().addAll(sprites);
+   for (viewGameObject sprite : sprites) {
+     this.getChildren().add(sprite.getImageView());
+     this.getChildren().add(sprite.getHitBox());
+   }
   }
 
   /**

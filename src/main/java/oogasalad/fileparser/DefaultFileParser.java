@@ -54,7 +54,7 @@ public class DefaultFileParser implements FileParserAPI {
     // Remove the .xml extension to derive the level name.
 
     // Find the corresponding File from the map.
-    File levelFile = new File("/Users/billym./oogasalad/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
+    File levelFile = new File(filePath);
 //    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
 //    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
 //      for (File file : entry.getValue()) {
