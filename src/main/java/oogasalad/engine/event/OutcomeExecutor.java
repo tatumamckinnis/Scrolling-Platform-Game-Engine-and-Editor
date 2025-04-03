@@ -29,14 +29,24 @@ public class OutcomeExecutor {
             gameObject.setX(gameObject.getX() + dx);
         }
         if (outcomeType == EventOutcome.OutcomeType.APPLY_GRAVITY) {
-            System.out.println("OMGGGG GRAVITY BEING APPLIED");
             int dy = Integer.parseInt(gameObject.getParams().getOrDefault("ApplyGravityAmount", "5"));
-            gameObject.setYVelocity(gameObject.getYVelocity() + dy);
+
+            // Only apply gravity if the object is in the air (falling or jumping)
+            if (!gameObject.isGrounded()) {
+                gameObject.setYVelocity(gameObject.getYVelocity() + dy);
+            }
         }
+
         if (outcomeType == EventOutcome.OutcomeType.JUMP) {
-            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "5"));
-            gameObject.setYVelocity(gameObject.getYVelocity() - dy);
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "40"));
+
+            // Only allow jumping if the object is on the ground
+            if (gameObject.isGrounded()) {
+                gameObject.setYVelocity(-dy);
+                gameObject.setGrounded(false); // Mark object as airborne
+            }
         }
     }
+
 
 }

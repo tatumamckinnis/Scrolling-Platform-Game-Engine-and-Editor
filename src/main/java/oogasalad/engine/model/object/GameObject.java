@@ -83,12 +83,19 @@ public abstract class GameObject {
     this.myAnimationMap = animationMap;
     this.myParams = params;
     this.myEvents = events;
+    this.isGrounded = true;
   }
 
   public void updatePosition() {
     myHitBoxX += xVelocity;
     myHitBoxY += yVelocity;
+    System.out.println("dino yVelocity = " + yVelocity);
     //check to make sure not too low?
+    if (myHitBoxY > 500) {
+      isGrounded = true;
+      myHitBoxY = 500;
+    }
+
   }
 
   /**

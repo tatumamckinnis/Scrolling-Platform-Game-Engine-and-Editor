@@ -36,12 +36,8 @@ public class DefaultEventHandler implements EventHandler {
             boolean validGroup = false; // This group is false until proven true
 
             for (EventCondition eventCondition : conditionGroup) {
-                System.out.println("*******************");
-                System.out.println(eventCondition.getConditionType().toString());
-                System.out.println(conditionChecker.checkCondition(eventCondition.getConditionType(), gameObject));
                 if (conditionChecker.checkCondition(eventCondition.getConditionType(), gameObject)) {
                     validGroup = true; // One condition in this OR-group is true
-                    System.out.println("GROUPPPPPPP ISSS VALIIDIDD");
                     break; // No need to check further in this OR-group
                 }
             }
@@ -54,7 +50,7 @@ public class DefaultEventHandler implements EventHandler {
 
         if (validEvent) {
             for (EventOutcome outcome : event.getOutcomes()) {
-                System.out.println("VALIIIDI DD D DBEEVVEVEBVEBT");
+                System.out.println("Executing Outcome: "+outcome.getOutcomeType().toString());
                 outcomeExecutor.executeOutcome(outcome.getOutcomeType(), gameObject);
             }
         }

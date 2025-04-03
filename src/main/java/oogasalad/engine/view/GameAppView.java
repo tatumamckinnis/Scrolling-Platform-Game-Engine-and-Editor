@@ -113,7 +113,6 @@ public class GameAppView implements GameAppAPI {
 
     currentScene.setOnKeyPressed(event -> {
       KeyCode keyCode = event.getCode(); // Store KeyCode instead of int
-      System.out.println("AHHHHHHHHHHHHHHHH KEYS PRESSED: " + keyCode);
       if (!currentInputs.contains(keyCode)) {
         currentInputs.add(keyCode);
       }
