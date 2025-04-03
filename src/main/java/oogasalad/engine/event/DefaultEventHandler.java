@@ -21,7 +21,8 @@ public class DefaultEventHandler implements EventHandler {
      */
     public DefaultEventHandler(InputProvider inputProvider, GameControllerAPI gameController) {
         outcomeExecutor = new OutcomeExecutor(gameController);
-        conditionChecker = new ConditionChecker(inputProvider);
+        CollisionHandler collisionHandler = gameController.getCollisionHandler();
+        conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
     }
     /**
      * process given event, all conditions must be true to execute

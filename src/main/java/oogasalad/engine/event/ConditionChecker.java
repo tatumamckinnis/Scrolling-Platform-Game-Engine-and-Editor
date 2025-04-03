@@ -15,8 +15,9 @@ public class ConditionChecker {
     private CollisionHandler collisionHandler;
     private InputProvider inputProvider;
 
-    public ConditionChecker(InputProvider inputProvider) {
+    public ConditionChecker(InputProvider inputProvider, CollisionHandler collisionHandler) {
         this.inputProvider = inputProvider;
+        this.collisionHandler = collisionHandler;
     }
     /**
      * evaluates condition
@@ -43,6 +44,7 @@ public class ConditionChecker {
             return inputProvider.isKeyPressed(KeyCode.W);
         }
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
+            System.out.println("CCCCCCCCCCCCCCCC COLIDDED WITH ENEMY!!!");
             List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
             for (GameObject collidedObject : collidedObjects) {
                 if (collidedObject.getType().equals("Enemy")) {

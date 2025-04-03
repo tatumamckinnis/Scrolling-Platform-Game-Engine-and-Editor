@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import oogasalad.engine.event.DefaultEventHandler;
-import oogasalad.engine.event.Event;
-import oogasalad.engine.event.EventHandler;
-import oogasalad.engine.event.InputHandler;
+import oogasalad.engine.event.*;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
 
@@ -25,11 +22,14 @@ import oogasalad.fileparser.records.LevelData;
  * @author Alana Zinkin
  */
 public class DefaultGameController implements GameControllerAPI {
-  private InputProvider inputProvider;
+  private EventHandler eventHandler;
+  private CollisionHandler collisionHandler;
 
   public DefaultGameController(InputProvider inputProvider) {
-    this.inputProvider = inputProvider;
+    this.collisionHandler = new CollisionHandler(this);
+    this.eventHandler = new DefaultEventHandler(inputProvider,this);
     this.myGameObjects = new ArrayList<>();
+
   }
 
   /**
@@ -81,7 +81,7 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    EventHandler eventHandler = new DefaultEventHandler(inputProvider,this);
+    collisionHandler.updateCollisions(myGameObjects);
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
@@ -120,5 +120,9 @@ public class DefaultGameController implements GameControllerAPI {
       }
     }
     return immutableObjects;
+  }
+
+  public CollisionHandler getCollisionHandler() {
+    return collisionHandler;
   }
 }

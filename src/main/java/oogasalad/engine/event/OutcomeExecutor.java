@@ -46,6 +46,9 @@ public class OutcomeExecutor {
                 gameObject.setGrounded(false); // Mark object as airborne
             }
         }
+        if (outcomeType == EventOutcome.OutcomeType.LOSE_GAME) {
+            System.out.println("LOST GAME!!!!!!!!!");
+        }
     }
 
 

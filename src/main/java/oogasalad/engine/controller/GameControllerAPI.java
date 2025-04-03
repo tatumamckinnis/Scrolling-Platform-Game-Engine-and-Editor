@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
+
+import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
@@ -54,4 +56,6 @@ public interface GameControllerAPI {
    * re-initializing internal structures (objects, controllers, etc.).
    */
   void setLevelData(LevelData data);
+
+  CollisionHandler getCollisionHandler();
 }
