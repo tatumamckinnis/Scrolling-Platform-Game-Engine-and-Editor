@@ -1,32 +1,28 @@
 package oogasalad.editor.controller;
 
 import java.util.UUID;
-import oogasalad.editor.controller.api.SpriteDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
 
-public class SpriteDataAPI implements SpriteDataAPIInterface {
+public class SpriteDataManager {
+
   private EditorLevelData level;
 
-  public SpriteDataAPI(EditorLevelData level) {
+  public SpriteDataManager(EditorLevelData level) {
     this.level = level;
   }
 
-  @Override
   public int getX(UUID id) {
     return level.getEditorObject(id).getSpriteData().getX();
   }
 
-  @Override
   public int getY(UUID id) {
     return level.getEditorObject(id).getSpriteData().getY();
   }
 
-  @Override
   public void setX(UUID id, int x) {
     level.getEditorObject(id).getSpriteData().setX(x);
   }
 
-  @Override
   public void setY(UUID id, int y) {
     level.getEditorObject(id).getSpriteData().setY(y);
   }
