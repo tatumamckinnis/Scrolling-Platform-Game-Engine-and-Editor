@@ -81,7 +81,7 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    collisionHandler.updateCollisions(myGameObjects);
+    collisionHandler.updateCollisions();
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {

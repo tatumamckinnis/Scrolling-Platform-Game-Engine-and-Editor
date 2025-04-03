@@ -89,7 +89,6 @@ public abstract class GameObject {
   public void updatePosition() {
     myHitBoxX += xVelocity;
     myHitBoxY += yVelocity;
-    System.out.println("dino yVelocity = " + yVelocity);
     //check to make sure not too low?
     if (myHitBoxY >= 500-myHitBoxHeight) {
       isGrounded = true;

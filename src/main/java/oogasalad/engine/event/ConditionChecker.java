@@ -31,23 +31,18 @@ public class ConditionChecker {
             return true;
         }
         else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
-            System.out.println("SPACE KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.SPACE));
             return inputProvider.isKeyPressed(KeyCode.SPACE);
         }
-
         else if (conditionType == EventCondition.ConditionType.UP_ARROW_PRESSED) {
-            System.out.println("UP ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
             return inputProvider.isKeyPressed(KeyCode.UP);
         }
         else if (conditionType == EventCondition.ConditionType.W_KEY_PRESSED) {
-            System.out.println("W ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
             return inputProvider.isKeyPressed(KeyCode.W);
         }
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
-            System.out.println("CCCCCCCCCCCCCCCC COLIDDED WITH ENEMY!!!");
             List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
             for (GameObject collidedObject : collidedObjects) {
-                if (collidedObject.getType().equals("Enemy")) {
+                if (collidedObject.getType().equals("enemies")) {
                     return true;
                 }
             }
