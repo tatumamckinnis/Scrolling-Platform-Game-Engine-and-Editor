@@ -52,6 +52,8 @@ public class GameObjectToViewObjectConverter {
     System.out.println("width:"+baseSpriteData.width());
     System.out.println("height:"+baseSpriteData.height());
 
+    imageView.setX(gameObject.getX());
+    imageView.setY(gameObject.getY());
 
     return imageView;
   }
