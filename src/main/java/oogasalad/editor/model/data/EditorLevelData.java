@@ -34,8 +34,10 @@ public class EditorLevelData {
     myGroups = new ArrayList<>();
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
-    myObjectDataMap = new HashMap<>();
     myCurrentLayer = new Layer("layer0", 0);
+    myLayers.add(myCurrentLayer);
+    myLayerDataMap.put(myCurrentLayer, new ArrayList<>());
+    myObjectDataMap = new HashMap<>();
   }
 
   public UUID createEditorObject() {
@@ -73,7 +75,7 @@ public class EditorLevelData {
 
   public void addLayer(Layer layer) {
     int index = 0;
-    while (index < myLayers.size() && layer.getPriority() > myLayers.get(index).getPriority()) {
+    while (index < myLayers.size() && layer.getPriority() <= myLayers.get(index).getPriority()) {
       index++; // Insert the layer to maintain descending priority levels
     }
     myLayers.add(index, layer);

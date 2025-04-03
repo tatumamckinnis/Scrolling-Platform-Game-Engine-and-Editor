@@ -12,7 +12,7 @@ public class Layer {
     this.name = name;
     this.interactingLayers = new ArrayList<>();
     interactingLayers.add(this);
-    this.priority = 0;
+    this.priority = priority;
   }
 
   public String getName() {

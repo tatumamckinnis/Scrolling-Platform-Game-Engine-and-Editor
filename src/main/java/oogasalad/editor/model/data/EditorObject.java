@@ -1,5 +1,6 @@
 package oogasalad.editor.model.data;
 
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.object.CollisionData;
@@ -37,15 +38,19 @@ public class EditorObject {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
 
+    // TODO: Set defaults in a property file
+    if (level.getLayers().isEmpty()) {
+      level.addLayer(new Layer("layer0", 0));
+    }
     this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getLayers().get(0));
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
         editorConfig.getProperty("defaultHitboxShape"));
-    this.sprite = new SpriteData(0,0,null, null, null);
-    this.input = null;
-    this.physics = null;
-    this.collision = null;
+    this.sprite = new SpriteData(0,0,new HashMap<>(), new HashMap<>(), "");
+    this.input = new InputData();
+    this.physics = new PhysicsData();
+    this.collision = new CollisionData();
   }
 
   public IdentityData getIdentityData() {
@@ -63,10 +68,6 @@ public class EditorObject {
   public void setInputData(InputData input) {
     this.input = input;
   }
-  
-  public void createInputData() {
-    this.input = new InputData();
-  }
 
   public PhysicsData getPhysicsData() {
     return physics;
@@ -76,20 +77,12 @@ public class EditorObject {
     this.physics = physics;
   }
 
-  public void createPhysicsData() {
-    this.physics = new PhysicsData();
-  }
-
   public CollisionData getCollisionData() {
     return collision;
   }
 
   public void setCollisionData(CollisionData collision) {
     this.collision = collision;
-  }
-
-  public void createCollisionData() {
-    this.collision = new CollisionData();
   }
 
   public SpriteData getSpriteData() {

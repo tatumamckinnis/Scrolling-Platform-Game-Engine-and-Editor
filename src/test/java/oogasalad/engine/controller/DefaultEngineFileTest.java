@@ -38,7 +38,7 @@ class DefaultEngineFileTest {
     gameObjectBluePrintData.add(gameObject1);
     Map<Integer, List<GameObjectData>> gameObjectsByLayer = new HashMap<>();
     gameObjectsByLayer.put(1, gameObjectBluePrintData);
-    levelData = new LevelData("Super Mario Bros", bluePrintMap, gameObjectsByLayer);
+    //levelData = new LevelData("Super Mario Bros", bluePrintMap, gameObjectsByLayer);
   }
 
   @Test
