@@ -8,7 +8,6 @@ import java.util.Map;
  * @author Billy McCune
  */
 public record EventData(
-    String name,
     String type,
     String eventId,
     List<List<String>> conditions,

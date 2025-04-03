@@ -1,8 +1,12 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -20,12 +24,14 @@ public class LevelView extends Display {
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private boolean isPaused;
+  private Map<String,ImageView> spriteImageMap;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
   public LevelView() {
     isPaused = true;
+    spriteImageMap = new HashMap<>();
   }
 
   public void setPlay(boolean isPaused) {
@@ -56,6 +62,8 @@ public class LevelView extends Display {
     Text text = new Text(200, 200, "This is my level view");
     text.setId("3");
 
+
+
     this.getChildren().addAll(r1, r2, r3, text);
     setInitialCameraPosition();
   }
@@ -65,17 +73,12 @@ public class LevelView extends Display {
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
-    // loop thru all gameObjects, add them to this.getChildren if not already in, if they are then update them
-    Random r = new Random();
-    int id = r.nextInt(3);
-    for (Node node : this.getChildren()) {
-      if (Integer.parseInt(node.getId()) == id) {
-        Color randomColor = Color.color(r.nextDouble(), r.nextDouble(), r.nextDouble());
-        ((Rectangle) node).setFill(randomColor);
-      }
-    }
-    moveRight();
+  public void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException {
+    GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
+    List<ImageView> sprites =  converter.convertGameObjects(gameObjects,spriteImageMap);
+    spriteImageMap = converter.getImagetoUUIDMap();
+    this.getChildren().addAll(sprites);
   }
 
   /**

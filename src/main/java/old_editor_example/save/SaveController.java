@@ -1,7 +1,7 @@
 package old_editor_example.save;
 
 import old_editor_example.CollisionData;
-import old_editor_example.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariable;
 import old_editor_example.EditorObject;
 import old_editor_example.InputData;
 import old_editor_example.KeyPressType;

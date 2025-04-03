@@ -15,8 +15,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -28,8 +26,8 @@ import javafx.scene.control.ButtonBar;
 import oogasalad.editor.controller.InputDataAPI;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
-import old_editor_example.DynamicVariable;
-import old_editor_example.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object_data.EditorEvent;
 
 /**
@@ -87,10 +85,6 @@ public class InputTabComponentFactory {
     BorderPane mainPane = new BorderPane();
     mainPane.setPadding(new Insets(10));
 
-    // Top section - toggle between Properties and Input tabs
-    HBox topSection = createTabToggleSection();
-    mainPane.setTop(topSection);
-
     // Center section - Events, Conditions, and Outcomes
     BorderPane centerPane = new BorderPane();
 
@@ -105,40 +99,6 @@ public class InputTabComponentFactory {
     mainPane.setCenter(centerPane);
 
     return mainPane;
-  }
-
-  /**
-   * Create a section with toggle buttons to switch between Properties and Input tabs
-   *
-   * @return HBox containing the toggle buttons
-   */
-  private HBox createTabToggleSection() {
-    HBox toggleBox = new HBox(10);
-    toggleBox.setPadding(new Insets(0, 0, 10, 0));
-    toggleBox.setAlignment(Pos.CENTER);
-
-    ToggleGroup tabToggleGroup = new ToggleGroup();
-
-    ToggleButton propertiesButton = new ToggleButton("Properties");
-    propertiesButton.setToggleGroup(tabToggleGroup);
-    propertiesButton.setSelected(false);
-
-    ToggleButton inputButton = new ToggleButton("Input");
-    inputButton.setToggleGroup(tabToggleGroup);
-    inputButton.setSelected(true);
-
-    // Add action listeners for tab switching
-    propertiesButton.setOnAction(e -> {
-      // Switch to properties tab
-      // This would need to communicate with the main editor view
-    });
-
-    inputButton.setOnAction(e -> {
-      // Stay on input tab
-    });
-
-    toggleBox.getChildren().addAll(propertiesButton, inputButton);
-    return toggleBox;
   }
 
   /**
@@ -246,19 +206,6 @@ public class InputTabComponentFactory {
 
     condOutBox.getChildren().addAll(conditionsBox, outcomesBox);
     return condOutBox;
-  }
-
-  /**
-   * Set the current game object to edit events for
-   *
-   * @param objectId UUID of the game object
-   * @param variables Dynamic variables container for the object
-   */
-  public void setCurrentObject(UUID objectId, DynamicVariableContainer variables) {
-    this.currentObjectId = objectId;
-    this.dynamicVariables = variables;
-    updateParameterComboBox();
-    refreshEventsList();
   }
 
   /**

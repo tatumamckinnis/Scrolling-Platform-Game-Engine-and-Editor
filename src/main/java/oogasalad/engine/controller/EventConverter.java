@@ -31,6 +31,9 @@ public class EventConverter {
       GameObject gameObject, Map<Integer, BlueprintData> bluePrintMap) {
     List<Event> events = new ArrayList<>();
     for (EventData event : bluePrintMap.get(gameObjectData.blueprintId()).eventDataList()) {
+      if (event == null) {
+        continue;
+      }
       Event e = makeEventObject(event, gameObject);
       events.add(e);
     }
@@ -45,7 +48,7 @@ public class EventConverter {
    * @return a constructed {@link Event} instance
    */
   private static Event makeEventObject(EventData eventData, GameObject gameObject) {
-    List<EventCondition> eventConditions = makeEventConditions(eventData);
+    List<List<EventCondition>> eventConditions = makeEventConditions(eventData);
     List<EventOutcome> eventOutcomes = makeEventOutcomes(eventData);
     Event.EventType type = makeEventType(eventData);
     return new Event(gameObject, eventConditions, eventOutcomes, type);
@@ -58,14 +61,16 @@ public class EventConverter {
    * @param eventData the raw event data containing conditions
    * @return a list of parsed {@link EventCondition} instances
    */
-  private static List<EventCondition> makeEventConditions(EventData eventData) {
-    List<EventCondition> eventConditions = new ArrayList<>();
+  private static List<List<EventCondition>> makeEventConditions(EventData eventData) {
+    List<List<EventCondition>> eventConditions = new ArrayList<>();
     for (List<String> eventCondition : eventData.conditions()) {
+      List<EventCondition> conditions = new ArrayList<>();
       for (String condition : eventCondition) {
         EventCondition newCondition = new EventCondition(
             EventCondition.ConditionType.valueOf(condition));
-        eventConditions.add(newCondition);
+        conditions.add(newCondition);
       }
+      eventConditions.add(conditions);
     }
     return eventConditions;
   }
@@ -94,6 +99,6 @@ public class EventConverter {
    * @return the event type enum
    */
   private static Event.EventType makeEventType(EventData eventData) {
-    return Event.EventType.valueOf(eventData.type());
+    return Event.EventType.valueOf(eventData.type().toUpperCase());
   }
 }

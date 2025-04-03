@@ -1,8 +1,14 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import oogasalad.engine.controller.DefaultGameManager;
+import oogasalad.engine.controller.GameManagerAPI;
 import oogasalad.engine.exception.InputException;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.exception.ViewInitializationException;
@@ -19,23 +25,26 @@ public class GameAppView implements GameAppAPI {
   private Display currentDisplay;
   private Scene currentScene;
   private final Stage currentStage;
+  private final GameManagerAPI gameManager;
+  private final List<KeyCode> currentInputs = new ArrayList<>();
   private static final Logger LOG = LogManager.getLogger();
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
    */
-  public GameAppView(Stage stage) {
+  public GameAppView(Stage stage, GameManagerAPI gameManager) throws ViewInitializationException {
     this.currentStage = stage;
+    this.gameManager = gameManager;
   }
 
   /**
-   * @see GameAppView#initialize(String)
+   * @see GameAppView#initialize()
    */
   @Override
-  public void initialize(String title) throws ViewInitializationException {
-    SplashScreen splashScreen = new SplashScreen();
+  public void initialize() throws ViewInitializationException {
+    SplashScreen splashScreen = new SplashScreen(gameManager);
 
-    splashScreen.setOnStartClicked(() -> {
+    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other splash screen buttons buttons
       try {
         startGame();
       } catch (ViewInitializationException e) {
@@ -55,34 +64,62 @@ public class GameAppView implements GameAppAPI {
    * @see GameAppView#renderGameObjects(List)
    */
   @Override
-  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
+  public void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException {
     currentDisplay.renderGameObjects(gameObjects);
   }
 
   /**
-   * @see GameAppView#getCurrentInputs()
-   * @return
-   * @throws InputException
+   * @see GameAppAPI#getCurrentInputs()
    */
-  @Override
-  public List<String> getCurrentInputs() throws InputException {
-    return List.of();
+  public List<KeyCode> getCurrentInputs() throws InputException {
+    return Collections.unmodifiableList(currentInputs);
   }
 
   /**
    * Starts a game by setting the current scene to a game scene.
+   * Defines functions for button routing.
    * @throws ViewInitializationException if errors with initialization.
    */
   private void startGame() throws ViewInitializationException {
-    currentDisplay = new GameScene();
+    GameScene game = new GameScene();
+
+    game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons in this function
+          try {
+            goToHome();
+          } catch (ViewInitializationException e) {
+            LOG.warn("Failed to start game: " + e.getMessage());
+          }
+        });
+    gameManager.playGame();
+
+    currentDisplay = game;
     currentDisplay.render();
     currentScene.setRoot(currentDisplay);
 
     int newWidth = 500; // Change this to actual GameScene width
     int newHeight = 500; // Change this to actual GameScene height
-
     currentStage.setWidth(newWidth);
     currentStage.setHeight(newHeight);
+
+    currentScene.setOnKeyPressed(event -> {
+      KeyCode code = event.getCode();
+      if (!currentInputs.contains(code)) {
+        currentInputs.add(code);
+      }
+    });
+
+    currentScene.setOnKeyReleased(event -> currentInputs.remove(event.getCode()));
+  }
+
+  /**
+   * Returns any view to the homepage.
+   */
+  private void goToHome() throws ViewInitializationException {
+    initialize();
+    currentStage.setScene(currentScene);
+//    currentStage.setWidth(currentScene.getWidth());
+//    currentStage.setHeight(currentScene.getHeight());
   }
 
   /**

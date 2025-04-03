@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import oogasalad.fileparser.exceptions.BlueprintParseException;
 import oogasalad.fileparser.exceptions.GameObjectParseException;
 import oogasalad.fileparser.records.BlueprintData;
@@ -18,9 +19,10 @@ public class BlueprintDataParser {
   private String groupName = "";
   private String gameName = "";
   private SpriteDataParser mySpriteDataParser;
+  private List<EventData> myEventDataList;
 
-  public List<BlueprintData> getLevelGameObjectData(Element root) throws BlueprintParseException {
-
+  public Map<Integer,BlueprintData> getBlueprintData(Element root, List<EventData> EventList) throws BlueprintParseException {
+    myEventDataList = EventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
     for (int i = 0; i < gameNodes.getLength(); i++) {
@@ -32,7 +34,15 @@ public class BlueprintDataParser {
       gameName = gameElement.getAttribute("name");
       gameObjectDataList.addAll(parseByGame(gameElement));
     }
-    return gameObjectDataList;
+    return createBlueprintDataMap(gameObjectDataList);
+  }
+
+  private Map<Integer,BlueprintData> createBlueprintDataMap(List<BlueprintData> blueprintDataList){
+    Map<Integer,BlueprintData> blueprintDataMap = new HashMap<>();
+    for(int i = 0; i < blueprintDataList.size(); i++){
+      blueprintDataMap.put(blueprintDataList.get(i).blueprintId(), blueprintDataList.get(i));
+    }
+    return blueprintDataMap;
   }
 
   private List<BlueprintData> parseByGame(Element gameNode) throws BlueprintParseException {
@@ -52,7 +62,7 @@ public class BlueprintDataParser {
 
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode) throws BlueprintParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
-    NodeList gameObjectNodes = objectGroupNode.getChildNodes();
+    NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
       Node node = gameObjectNodes.item(i);
       // Skip text nodes that are only whitespace
@@ -60,7 +70,7 @@ public class BlueprintDataParser {
         continue;
       }
       if (!(node instanceof Element)) {
-        throw new BlueprintParseException("error.gameObject.notElement");
+        continue;
       }
       Element gameObjectNode = (Element) node;
       gameObjectsGroupList.add(parseGameObjectData(gameObjectNode));
@@ -76,10 +86,12 @@ public class BlueprintDataParser {
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
-
       // Create SpriteData from spriteName and spriteFile.
-      SpriteData spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type, spriteName, spriteFile);
-
+      SpriteData spriteData = null;
+      if (!(gameName == null || gameName.isEmpty())) {
+        spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type,
+            spriteName, spriteFile);
+      }
       // Parse HitBoxData from hitBoxWidth, hitBoxHeight, spriteDx, spriteDy.
       String hitBoxWidthStr = gameObjectNode.getAttribute("hitBoxWidth");
       String hitBoxHeightStr = gameObjectNode.getAttribute("hitBoxHeight");
@@ -99,9 +111,10 @@ public class BlueprintDataParser {
         String[] eventIdArray = eventIDs.split(",");
         for (String eventId : eventIdArray) {
           // Create a dummy EventData; other fields are set to empty or default values.
-          eventDataList.add(new EventData("", "", eventId.trim(), new ArrayList<>(), new ArrayList<>(), new HashMap<>()));
+          eventDataList.add(getEventByID(eventId));
         }
       }
+
 
       // Parse and flatten properties directly containing <data> elements.
       Map<String, String> objectProperties = parseProperties(gameObjectNode);
@@ -119,6 +132,15 @@ public class BlueprintDataParser {
     } catch (NumberFormatException e) {
       throw new BlueprintParseException("error.number.format");
     }
+  }
+
+  private EventData getEventByID(String id) {
+    for (EventData eventData : myEventDataList) {
+      if (Objects.equals(id, eventData.eventId())) {
+        return eventData;
+      }
+    }
+    return null;
   }
 
   // Helper method to parse and flatten the <properties> element containing <data> elements.

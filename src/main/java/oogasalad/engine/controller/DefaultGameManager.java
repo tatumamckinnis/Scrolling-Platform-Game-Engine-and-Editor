@@ -3,16 +3,24 @@
  */
 package oogasalad.engine.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import oogasalad.engine.exception.InputException;
+import oogasalad.engine.exception.RenderingException;
+import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.GameAppView;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;
 import org.apache.logging.log4j.LogManager;
@@ -27,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Alana Zinkin
  */
-public class DefaultGameManager implements GameManagerAPI {
+public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
@@ -36,22 +44,32 @@ public class DefaultGameManager implements GameManagerAPI {
   private Timeline myGameLoop;
   private List<GameObject> myGameObjects;
   private GameControllerAPI myGameController;
-  private LevelData myLevelData;
-  private EngineFileConverterAPI myEngineFile;
-  private FileParserAPI myFileParser;
   private LevelAPI myLevelAPI;
+  private GameAppView myView;
+  private static List<String> currentKeysPressed;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
    *
-   * @param engineFile     the engine file API implementation
    * @param gameController the game controller to manage game objects and state
    */
-  public DefaultGameManager(DefaultEngineFileConverter engineFile, DefaultGameController gameController) {
+  public DefaultGameManager()
+      throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myEngineFile = engineFile;
-    myGameController = gameController;
+    myGameController = new DefaultGameController(this);
+    myLevelAPI = new DefaultLevel(myGameController);
+
+    initializeMyView();
   }
+
+  private void initializeMyView() throws ViewInitializationException {
+    Stage primaryStage = new Stage();
+    myView = new GameAppView(primaryStage, this);
+    myView.initialize();
+    primaryStage.setScene(myView.getCurrentScene());
+    primaryStage.show();
+  }
+
 
   /**
    * Initializes the game loop using a {@link Timeline} that fires at a regular interval based on
@@ -65,7 +83,13 @@ public class DefaultGameManager implements GameManagerAPI {
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
     double secondDelay = 1.0 / framesPerSecond;
-    gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> step()));
+    gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
+      try {
+        step();
+      } catch (RenderingException | InputException | FileNotFoundException ex) {
+        throw new RuntimeException(ex);
+      }
+    }));
     return gameLoop;
   }
 
@@ -115,6 +139,16 @@ public class DefaultGameManager implements GameManagerAPI {
     myLevelAPI.selectGame(game, category, level);
   }
 
+
+  /**
+   * default file selecting for sprint 1 demo
+   * @param filePath
+   */
+  @Override
+  public void selectDefaultGame(String filePath) {
+    myLevelAPI.selectFilePath(filePath);
+  }
+
   /**
    * Returns the internal {@link Timeline} game loop.
    *
@@ -125,9 +159,32 @@ public class DefaultGameManager implements GameManagerAPI {
   }
 
   /**
+   *
+   * @param key string to check
+   * @return if that key is pressed
+   */
+  public boolean isKeyPressed(String key) {
+    return currentKeysPressed.contains(key);
+  }
+
+  /**
    * Called on each tick of the game loop. Delegates game state updates to the controller.
    */
-  private void step() {
+  private void step() throws RenderingException, InputException, FileNotFoundException {
+    updateInputList();
     myGameController.updateGameState();
+    myView.renderGameObjects(myGameController.getObjects());
   }
+
+  /**
+   * updates list of currently pressed keys using view api
+   */
+  private void updateInputList() throws InputException {
+    List<KeyCode> keyCodes = myView.getCurrentInputs();
+    currentKeysPressed = keyCodes.stream()
+            .map(KeyCode::toString) // Convert KeyCode to String
+            .toList(); // Collect into an immutable list
+  }
+
+
 }

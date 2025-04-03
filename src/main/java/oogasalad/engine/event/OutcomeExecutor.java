@@ -28,6 +28,14 @@ public class OutcomeExecutor {
             int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "5"));
             gameObject.setX(gameObject.getX() + dx);
         }
+        if (outcomeType == EventOutcome.OutcomeType.APPLY_GRAVITY) {
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("ApplyGravityAmount", "1"));
+            gameObject.setYVelocity(gameObject.getYVelocity() - dy);
+        }
+        if (outcomeType == EventOutcome.OutcomeType.JUMP) {
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "5"));
+            gameObject.setYVelocity(gameObject.getYVelocity() + dy);
+        }
     }
 
 }

@@ -51,7 +51,7 @@ class DefaultEngineFileTest {
 
     List<GameObject> expectedObjects = new ArrayList<>();
     SpriteData expectedSpriteData1 = new SpriteData("Mario", new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new ArrayList<>(), new ArrayList<>());
-    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5, 10, 0, "Mario", "Player", expectedSpriteData1, new HashMap<>(), new ArrayList<>()));
+    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5,  10, 0, "Mario", "Player", expectedSpriteData1, new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new HashMap<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>(), new HitBoxData("default", 1, 1, 2, 4)));
 
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
     List<GameObject> myActualObjects = new ArrayList<>(actualObjects.values());

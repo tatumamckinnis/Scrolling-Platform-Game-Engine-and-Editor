@@ -9,27 +9,25 @@ interact with each other -->
   <layers>
   <layer name="backGround" width="500" height="500" z="0">
     <data>
-      <object id="3000" coordinates="(0,0)"/>
     </data>
   </layer>
   <layer name="foreground" width="500" height="500" z="1">
     <data>
-      <object id="1" coordinates="" uid=""/>
-      <object id="2" coordinates="" uid=""/>
-      <object id="3" coordinates="" uid=""/>
-      <object id="4" coordinates="" uid=""/>
-      <object id="5" coordinates="" uid=""/>
+      <object id="1" coordinates="(0,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
+      <object id="2" coordinates="(100,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
+      <object id="3" coordinates="(200,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
+      <object id="4" coordinates="(300,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
+      <object id="5" coordinates="(400,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
     </data>
   </layer>
   <layer name="entities" width="500" height="500" z="1">
     <data>
-      <object id="111" coordinates="(0,10)" uid="1"/>
-      <object id="12" coordinates="(50,200)" uid="2"/>
+      <object id="12" coordinates="(300,300)(500,300)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+      <object id="111" coordinates="(100,450)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
     </data>
   </layer>
   <layer name="events" width="500" height="500" z="1">
     <data>
-      <object id="" coordinates=""/>
     </data>
   </layer>
   </layers>
@@ -37,7 +35,7 @@ interact with each other -->
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
 <!-- Objects should also have a defined hit box-->
-    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="" hitBoxHeight="" hitBoxType="SQUARE" spriteDx="" spriteDy="" eventIDs="20">
+    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="10" hitBoxHeight="10" hitBoxShape="SQUARE" spriteDx="10" spriteDy="10" eventIDs="20,21">
 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
         <variables>
@@ -45,7 +43,7 @@ interact with each other -->
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="" hitBoxHeight="" spriteDx="" spriteDy="" eventIDs="">
+    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
@@ -53,18 +51,17 @@ interact with each other -->
     </object>
   </objectGroup>
     <objectGroup name="blocks">
-      <object type="" id="1" spriteFile="track.xml" spriteName="track-0" />
-      <object type="" id="2" spriteFile="track.xml" spriteName="track-1" />
-      <object type="" id="3" spriteFile="track.xml" spriteName="track-2" />
-      <object type="" id="4" spriteFile="track.xml" spriteName="track-3" />
-      <object type="" id="5" spriteFile="track.xml" spriteName="track-4" />
+      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10" />
+      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1"  hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
+      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2"  hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
+      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
+      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10" />
     </objectGroup>
     <objectGroup name="backgrounds">
-  <object type="background" id="3000" spriteFile="" spriteName=""/>
     </objectGroup>
   </game>
-  <Events>
-    <Event type="input" id="20">
+  <events>
+    <event type="input" id="20">
 <!--     Enums for event type, condition, and outcome-->
       <conditions>
         <condition list="SPACE_KEY_PRESSED" />
@@ -76,6 +73,14 @@ interact with each other -->
         <parameter name="velocity.y">5</parameter>
         <parameter name="jumpType">Floaty</parameter>
       </parameters>
-    </Event>
-  </Events>
+    </event>
+    <event>
+      <event type="physics" id="21">
+        <conditions>
+          <condition list="TRUE"/>
+        </conditions>
+        <outcomes list="MOVE_RIGHT"/>
+      </event>
+    </event>
+  </events>
 </map>

@@ -1,6 +1,7 @@
 package oogasalad.engine.controller;
 
 import javafx.animation.Timeline;
+import oogasalad.engine.exception.ViewInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,9 +13,8 @@ class DefaultGameManagerTest {
   private GameControllerAPI myGameController;
 
   @BeforeEach
-  void setUp() {
-    myGameManager = new DefaultGameManager((DefaultEngineFileConverter) myEngineFile, (DefaultGameController) myGameController);
-    myGameLoop = ((DefaultGameManager) myGameManager).getGameLoop();
+  void setUp() throws ViewInitializationException {
+
   }
 
   @Test

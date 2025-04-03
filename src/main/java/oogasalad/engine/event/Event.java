@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class Event {
     private GameObject gameObject;
-    private List<EventCondition> conditions;
+    private List<List<EventCondition>> conditions;
     private List<EventOutcome> outcomes;
     private EventType eventType;
     //stored within game object
@@ -33,7 +33,7 @@ public class Event {
      * @param conditions -> List of Conditions that need to be met to execute events
      * @param outcomes -> List of Events to execute
      */
-    public Event(GameObject gameObject, List<EventCondition> conditions, List<EventOutcome> outcomes, EventType eventType) {
+    public Event(GameObject gameObject, List<List<EventCondition>> conditions, List<EventOutcome> outcomes, EventType eventType) {
         this.gameObject = gameObject;
         this.conditions = conditions;
         this.outcomes = outcomes;
@@ -45,7 +45,7 @@ public class Event {
      *
      * @return this Event's list of event conditions
      */
-    public List<EventCondition> getConditions() {
+    public List<List<EventCondition>> getConditions() {
         return this.conditions;
     }
 

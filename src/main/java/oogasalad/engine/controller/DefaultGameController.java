@@ -3,16 +3,14 @@
  */
 package oogasalad.engine.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
 import oogasalad.engine.event.DefaultEventHandler;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.event.EventHandler;
+import oogasalad.engine.event.InputHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.LevelData;
 
@@ -27,7 +25,11 @@ import oogasalad.fileparser.records.LevelData;
  * @author Alana Zinkin
  */
 public class DefaultGameController implements GameControllerAPI {
+  private InputProvider inputProvider;
 
+  public DefaultGameController(InputProvider inputProvider) {
+    this.inputProvider = inputProvider;
+  }
 
   /**
    * Map of UUUID (as Strings) to GameObjects
@@ -49,6 +51,12 @@ public class DefaultGameController implements GameControllerAPI {
   public List<GameObject> getObjects() {
     return myGameObjects;
   }
+
+  @Override
+  public List<GameObjectRecord> getImmutableObjects() {
+    return makeGameObjectsImmutable();
+  }
+
 
   /**
    * Returns a map of all game objects currently loaded in the engine.
@@ -72,13 +80,16 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    EventHandler eventHandler = new DefaultEventHandler(this);
+    EventHandler eventHandler = new DefaultEventHandler(inputProvider,this);
+    InputHandler inputHandler = new InputHandler();
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
         eventHandler.handleEvent(event);
       }
+      gameObject.updatePosition(); //process y velocity/xvelocity from gravity/jump
     }
+
   }
 
   /**
@@ -93,5 +104,21 @@ public class DefaultGameController implements GameControllerAPI {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
+    System.out.println(myGameObjects);
+  }
+
+  private List<GameObjectRecord> makeGameObjectsImmutable() {
+    List<GameObjectRecord> immutableObjects = new ArrayList<>();
+    for (GameObject gameObject : myGameObjects) {
+      GameObjectRecord record = new GameObjectRecord(
+          gameObject.getSpriteX(),
+          gameObject.getSpriteY(),
+          gameObject.getCurrentFrame()
+      );
+      if (gameObject.getCurrentFrame() != null) {
+        immutableObjects.add(record);
+      }
+    }
+    return immutableObjects;
   }
 }

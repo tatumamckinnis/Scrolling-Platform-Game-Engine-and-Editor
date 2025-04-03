@@ -3,6 +3,7 @@ package oogasalad.editor.controller;
 import java.util.UUID;
 import oogasalad.editor.controller.api.EditorDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.object.EditorObject;
 
 public class EditorDataAPI implements EditorDataAPIInterface {
   private final IdentityDataAPI identityAPI;
@@ -26,6 +27,10 @@ public class EditorDataAPI implements EditorDataAPIInterface {
 
   public UUID createEditorObject() {
     return level.createEditorObject();
+  }
+
+  public EditorObject getEditorObject(UUID id) {
+    return level.getEditorObject(id);
   }
 
   public EditorLevelData getLevel() { return level; }
