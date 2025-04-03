@@ -158,6 +158,18 @@ public abstract class GameObject {
     return myCurrentFrame;
   }
 
+  public int getHitBoxWidth() {
+    return myHitBoxWidth;
+  }
+
+  public int getHitBoxHeight() {
+    return myHitBoxHeight;
+  }
+
+  public HitBoxData getmyHitBoxData(){
+    return myHitBoxData;
+  }
+
   public SpriteData getSpriteData() {
     return mySpriteData;
   }

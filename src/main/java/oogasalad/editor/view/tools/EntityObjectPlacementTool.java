@@ -64,7 +64,7 @@ public class EntityObjectPlacementTool implements ObjectPlacementTool{
 
     editorAPI.getSpriteDataAPI().setX(newObjectId, x);
     editorAPI.getSpriteDataAPI().setY(newObjectId, y);
-    editorAPI.getSpriteDataAPI().setSpritePath(newObjectId, spritePath);
+    //editorAPI.getSpriteDataAPI().setSpritePath(newObjectId, spritePath);
 
     int cellSize = editorView.getCellSize();
     editorAPI.getHitboxDataAPI().setX(newObjectId, x);

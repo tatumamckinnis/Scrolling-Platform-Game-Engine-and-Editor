@@ -42,7 +42,7 @@ public class EditorObject {
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
         editorConfig.getProperty("defaultHitboxShape"));
-    this.sprite = new SpriteData(0,0,"");
+    this.sprite = new SpriteData(0,0,null, null, null);
     this.input = null;
     this.physics = null;
     this.collision = null;
