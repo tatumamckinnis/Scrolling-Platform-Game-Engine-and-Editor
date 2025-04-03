@@ -79,6 +79,8 @@ public class DefaultFileParser implements FileParserAPI {
 
       // Assume the root element is <map>.
       Element root = doc.getDocumentElement();
+      int levelWidth = Integer.parseInt(root.getAttribute("width"));
+      int levelHeight = Integer.parseInt(root.getAttribute("height"));
 
       List<EventData> eventList = myEventDataParser.getLevelEvents(root);
       // Use the BlueprintDataParser to extract blueprint data.
@@ -102,7 +104,7 @@ public class DefaultFileParser implements FileParserAPI {
       }
 
       // Construct and return the LevelData record.
-      return new LevelData(levelName, blueprintData, gameObjectsByLayer);
+      return new LevelData(levelName, levelWidth,levelHeight, blueprintData, gameObjectsByLayer);
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException("Error parsing level file ", e);
