@@ -1,7 +1,5 @@
 package oogasalad.engine.view;
 
-import java.awt.Frame;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +11,6 @@ import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import oogasalad.fileparser.records.FrameData;
-import org.w3c.dom.css.Rect;
 
 public class GameObjectToViewObjectConverter {
 

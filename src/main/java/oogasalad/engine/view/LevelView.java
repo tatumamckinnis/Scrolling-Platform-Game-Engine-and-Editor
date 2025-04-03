@@ -10,7 +10,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
 
 /**
  * This class is the view for a level in a game. It includes all visual elements in a level.
