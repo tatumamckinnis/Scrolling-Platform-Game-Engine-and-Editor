@@ -13,17 +13,17 @@ interact with each other -->
   </layer>
   <layer name="foreground" width="500" height="500" z="1">
     <data>
-      <object id="1" coordinates="(0,0)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
-      <object id="2" coordinates="(0,0)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
-      <object id="3" coordinates="(0,0)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
-      <object id="4" coordinates="(0,0)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
-      <object id="5" coordinates="(0,0)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
+      <object id="1" coordinates="(0,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
+      <object id="2" coordinates="(100,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
+      <object id="3" coordinates="(200,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
+      <object id="4" coordinates="(300,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
+      <object id="5" coordinates="(400,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
     </data>
   </layer>
   <layer name="entities" width="500" height="500" z="1">
     <data>
-      <object id="111" coordinates="(0,10)(0,29)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
-      <object id="12" coordinates="(50,200)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+      <object id="12" coordinates="(300,300)(500,300)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+      <object id="111" coordinates="(100,450)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
     </data>
   </layer>
   <layer name="events" width="500" height="500" z="1">
