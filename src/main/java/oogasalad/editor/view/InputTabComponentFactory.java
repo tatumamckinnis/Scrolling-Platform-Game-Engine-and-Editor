@@ -26,8 +26,8 @@ import javafx.scene.control.ButtonBar;
 import oogasalad.editor.controller.InputDataAPI;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
-import oogasalad.editor.model.data.object.DynamicVariable;
-import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object_data.DynamicVariable;
+import oogasalad.editor.model.data.object_data.DynamicVariableContainer;
 import oogasalad.editor.model.data.object_data.EditorEvent;
 
 /**
@@ -74,6 +74,15 @@ public class InputTabComponentFactory {
     } catch (IOException e) {
       System.err.println("Error loading input tab properties: " + e.getMessage());
     }
+  }
+
+  /**
+   * Set the current ID to a specific ID
+   *
+   * @param currentObjectId The id to set current to
+   */
+  public void setCurrentObjectId(UUID currentObjectId) {
+    this.currentObjectId = currentObjectId;
   }
 
   /**

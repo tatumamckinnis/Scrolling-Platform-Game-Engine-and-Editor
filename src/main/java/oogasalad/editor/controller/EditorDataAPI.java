@@ -3,7 +3,7 @@ package oogasalad.editor.controller;
 import java.util.UUID;
 import oogasalad.editor.controller.api.EditorDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.data.EditorObject;
 
 public class EditorDataAPI implements EditorDataAPIInterface {
   private final IdentityDataAPI identityAPI;

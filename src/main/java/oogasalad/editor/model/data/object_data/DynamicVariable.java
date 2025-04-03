@@ -1,43 +1,16 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data.object_data;
 
 public class DynamicVariable {
   private String name;
   private String type; // Supported types: "int", "double", "boolean", "string"
-  private Object value;
+  private String value;
   private String description;
 
   public DynamicVariable(String name, String type, String inputValue, String description) {
     this.name = name;
     this.type = type.toLowerCase();
     this.description = description;
-    this.value = parseValue(inputValue);
-  }
-
-  private Object parseValue(String inputValue) {
-    switch(type) {
-      case "int":
-        try {
-          return Integer.parseInt(inputValue);
-        } catch (NumberFormatException e) {
-          throw new IllegalArgumentException("Invalid integer: " + inputValue);
-        }
-      case "double":
-        try {
-          return Double.parseDouble(inputValue);
-        } catch (NumberFormatException e) {
-          throw new IllegalArgumentException("Invalid double: " + inputValue);
-        }
-      case "boolean":
-        if(inputValue.equalsIgnoreCase("true") || inputValue.equalsIgnoreCase("false")){
-          return Boolean.parseBoolean(inputValue);
-        } else {
-          throw new IllegalArgumentException("Invalid boolean: " + inputValue);
-        }
-      case "string":
-        return inputValue;
-      default:
-        throw new IllegalArgumentException("Unsupported type: " + type);
-    }
+    this.value = inputValue;
   }
 
   public String getName() {
@@ -48,12 +21,12 @@ public class DynamicVariable {
     return type;
   }
 
-  public Object getValue() {
+  public String getValue() {
     return value;
   }
 
   public void setValue(String inputValue) {
-    this.value = parseValue(inputValue);
+    this.value = inputValue;
   }
 
   public String getDescription() {

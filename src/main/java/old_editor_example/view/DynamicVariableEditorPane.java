@@ -1,7 +1,7 @@
 package old_editor_example.view;
 
-import oogasalad.editor.model.data.object.DynamicVariableContainer;
-import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object_data.DynamicVariableContainer;
+import oogasalad.editor.model.data.object_data.DynamicVariable;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
