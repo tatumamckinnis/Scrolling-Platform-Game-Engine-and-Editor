@@ -91,7 +91,7 @@ public class GameAppView implements GameAppAPI {
    * @throws ViewInitializationException if errors with initialization.
    */
   private void startGame() throws ViewInitializationException {
-    GameScene game = new GameScene();
+    GameScene game = new GameScene(gameManager);
 
     game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons that change the scene in this function
           try {

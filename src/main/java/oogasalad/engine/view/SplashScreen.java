@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.GameManagerAPI;
 
 /**
@@ -149,27 +148,31 @@ public class SplashScreen extends Display {
       currButton.setId(buttonIDs[i]);
       currButton.setPrefSize(buttonWidth, buttonHeight);
       currButton.setWrapText(true);
-
-      if (buttonIDs[i].equals("splashButtonStartEngine")) { // TODO make not hard coded and add other buttons
-        currButton.setOnAction(event -> {
-          if (onStartClicked != null) {
-            onStartClicked.run();
-          }
-        });
-      }
-
-      if (buttonIDs[i].equals("splashButtonGameType")) {
-        currButton.setOnAction(event -> {
-          gameManager.selectDefaultGame("/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
-        });
-      }
-
+      setButtonAction(buttonIDs[i], currButton);
       splashBox.getChildren().add(currButton);
     }
 
     int buttonSpacing = Integer.parseInt(splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  private void setButtonAction(String buttonID, Button currButton) {
+    // factory that takes a buttonID,
+
+    if (buttonID.equals("splashButtonStartEngine")) { // TODO make not hard coded and add other buttons
+      currButton.setOnAction(event -> {
+        if (onStartClicked != null) {
+          onStartClicked.run();
+        }
+      });
+    }
+
+    if (buttonID.equals("splashButtonGameType")) {
+      currButton.setOnAction(event -> {
+        gameManager.selectDefaultGame("data/gameData/levels/dinosaurgame/Example_File1.xml");
+      });
+    }
   }
 
   /**
@@ -200,6 +203,7 @@ public class SplashScreen extends Display {
    * @return array of strings for button IDs
    */
   private String[] getSplashButtonIDs() {
+    // TODO make not hard coded
     return new String[]{"splashButtonGameType",
         "splashButtonStartEngine",
         "splashButtonStartEditor",

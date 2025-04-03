@@ -9,18 +9,10 @@ public class InputDataManager extends EditorEventDataManager {
 
   @Override
   protected EditorEventData createDataIfAbsent(EditorObject object) {
-    if (object.getInputData() == null) {
-      object.createInputData();
-    }
     return object.getInputData();
   }
 
   public InputDataManager(EditorLevelData level) {
     super(level);
-  }
-
-  public void createInputData(UUID id) {
-    EditorObject object = super.getLevel().getEditorObject(id);
-    object.createInputData();
   }
 }

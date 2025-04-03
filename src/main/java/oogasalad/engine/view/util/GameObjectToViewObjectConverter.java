@@ -1,4 +1,4 @@
-package oogasalad.engine.view;
+package oogasalad.engine.view.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import oogasalad.engine.view.viewGameObject;
 import oogasalad.fileparser.records.FrameData;
 
 public class GameObjectToViewObjectConverter {

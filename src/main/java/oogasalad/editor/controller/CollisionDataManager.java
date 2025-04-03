@@ -9,18 +9,10 @@ public class CollisionDataManager extends EditorEventDataManager {
 
   @Override
   protected EditorEventData createDataIfAbsent(EditorObject object) {
-    if (object.getCollisionData() == null) {
-      object.createCollisionData();
-    }
     return object.getCollisionData();
   }
 
   public CollisionDataManager(EditorLevelData level) {
     super(level);
-  }
-
-  public void createCollisionData(UUID id) {
-    EditorObject object = super.getLevel().getEditorObject(id);
-    object.createCollisionData();
   }
 }
