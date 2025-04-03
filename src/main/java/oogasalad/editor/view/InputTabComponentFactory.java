@@ -28,7 +28,7 @@ import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
-import oogasalad.editor.model.data.object.EditorEvent;
+import oogasalad.editor.model.data.object.event.EditorEvent;
 
 /**
  * The InputTabComponentFactory creates UI components for the input tab in the editor.
@@ -77,9 +77,9 @@ public class InputTabComponentFactory {
   }
 
   /**
-   * Sets the current object ID to the ID passed in.
+   * Set the current ID to a specific ID
    *
-   * @param currentObjectId the ID to set the currentID to
+   * @param currentObjectId The id to set current to
    */
   public void setCurrentObjectId(UUID currentObjectId) {
     this.currentObjectId = currentObjectId;

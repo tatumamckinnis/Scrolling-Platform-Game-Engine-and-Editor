@@ -74,4 +74,12 @@ public class GameScene extends Display {
     myGameControlPanel.render();
     myLevelView.render();
   }
+
+  /**
+   * Shifts the level view focus.
+   */
+  @Override
+  public void shiftNode() {
+    myLevelView.shiftNode();
+  }
 }

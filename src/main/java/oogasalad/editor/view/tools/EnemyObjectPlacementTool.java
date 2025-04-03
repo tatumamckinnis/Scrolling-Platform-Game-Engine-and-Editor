@@ -2,9 +2,8 @@ package oogasalad.editor.view.tools;
 
 import java.util.UUID;
 import oogasalad.editor.controller.EditorDataAPI;
-import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.view.EditorGameView;
-import oogasalad.editor.view.InputTabComponentFactory;
 
 /**
  * Tool for adding enemy objects to the game scene.
@@ -62,7 +61,7 @@ public class EnemyObjectPlacementTool implements ObjectPlacementTool {
 
     editorAPI.getSpriteDataAPI().setX(newObjectId, x);
     editorAPI.getSpriteDataAPI().setY(newObjectId, y);
-    editorAPI.getSpriteDataAPI().setSpritePath(newObjectId, spritePath);
+    //editorAPI.getSpriteDataAPI().setSpritePath(newObjectId, spritePath);
 
     int cellSize = editorView.getCellSize();
     editorAPI.getHitboxDataAPI().setX(newObjectId, x);

@@ -45,7 +45,7 @@ public class GameAppView implements GameAppAPI {
   public void initialize() throws ViewInitializationException {
     SplashScreen splashScreen = new SplashScreen(gameManager);
 
-    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other splash screen buttons buttons
+    splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other splash screen buttons that change the scene
       try {
         startGame();
       } catch (ViewInitializationException e) {
@@ -71,6 +71,14 @@ public class GameAppView implements GameAppAPI {
   }
 
   /**
+   * @see GameAppAPI#setGameCamera()
+   */
+  @Override
+  public void setGameCamera() {
+    currentDisplay.shiftNode();
+  }
+
+  /**
    * @see GameAppAPI#getCurrentInputs()
    */
   public List<KeyCode> getCurrentInputs() throws InputException {
@@ -85,7 +93,7 @@ public class GameAppView implements GameAppAPI {
   private void startGame() throws ViewInitializationException {
     GameScene game = new GameScene();
 
-    game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons in this function
+    game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons that change the scene in this function
           try {
             goToHome();
           } catch (ViewInitializationException e) {
@@ -122,9 +130,9 @@ public class GameAppView implements GameAppAPI {
    */
   private void goToHome() throws ViewInitializationException {
     initialize();
+    currentStage.setWidth(currentScene.getWidth());
+    currentStage.setHeight(currentScene.getHeight());
     currentStage.setScene(currentScene);
-//    currentStage.setWidth(currentScene.getWidth());
-//    currentStage.setHeight(currentScene.getHeight());
   }
 
   /**

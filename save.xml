@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<GameObject>
+    <Identity>
+        <ID>96e85f57-30a7-4e3b-8101-bb21068eb14f</ID>
+        <Group>Enemy</Group>
+    </Identity>
+    <SpriteData>
+        <SpritePath>assets/default.png</SpritePath>
+        <X>50.0</X>
+        <Y>50.0</Y>
+        <Width>64.0</Width>
+        <Height>64.0</Height>
+    </SpriteData>
+    <CollisionData>
+        <X>10.0</X>
+        <Y>20.0</Y>
+        <Width>100.0</Width>
+        <Height>50.0</Height>
+        <Shape>RECTANGLE</Shape>
+    </CollisionData>
+    <DynamicVariables/>
+    <InputData>
+        <RELEASED/>
+        <HELD/>
+        <PRESSED/>
+    </InputData>
+</GameObject>

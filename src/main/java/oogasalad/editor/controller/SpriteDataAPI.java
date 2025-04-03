@@ -22,11 +22,6 @@ public class SpriteDataAPI implements SpriteDataAPIInterface {
   }
 
   @Override
-  public String getSpritePath(UUID id) {
-    return level.getEditorObject(id).getSpriteData().getSpritePath();
-  }
-
-  @Override
   public void setX(UUID id, int x) {
     level.getEditorObject(id).getSpriteData().setX(x);
   }
@@ -34,10 +29,5 @@ public class SpriteDataAPI implements SpriteDataAPIInterface {
   @Override
   public void setY(UUID id, int y) {
     level.getEditorObject(id).getSpriteData().setY(y);
-  }
-
-  @Override
-  public void setSpritePath(UUID id, String path) {
-    level.getEditorObject(id).getSpriteData().setSpritePath(path);
   }
 }

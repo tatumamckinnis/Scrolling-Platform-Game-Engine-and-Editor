@@ -5,12 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.object.CollisionData;
-import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.InputData;
 import oogasalad.editor.model.data.object.PhysicsData;
-import oogasalad.editor.model.data.object.SpriteData;
+import oogasalad.editor.model.data.object.sprite.SpriteData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
