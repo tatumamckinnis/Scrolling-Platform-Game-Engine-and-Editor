@@ -36,11 +36,11 @@ class EditorObjectTest {
     mockEditorLevelData.getEditorConfig().setProperty("defaultHitboxWidth", "50");
     mockEditorLevelData.getEditorConfig().setProperty("defaultHitboxHeight", "100");
     mockEditorLevelData.getEditorConfig().setProperty("defaultHitboxShape", "rectangle");
-    sampleIdentityData = new IdentityData(UUID.randomUUID(), "TestName", "TestDescription");
+   // sampleIdentityData = new IdentityData(UUID.randomUUID(), "TestName", "TestDescription");
     sampleInputData = new InputData();
     samplePhysicsData = new PhysicsData();
     sampleCollisionData = new CollisionData();
-    sampleSpriteData = new SpriteData(10, 20, "path/to/sprite");
+    //sampleSpriteData = new SpriteData(10, 20, "path/to/sprite");
     sampleHitboxData = new HitboxData(10, 20, 30, 40, "circle");
   }
 
