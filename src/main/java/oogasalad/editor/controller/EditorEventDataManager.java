@@ -1,4 +1,4 @@
-package oogasalad.editor.controller.api;
+package oogasalad.editor.controller;
 
 import java.util.List;
 import java.util.Map;
@@ -10,17 +10,16 @@ import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.EditorObject;
 
-public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAPIInterface {
+public abstract class EditorEventDataManager {
 
   private EditorLevelData level;
 
   protected abstract EditorEventData createDataIfAbsent(EditorObject object);
 
-  protected EditorEventDataAPIAbstraction(EditorLevelData level) {
+  protected EditorEventDataManager(EditorLevelData level) {
     this.level = level;
   }
 
-  @Override
   public void addEvent(UUID id, String eventID) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -29,7 +28,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     data.getEvents().put(eventID, new EditorEvent());
   }
 
-  @Override
   public void removeEvent(UUID id, String eventID) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -38,7 +36,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     data.getEvents().remove(eventID);
   }
 
-  @Override
   public void addEventCondition(UUID id, String eventID, ConditionType condition) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -49,7 +46,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     }
   }
 
-  @Override
   public void addEventOutcome(UUID id, String eventID, OutcomeType outcome) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -60,7 +56,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     }
   }
 
-  @Override
   public void removeEventCondition(UUID id, String eventID, ConditionType condition) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -71,7 +66,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     }
   }
 
-  @Override
   public void removeEventOutcome(UUID id, String eventID, OutcomeType outcome) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return; }
@@ -82,7 +76,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     }
   }
 
-  @Override
   public List<ConditionType> getEventConditions(UUID id, String eventID) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return null; }
@@ -94,7 +87,6 @@ public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAP
     return null;
   }
 
-  @Override
   public List<OutcomeType> getEventOutcomes(UUID id, String eventID) {
     EditorObject object = level.getEditorObject(id);
     if (object == null) { return null; }
