@@ -1,12 +1,11 @@
 package oogasalad.editor.controller;
 
 import java.util.UUID;
-import oogasalad.editor.controller.api.EditorEventDataAPIAbstraction;
 import oogasalad.editor.model.data.object.event.EditorEventData;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 
-public class InputDataAPI extends EditorEventDataAPIAbstraction {
+public class InputDataManager extends EditorEventDataManager {
 
   @Override
   protected EditorEventData createDataIfAbsent(EditorObject object) {
@@ -16,7 +15,7 @@ public class InputDataAPI extends EditorEventDataAPIAbstraction {
     return object.getInputData();
   }
 
-  public InputDataAPI(EditorLevelData level) {
+  public InputDataManager(EditorLevelData level) {
     super(level);
   }
 

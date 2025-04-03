@@ -1,27 +1,26 @@
 package oogasalad.editor.controller;
 
 import java.util.UUID;
-import oogasalad.editor.controller.api.EditorEventDataAPIAbstraction;
 import oogasalad.editor.model.data.object.event.EditorEventData;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 
-public class PhysicsDataAPI extends EditorEventDataAPIAbstraction {
+public class CollisionDataManager extends EditorEventDataManager {
 
   @Override
   protected EditorEventData createDataIfAbsent(EditorObject object) {
-    if (object.getPhysicsData() == null) {
-      object.createPhysicsData();
+    if (object.getCollisionData() == null) {
+      object.createCollisionData();
     }
-    return object.getPhysicsData();
+    return object.getCollisionData();
   }
 
-  public PhysicsDataAPI(EditorLevelData level) {
+  public CollisionDataManager(EditorLevelData level) {
     super(level);
   }
 
-  public void createPhysicsData(UUID id) {
+  public void createCollisionData(UUID id) {
     EditorObject object = super.getLevel().getEditorObject(id);
-    object.createInputData();
+    object.createCollisionData();
   }
 }

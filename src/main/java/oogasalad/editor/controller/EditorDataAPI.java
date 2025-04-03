@@ -2,29 +2,28 @@ package oogasalad.editor.controller;
 
 import java.util.List;
 import java.util.UUID;
-import oogasalad.editor.controller.api.EditorDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 
-public class EditorDataAPI implements EditorDataAPIInterface {
-  private final IdentityDataAPI identityAPI;
-  private final HitboxDataAPI hitboxAPI;
-  private final InputDataAPI inputAPI;
-  private final PhysicsDataAPI physicsAPI;
-  private final CollisionDataAPI collisionAPI;
-  private final SpriteDataAPI spriteAPI;
+public class EditorDataAPI {
+  private final IdentityDataManager identityAPI;
+  private final HitboxDataManager hitboxAPI;
+  private final InputDataManager inputAPI;
+  private final PhysicsDataManager physicsAPI;
+  private final CollisionDataManager collisionAPI;
+  private final SpriteDataManager spriteAPI;
   private final EditorLevelData level;
 
 
   public EditorDataAPI(){
     this.level = new EditorLevelData();
-    this.identityAPI = new IdentityDataAPI(level);
-    this.hitboxAPI = new HitboxDataAPI(level);
-    this.inputAPI = new InputDataAPI(level);
-    this.physicsAPI = new PhysicsDataAPI(level);
-    this.collisionAPI = new CollisionDataAPI(level);
-    this.spriteAPI = new SpriteDataAPI(level);
+    this.identityAPI = new IdentityDataManager(level);
+    this.hitboxAPI = new HitboxDataManager(level);
+    this.inputAPI = new InputDataManager(level);
+    this.physicsAPI = new PhysicsDataManager(level);
+    this.collisionAPI = new CollisionDataManager(level);
+    this.spriteAPI = new SpriteDataManager(level);
   }
 
   public UUID createEditorObject() {
@@ -60,34 +59,28 @@ public class EditorDataAPI implements EditorDataAPIInterface {
   }
 
   public EditorLevelData getLevel() { return level; }
-
-  @Override
-  public IdentityDataAPI getIdentityDataAPI() {
+  
+  public IdentityDataManager getIdentityDataAPI() {
     return identityAPI;
   }
-
-  @Override
-  public HitboxDataAPI getHitboxDataAPI() {
+  
+  public HitboxDataManager getHitboxDataAPI() {
     return hitboxAPI;
   }
-
-  @Override
-  public InputDataAPI getInputDataAPI() {
+  
+  public InputDataManager getInputDataAPI() {
     return inputAPI;
   }
-
-  @Override
-  public PhysicsDataAPI getPhysicsDataAPI() {
+  
+  public PhysicsDataManager getPhysicsDataAPI() {
     return physicsAPI;
   }
-
-  @Override
-  public CollisionDataAPI getCollisionDataAPI() {
+  
+  public CollisionDataManager getCollisionDataAPI() {
     return collisionAPI;
   }
 
-  @Override
-  public SpriteDataAPI getSpriteDataAPI() {
+  public SpriteDataManager getSpriteDataAPI() {
     return spriteAPI;
   }
 }

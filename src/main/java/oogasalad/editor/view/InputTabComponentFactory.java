@@ -23,7 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ButtonBar;
-import oogasalad.editor.controller.InputDataAPI;
+import oogasalad.editor.controller.InputDataManager;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
@@ -42,7 +42,7 @@ public class InputTabComponentFactory {
   private static final String INPUT_TAB_PROPERTIES_FILEPATH = "/oogasalad/screens/inputTab.properties";
   private static final Properties inputTabProperties = new Properties();
 
-  private InputDataAPI inputAPI;
+  private InputDataManager inputAPI;
   private UUID currentObjectId;
   private DynamicVariableContainer dynamicVariables;
 
@@ -60,7 +60,7 @@ public class InputTabComponentFactory {
    * @param inputAPI the API to interact with input data
    * @param dynamicVariables the container for dynamic variables
    */
-  public InputTabComponentFactory(InputDataAPI inputAPI, DynamicVariableContainer dynamicVariables) {
+  public InputTabComponentFactory(InputDataManager inputAPI, DynamicVariableContainer dynamicVariables) {
     this.inputAPI = inputAPI;
     this.dynamicVariables = dynamicVariables;
 
