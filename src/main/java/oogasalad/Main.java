@@ -13,7 +13,7 @@ import oogasalad.engine.exception.ViewInitializationException;
 import oogasalad.engine.view.GameAppView;
 
 /**
- * Feel free to completely change this code or delete it entirely. 
+ * Feel free to completely  change this code or delete it entirely.
  */
 public class Main extends Application {
     private static final Logger LOG = Logger.getLogger(Main.class.getName());

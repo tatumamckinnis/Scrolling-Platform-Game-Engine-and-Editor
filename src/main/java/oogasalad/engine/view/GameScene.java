@@ -1,5 +1,6 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
@@ -55,7 +56,8 @@ public class GameScene extends Display {
    * @param gameObjects list of GameObjects to update or to add to the screen.
    * @throws RenderingException thrown if problem during rendering.
    */
-  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
+  public void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
   }
 

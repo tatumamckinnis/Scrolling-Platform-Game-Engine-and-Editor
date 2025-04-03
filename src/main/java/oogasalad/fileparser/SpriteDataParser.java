@@ -106,7 +106,7 @@ public class SpriteDataParser {
       Element spriteFileElement = doc.getDocumentElement();
       // Retrieve the sprite sheet image file from the spriteFile element.
       String imagePath = spriteFileElement.getAttribute("imagePath");
-      File spriteSheetFile = new File(pathToGraphicsData, imagePath);
+      File spriteSheetFile = new File(pathToGraphicsData + File.separator + gameName, imagePath);
 
       // Find the <sprite> element with a matching name.
       NodeList spriteNodes = spriteFileElement.getElementsByTagName("sprite");

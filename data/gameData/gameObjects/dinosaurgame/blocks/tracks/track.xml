@@ -19,7 +19,7 @@ vertices   => points in sprite coordinate system (x0,y0,x1,y1,x2,y2, ...)
 verticesUV => points in sheet coordinate system (x0,y0,x1,y1,x2,y2, ...)
 triangles  => sprite triangulation, 3 vertex indices per triangle
 -->
-<spriteFile imagePath="dinosaurgame/dinosaurgame-track.png" width="480" height="140">
+<spriteFile imagePath="dinosaurgame-track.png" width="480" height="140">
     <sprite name="track-0" x="0" y="0" width="480" height="28"/>
     <sprite name="track-1" x="0" y="28" width="480" height="28"/>
     <sprite name="track-2" x="0" y="56" width="480" height="28"/>

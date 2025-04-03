@@ -28,8 +28,7 @@ public class DefaultGameController implements GameControllerAPI {
   private InputProvider inputProvider;
 
   public DefaultGameController(InputProvider inputProvider) {
-    inputProvider = inputProvider;
-
+    this.inputProvider = inputProvider;
   }
 
   /**

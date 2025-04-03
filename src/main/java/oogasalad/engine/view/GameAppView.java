@@ -1,5 +1,6 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,8 @@ public class GameAppView implements GameAppAPI {
    * @see GameAppView#renderGameObjects(List)
    */
   @Override
-  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
+  public void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException {
     currentDisplay.renderGameObjects(gameObjects);
   }
 

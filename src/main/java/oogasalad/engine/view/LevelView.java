@@ -1,8 +1,10 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Random;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -56,6 +58,8 @@ public class LevelView extends Display {
     Text text = new Text(200, 200, "This is my level view");
     text.setId("3");
 
+
+
     this.getChildren().addAll(r1, r2, r3, text);
     setInitialCameraPosition();
   }
@@ -65,17 +69,12 @@ public class LevelView extends Display {
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<GameObject> gameObjects) throws RenderingException {
-    // loop thru all gameObjects, add them to this.getChildren if not already in, if they are then update them
-    Random r = new Random();
-    int id = r.nextInt(3);
-    for (Node node : this.getChildren()) {
-      if (Integer.parseInt(node.getId()) == id) {
-        Color randomColor = Color.color(r.nextDouble(), r.nextDouble(), r.nextDouble());
-        ((Rectangle) node).setFill(randomColor);
-      }
-    }
-    moveRight();
+  public void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException {
+    GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
+    List<GameObject> gameObjects1 = gameObjects.subList(1,2);
+    List<ImageView> sprites =  converter.convertGameObjects(gameObjects);
+    this.getChildren().addAll(sprites);
   }
 
   /**

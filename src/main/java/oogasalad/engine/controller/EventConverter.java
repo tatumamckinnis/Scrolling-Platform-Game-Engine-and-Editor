@@ -31,6 +31,9 @@ public class EventConverter {
       GameObject gameObject, Map<Integer, BlueprintData> bluePrintMap) {
     List<Event> events = new ArrayList<>();
     for (EventData event : bluePrintMap.get(gameObjectData.blueprintId()).eventDataList()) {
+      if (event == null) {
+        continue;
+      }
       Event e = makeEventObject(event, gameObject);
       events.add(e);
     }
@@ -96,6 +99,6 @@ public class EventConverter {
    * @return the event type enum
    */
   private static Event.EventType makeEventType(EventData eventData) {
-    return Event.EventType.valueOf(eventData.type());
+    return Event.EventType.valueOf(eventData.type().toUpperCase());
   }
 }

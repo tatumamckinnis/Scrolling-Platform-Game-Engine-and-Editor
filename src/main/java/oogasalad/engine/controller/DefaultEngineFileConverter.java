@@ -74,9 +74,6 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private GameObject makeGameObject(GameObjectData gameObjectData, Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
-    if (!SUPPORTED_OBJECT_TYPES.contains(blueprintData.type())) {
-      throw new ObjectNotSupportedException(ENGINE_FILE_RESOURCES.getString("ObjectNotSupported"));
-    }
 
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
     Map<String, AnimationData> animationMap = makeAnimationMap(blueprintData);

@@ -3,6 +3,7 @@
  */
 package oogasalad.engine.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
     myGameController = new DefaultGameController(this);
-    myLevelAPI = new DefaultLevel();
+    myLevelAPI = new DefaultLevel(myGameController);
 
     initializeMyView();
   }
@@ -85,7 +86,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
-      } catch (RenderingException | InputException ex) {
+      } catch (RenderingException | InputException | FileNotFoundException ex) {
         throw new RuntimeException(ex);
       }
     }));
@@ -169,7 +170,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   /**
    * Called on each tick of the game loop. Delegates game state updates to the controller.
    */
-  private void step() throws RenderingException, InputException {
+  private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
     myView.renderGameObjects(myGameController.getObjects());

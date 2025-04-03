@@ -1,5 +1,6 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.exception.InputException;
@@ -33,7 +34,8 @@ public interface GameAppAPI {
    * @throws RenderingException if there is an error during the rendering process,
    *      such as invalid sprite resources, rendering context errors, or memory limitations
    */
-  void renderGameObjects(List<GameObject> gameObjects) throws RenderingException;
+  void renderGameObjects(List<GameObject> gameObjects)
+      throws RenderingException, FileNotFoundException;
 
   /**
    * Retrieves the currently pressed keys.
