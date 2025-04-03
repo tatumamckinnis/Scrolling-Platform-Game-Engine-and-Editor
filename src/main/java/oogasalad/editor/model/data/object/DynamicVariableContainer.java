@@ -1,4 +1,4 @@
-package oogasalad.editor.model.data.object_data;
+package oogasalad.editor.model.data.object;
 
 import java.util.Collection;
 import java.util.Collections;

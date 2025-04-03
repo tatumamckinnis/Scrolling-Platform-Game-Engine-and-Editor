@@ -26,9 +26,9 @@ import javafx.scene.control.ButtonBar;
 import oogasalad.editor.controller.InputDataAPI;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
-import oogasalad.editor.model.data.object_data.DynamicVariable;
-import oogasalad.editor.model.data.object_data.DynamicVariableContainer;
-import oogasalad.editor.model.data.object_data.EditorEvent;
+import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.event.EditorEvent;
 
 /**
  * The InputTabComponentFactory creates UI components for the input tab in the editor.

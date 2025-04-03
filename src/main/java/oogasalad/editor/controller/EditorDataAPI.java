@@ -1,9 +1,11 @@
 package oogasalad.editor.controller;
 
+import java.util.List;
 import java.util.UUID;
 import oogasalad.editor.controller.api.EditorDataAPIInterface;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.Layer;
 
 public class EditorDataAPI implements EditorDataAPIInterface {
   private final IdentityDataAPI identityAPI;
@@ -31,6 +33,30 @@ public class EditorDataAPI implements EditorDataAPIInterface {
 
   public EditorObject getEditorObject(UUID id) {
     return level.getEditorObject(id);
+  }
+
+  public void addLayer(String layerName) {
+    level.addLayer(new Layer(layerName, level.getLayers().get(0).getPriority() + 1));
+  }
+
+  public List<Layer> getLayers() {
+    return level.getLayers();
+  }
+
+  public void removeLayer(String layerName) {
+    level.removeLayer(layerName);
+  }
+
+  public void addGroup(String groupName) {
+    level.addGroup(groupName);
+  }
+
+  public List<String> getGroups() {
+    return level.getGroups();
+  }
+
+  public void removeGroup(String groupName) {
+    level.removeGroup(groupName);
   }
 
   public EditorLevelData getLevel() { return level; }
