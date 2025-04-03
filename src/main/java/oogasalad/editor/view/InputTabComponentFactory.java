@@ -30,7 +30,7 @@ import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import old_editor_example.DynamicVariable;
 import old_editor_example.DynamicVariableContainer;
-import oogasalad.editor.model.data.object.EditorEvent;
+import oogasalad.editor.model.data.object_data.EditorEvent;
 
 /**
  * The InputTabComponentFactory creates UI components for the input tab in the editor.

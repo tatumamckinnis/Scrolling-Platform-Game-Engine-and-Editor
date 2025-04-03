@@ -2,9 +2,9 @@ package oogasalad.editor.controller;
 
 import java.util.UUID;
 import oogasalad.editor.controller.api.EditorEventDataAPIAbstraction;
+import oogasalad.editor.model.data.object_data.EditorEventData;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.object.EditorEventData;
-import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.data.EditorObject;
 
 public class InputDataAPI extends EditorEventDataAPIAbstraction {
 

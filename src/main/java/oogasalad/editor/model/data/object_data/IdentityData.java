@@ -1,4 +1,4 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data.object_data;
 
 import java.util.UUID;
 

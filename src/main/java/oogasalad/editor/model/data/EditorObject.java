@@ -1,8 +1,13 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data;
 
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.object_data.CollisionData;
+import oogasalad.editor.model.data.object_data.HitboxData;
+import oogasalad.editor.model.data.object_data.IdentityData;
+import oogasalad.editor.model.data.object_data.InputData;
+import oogasalad.editor.model.data.object_data.PhysicsData;
+import oogasalad.editor.model.data.object_data.SpriteData;
 
 public class EditorObject {
 

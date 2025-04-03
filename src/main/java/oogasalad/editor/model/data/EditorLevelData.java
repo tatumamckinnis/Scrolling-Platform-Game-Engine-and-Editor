@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.object.EditorObject;
 
 public class EditorLevelData {
 

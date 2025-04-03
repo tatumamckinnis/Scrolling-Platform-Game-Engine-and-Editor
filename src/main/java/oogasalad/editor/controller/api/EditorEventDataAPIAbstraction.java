@@ -3,12 +3,12 @@ package oogasalad.editor.controller.api;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import oogasalad.editor.model.data.object_data.EditorEvent;
+import oogasalad.editor.model.data.object_data.EditorEventData;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
-import oogasalad.editor.model.data.object.EditorEvent;
-import oogasalad.editor.model.data.object.EditorEventData;
-import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.data.EditorObject;
 
 public abstract class EditorEventDataAPIAbstraction implements EditorEventDataAPIInterface {
 
