@@ -25,15 +25,15 @@ public class OutcomeExecutor {
      */
     public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject) {
         if (outcomeType == EventOutcome.OutcomeType.MOVE_RIGHT) {
-            int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "5"));
+            int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "15"));
             gameObject.setX(gameObject.getX() + dx);
         }
         if (outcomeType == EventOutcome.OutcomeType.APPLY_GRAVITY) {
-            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("ApplyGravityAmount", "1"));
-            gameObject.setYVelocity(gameObject.getYVelocity() - dy);
+            System.out.println("OMGGGG GRAVITY BEING APPLIED");
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("ApplyGravityAmount", "5"));
+            gameObject.setYVelocity(gameObject.getYVelocity() + dy);
         }
         if (outcomeType == EventOutcome.OutcomeType.JUMP) {
-            System.out.println("OMMGGGGGG IM JUMPING");
             int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "5"));
             gameObject.setYVelocity(gameObject.getYVelocity() - dy);
         }

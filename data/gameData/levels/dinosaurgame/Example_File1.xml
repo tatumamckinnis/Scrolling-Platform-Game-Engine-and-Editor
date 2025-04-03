@@ -81,5 +81,16 @@ interact with each other -->
         <outcomes list="MOVE_RIGHT"/>
       </event>
     </event>
+    <event>
+      <event type="physics" id="22">
+        <conditions>
+          <condition list="TRUE"/>
+        </conditions>
+        <outcomes list="APPLY_GRAVITY"/>
+           <parameters>
+             <parameter name="ApplyGravityAmount">10</parameter>
+           </parameters>
+      </event>
+      </event>
   </events>
 </map>
