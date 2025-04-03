@@ -14,7 +14,8 @@ public class EventOutcome {
         MOVE_RIGHT,
         JUMP,
         APPLY_GRAVITY,
-        LOSE_GAME
+        LOSE_GAME,
+        PATROL
     }
 
     private OutcomeType outcomeType;

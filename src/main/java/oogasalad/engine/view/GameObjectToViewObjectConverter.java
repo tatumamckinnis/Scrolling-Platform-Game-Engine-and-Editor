@@ -27,7 +27,6 @@ public class GameObjectToViewObjectConverter {
           viewGameObject newViewObject = new viewGameObject(gameObject.getUuid(),gameObject.getCurrentFrame(),gameObject.getX(),gameObject.getY(),gameObject.getHitBoxWidth(),gameObject.getHitBoxHeight(),gameObject.getmyHitBoxData().spriteDx(),gameObject.getmyHitBoxData().spriteDy());
           viewObjects.add(newViewObject);
           imagetoUUIDMap.put(gameObject.getUuid(),newViewObject);
-          System.out.println(gameObject.getUuid());
         }
       }
       return viewObjects;

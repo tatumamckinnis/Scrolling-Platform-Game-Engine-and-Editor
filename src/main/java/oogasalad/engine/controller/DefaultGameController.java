@@ -12,6 +12,7 @@ import oogasalad.engine.event.Event;
 import oogasalad.engine.event.EventHandler;
 import oogasalad.engine.event.InputHandler;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.mapObject;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -41,7 +42,7 @@ public class DefaultGameController implements GameControllerAPI {
    * List of all game objects currently in the game state
    */
   private List<GameObject> myGameObjects;
-
+  private mapObject myMapObject;
 
   /**
    * Returns the list of all {@link GameObject}s currently in the game.
@@ -71,6 +72,10 @@ public class DefaultGameController implements GameControllerAPI {
   @Override
   public Map<String, GameObject> getGameObjectMap() {
     return myGameObjectMap;
+  }
+
+  public mapObject getMapObject(){
+    return myMapObject;
   }
 
   /**
@@ -104,6 +109,7 @@ public class DefaultGameController implements GameControllerAPI {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
+    myMapObject = new mapObject(data.levelWidth(), data.levelHeight());
     System.out.println(myGameObjects);
   }
 

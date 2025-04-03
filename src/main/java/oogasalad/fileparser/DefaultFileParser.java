@@ -90,18 +90,18 @@ public class DefaultFileParser implements FileParserAPI {
       // Use the LayerDataParser to extract game objects, organized by layer.
       Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(root);
 
-      System.out.println(eventList.size());
-      System.out.println(blueprintData.size());
-      System.out.println(gameObjectsByLayer.size());
-      for(Integer i : blueprintData.keySet()){
-        System.out.println(blueprintData.get(i));
-      }
-      for (Entry<Integer, List<GameObjectData>> entry : gameObjectsByLayer.entrySet()) {
-        System.out.println(entry.getKey());
-        for (GameObjectData gameObjectData : entry.getValue()) {
-          System.out.println(gameObjectData);
-        }
-      }
+//      System.out.println(eventList.size());
+//      System.out.println(blueprintData.size());
+//      System.out.println(gameObjectsByLayer.size());
+//      for(Integer i : blueprintData.keySet()){
+//        System.out.println(blueprintData.get(i));
+//      }
+//      for (Entry<Integer, List<GameObjectData>> entry : gameObjectsByLayer.entrySet()) {
+//        System.out.println(entry.getKey());
+//        for (GameObjectData gameObjectData : entry.getValue()) {
+//          System.out.println(gameObjectData);
+//        }
+//      }
 
       // Construct and return the LevelData record.
       return new LevelData(levelName, levelWidth,levelHeight, blueprintData, gameObjectsByLayer);

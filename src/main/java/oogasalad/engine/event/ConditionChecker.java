@@ -30,16 +30,15 @@ public class ConditionChecker {
             return true;
         }
         else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
-            System.out.println("SPACE KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.SPACE));
+          //  System.out.println("SPACE KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.SPACE));
             return inputProvider.isKeyPressed(KeyCode.SPACE);
         }
-
         else if (conditionType == EventCondition.ConditionType.UP_ARROW_PRESSED) {
-            System.out.println("UP ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
+          //  System.out.println("UP ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
             return inputProvider.isKeyPressed(KeyCode.UP);
         }
         else if (conditionType == EventCondition.ConditionType.W_KEY_PRESSED) {
-            System.out.println("W ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.UP));
+        //    System.out.println("W ARROW KEY PRESSED is " + inputProvider.isKeyPressed(KeyCode.W));
             return inputProvider.isKeyPressed(KeyCode.W);
         }
         else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
