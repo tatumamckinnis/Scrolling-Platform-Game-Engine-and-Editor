@@ -125,9 +125,9 @@ public class GameAppView implements GameAppAPI {
    */
   private void goToHome() throws ViewInitializationException {
     initialize();
+    currentStage.setWidth(currentScene.getWidth());
+    currentStage.setHeight(currentScene.getHeight());
     currentStage.setScene(currentScene);
-//    currentStage.setWidth(currentScene.getWidth());
-//    currentStage.setHeight(currentScene.getHeight());
   }
 
   /**

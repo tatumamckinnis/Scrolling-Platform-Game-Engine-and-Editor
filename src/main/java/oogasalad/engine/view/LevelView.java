@@ -4,14 +4,13 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
 
 /**
  * This class is the view for a level in a game. It includes all visual elements in a level.
