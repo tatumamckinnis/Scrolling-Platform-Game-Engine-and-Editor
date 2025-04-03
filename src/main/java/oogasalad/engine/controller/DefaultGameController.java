@@ -29,6 +29,7 @@ public class DefaultGameController implements GameControllerAPI {
 
   public DefaultGameController(InputProvider inputProvider) {
     this.inputProvider = inputProvider;
+    this.myGameObjects = new ArrayList<>();
   }
 
   /**
@@ -81,7 +82,6 @@ public class DefaultGameController implements GameControllerAPI {
   @Override
   public void updateGameState() {
     EventHandler eventHandler = new DefaultEventHandler(inputProvider,this);
-    InputHandler inputHandler = new InputHandler();
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {

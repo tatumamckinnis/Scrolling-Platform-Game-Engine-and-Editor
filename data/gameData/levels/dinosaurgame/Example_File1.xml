@@ -64,8 +64,7 @@ interact with each other -->
     <event type="input" id="20">
 <!--     Enums for event type, condition, and outcome-->
       <conditions>
-        <condition list="SPACE_KEY_PRESSED" />
-        <condition list="UP_ARROW_PRESSED" />
+        <condition list="W_KEY_PRESSED" />
       </conditions>
 
       <outcomes list="JUMP"/>

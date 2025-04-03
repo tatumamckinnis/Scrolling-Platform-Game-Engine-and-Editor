@@ -1,6 +1,7 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -103,13 +104,17 @@ public class GameAppView implements GameAppAPI {
     currentStage.setHeight(newHeight);
 
     currentScene.setOnKeyPressed(event -> {
-      KeyCode code = event.getCode();
-      if (!currentInputs.contains(code)) {
-        currentInputs.add(code);
+      KeyCode keyCode = event.getCode(); // Store KeyCode instead of int
+      System.out.println("AHHHHHHHHHHHHHHHH KEYS PRESSED: " + keyCode);
+      if (!currentInputs.contains(keyCode)) {
+        currentInputs.add(keyCode);
       }
     });
 
-    currentScene.setOnKeyReleased(event -> currentInputs.remove(event.getCode()));
+    currentScene.setOnKeyReleased(event -> {
+      KeyCode keyCode = event.getCode();
+      currentInputs.remove(keyCode); // Remove by KeyCode instead of integer
+    });
   }
 
   /**

@@ -33,8 +33,9 @@ public class OutcomeExecutor {
             gameObject.setYVelocity(gameObject.getYVelocity() - dy);
         }
         if (outcomeType == EventOutcome.OutcomeType.JUMP) {
+            System.out.println("OMMGGGGGG IM JUMPING");
             int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "5"));
-            gameObject.setYVelocity(gameObject.getYVelocity() + dy);
+            gameObject.setYVelocity(gameObject.getYVelocity() - dy);
         }
     }
 

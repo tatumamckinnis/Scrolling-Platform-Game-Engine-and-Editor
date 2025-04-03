@@ -72,7 +72,7 @@ public class LevelView extends Display {
   public void renderGameObjects(List<GameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
-    List<GameObject> gameObjects1 = gameObjects.subList(1,2);
+    //List<GameObject> gameObjects1 = gameObjects.subList(1,2);
     List<ImageView> sprites =  converter.convertGameObjects(gameObjects);
     this.getChildren().addAll(sprites);
   }

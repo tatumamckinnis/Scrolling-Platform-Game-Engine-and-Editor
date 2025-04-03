@@ -17,7 +17,7 @@ public class GameObjectToViewObjectConverter {
       throws FileNotFoundException {
       List<ImageView> imageViews = new ArrayList<>();
       for (GameObject gameObject : gameObjects) {
-        System.out.println(gameObject);
+        //System.out.println(gameObject);
         imageViews.add(convertGameObjectToView(gameObject));
       }
       return imageViews;
@@ -45,12 +45,12 @@ public class GameObjectToViewObjectConverter {
     imageView.setFitWidth(viewport.getWidth());
     imageView.setFitHeight(viewport.getHeight());
 
-    System.out.println(gameObject.getSpriteData().baseImage().name());
-    System.out.println(baseSpriteData.spriteFile());
-    System.out.println("x:"+baseSpriteData.x());
-    System.out.println("y:"+baseSpriteData.y());
-    System.out.println("width:"+baseSpriteData.width());
-    System.out.println("height:"+baseSpriteData.height());
+    //System.out.println(gameObject.getSpriteData().baseImage().name());
+    //System.out.println(baseSpriteData.spriteFile());
+    //System.out.println("x:"+baseSpriteData.x());
+    //System.out.println("y:"+baseSpriteData.y());
+    //System.out.println("width:"+baseSpriteData.width());
+    //System.out.println("height:"+baseSpriteData.height());
 
     imageView.setX(gameObject.getX());
     imageView.setY(gameObject.getY());
