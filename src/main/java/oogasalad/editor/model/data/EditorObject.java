@@ -1,8 +1,13 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data;
 
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.object.CollisionData;
+import oogasalad.editor.model.data.object.HitboxData;
+import oogasalad.editor.model.data.object.IdentityData;
+import oogasalad.editor.model.data.object.InputData;
+import oogasalad.editor.model.data.object.PhysicsData;
+import oogasalad.editor.model.data.object.sprite.SpriteData;
 
 public class EditorObject {
 
@@ -32,12 +37,12 @@ public class EditorObject {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
 
-    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "");
+    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getLayers().get(0));
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
         editorConfig.getProperty("defaultHitboxShape"));
-    this.sprite = new SpriteData(0,0,"");
+    this.sprite = new SpriteData(0,0,null, null, null);
     this.input = null;
     this.physics = null;
     this.collision = null;

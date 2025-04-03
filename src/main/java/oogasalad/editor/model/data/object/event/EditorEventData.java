@@ -1,4 +1,4 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data.object.event;
 
 import java.util.HashMap;
 import java.util.Map;

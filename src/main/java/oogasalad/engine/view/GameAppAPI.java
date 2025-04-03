@@ -43,4 +43,9 @@ public interface GameAppAPI {
    * @throws InputException if there is an issue retrieving inputs.
    */
   List<KeyCode> getCurrentInputs() throws InputException;
+
+  /**
+   * Sets the focus of the active game.
+   */
+  void setGameCamera();
 }

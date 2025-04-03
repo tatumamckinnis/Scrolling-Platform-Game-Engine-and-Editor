@@ -8,7 +8,7 @@ public class Layer {
   private List<Layer> interactingLayers;
   private int priority; // Higher priority -> Rendered on top of other layers
 
-  public Layer(String name) {
+  public Layer(String name, int priority) {
     this.name = name;
     this.interactingLayers = new ArrayList<>();
     interactingLayers.add(this);

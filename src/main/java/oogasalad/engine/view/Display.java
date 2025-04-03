@@ -30,6 +30,13 @@ public abstract class Display extends Group {
   }
 
   /**
+   * Special implementation of javafx setTranslate() function such that some types of nodes can
+   * implement the shift or choose not to. Default implementation chooses not to shift node.
+   * For example, a splash screen should never be able to be translated but a levelView should.
+   */
+  public void shiftNode() {}
+
+  /**
    * This method will provide the option to hide the display from the scene.
    * Subclasses can define how they should be hidden.
    */

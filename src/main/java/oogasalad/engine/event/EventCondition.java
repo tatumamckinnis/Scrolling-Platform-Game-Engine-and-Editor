@@ -14,7 +14,8 @@ public class EventCondition {
     public enum ConditionType {
         TRUE,
         SPACE_KEY_PRESSED,
-        COLLIDED_WITH_ENEMY
+        COLLIDED_WITH_ENEMY,
+        UP_ARROW_PRESSED
     }
 
 

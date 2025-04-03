@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.object.EditorObject;
 
 public class EditorLevelData {
 
@@ -36,7 +35,7 @@ public class EditorLevelData {
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
     myObjectDataMap = new HashMap<>();
-    myCurrentLayer = new Layer("default");
+    myCurrentLayer = new Layer("layer0", 0);
   }
 
   public UUID createEditorObject() {
@@ -58,8 +57,14 @@ public class EditorLevelData {
     myGroups.add(group);
   }
 
-  public void removeGroup(String group) {
+  public boolean removeGroup(String group) {
+    for (EditorObject object : myObjectDataMap.values()) {
+      if (group.equals(object.getIdentityData().getGroup())) {
+        return false;
+      }
+    }
     myGroups.remove(group);
+    return true;
   }
 
   public List<Layer> getLayers() {
@@ -68,11 +73,23 @@ public class EditorLevelData {
 
   public void addLayer(Layer layer) {
     int index = 0;
-    while (index < myLayers.size() && layer.getPriority() <= myLayers.get(index).getPriority()) {
+    while (index < myLayers.size() && layer.getPriority() > myLayers.get(index).getPriority()) {
       index++; // Insert the layer to maintain descending priority levels
     }
     myLayers.add(index, layer);
     myLayerDataMap.put(layer, new ArrayList<>());
+  }
+
+  public boolean removeLayer(String layerName) {
+    for (Layer layer : myLayers) {
+      if (layer.getName().equals(layerName)) {
+        if (myLayerDataMap.containsKey(layer) && myLayerDataMap.get(layer).isEmpty()) {
+          myLayerDataMap.remove(layer);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   public EditorObject getEditorObject(UUID uuid) {
