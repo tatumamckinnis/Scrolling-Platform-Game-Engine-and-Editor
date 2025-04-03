@@ -63,7 +63,7 @@ public class OutcomeExecutor {
             }
         }
         if (outcomeType == EventOutcome.OutcomeType.LOSE_GAME) {
-            System.out.println("LOST GAME!!!!!!!!!");
+            //System.out.println("LOST GAME!!!!!!!!!");
         }
     }
 
