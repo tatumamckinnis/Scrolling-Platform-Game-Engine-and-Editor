@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.FileNotFoundException;
 import javafx.scene.image.ImageView;
+import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
 import oogasalad.fileparser.records.FrameData;
 
 public class viewGameObject {

@@ -42,6 +42,10 @@ public class SpriteData {
     return frames.get(frameName);
   }
 
+  public List<String> getAnimationFrameNames(String animationName) {
+    return animations.get(animationName).getFrameNames();
+  }
+
   public AnimationData getAnimation(String animationName) {
     return animations.get(animationName);
   }
@@ -62,6 +66,14 @@ public class SpriteData {
     this.frames = frames;
   }
 
+  public void setAnimations(Map<String, AnimationData> animations) {
+    this.animations = animations;
+  }
+
+  public void setAnimationFrameLength(String animationName, double length) {
+    animations.get(animationName).setFrameLength(length);
+  }
+
   public void addFrame(String frameName, FrameData frame) {
     this.frames.put(frameName, frame);
   }
@@ -73,10 +85,6 @@ public class SpriteData {
   public void renameFrame(String oldName, String newName) {
     this.frames.put(newName, frames.get(oldName));
     this.frames.remove(oldName);
-  }
-
-  public void setAnimations(Map<String, AnimationData> animations) {
-    this.animations = animations;
   }
 
   public void addAnimationFrame(String animationName, String frameName) {

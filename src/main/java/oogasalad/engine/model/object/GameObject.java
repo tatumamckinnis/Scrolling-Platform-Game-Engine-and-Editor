@@ -90,10 +90,18 @@ public abstract class GameObject {
     myHitBoxX += xVelocity;
     myHitBoxY += yVelocity;
     //check to make sure not too low?
-    if (myHitBoxY >= 500-myHitBoxHeight) {
-      isGrounded = true;
-      myHitBoxY = 500-myHitBoxHeight;
+  if (myHitBoxY >= 500-myHitBoxHeight) {
+    isGrounded = true;
+    myHitBoxY = 500-myHitBoxHeight;
     }
+
+   if (myHitBoxX >= 500-myHitBoxWidth) {
+    myHitBoxX = 500-myHitBoxWidth;
+  }
+//    if ( myHitBoxX < 0){
+//      myHitBoxX = 0;
+//      xVelocity *= -1;
+//    }
 
   }
 

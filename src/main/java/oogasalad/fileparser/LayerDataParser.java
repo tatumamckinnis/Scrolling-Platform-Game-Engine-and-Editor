@@ -31,7 +31,6 @@ public class LayerDataParser {
         gameObjectMap.put(z, readLayerData(LayerElement, z));
       }
     }
-    System.out.println(gameObjectMap);
     return gameObjectMap;
   }
 

@@ -9,6 +9,7 @@ import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
+import oogasalad.engine.model.object.mapObject;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -44,6 +45,7 @@ public interface GameControllerAPI {
    */
   Map<String, GameObject> getGameObjectMap();
 
+  mapObject getMapObject();
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller
    * (input, physics, collision, etc.) 2) Resolving any post-update tasks (e.g. removing destroyed

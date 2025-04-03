@@ -43,7 +43,7 @@ interact with each other -->
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="10">
+    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
@@ -64,7 +64,7 @@ interact with each other -->
     <event type="input" id="20">
 <!--     Enums for event type, condition, and outcome-->
       <conditions>
-        <condition list="W_KEY_PRESSED" />
+        <condition list="W_KEY_PRESSED,UP_ARROW_PRESSED,SPACE_KEY_PRESSED" />
       </conditions>
 
       <outcomes list="JUMP"/>
@@ -101,4 +101,10 @@ interact with each other -->
           </event>
       </event>
   </events>
+  <event type="physics" id="23">
+      <conditions>
+        <condition list="TRUE"/>
+      </conditions>
+     <outcomes list="PATROL"/>
+  </event>
 </map>

@@ -2,6 +2,7 @@ package oogasalad.editor.model.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.object.CollisionData;
@@ -86,10 +87,12 @@ class EditorObjectTest {
     assertNotNull(spriteData);
     assertEquals(0, spriteData.getX());
     assertEquals(0, spriteData.getY());
+    assertEquals(new HashMap<>(), spriteData.getFrames());
+    assertEquals(new HashMap<>(), spriteData.getAnimations());
     assertEquals("", spriteData.getSpritePath());
-    assertNull(editorObject.getCollisionData());
-    assertNull(editorObject.getPhysicsData());
-    assertNull(editorObject.getInputData());
+    assertEquals(new HashMap<>(), editorObject.getCollisionData().getEvents());
+    assertEquals(new HashMap<>(), editorObject.getPhysicsData().getEvents());
+    assertEquals(new HashMap<>(), editorObject.getInputData().getEvents());
   }
 
   /**

@@ -82,7 +82,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
-    double secondDelay = 1.0 / (framesPerSecond*4);
+    double secondDelay = 1.0 / (framesPerSecond*5);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();

@@ -1,4 +1,4 @@
-package oogasalad.engine.view;
+package oogasalad.engine.view.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import oogasalad.engine.view.viewGameObject;
 import oogasalad.fileparser.records.FrameData;
 
 public class GameObjectToViewObjectConverter {
@@ -27,7 +28,6 @@ public class GameObjectToViewObjectConverter {
           viewGameObject newViewObject = new viewGameObject(gameObject.getUuid(),gameObject.getCurrentFrame(),gameObject.getX(),gameObject.getY(),gameObject.getHitBoxWidth(),gameObject.getHitBoxHeight(),gameObject.getmyHitBoxData().spriteDx(),gameObject.getmyHitBoxData().spriteDy());
           viewObjects.add(newViewObject);
           imagetoUUIDMap.put(gameObject.getUuid(),newViewObject);
-          System.out.println(gameObject.getUuid());
         }
       }
       return viewObjects;

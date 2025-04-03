@@ -91,7 +91,7 @@ public class GameAppView implements GameAppAPI {
    * @throws ViewInitializationException if errors with initialization.
    */
   private void startGame() throws ViewInitializationException {
-    GameScene game = new GameScene();
+    GameScene game = new GameScene(gameManager);
 
     game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons that change the scene in this function
           try {
@@ -114,6 +114,7 @@ public class GameAppView implements GameAppAPI {
     currentScene.setOnKeyPressed(event -> {
       KeyCode keyCode = event.getCode(); // Store KeyCode instead of int
       if (!currentInputs.contains(keyCode)) {
+        System.out.println("Pressed: " + keyCode.getName());
         currentInputs.add(keyCode);
       }
     });
