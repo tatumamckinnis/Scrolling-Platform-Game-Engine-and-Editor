@@ -23,7 +23,7 @@ interact with each other -->
   <layer name="entities" width="500" height="500" z="1">
     <data>
       <object id="12" coordinates="(300,300)(500,300)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
-      <object id="111" coordinates="(100,450)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+      <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
     </data>
   </layer>
   <layer name="events" width="500" height="500" z="1">
@@ -35,7 +35,7 @@ interact with each other -->
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
 <!-- Objects should also have a defined hit box-->
-    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="10" hitBoxHeight="10" hitBoxShape="SQUARE" spriteDx="10" spriteDy="10" eventIDs="20,21">
+    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21">
 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
         <variables>
@@ -43,7 +43,7 @@ interact with each other -->
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10">
+    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="10">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
@@ -51,11 +51,11 @@ interact with each other -->
     </object>
   </objectGroup>
     <objectGroup name="blocks">
-      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10" />
-      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1"  hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
-      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2"  hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
-      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10"/>
-      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="10" hitBoxHeight="10" spriteDx="10" spriteDy="10" eventIDs="10" />
+      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" />
+      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1"  hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
+      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2"  hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
+      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
+      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" />
     </objectGroup>
     <objectGroup name="backgrounds">
     </objectGroup>
