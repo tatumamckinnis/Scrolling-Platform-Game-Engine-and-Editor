@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import oogasalad.editor.controller.EditorDataAPI;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.object_data.SpriteData;
+import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.tools.ObjectPlacementTool;
 
 /**

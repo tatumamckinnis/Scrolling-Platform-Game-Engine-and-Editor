@@ -3,7 +3,7 @@ package oogasalad.editor.view;
 import java.util.UUID;
 import javafx.scene.layout.Pane;
 import oogasalad.editor.controller.EditorDataAPI;
-import oogasalad.editor.model.data.object_data.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.EditorObject;
 
 /**

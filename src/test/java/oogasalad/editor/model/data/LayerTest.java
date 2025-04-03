@@ -20,8 +20,8 @@ class LayerTest {
    */
   @BeforeEach
   void setUp() {
-    layer = new Layer("Background");
-    anotherLayer = new Layer("Foreground");
+    layer = new Layer("Background", 1);
+    anotherLayer = new Layer("Foreground", 2);
     anotherLayer.setPriority(10);
   }
 

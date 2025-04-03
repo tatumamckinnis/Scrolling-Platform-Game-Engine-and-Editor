@@ -1,4 +1,4 @@
-package oogasalad.editor.model.data.object_data;
+package oogasalad.editor.model.data.object;
 
 public class HitboxData {
   private int x;
