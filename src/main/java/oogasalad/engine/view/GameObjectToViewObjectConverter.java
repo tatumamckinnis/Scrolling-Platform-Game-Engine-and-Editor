@@ -2,7 +2,9 @@ package oogasalad.engine.view;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.model.object.GameObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
@@ -13,17 +15,35 @@ import oogasalad.fileparser.records.FrameData;
 
 public class GameObjectToViewObjectConverter {
 
-  public List<ImageView> convertGameObjects(List<GameObject> gameObjects)
+  private Map<String, ImageView> imagetoUUIDMap;
+  public List<ImageView> convertGameObjects(List<GameObject> gameObjects, Map<String,ImageView> spriteMap)
       throws FileNotFoundException {
       List<ImageView> imageViews = new ArrayList<>();
+      this.imagetoUUIDMap = spriteMap;
       for (GameObject gameObject : gameObjects) {
         System.out.println(gameObject);
-        imageViews.add(convertGameObjectToView(gameObject));
+        if (imagetoUUIDMap.containsKey(gameObject.getUuid())){
+          imagetoUUIDMap.get(gameObject.getUuid()).setX(gameObject.getX());
+          imagetoUUIDMap.get(gameObject.getUuid()).setY(gameObject.getY());
+        }
+        else {
+          ImageView newImage = convertGameObjectToView(gameObject);
+          imageViews.add(newImage);
+          imagetoUUIDMap.put(gameObject.getUuid(), newImage);
+          System.out.println(gameObject.getUuid());
+        }
       }
       return imageViews;
   }
 
-  public ImageView convertGameObjectToView(GameObject gameObject) throws FileNotFoundException {
+  public Map<String,ImageView> getImagetoUUIDMap() {
+    if(imagetoUUIDMap == null){
+      imagetoUUIDMap = new HashMap<>();
+    }
+    return imagetoUUIDMap;
+  }
+
+  private ImageView convertGameObjectToView(GameObject gameObject) throws FileNotFoundException {
     FrameData baseSpriteData = gameObject.getSpriteData().baseImage();
     Image sprite = new Image(new FileInputStream(baseSpriteData.spriteFile()));
 
