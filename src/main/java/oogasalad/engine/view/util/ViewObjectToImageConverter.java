@@ -13,14 +13,17 @@ import java.io.FileNotFoundException;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
 
-public class GameObjectToViewObjectConverter {
+public class ViewObjectToImageConverter {
 
   private Map<String, ObjectImage> UUIDToImageMap;
 
-  public List<ObjectImage> convertGameObjects(List<ViewObject> gameObjects, Map<String, ObjectImage> spriteMap)
+  public ViewObjectToImageConverter() {
+    UUIDToImageMap = new HashMap<>();
+  }
+
+  public List<ObjectImage> convertObjectsToImages(List<ViewObject> gameObjects)
       throws FileNotFoundException {
       List<ObjectImage> images = new ArrayList<>();
-      this.UUIDToImageMap = spriteMap;
       for (ViewObject object : gameObjects) {
         if (UUIDToImageMap.containsKey(object.uuid())){
           UUIDToImageMap.get(object.uuid()).updateImageLocation(object.hitBoxXPosition(), object.hitBoxYPosition());

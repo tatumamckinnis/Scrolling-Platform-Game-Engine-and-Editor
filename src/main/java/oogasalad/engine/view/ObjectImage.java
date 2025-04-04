@@ -5,14 +5,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.FileNotFoundException;
 import javafx.scene.image.ImageView;
-import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
+import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.fileparser.records.FrameData;
 
 public class ObjectImage {
 
   private static final ResourceBundle OBJECT_IMAGE_RESOURCES = ResourceBundle.getBundle(
       ObjectImage.class.getPackageName() + "." + "ObjectImage");
-  private GameObjectToViewObjectConverter converter;
+  private ViewObjectToImageConverter converter;
   private Rectangle hitBox;
   private ImageView imageView;
   private int spriteDx;
@@ -24,7 +24,7 @@ public class ObjectImage {
       int spriteDx, int spriteDy)
       throws FileNotFoundException {
     this.UUID = UUID;
-    converter = new GameObjectToViewObjectConverter();
+    converter = new ViewObjectToImageConverter();
     this.imageView = converter.convertFrameToView(Frame);
     imageView.setX(x + spriteDx);
     imageView.setY(y + spriteDy);

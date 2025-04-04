@@ -1,12 +1,10 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import oogasalad.engine.controller.ViewObject;
 import oogasalad.exceptions.RenderingException;
-import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
+import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,13 +20,13 @@ public class LevelView extends Display {
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private static final Logger LOG = LogManager.getLogger();
-  private Map<String, ObjectImage> spriteImageMap;
+  private ViewObjectToImageConverter myConverter;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
   public LevelView() {
-    spriteImageMap = new HashMap<>();
+    myConverter = new ViewObjectToImageConverter();
   }
 
   /**
@@ -49,9 +47,7 @@ public class LevelView extends Display {
    */
   public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
-    GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
-    List<ObjectImage> sprites = converter.convertGameObjects(gameObjects, spriteImageMap);
-    spriteImageMap = converter.getUUIDToImageMap();
+    List<ObjectImage> sprites = myConverter.convertObjectsToImages(gameObjects);
     for (ObjectImage sprite : sprites) {
       this.getChildren().add(sprite.getImageView());
       this.getChildren().add(sprite.getHitBox());
