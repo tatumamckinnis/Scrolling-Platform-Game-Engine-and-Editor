@@ -1,4 +1,4 @@
-package oogasalad.fileparser.exceptions;
+package oogasalad.exceptions;
 
 public class BlueprintParseException extends Exception{
   public BlueprintParseException(String message) {

@@ -4,9 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.ViewObject;
-import oogasalad.engine.exception.InputException;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.exception.ViewInitializationException;
+import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.ViewInitializationException;
 
 /**
  * Represents the primary view interface for the game application.

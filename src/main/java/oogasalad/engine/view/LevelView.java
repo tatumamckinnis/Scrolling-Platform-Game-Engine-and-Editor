@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import oogasalad.engine.controller.ViewObject;
-import oogasalad.engine.exception.RenderingException;
+import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,7 +1,7 @@
 package oogasalad.engine.controller;
 
 import javafx.animation.Timeline;
-import oogasalad.engine.exception.ViewInitializationException;
+import oogasalad.exceptions.ViewInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package oogasalad.engine.controller.exception;
+package oogasalad.exceptions;
 
 /**
  * Exception thrown when an unsupported object type is encountered by the engine.
