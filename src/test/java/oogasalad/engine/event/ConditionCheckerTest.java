@@ -36,7 +36,7 @@ public class ConditionCheckerTest {
     public class mockInput implements InputProvider {
         @Override
         public boolean isKeyPressed(KeyCode keyCode) {
-            return true;
+            return false;
         }
 
     }
@@ -73,6 +73,18 @@ public class ConditionCheckerTest {
     void checkTrue() {
         boolean res = checker.checkCondition(EventCondition.ConditionType.TRUE, obj);
         assertEquals(res, true);
+    }
+
+    @Test
+    void checkInputCondition() {
+        boolean res = checker.checkCondition(EventCondition.ConditionType.SPACE_KEY_PRESSED, obj);
+        assertEquals(res, false);
+    }
+
+    @Test
+    void checkCollisionCondition() {
+        boolean res = checker.checkCondition(EventCondition.ConditionType.COLLIDED_WITH_ENEMY, obj);
+        assertEquals(res, false);
     }
 
 
