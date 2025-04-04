@@ -2,11 +2,9 @@
  * Defines valid event outcomes and associated parameters
  * @author Gage Garcia
  */
-package oogasalad.engine.event;
+package oogasalad.engine.event.outcome;
 
-import java.util.Map;
-
-public class EventOutcome {
+public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
     /**
      * Defines valid outcome types
      */
@@ -18,20 +16,19 @@ public class EventOutcome {
         PATROL
     }
 
-    private final OutcomeType outcomeType;
-
     /**
      * Constructor sets outcome type
+     *
      * @param outcomeType enum representing type of outcome
      */
-    public EventOutcome(OutcomeType outcomeType) {
-        this.outcomeType = outcomeType;
+    public EventOutcome {
     }
 
     /**
      * @return outcome type enum
      */
-    public OutcomeType getOutcomeType() {
+    @Override
+    public OutcomeType outcomeType() {
         return outcomeType;
     }
 }

@@ -4,10 +4,10 @@
  * @author Gage Garcia
  */
 
-package oogasalad.engine.event;
+package oogasalad.engine.event.condition;
 
 
-public class EventCondition {
+public record EventCondition(EventCondition.ConditionType conditionType) {
     /**
      * Define list of valid conditions enums
      */
@@ -20,21 +20,21 @@ public class EventCondition {
     }
 
 
-    private final ConditionType conditionType;
-
     /**
      * Constructor sets condition type
+     *
      * @param conditionType enum representing type of condition
      */
-    public EventCondition(ConditionType conditionType) {
-        this.conditionType = conditionType;
+    public EventCondition {
     }
 
     /**
      * get the type of condition
+     *
      * @return ConditionType enum
      */
-    public ConditionType getConditionType() {
+    @Override
+    public ConditionType conditionType() {
         return conditionType;
     }
 

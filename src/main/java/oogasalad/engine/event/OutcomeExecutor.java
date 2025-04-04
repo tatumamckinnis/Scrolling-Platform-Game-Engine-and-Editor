@@ -4,6 +4,7 @@
  */
 package oogasalad.engine.event;
 import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.mapObject;
 
