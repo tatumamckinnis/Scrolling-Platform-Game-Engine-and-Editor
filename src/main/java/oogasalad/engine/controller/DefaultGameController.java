@@ -112,7 +112,6 @@ public class DefaultGameController implements GameControllerAPI {
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
     myMapObject = new mapObject(data.levelWidth(), data.levelHeight());
-    System.out.println(myGameObjects);
   }
 
   private List<ViewObject> makeGameObjectsImmutable() {
