@@ -47,7 +47,6 @@ public class DefaultLevel implements LevelAPI {
   public void selectGame(String game, String category, String level) {
     String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
     LOG.info(filePath);
-    LOG.info("/Users/alanazinkin/Desktop/CS308/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }

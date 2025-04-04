@@ -28,6 +28,10 @@ public class DefaultGameController implements GameControllerAPI {
   private EventHandler eventHandler;
   private CollisionHandler collisionHandler;
 
+  /**
+   * constructor for creating a game controller
+   * @param inputProvider used to determine which keys were pressed
+   */
   public DefaultGameController(InputProvider inputProvider) {
     this.collisionHandler = new CollisionHandler(this);
     this.eventHandler = new DefaultEventHandler(inputProvider,this);
@@ -56,6 +60,9 @@ public class DefaultGameController implements GameControllerAPI {
     return myGameObjects;
   }
 
+  /**
+   * @return a collection of immutable game objects
+   */
   @Override
   public List<ViewObject> getImmutableObjects() {
     return makeGameObjectsImmutable();
@@ -76,6 +83,9 @@ public class DefaultGameController implements GameControllerAPI {
     return myGameObjectMap;
   }
 
+  /**
+   * @return a mapping of UUID to game object
+   */
   public mapObject getMapObject(){
     return myMapObject;
   }
