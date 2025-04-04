@@ -1,7 +1,10 @@
 package oogasalad.engine.controller;
 
 import javafx.animation.Timeline;
-import oogasalad.engine.exception.ViewInitializationException;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
+import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.exceptions.ViewInitializationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

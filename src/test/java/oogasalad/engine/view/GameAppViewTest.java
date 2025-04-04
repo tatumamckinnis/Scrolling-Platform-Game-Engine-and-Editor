@@ -7,11 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import oogasalad.engine.controller.DefaultEngineFileConverter;
-import oogasalad.engine.controller.DefaultGameController;
 import oogasalad.engine.controller.DefaultGameManager;
-import oogasalad.engine.exception.ViewInitializationException;
-import org.junit.jupiter.api.BeforeEach;
+import oogasalad.exceptions.ViewInitializationException;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 

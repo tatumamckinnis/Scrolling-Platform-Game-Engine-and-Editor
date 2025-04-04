@@ -1,16 +1,10 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.view.util.GameObjectToViewObjectConverter;
+import oogasalad.engine.controller.ViewObject;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,18 +14,19 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class LevelView extends Display {
+
   // has a background and foreground
   // need to store all the game objects and render all of them
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private static final Logger LOG = LogManager.getLogger();
-  private Map<String,viewGameObject> spriteImageMap;
+  private ViewObjectToImageConverter myConverter;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
   public LevelView() {
-    spriteImageMap = new HashMap<>();
+    myConverter = new ViewObjectToImageConverter();
   }
 
   /**
@@ -46,18 +41,17 @@ public class LevelView extends Display {
 
   /**
    * Re-renders all game objects that have been updated in the backend.
+   *
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
-    GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
-    List<viewGameObject> sprites =  converter.convertGameObjects(gameObjects,spriteImageMap);
-    spriteImageMap = converter.getImagetoUUIDMap();
-   for (viewGameObject sprite : sprites) {
-     this.getChildren().add(sprite.getImageView());
-     this.getChildren().add(sprite.getHitBox());
-   }
+    List<ObjectImage> sprites = myConverter.convertObjectsToImages(gameObjects);
+    for (ObjectImage sprite : sprites) {
+      this.getChildren().add(sprite.getImageView());
+      this.getChildren().add(sprite.getHitBox());
+    }
   }
 
   /**

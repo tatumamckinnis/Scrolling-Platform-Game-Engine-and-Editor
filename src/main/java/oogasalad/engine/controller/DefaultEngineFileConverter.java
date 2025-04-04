@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
-import oogasalad.engine.controller.exception.ObjectNotSupportedException;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.DefaultGameObject;
 import oogasalad.engine.model.object.GameObject;
@@ -28,7 +28,7 @@ import oogasalad.fileparser.records.LevelData;
 public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFileConverter.class.getPackageName() + "." + "EngineFile");
+      DefaultEngineFileConverter.class.getPackageName() + "." + "EngineConverter");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
   private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
 

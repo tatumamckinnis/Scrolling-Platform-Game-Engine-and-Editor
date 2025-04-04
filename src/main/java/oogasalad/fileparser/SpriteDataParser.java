@@ -96,6 +96,7 @@ public class SpriteDataParser {
     // Build the file path using user directory, graphics data path, and provided folders.
     String filePath = buildFilePath(gameName, group, type, spriteFile);
     try {
+
       File xmlFile = new File(filePath);
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       DocumentBuilder builder = factory.newDocumentBuilder();

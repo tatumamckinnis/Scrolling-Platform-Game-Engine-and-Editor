@@ -1,10 +1,8 @@
-package oogasalad.engine.controller;
+package oogasalad.engine.controller.api;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
+import oogasalad.engine.controller.ViewObject;
 import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
@@ -32,7 +30,7 @@ public interface GameControllerAPI {
   /**
    * @return list of records of game objects only containing relevant information for the view
    */
-  List<GameObjectRecord> getImmutableObjects();
+  List<ViewObject> getImmutableObjects();
 
   /**
    * Returns a map of all game objects currently loaded in the engine.

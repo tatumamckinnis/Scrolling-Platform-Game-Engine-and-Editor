@@ -2,7 +2,9 @@ package oogasalad.engine.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
+import java.util.zip.DataFormatException;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -10,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
 
 /**
  * Initial splash screen a user sees when running the game engine.
@@ -170,7 +172,13 @@ public class SplashScreen extends Display {
 
     if (buttonID.equals("splashButtonGameType")) {
       currButton.setOnAction(event -> {
-        gameManager.selectDefaultGame("data/gameData/levels/dinosaurgame/Example_File1.xml");
+        try {
+          gameManager.selectGame("Dinosaur Jump", "Easy", "level1");
+        } catch (DataFormatException | IOException | ClassNotFoundException |
+                 InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
       });
     }
   }

@@ -4,47 +4,53 @@
  */
 package oogasalad.engine.event;
 import javafx.scene.input.KeyCode;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.InputProvider;
-import oogasalad.engine.event.condition.CollisionCondition;
-import oogasalad.engine.event.condition.Condition;
-import oogasalad.engine.event.condition.InputCondition;
-import oogasalad.engine.event.condition.TrueCondition;
 import oogasalad.engine.model.object.GameObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.KeyEvent;
+import java.util.List;
 
 public class ConditionChecker {
-    //Maps condition type to condition evaluation interface
-    private final Map<EventCondition.ConditionType, Condition> conditionMap = new HashMap<>();
+    private CollisionHandler collisionHandler;
+    private InputProvider inputProvider;
 
-    /**
-     * initializes mapping of event condition enum to its condition interface
-     * @param inputProvider interface that allows checking of current input
-     * @param collisionHandler (should be) interface that allows checking of collisions
-     */
     public ConditionChecker(InputProvider inputProvider, CollisionHandler collisionHandler) {
-        conditionMap.put(EventCondition.ConditionType.SPACE_KEY_PRESSED,
-                new InputCondition(inputProvider, KeyCode.SPACE));
-        conditionMap.put(EventCondition.ConditionType.W_KEY_PRESSED,
-                new InputCondition(inputProvider, KeyCode.W));
-        conditionMap.put(EventCondition.ConditionType.UP_ARROW_PRESSED,
-                new InputCondition(inputProvider, KeyCode.UP));
-        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_ENEMY,
-                new CollisionCondition(collisionHandler, "enemies"));
-        conditionMap.put(EventCondition.ConditionType.TRUE,
-                new TrueCondition());
+        this.inputProvider = inputProvider;
+        this.collisionHandler = collisionHandler;
     }
     /**
-     * Evaluates condition
+     * evaluates condition
      * @param conditionType -> type of condition
-     * @param gameObject -> game object tied to event
+     * @param gameObject
      * requires use of predefined mapping of conditionType -> expected params
      * @return true or false
      */
     public boolean checkCondition(EventCondition.ConditionType conditionType, GameObject gameObject) {
-        Condition condition = conditionMap.get(conditionType);
-        return condition.isMet(gameObject);
+        if (conditionType == EventCondition.ConditionType.TRUE) {
+            return true;
+        }
+        else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
+            return inputProvider.isKeyPressed(KeyCode.SPACE);
+        }
+        else if (conditionType == EventCondition.ConditionType.UP_ARROW_PRESSED) {
+            return inputProvider.isKeyPressed(KeyCode.UP);
+        }
+        else if (conditionType == EventCondition.ConditionType.W_KEY_PRESSED) {
+            return inputProvider.isKeyPressed(KeyCode.W);
+        }
+        else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
+            List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
+            for (GameObject collidedObject : collidedObjects) {
+                if (collidedObject.getType().equals("enemies")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
+        return false;
     }
 
 }

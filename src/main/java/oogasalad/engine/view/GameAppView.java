@@ -1,19 +1,17 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import oogasalad.engine.controller.DefaultGameManager;
-import oogasalad.engine.controller.GameManagerAPI;
-import oogasalad.engine.exception.InputException;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.exception.ViewInitializationException;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.controller.ViewObject;
+import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,7 +63,7 @@ public class GameAppView implements GameAppAPI {
    * @see GameAppView#renderGameObjects(List)
    */
   @Override
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     currentDisplay.renderGameObjects(gameObjects);
   }

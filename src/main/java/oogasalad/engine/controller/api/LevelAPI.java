@@ -1,4 +1,4 @@
-package oogasalad.engine.controller;
+package oogasalad.engine.controller.api;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -21,5 +21,4 @@ public interface LevelAPI {
   public void selectGame(String game, String category, String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
-  public void selectFilePath(String filePath);
 }

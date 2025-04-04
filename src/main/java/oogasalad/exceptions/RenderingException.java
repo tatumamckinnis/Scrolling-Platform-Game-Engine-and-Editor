@@ -1,4 +1,4 @@
-package oogasalad.engine.exception;
+package oogasalad.exceptions;
 
 /**
  * Exception thrown when there is an error during the rendering process.

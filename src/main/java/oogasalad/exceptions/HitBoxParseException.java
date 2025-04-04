@@ -1,4 +1,4 @@
-package oogasalad.fileparser.exceptions;
+package oogasalad.exceptions;
 
 public class HitBoxParseException extends Exception{
 

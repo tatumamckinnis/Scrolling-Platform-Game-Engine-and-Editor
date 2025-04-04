@@ -3,41 +3,66 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
-import oogasalad.engine.controller.GameControllerAPI;
-import oogasalad.engine.event.outcome.*;
+import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.model.object.GameObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import oogasalad.engine.model.object.mapObject;
 
 public class OutcomeExecutor {
-    private Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
+    private GameControllerAPI gameController;
+    private mapObject map;
 
     /**
-     * Initialize mapping of outcome enum to outcome interface
+     * Initialize the executor with a game controller
+     * @param gameController
      */
     public OutcomeExecutor(GameControllerAPI gameController) {
-        this.outcomeMap = new HashMap<>();
-        outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
-                new MoveRightOutcome());
-        outcomeMap.put(EventOutcome.OutcomeType.JUMP,
-                new JumpOutcome());
-        outcomeMap.put(EventOutcome.OutcomeType.APPLY_GRAVITY,
-                new GravityOutcome());
-        outcomeMap.put(EventOutcome.OutcomeType.PATROL,
-                new PatrolOutcome(gameController.getMapObject()));
-        outcomeMap.put(EventOutcome.OutcomeType.LOSE_GAME,
-                new LoseGameOutcome());
+        this.gameController = gameController;
+        this.map = gameController.getMapObject();
     }
 
     /**
      * executes outcome using parameter map using game controller
-     * @param outcomeType type of outcome
-     * @param gameObject associated game object
+     * @param outcomeType
+     * @param gameObject
      */
     public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject) {
-        Outcome outcome = outcomeMap.get(outcomeType);
-        outcome.execute(gameObject);
+        if (outcomeType == EventOutcome.OutcomeType.MOVE_RIGHT) {
+            int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "2"));
+            gameObject.setX(gameObject.getX() + dx);
+        }
+        if (outcomeType == EventOutcome.OutcomeType.PATROL){
+            int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MovementAmount", "4"));
+            if(gameObject.getX() < 0){
+                gameObject.setXVelocity(dx);
+            }
+            else if(gameObject.getX()+gameObject.getHitBoxWidth() >= map.width()){
+                gameObject.setXVelocity(-dx);
+            }
+            else if(gameObject.getXVelocity() == 0){
+                gameObject.setXVelocity(-dx);
+            }
+        }
+        if (outcomeType == EventOutcome.OutcomeType.APPLY_GRAVITY) {
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("ApplyGravityAmount", "5"));
+
+            // Only apply gravity if the object is in the air (falling or jumping)
+            if (!gameObject.isGrounded()) {
+                gameObject.setYVelocity(gameObject.getYVelocity() + dy);
+            }
+        }
+
+        if (outcomeType == EventOutcome.OutcomeType.JUMP) {
+            int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "40"));
+
+            // Only allow jumping if the object is on the ground
+            if (gameObject.isGrounded()) {
+                gameObject.setYVelocity(-dy);
+                gameObject.setGrounded(false); // Mark object as airborne
+            }
+        }
+        if (outcomeType == EventOutcome.OutcomeType.LOSE_GAME) {
+            //System.out.println("LOST GAME!!!!!!!!!");
+        }
     }
 
 

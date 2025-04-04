@@ -2,7 +2,7 @@
  * Interface between engine model and view Handles Timeline actions(play/pause), and changing level
  * state
  */
-package oogasalad.engine.controller;
+package oogasalad.engine.controller.api;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +38,5 @@ public interface GameManagerAPI {
    */
   public void selectGame(String game, String category, String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
-
-  public void selectDefaultGame(String filePath);
 
 }
