@@ -1,8 +1,6 @@
 package oogasalad.engine.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.zip.DataFormatException;
+import java.util.logging.Logger;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;
@@ -15,6 +13,7 @@ import oogasalad.fileparser.records.LevelData;
  * to the {@link GameControllerAPI} to update the engine with the parsed data.
  */
 public class DefaultLevel implements LevelAPI {
+  Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
 
   /**
    * API for parsing level files
@@ -44,17 +43,11 @@ public class DefaultLevel implements LevelAPI {
    */
   @Override
   public void selectGame(String game, String category, String level) {
-    //String filePath = "/Users/billym./oogasalad/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
     String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
-    System.out.println(filePath);
+    LOG.info(filePath);
+    LOG.info("/Users/alanazinkin/Desktop/CS308/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }
 
-  @Override
-  public void selectFilePath(String filePath) {
-    filePath = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
-    LevelData levelData = myFileParser.parseLevelFile(filePath);
-    myGameController.setLevelData(levelData);
-  }
 }

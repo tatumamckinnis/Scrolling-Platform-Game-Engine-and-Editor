@@ -82,7 +82,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
-    double secondDelay = 1.0 / (framesPerSecond*5);
+    double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
@@ -141,15 +141,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
 
   /**
-   * default file selecting for sprint 1 demo
-   * @param filePath
-   */
-  @Override
-  public void selectDefaultGame(String filePath) {
-    myLevelAPI.selectFilePath(filePath);
-  }
-
-  /**
    * Returns the internal {@link Timeline} game loop.
    *
    * @return the game loop timeline
@@ -173,7 +164,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
-    myView.renderGameObjects(myGameController.getObjects());
+    myView.renderGameObjects(myGameController.getImmutableObjects());
   }
 
   /**

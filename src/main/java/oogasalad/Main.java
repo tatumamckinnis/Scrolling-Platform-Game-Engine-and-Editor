@@ -1,15 +1,10 @@
 package oogasalad;
 
 
-import java.util.logging.Level;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import oogasalad.engine.controller.DefaultEngineFileConverter;
-import oogasalad.engine.controller.DefaultGameController;
 import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.GameManagerAPI;
-import oogasalad.engine.exception.ViewInitializationException;
-import oogasalad.engine.view.GameAppView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

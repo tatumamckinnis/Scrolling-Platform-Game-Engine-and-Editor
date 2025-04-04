@@ -4,53 +4,53 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.controller.ViewObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import oogasalad.engine.view.viewGameObject;
+import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
 
 public class GameObjectToViewObjectConverter {
 
-  private Map<String, viewGameObject> imagetoUUIDMap;
-  public List<viewGameObject> convertGameObjects(List<GameObject> gameObjects, Map<String,viewGameObject> spriteMap)
+  private Map<String, ObjectImage> UUIDToImageMap;
+
+  public List<ObjectImage> convertGameObjects(List<ViewObject> gameObjects, Map<String, ObjectImage> spriteMap)
       throws FileNotFoundException {
-      List<viewGameObject> viewObjects = new ArrayList<>();
-      this.imagetoUUIDMap = spriteMap;
-      for (GameObject gameObject : gameObjects) {
-        if (imagetoUUIDMap.containsKey(gameObject.getUuid())){
-          imagetoUUIDMap.get(gameObject.getUuid()).updateObjectLocation(gameObject.getX(), gameObject.getY());
+      List<ObjectImage> images = new ArrayList<>();
+      this.UUIDToImageMap = spriteMap;
+      for (ViewObject object : gameObjects) {
+        if (UUIDToImageMap.containsKey(object.uuid())){
+          UUIDToImageMap.get(object.uuid()).updateImageLocation(object.hitBoxXPosition(), object.hitBoxYPosition());
         }
         else {
-          viewGameObject newViewObject = new viewGameObject(gameObject.getUuid(),gameObject.getCurrentFrame(),gameObject.getX(),gameObject.getY(),gameObject.getHitBoxWidth(),gameObject.getHitBoxHeight(),gameObject.getmyHitBoxData().spriteDx(),gameObject.getmyHitBoxData().spriteDy());
-          viewObjects.add(newViewObject);
-          imagetoUUIDMap.put(gameObject.getUuid(),newViewObject);
+          ObjectImage newViewObject = new ObjectImage(object.uuid(), object.currentFrame(), object.hitBoxXPosition(), object.hitBoxYPosition(), object.hitBoxWidth(), object.hitBoxHeight(), object.spriteDx(), object.spriteDy());
+          images.add(newViewObject);
+          UUIDToImageMap.put(object.uuid(), newViewObject);
         }
       }
-      return viewObjects;
+      return images;
   }
 
-  public Map<String,viewGameObject> getImagetoUUIDMap() {
-    if(imagetoUUIDMap == null){
-      imagetoUUIDMap = new HashMap<>();
+  public Map<String, ObjectImage> getUUIDToImageMap() {
+    if(UUIDToImageMap == null){
+      UUIDToImageMap = new HashMap<>();
     }
-    return imagetoUUIDMap;
+    return UUIDToImageMap;
   }
 
   public ImageView convertFrameToView(FrameData frameData) throws FileNotFoundException {
-    FrameData baseSpriteData = frameData;
-    Image sprite = new Image(new FileInputStream(baseSpriteData.spriteFile()));
+    Image sprite = new Image(new FileInputStream(frameData.spriteFile()));
     // Create an ImageView for the sprite image
     ImageView imageView = new ImageView(sprite);
     // Define the viewport from the frame data
     Rectangle2D viewport = new Rectangle2D(
-        baseSpriteData.x(),
-        baseSpriteData.y(),
-        baseSpriteData.width(),
-        baseSpriteData.height()
+        frameData.x(),
+        frameData.y(),
+        frameData.width(),
+        frameData.height()
     );
 
     // Apply the viewport
@@ -62,6 +62,5 @@ public class GameObjectToViewObjectConverter {
 
     return imageView;
   }
-
 
 }

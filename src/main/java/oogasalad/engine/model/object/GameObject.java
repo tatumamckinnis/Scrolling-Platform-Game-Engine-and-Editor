@@ -188,12 +188,12 @@ public abstract class GameObject {
     return mySpriteData;
   }
 
-  public int getSpriteX() {
-    return myHitBoxX + myHitBoxData.spriteDx();
+  public int getSpriteDx() {
+    return myHitBoxData.spriteDx();
   }
 
-  public int getSpriteY() {
-    return myHitBoxY + myHitBoxData.spriteDy();
+  public int getSpriteDy() {
+    return myHitBoxData.spriteDy();
   }
 
   /**

@@ -55,7 +55,7 @@ public class DefaultGameController implements GameControllerAPI {
   }
 
   @Override
-  public List<GameObjectRecord> getImmutableObjects() {
+  public List<ViewObject> getImmutableObjects() {
     return makeGameObjectsImmutable();
   }
 
@@ -113,12 +113,17 @@ public class DefaultGameController implements GameControllerAPI {
     System.out.println(myGameObjects);
   }
 
-  private List<GameObjectRecord> makeGameObjectsImmutable() {
-    List<GameObjectRecord> immutableObjects = new ArrayList<>();
+  private List<ViewObject> makeGameObjectsImmutable() {
+    List<ViewObject> immutableObjects = new ArrayList<>();
     for (GameObject gameObject : myGameObjects) {
-      GameObjectRecord record = new GameObjectRecord(
-          gameObject.getSpriteX(),
-          gameObject.getSpriteY(),
+      ViewObject record = new ViewObject(
+          gameObject.getUuid(),
+          gameObject.getX(),
+          gameObject.getY(),
+          gameObject.getSpriteDx(),
+          gameObject.getSpriteDy(),
+          gameObject.getHitBoxWidth(),
+          gameObject.getHitBoxHeight(),
           gameObject.getCurrentFrame()
       );
       if (gameObject.getCurrentFrame() != null) {

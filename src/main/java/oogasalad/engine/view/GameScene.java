@@ -3,6 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.ViewObject;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.components.GameControlPanel;
@@ -38,7 +39,7 @@ public class GameScene extends Display {
    * @param gameObjects list of GameObjects to update or to add to the screen.
    * @throws RenderingException thrown if problem during rendering.
    */
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
   }

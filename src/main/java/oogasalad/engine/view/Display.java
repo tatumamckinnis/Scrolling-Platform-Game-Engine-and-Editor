@@ -3,6 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
+import oogasalad.engine.controller.ViewObject;
 import oogasalad.engine.exception.RenderingException;
 import oogasalad.engine.model.object.GameObject;
 import javafx.scene.image.ImageView;
@@ -25,7 +26,7 @@ public abstract class Display extends Group {
    * Allows a Display to render game objects onto the screen. Default implementation does nothing.
    * Subclasses (like GameScene) can override this if needed.
    */
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
   }
 
