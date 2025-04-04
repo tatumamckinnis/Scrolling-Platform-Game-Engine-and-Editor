@@ -1,21 +1,22 @@
 /**
  * Event handling class that implements event EventHandler interface
+ * @author Gage Garcia
  */
 package oogasalad.engine.event;
 
 import oogasalad.engine.controller.api.GameControllerAPI;
-import oogasalad.engine.controller.api.InputProvider;
+import oogasalad.engine.controller.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 
 public class DefaultEventHandler implements EventHandler {
-    private ConditionChecker conditionChecker;
-    private OutcomeExecutor outcomeExecutor;
+    private final ConditionChecker conditionChecker;
+    private final OutcomeExecutor outcomeExecutor;
 
     /**
      * Initializes event handler
-     * @param gameController
+     * @param gameController interface that gives access to a collision handler
      */
     public DefaultEventHandler(InputProvider inputProvider, GameControllerAPI gameController) {
         outcomeExecutor = new OutcomeExecutor(gameController);
@@ -23,8 +24,9 @@ public class DefaultEventHandler implements EventHandler {
         conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
     }
     /**
-     * process given event, all conditions must be true to execute
-     * @param event
+     * process given event
+     * condition checking done [[A OR B] AND [C OR D]  AND [E OR F]]
+     * @param event the event model to process
      */
     public void handleEvent(Event event) {
         GameObject gameObject = event.getGameObject();

@@ -7,19 +7,18 @@
  */
 package oogasalad.engine.event;
 
-import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 import java.util.Map;
 
 public class Event {
-    private GameObject gameObject;
-    private List<List<EventCondition>> conditions;
-    private List<EventOutcome> outcomes;
-    private EventType eventType;
+    private final GameObject gameObject;
+    private final List<List<EventCondition>> conditions;
+    private final List<EventOutcome> outcomes;
+    private final EventType eventType;
     //stored within game object
-    private Map<String, String> params;
+    private final Map<String, String> params;
 
     public enum EventType {
         INPUT,

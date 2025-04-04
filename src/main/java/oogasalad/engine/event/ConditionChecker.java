@@ -4,9 +4,11 @@
  */
 package oogasalad.engine.event;
 import javafx.scene.input.KeyCode;
-import oogasalad.engine.controller.api.InputProvider;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.controller.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 public class ConditionChecker {

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
-import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.event.*;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.mapObject;
