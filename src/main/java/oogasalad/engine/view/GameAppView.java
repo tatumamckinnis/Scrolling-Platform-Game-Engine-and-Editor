@@ -7,7 +7,7 @@ import java.util.List;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.ViewObject;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;

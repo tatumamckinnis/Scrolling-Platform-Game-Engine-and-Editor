@@ -2,7 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.ViewObject;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.components.GameControlPanel;

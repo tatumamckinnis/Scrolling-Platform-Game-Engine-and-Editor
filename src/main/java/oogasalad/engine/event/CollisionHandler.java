@@ -1,6 +1,6 @@
 package oogasalad.engine.event;
 
-import oogasalad.engine.controller.GameControllerAPI;
+import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.*;

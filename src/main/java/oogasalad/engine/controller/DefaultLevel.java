@@ -1,6 +1,8 @@
 package oogasalad.engine.controller;
 
 import java.util.logging.Logger;
+import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.LevelAPI;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;

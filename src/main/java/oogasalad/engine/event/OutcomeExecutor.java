@@ -3,9 +3,7 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
-import oogasalad.engine.controller.GameControllerAPI;
-import oogasalad.engine.event.EventOutcome.OutcomeType;
-import oogasalad.engine.model.object.DynamicVariableCollection;
+import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.mapObject;
 

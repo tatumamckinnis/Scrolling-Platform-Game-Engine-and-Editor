@@ -1,11 +1,9 @@
 package oogasalad.engine.view.components;
 
-import javafx.scene.Group;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
 
 public class NewGameComponents extends Display {

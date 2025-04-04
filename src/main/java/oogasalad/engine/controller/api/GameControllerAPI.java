@@ -1,7 +1,8 @@
-package oogasalad.engine.controller;
+package oogasalad.engine.controller.api;
 
 import java.util.Map;
 
+import oogasalad.engine.controller.ViewObject;
 import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 

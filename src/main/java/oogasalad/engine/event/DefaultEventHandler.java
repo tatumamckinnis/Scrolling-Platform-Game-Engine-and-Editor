@@ -3,10 +3,8 @@
  */
 package oogasalad.engine.event;
 
-import oogasalad.engine.controller.GameControllerAPI;
-import oogasalad.engine.controller.GameManagerAPI;
-import oogasalad.engine.controller.InputProvider;
-import oogasalad.engine.model.object.DynamicVariableCollection;
+import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;

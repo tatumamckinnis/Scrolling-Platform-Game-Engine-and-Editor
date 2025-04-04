@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import oogasalad.engine.controller.GameManagerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
 
 /**
  * Initial splash screen a user sees when running the game engine.

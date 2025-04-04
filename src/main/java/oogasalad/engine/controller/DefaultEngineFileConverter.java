@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.DefaultGameObject;
 import oogasalad.engine.model.object.GameObject;
