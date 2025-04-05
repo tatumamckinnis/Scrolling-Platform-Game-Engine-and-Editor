@@ -82,14 +82,6 @@ public class GameAppView implements GameAppAPI {
   }
 
   /**
-   * @see GameAppAPI#setGameCamera()
-   */
-  @Override
-  public void setGameCamera() {
-    currentDisplay.shiftNode();
-  }
-
-  /**
    * @see GameAppAPI#getCurrentInputs()
    */
   public List<KeyCode> getCurrentInputs() throws InputException {

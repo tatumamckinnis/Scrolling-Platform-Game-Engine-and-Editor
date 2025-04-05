@@ -139,16 +139,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myLevelAPI.selectGame(game, category, level);
   }
 
-
-  /**
-   * Returns the internal {@link Timeline} game loop.
-   *
-   * @return the game loop timeline
-   */
-  public Timeline getGameLoop() {
-    return myGameLoop;
-  }
-
   /**
    *
    * @param  keyCode to check
@@ -173,8 +163,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    */
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();
-
   }
-
 
 }

@@ -44,8 +44,4 @@ public interface GameAppAPI {
    */
   List<KeyCode> getCurrentInputs() throws InputException;
 
-  /**
-   * Sets the focus of the active game.
-   */
-  void setGameCamera();
 }
