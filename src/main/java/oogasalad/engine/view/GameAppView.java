@@ -103,7 +103,6 @@ public class GameAppView implements GameAppAPI {
             LOG.warn("Failed to start game: " + e.getMessage());
           }
         });
-    gameManager.playGame();
 
     currentDisplay = game;
     currentDisplay.render();
