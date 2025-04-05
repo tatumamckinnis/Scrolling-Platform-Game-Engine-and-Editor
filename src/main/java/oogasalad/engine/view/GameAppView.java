@@ -41,7 +41,7 @@ public class GameAppView implements GameAppAPI {
    */
   @Override
   public void initialize() throws ViewInitializationException {
-    SplashScreen splashScreen = new SplashScreen(gameManager);
+    SplashScreen splashScreen = new SplashScreen(this, gameManager);
 
     splashScreen.setOnStartClicked(() -> { // TODO should also pass in functions for other splash screen buttons that change the scene
       try {
@@ -138,4 +138,19 @@ public class GameAppView implements GameAppAPI {
   public Scene getCurrentScene() {
     return currentScene;
   }
+
+  /**
+   * @return the current stage.
+   */
+  public Stage getCurrentStage() {
+    return currentStage;
+  }
+
+  /**
+   * @return the game manager.
+   */
+  public GameManagerAPI getGameManager() {
+    return gameManager;
+  }
+
 }

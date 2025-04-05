@@ -20,23 +20,26 @@ import oogasalad.engine.controller.api.GameManagerAPI;
  * @author Luke Nam, Aksel Bell
  */
 public class SplashScreen extends Display {
+  private static final Logger LOG = LogManager.getLogger();
   private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
   private int splashWidth;
   private int splashHeight;
   private Runnable onStartClicked;
   private final GameManagerAPI gameManager;
+  private final GameAppAPI gameView;
 
-  public SplashScreen(GameManagerAPI gameManager) {
+  public SplashScreen(GameAppAPI view, GameManagerAPI gameManager) {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
       splashComponentProperties.load(stream);
     } catch (IOException e) {
-      System.err.println(e.getMessage());
+      LOG.warn("Unable to load splash screen properties");
     }
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
     this.gameManager = gameManager;
+    gameView = view;
   }
 
   @Override
@@ -160,13 +163,12 @@ public class SplashScreen extends Display {
   }
 
   private void setButtonAction(String buttonID, Button currButton) {
-    // factory that takes a buttonID,
+    SplashButtonActionsFactory factory = new SplashButtonActionsFactory(gameView);
+    // then do curButton.setOnAction{runnable.run}
 
     if (buttonID.equals("splashButtonStartEngine")) { // TODO make not hard coded and add other buttons
       currButton.setOnAction(event -> {
-        if (onStartClicked != null) {
-          onStartClicked.run();
-        }
+        factory.getAction("splashButtonStartEngine").run();
       });
     }
 
