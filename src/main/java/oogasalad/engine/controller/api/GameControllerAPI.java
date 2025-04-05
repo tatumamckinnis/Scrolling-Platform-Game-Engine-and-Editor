@@ -44,6 +44,8 @@ public interface GameControllerAPI {
   Map<String, GameObject> getGameObjectMap();
 
   mapObject getMapObject();
+
+  ViewObject getObjectByUUID(String uuid);
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller
    * (input, physics, collision, etc.) 2) Resolving any post-update tasks (e.g. removing destroyed

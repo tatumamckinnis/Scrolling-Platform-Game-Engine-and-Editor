@@ -25,13 +25,13 @@ public class ViewObjectToImageConverter {
       throws FileNotFoundException {
       List<ObjectImage> images = new ArrayList<>();
       for (ViewObject object : gameObjects) {
-        if (UUIDToImageMap.containsKey(object.uuid())){
-          UUIDToImageMap.get(object.uuid()).updateImageLocation(object.hitBoxXPosition(), object.hitBoxYPosition());
+        if (UUIDToImageMap.containsKey(object.getUuid())){
+          UUIDToImageMap.get(object.getUuid()).updateImageLocation(object.getX(), object.getY());
         }
         else {
-          ObjectImage newViewObject = new ObjectImage(object.uuid(), object.currentFrame(), object.hitBoxXPosition(), object.hitBoxYPosition(), object.hitBoxWidth(), object.hitBoxHeight(), object.spriteDx(), object.spriteDy());
+          ObjectImage newViewObject = new ObjectImage(object.getUuid(), object.getCurrentFrame(), object.getX(), object.getY(), object.getHitBoxWidth(), object.getHitBoxHeight(), object.getSpriteDx(), object.getSpriteDy());
           images.add(newViewObject);
-          UUIDToImageMap.put(object.uuid(), newViewObject);
+          UUIDToImageMap.put(object.getUuid(), newViewObject);
         }
       }
       return images;
