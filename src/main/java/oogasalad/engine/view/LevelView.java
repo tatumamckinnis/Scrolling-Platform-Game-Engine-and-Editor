@@ -36,7 +36,6 @@ public class LevelView extends Display {
   public void render() {
     // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
     LOG.info("Rendering level...");
-    setInitialCameraPosition();
   }
 
   /**
@@ -54,23 +53,4 @@ public class LevelView extends Display {
     }
   }
 
-  /**
-   * Method to set camera fixed on portion of map.
-   */
-  private void setInitialCameraPosition() {
-    double translateX = -100;
-    double translateY = -100;
-
-    this.setTranslateX(-translateX);
-    this.setTranslateY(-translateY);
-  }
-
-  /**
-   * Sample method to move camera.
-   */
-  private void moveRight() {
-    double translateX = 1;
-
-    this.setTranslateX(this.getTranslateX() - translateX);
-  }
 }

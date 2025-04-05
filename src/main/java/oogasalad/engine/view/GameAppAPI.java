@@ -34,7 +34,7 @@ public interface GameAppAPI {
    * @throws RenderingException if there is an error during the rendering process,
    *      such as invalid sprite resources, rendering context errors, or memory limitations
    */
-  void renderGameObjects(List<ViewObject> gameObjects)
+  void renderGameObjects(List<ViewObject> gameObjects, ViewObject cameraObjectToFollow)
       throws RenderingException, FileNotFoundException;
 
   /**
@@ -44,8 +44,4 @@ public interface GameAppAPI {
    */
   List<KeyCode> getCurrentInputs() throws InputException;
 
-  /**
-   * Sets the focus of the active game.
-   */
-  void setGameCamera();
 }

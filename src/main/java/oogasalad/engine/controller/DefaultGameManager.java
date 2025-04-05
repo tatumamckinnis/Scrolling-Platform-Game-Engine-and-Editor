@@ -139,16 +139,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myLevelAPI.selectGame(game, category, level);
   }
 
-
-  /**
-   * Returns the internal {@link Timeline} game loop.
-   *
-   * @return the game loop timeline
-   */
-  public Timeline getGameLoop() {
-    return myGameLoop;
-  }
-
   /**
    *
    * @param  keyCode to check
@@ -164,7 +154,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
-    myView.renderGameObjects(myGameController.getImmutableObjects());
+    // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
   /**
@@ -172,8 +163,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    */
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();
-
   }
-
 
 }
