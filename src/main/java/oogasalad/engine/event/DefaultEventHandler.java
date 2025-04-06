@@ -33,21 +33,26 @@ public class DefaultEventHandler implements EventHandler {
         List<List<EventCondition>> conditionGroups = event.getConditions();
 
         for (List<EventCondition> conditionGroup : conditionGroups) {
-            boolean validGroup = false;
+            boolean validGroup = false; // This group is false until proven true
+
             for (EventCondition eventCondition : conditionGroup) {
                 if (conditionChecker.checkCondition(eventCondition.getConditionType(), gameObject)) {
-                    validGroup = true;
+                    validGroup = true; // One condition in this OR-group is true
+                    break; // No need to check further in this OR-group
                 }
             }
-            if (validGroup == false) {
+
+            if (!validGroup) { // If the OR-group never became true, entire event is invalid
                 validEvent = false;
-            }
-        }
-        if (validEvent) {
-            for (EventOutcome outcome : event.getOutcomes()) {
-                outcomeExecutor.executeOutcome(outcome.getOutcomeType(), gameObject);
+                break; // No need to check further, we already know event fails
             }
         }
 
+        if (validEvent) {
+            for (EventOutcome outcome : event.getOutcomes()) {
+                System.out.println("Executing Outcome: "+outcome.getOutcomeType().toString());
+                outcomeExecutor.executeOutcome(outcome.getOutcomeType(), gameObject);
+            }
+        }
     }
 }

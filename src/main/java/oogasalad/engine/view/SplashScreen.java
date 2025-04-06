@@ -160,7 +160,7 @@ public class SplashScreen extends Display {
 
       if (buttonIDs[i].equals("splashButtonGameType")) {
         currButton.setOnAction(event -> {
-          gameManager.selectDefaultGame("data/gameData/levels/dinosaurgame/Example_File1.xml");
+          gameManager.selectDefaultGame("/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml");
         });
       }
 

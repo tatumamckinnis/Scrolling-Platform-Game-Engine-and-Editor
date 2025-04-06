@@ -4,6 +4,8 @@
  */
 package oogasalad.engine.controller;
 
+import javafx.scene.input.KeyCode;
+
 public interface InputProvider {
-    boolean isKeyPressed(String key);
+    boolean isKeyPressed(KeyCode keyCode);
 }

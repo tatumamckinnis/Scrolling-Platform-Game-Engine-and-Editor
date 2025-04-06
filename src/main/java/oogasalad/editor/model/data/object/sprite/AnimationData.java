@@ -23,10 +23,6 @@ public class AnimationData {
     this.frameLength = frameLength;
   }
 
-  public void setFrameNames(List<String> frameNames) {
-    this.frameNames = frameNames;
-  }
-
   public void addFrameName(String frameName) {
     this.frameNames.add(frameName);
   }
