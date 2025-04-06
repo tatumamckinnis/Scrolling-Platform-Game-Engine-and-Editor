@@ -36,7 +36,7 @@ public class GameAppViewTest extends ApplicationTest {
 
   @Test
   void renderGameObjects_SplashScreenView_NoExceptionThrown() {
-    assertDoesNotThrow(() -> gameAppView.renderGameObjects(null), "Rendering should not throw an exception");
+    assertDoesNotThrow(() -> gameAppView.renderGameObjects(null, null), "Rendering should not throw an exception");
   }
 
   @Test

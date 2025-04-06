@@ -2,25 +2,84 @@ package oogasalad.editor.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert; // Import Alert
 import javafx.stage.Stage;
+import oogasalad.editor.controller.ConcreteEditorController; // Import implementation
+import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.controller.EditorDataAPI; // Import concrete API - needed by ConcreteEditorController currently
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import java.util.Objects; // Import Objects
 
 /**
- * EditorApplication is an isolated test that demonstrates the functionality of the
- * EditorComponentFactory without other files in the project
- *
- * @author Luke Nam
+ * Simple JavaFX Application entry point for launching and testing the Editor UI independently.
+ * Instantiates the EditorComponentFactory with a ConcreteEditorController.
  */
 public class EditorApplication extends Application {
+
+  private static final Logger LOG = LogManager.getLogger(EditorApplication.class);
+
+  /**
+   * Starts the JavaFX application, creates the editor scene, and shows the primary stage. Includes
+   * basic initialization error handling.
+   *
+   * @param primaryStage The primary stage for this application.
+   */
   @Override
   public void start(Stage primaryStage) {
-    EditorComponentFactory factory = new EditorComponentFactory();
-    Scene editorScene = factory.createEditorScene();
-    primaryStage.setScene(editorScene);
-    primaryStage.show();
+    LOG.info("Starting Editor Application...");
+
+    try {
+      // --- Dependency Setup ---
+      // 1. Instantiate the backend facade/data manager required by the controller
+      EditorDataAPI editorDataAPI = new EditorDataAPI();
+      LOG.debug("EditorDataAPI instance created.");
+
+      // 2. Instantiate the concrete controller, passing its dependencies
+      EditorController editorController = new ConcreteEditorController(editorDataAPI);
+      LOG.info("ConcreteEditorController created.");
+      // --- End Dependency Setup ---
+
+      // 3. Create the view factory, passing the controller
+      // Assumes EditorComponentFactory constructor now only requires EditorController
+      EditorComponentFactory factory = new EditorComponentFactory(editorController);
+      LOG.info("EditorComponentFactory created.");
+
+      // 4. Create the scene using the factory
+      Scene editorScene = factory.createEditorScene();
+      LOG.info("Editor scene created.");
+
+      // 5. Setup and show the stage
+      primaryStage.setTitle("OOGA Salad Game Editor");
+      primaryStage.setScene(editorScene);
+      primaryStage.show();
+      LOG.info("Primary stage configured and shown.");
+
+    } catch (Exception e) {
+      LOG.fatal("Failed to initialize and start Editor Application", e);
+      showInitializationError(e);
+    }
   }
 
+  /**
+   * Shows an error dialog during application startup.
+   */
+  private void showInitializationError(Exception e) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Application Initialization Error");
+    alert.setHeaderText("A critical error occurred during editor startup.");
+    String message = (e.getMessage() != null) ? e.getMessage() : "An unknown error occurred.";
+    alert.setContentText("Failed to initialize the editor application:\n" + message +
+        "\n\nPlease check the logs for more details.");
+    alert.showAndWait();
+  }
+
+  /**
+   * Main method to launch the standalone editor application.
+   *
+   * @param args Command line arguments (not used).
+   */
   public static void main(String[] args) {
     launch(args);
   }
 }
-
