@@ -41,15 +41,9 @@ public class DefaultGameController implements GameControllerAPI {
     this.myGameObjects = new ArrayList<>();
 
   }
-
-  /**
-   * Map of UUUID (as Strings) to GameObjects
-   */
+  //Map of UUUID (as Strings) to GameObjects
   private Map<String, GameObject> myGameObjectMap;
-
-  /**
-   * List of all game objects currently in the game state
-   */
+  //List of all game objects currently in the game state
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
 
@@ -117,7 +111,8 @@ public class DefaultGameController implements GameControllerAPI {
   @Override
   public void updateGameState() {
     collisionHandler.updateCollisions();
-    for (GameObject gameObject : myGameObjects) {
+    List<GameObject> objectsCopy = new ArrayList<>(myGameObjects);
+    for (GameObject gameObject : objectsCopy) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
         eventHandler.handleEvent(event);
@@ -159,7 +154,18 @@ public class DefaultGameController implements GameControllerAPI {
   }
 
 
+  //should refactor
   public CollisionHandler getCollisionHandler() {
     return collisionHandler;
+  }
+
+  /**
+   * Removes game object from level
+   * @param gameObject to remove
+   */
+  public void destroyGameObject(GameObject gameObject) {
+    System.out.println("Destroying: " + gameObject.getUuid());
+    myGameObjects.remove(gameObject);
+    myGameObjectMap.remove(gameObject.getUuid());
   }
 }

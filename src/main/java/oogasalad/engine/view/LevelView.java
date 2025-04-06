@@ -2,6 +2,8 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import javafx.scene.Node;
 import oogasalad.engine.controller.ViewObject;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;

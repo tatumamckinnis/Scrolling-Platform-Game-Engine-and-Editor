@@ -45,6 +45,12 @@ public interface GameControllerAPI {
 
   mapObject getMapObject();
 
+  /**
+   * removes game object from the level
+   * @param gameObject
+   */
+  void destroyGameObject(GameObject gameObject);
+
   ViewObject getObjectByUUID(String uuid);
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller

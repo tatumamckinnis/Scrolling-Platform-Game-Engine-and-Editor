@@ -13,7 +13,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
         JUMP,
         APPLY_GRAVITY,
         LOSE_GAME,
-        PATROL
+        PATROL,
+        DESTROY_OBJECT
     }
 
     /**
