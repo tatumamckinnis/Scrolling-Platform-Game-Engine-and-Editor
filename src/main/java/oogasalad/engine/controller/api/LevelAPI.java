@@ -2,6 +2,7 @@ package oogasalad.engine.controller.api;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.zip.DataFormatException;
 
 /**
@@ -18,7 +19,12 @@ public interface LevelAPI {
    * @throws DataFormatException if the filepath is not properly formatted
    * @throws IOException         if a file cannot be retrieved
    */
-  public void selectGame(String game, String category, String level)
+  void selectGame(String game, String category, String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
+  /**
+   * Lists all available levels to play
+   * @return list of string representations of "game/level"
+   */
+  List<String> listLevels();
 }

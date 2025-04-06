@@ -47,6 +47,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private LevelAPI myLevelAPI;
   private GameAppView myView;
   private static List<KeyCode> currentKeysPressed;
+  //game, category, level
+  private String[] currentLevel;
 
   /**
    * Constructs a new DefaultGameManager with the given file engine and game controller.
@@ -58,6 +60,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myGameLoop = initGameLoop();
     myGameController = new DefaultGameController(this);
     myLevelAPI = new DefaultLevel(myGameController);
+    currentLevel = new String[3]; //consider updating to default level selection
 
     initializeMyView();
   }
@@ -110,12 +113,17 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   /**
-   * Restarts the game loop.
-   * <p>Note: Implementation details TBD. Currently stops the game loop.
+   * Restarts the game loop. Requires select level to have been called first to have set the current level variable
+   *
    */
   @Override
-  public void restartGame() {
-    myGameLoop.stop();
+  public void restartGame() throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    if (!(currentLevel[0] == null)) {
+      myLevelAPI.selectGame(currentLevel[0], currentLevel[1], currentLevel[2]);
+      playGame();
+    }
+
+
   }
 
   /**
@@ -136,7 +144,19 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   public void selectGame(String game, String category, String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
       NoSuchMethodException, InstantiationException, IllegalAccessException {
+    currentLevel[0] = game;
+    currentLevel[1] = category;
+    currentLevel[2] = level;
     myLevelAPI.selectGame(game, category, level);
+  }
+
+  /**
+   *
+   * @return list of available level file strings, currently hardcoded to dinosaurgame folder
+   */
+  @Override
+  public List<String> listLevels() {
+    return myLevelAPI.listLevels();
   }
 
   /**

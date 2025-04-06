@@ -1,5 +1,8 @@
 package oogasalad.engine.controller;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.LevelAPI;
@@ -45,10 +48,29 @@ public class DefaultLevel implements LevelAPI {
    */
   @Override
   public void selectGame(String game, String category, String level) {
-    String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/Example_File1.xml";
+    //String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/DinoLevel1.xml";
+    String filePath = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/" + game + "/" + level;
     LOG.info(filePath);
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
+  }
+
+  @Override
+  public List<String> listLevels() {
+    List<String> levels = new ArrayList<>();
+    String levelsDirPath = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame";
+    File levelsDir = new File(levelsDirPath);
+
+    if (levelsDir.exists() && levelsDir.isDirectory()) {
+      File[] files = levelsDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
+      if (files != null) {
+        for (File file : files) {
+          levels.add(file.getName()); // or file.getName().replace(".xml", "") if you want cleaner names
+        }
+      }
+    }
+
+    return levels;
   }
 
 }
