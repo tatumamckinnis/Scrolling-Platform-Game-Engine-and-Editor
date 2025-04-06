@@ -2,18 +2,19 @@ package oogasalad.editor.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert; // Import Alert
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import oogasalad.editor.controller.ConcreteEditorController; // Import implementation
+import oogasalad.editor.controller.ConcreteEditorController;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.controller.EditorDataAPI; // Import concrete API - needed by ConcreteEditorController currently
+import oogasalad.editor.controller.EditorDataAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.Objects; // Import Objects
 
 /**
  * Simple JavaFX Application entry point for launching and testing the Editor UI independently.
  * Instantiates the EditorComponentFactory with a ConcreteEditorController.
+ *
+ * @author Tatum McKinnis
  */
 public class EditorApplication extends Application {
 
