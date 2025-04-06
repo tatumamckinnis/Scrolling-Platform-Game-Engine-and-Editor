@@ -28,7 +28,7 @@ import oogasalad.fileparser.records.LevelData;
 public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFileConverter.class.getPackageName() + "." + "EngineConverter");
+      DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
   private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
 

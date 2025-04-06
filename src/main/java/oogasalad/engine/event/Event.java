@@ -7,6 +7,8 @@
  */
 package oogasalad.engine.event;
 
+import oogasalad.engine.event.condition.EventCondition;
+import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
@@ -64,13 +66,6 @@ public class Event {
         return eventType;
     }
 
-    /**
-     *
-     * @return this Event's gameobjects's user-defined parameters
-     */
-    public Map<String, String> getParams() {
-        return params;
-    }
 
     /**
      *
