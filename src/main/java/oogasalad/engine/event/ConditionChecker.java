@@ -5,18 +5,29 @@
 package oogasalad.engine.event;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.InputProvider;
-import oogasalad.engine.event.condition.EventCondition;
+import oogasalad.engine.event.condition.*;
 import oogasalad.engine.model.object.GameObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConditionChecker {
-    private CollisionHandler collisionHandler;
-    private InputProvider inputProvider;
+    private final Map<EventCondition.ConditionType, Condition> conditionMap;
 
     public ConditionChecker(InputProvider inputProvider, CollisionHandler collisionHandler) {
-        this.inputProvider = inputProvider;
-        this.collisionHandler = collisionHandler;
+        this.conditionMap = new HashMap<>();
+        conditionMap.put(EventCondition.ConditionType.SPACE_KEY_PRESSED,
+                new InputCondition(inputProvider, KeyCode.SPACE));
+        conditionMap.put(EventCondition.ConditionType.W_KEY_PRESSED,
+                new InputCondition(inputProvider, KeyCode.W));
+        conditionMap.put(EventCondition.ConditionType.UP_ARROW_PRESSED,
+                new InputCondition(inputProvider, KeyCode.UP));
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_ENEMY,
+                new CollisionCondition(collisionHandler, "enemies"));
+        conditionMap.put(EventCondition.ConditionType.TRUE,
+                new TrueCondition());
+
     }
     /**
      * evaluates condition
@@ -26,30 +37,9 @@ public class ConditionChecker {
      * @return true or false
      */
     public boolean checkCondition(EventCondition.ConditionType conditionType, GameObject gameObject) {
-        if (conditionType == EventCondition.ConditionType.TRUE) {
-            return true;
-        }
-        else if (conditionType == EventCondition.ConditionType.SPACE_KEY_PRESSED) {
-            return inputProvider.isKeyPressed(KeyCode.SPACE);
-        }
-        else if (conditionType == EventCondition.ConditionType.UP_ARROW_PRESSED) {
-            return inputProvider.isKeyPressed(KeyCode.UP);
-        }
-        else if (conditionType == EventCondition.ConditionType.W_KEY_PRESSED) {
-            return inputProvider.isKeyPressed(KeyCode.W);
-        }
-        else if (conditionType == EventCondition.ConditionType.COLLIDED_WITH_ENEMY) {
-            List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
-            for (GameObject collidedObject : collidedObjects) {
-                if (collidedObject.getType().equals("enemies")) {
-                    return true;
-                }
-            }
-            return false;
-        }
+        Condition condition = conditionMap.get(conditionType);
+        return condition.isMet(gameObject);
 
-
-        return false;
     }
 
 }
