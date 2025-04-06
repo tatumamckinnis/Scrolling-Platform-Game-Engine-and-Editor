@@ -37,7 +37,7 @@ public class EditorObject {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
 
-    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getLayers().get(0));
+    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getFirstLayer());
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),

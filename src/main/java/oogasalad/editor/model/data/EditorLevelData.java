@@ -16,7 +16,6 @@ public class EditorLevelData {
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
   private Map<UUID, EditorObject> myObjectDataMap;
-  private Layer myCurrentLayer;
 
   private static final Properties editorConfig = new Properties();
   private static final String propertyFile = "oogasalad/config/editorConfig.properties";
@@ -35,18 +34,13 @@ public class EditorLevelData {
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
     myObjectDataMap = new HashMap<>();
-    myCurrentLayer = new Layer("layer0", 0);
   }
 
   public UUID createEditorObject() {
     EditorObject newObject = new EditorObject(this);
-    myLayerDataMap.getOrDefault(myCurrentLayer, new ArrayList<>()).add(newObject);
+    myLayerDataMap.getOrDefault(getFirstLayer(), new ArrayList<>()).add(newObject);
     myObjectDataMap.put(newObject.getIdentityData().getId(), newObject);
     return newObject.getIdentityData().getId();
-  }
-
-  public UUID createEditorObject(String prefab) {
-    return null; // Will eventually implement a Prefab API of sorts
   }
 
   public List<String> getGroups() {
@@ -69,6 +63,13 @@ public class EditorLevelData {
 
   public List<Layer> getLayers() {
     return myLayers;
+  }
+
+  public Layer getFirstLayer() {
+    if (myLayers.isEmpty()) {
+      addLayer(new Layer("New Layer", 0)); // TODO: Make this to a default
+    }
+    return myLayers.get(0);
   }
 
   public void addLayer(Layer layer) {
