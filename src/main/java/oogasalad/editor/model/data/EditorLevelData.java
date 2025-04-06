@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class EditorLevelData {
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
   private Map<UUID, EditorObject> myObjectDataMap;
+  private Layer myCurrentLayer;
 
   private static final Properties editorConfig = new Properties();
   private static final String propertyFile = "oogasalad/config/editorConfig.properties";
@@ -43,6 +45,38 @@ public class EditorLevelData {
     myLayerDataMap.getOrDefault(getFirstLayer(), new ArrayList<>()).add(newObject);
     myObjectDataMap.put(newObject.getIdentityData().getId(), newObject);
     return newObject.getIdentityData().getId();
+  }
+
+  public UUID createEditorObject(String prefab) {
+    return null; // Will eventually implement a Prefab API of sorts
+  }
+
+  /** Removes an object from the main object map using its ID. */
+  public EditorObject removeObjectById(UUID uuid) {
+    Objects.requireNonNull(uuid, "UUID cannot be null for removal.");
+    return myObjectDataMap.remove(uuid);
+  }
+
+  /** Removes a specific object instance from a specific layer's list. */
+  public boolean removeObjectFromLayer(Layer layer, EditorObject object) {
+    Objects.requireNonNull(layer, "Layer cannot be null for object removal.");
+    Objects.requireNonNull(object, "Object cannot be null for removal.");
+    List<EditorObject> objectsInLayer = myLayerDataMap.get(layer);
+    if (objectsInLayer != null) {
+      return objectsInLayer.remove(object);
+    }
+    return false;
+  }
+
+  /** Updates the reference in the main data map for the given ID. */
+  public boolean updateObjectInDataMap(UUID id, EditorObject updatedObject) {
+    Objects.requireNonNull(id, "ID cannot be null for update.");
+    Objects.requireNonNull(updatedObject, "Updated object cannot be null.");
+    if (myObjectDataMap.containsKey(id)) {
+      myObjectDataMap.put(id, updatedObject);
+      return true;
+    }
+    return false;
   }
 
   public List<String> getGroups() {

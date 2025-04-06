@@ -2,8 +2,9 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.controller.ViewObject;
+import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
 import oogasalad.engine.view.components.NewGameComponents;
@@ -15,40 +16,21 @@ import oogasalad.engine.view.components.NewGameComponents;
  * @author Aksel Bell
  */
 public class GameScene extends Display {
+  private GameManagerAPI myGameManager;
   private GameControlPanel myGameControlPanel;
   private HUD myHUD;
-  private NewGameComponents myNewGameButtons;
+  private NewGameComponents myNewGameComponents;
   private LevelView myLevelView;
 
   /**
    * Initializes a game scene object.
    */
-  public GameScene() {
+  public GameScene(GameManagerAPI gameManager) {
+    this.myGameManager = gameManager;
     this.myGameControlPanel = new GameControlPanel();
     this.myHUD = new HUD();
-    this.myNewGameButtons = new NewGameComponents();
+    this.myNewGameComponents = new NewGameComponents(gameManager);
     this.myLevelView = new LevelView(); //sets background and sets to pause
-  }
-
-  /**
-   * Starts the active game by rendering the initial foreground and setting up gameplay.
-   */
-  public void playGame() {
-    myLevelView.setPlay(true);
-  }
-
-  /**
-   * Displays the "Game Over" screen with options to play again.
-   */
-  public void displayPlayAgainMenu() {
-    myNewGameButtons.setVisible(true);
-  }
-
-  /**
-   * Hides the "Game Over" screen and resets for a new game session.
-   */
-  public void closePlayAgainMenu() {
-    myNewGameButtons.setVisible(false);
   }
 
   /**
@@ -56,7 +38,7 @@ public class GameScene extends Display {
    * @param gameObjects list of GameObjects to update or to add to the screen.
    * @throws RenderingException thrown if problem during rendering.
    */
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
   }
@@ -70,9 +52,10 @@ public class GameScene extends Display {
    */
   @Override
   public void render() {
-    this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView);
+    this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView, myNewGameComponents);
     myGameControlPanel.render();
     myLevelView.render();
+    myNewGameComponents.render();
   }
 
   /**

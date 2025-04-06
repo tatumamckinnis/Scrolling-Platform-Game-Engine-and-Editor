@@ -20,11 +20,11 @@ public class EventCondition {
     }
 
 
-    private ConditionType conditionType;
+    private final ConditionType conditionType;
 
     /**
      * Constructor sets condition type
-     * @param conditionType
+     * @param conditionType enum representing type of condition
      */
     public EventCondition(ConditionType conditionType) {
         this.conditionType = conditionType;

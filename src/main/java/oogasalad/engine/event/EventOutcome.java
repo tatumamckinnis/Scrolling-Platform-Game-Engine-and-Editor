@@ -14,21 +14,22 @@ public class EventOutcome {
         MOVE_RIGHT,
         JUMP,
         APPLY_GRAVITY,
-        LOSE_GAME
+        LOSE_GAME,
+        PATROL
     }
 
-    private OutcomeType outcomeType;
+    private final OutcomeType outcomeType;
 
     /**
      * Constructor sets outcome type
-     * @param outcomeType
+     * @param outcomeType enum representing type of outcome
      */
     public EventOutcome(OutcomeType outcomeType) {
         this.outcomeType = outcomeType;
     }
 
     /**
-     * @returns outcome type enum
+     * @return outcome type enum
      */
     public OutcomeType getOutcomeType() {
         return outcomeType;

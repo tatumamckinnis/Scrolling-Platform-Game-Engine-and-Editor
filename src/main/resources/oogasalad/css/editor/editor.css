@@ -1,0 +1,90 @@
+/* Basic CSS for Editor UI Elements */
+/* DESIGN-15: Externalized Styles */
+
+/* --- General Styles --- */
+.root {
+  /* Default font, etc. */
+  -fx-font-family: "System";
+}
+
+/* --- Map Pane --- */
+#map-pane {
+  -fx-background-color: lightblue;
+  -fx-border-color: gray;
+  -fx-border-width: 1px;
+}
+
+#map-toolbar {
+  /* Styles for the toolbar HBox */
+  -fx-background-color: #E0E0E0; /* Light gray */
+  -fx-border-color: gray;
+  -fx-border-width: 0 0 1px 0; /* Bottom border */
+}
+
+.tool-button {
+  /* Styles for toggle buttons in the toolbar */
+  -fx-pref-width: 100px;
+}
+
+/* --- Component Pane --- */
+#component-pane {
+  -fx-background-color: white;
+  -fx-border-color: gray;
+  -fx-border-width: 1px;
+}
+
+#properties-tab {
+  /* Specific styles for the properties tab if needed */
+}
+
+#input-tab {
+  /* Specific styles for the input tab if needed */
+}
+
+/* --- Input Tab Sections --- */
+.input-section {
+  /* Common styles for Events, Conditions, Outcomes sections */
+  -fx-border-color: lightgray;
+  -fx-border-width: 1px;
+  -fx-border-radius: 5px;
+}
+
+.input-sub-section {
+  /* Styles for Conditions and Outcomes VBox panes */
+}
+
+/* --- Shared UI Elements --- */
+.header-label {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 0 5px 0;
+}
+
+.placeholder-label {
+  -fx-font-style: italic;
+  -fx-text-fill: gray;
+  -fx-padding: 20px;
+  -fx-alignment: center;
+}
+
+.section-header { /* Used in Input Tab */
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-padding-bottom: 5px;
+  -fx-border-color: lightgray;
+  -fx-border-width: 0 0 1px 0; /* Bottom border */
+}
+
+.data-list-view {
+  /* Styles for ListViews */
+  -fx-border-color: lightgray;
+}
+
+.action-button {
+  /* Styles for Add/Remove buttons */
+  -fx-pref-width: 100px;
+}
+
+#dynamic-variable-dialog .dialog-pane {
+  /* Styles specific to the dialog */
+}

@@ -89,12 +89,19 @@ public abstract class GameObject {
   public void updatePosition() {
     myHitBoxX += xVelocity;
     myHitBoxY += yVelocity;
-    System.out.println("dino yVelocity = " + yVelocity);
     //check to make sure not too low?
-    if (myHitBoxY >= 500-myHitBoxHeight) {
-      isGrounded = true;
-      myHitBoxY = 500-myHitBoxHeight;
+  if (myHitBoxY >= 500-myHitBoxHeight) {
+    isGrounded = true;
+    myHitBoxY = 500-myHitBoxHeight;
     }
+
+   if (myHitBoxX >= 500-myHitBoxWidth) {
+    myHitBoxX = 500-myHitBoxWidth;
+  }
+//    if ( myHitBoxX < 0){
+//      myHitBoxX = 0;
+//      xVelocity *= -1;
+//    }
 
   }
 
@@ -181,12 +188,12 @@ public abstract class GameObject {
     return mySpriteData;
   }
 
-  public int getSpriteX() {
-    return myHitBoxX + myHitBoxData.spriteDx();
+  public int getSpriteDx() {
+    return myHitBoxData.spriteDx();
   }
 
-  public int getSpriteY() {
-    return myHitBoxY + myHitBoxData.spriteDy();
+  public int getSpriteDy() {
+    return myHitBoxData.spriteDy();
   }
 
   /**

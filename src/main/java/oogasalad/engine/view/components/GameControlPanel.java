@@ -28,6 +28,7 @@ public class GameControlPanel extends Display {
 
   /**
    * @see Display#render()
+   * Adds all buttons a container.
    */
   @Override
   public void render() {
@@ -54,6 +55,7 @@ public class GameControlPanel extends Display {
       }
     });
 
+    homeButton.setFocusTraversable(false);
     buttons.add(homeButton);
   }
 

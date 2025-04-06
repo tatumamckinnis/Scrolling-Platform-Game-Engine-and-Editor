@@ -1,16 +1,13 @@
 package oogasalad.engine.controller;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.zip.DataFormatException;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.model.object.DefaultGameObject;
-import oogasalad.engine.model.object.DynamicVariableCollection;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;

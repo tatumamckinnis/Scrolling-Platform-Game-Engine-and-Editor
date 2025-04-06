@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import oogasalad.engine.event.DefaultEventHandler;
-import oogasalad.engine.event.Event;
-import oogasalad.engine.event.EventHandler;
-import oogasalad.engine.event.InputHandler;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
+import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.event.*;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.mapObject;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -25,11 +27,19 @@ import oogasalad.fileparser.records.LevelData;
  * @author Alana Zinkin
  */
 public class DefaultGameController implements GameControllerAPI {
-  private InputProvider inputProvider;
+  private static ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(DefaultGameController.class.getPackageName() + "." + "Controller");
+  private EventHandler eventHandler;
+  private CollisionHandler collisionHandler;
 
+  /**
+   * constructor for creating a game controller
+   * @param inputProvider used to determine which keys were pressed
+   */
   public DefaultGameController(InputProvider inputProvider) {
-    this.inputProvider = inputProvider;
+    this.collisionHandler = new CollisionHandler(this);
+    this.eventHandler = new DefaultEventHandler(inputProvider,this);
     this.myGameObjects = new ArrayList<>();
+
   }
 
   /**
@@ -41,7 +51,7 @@ public class DefaultGameController implements GameControllerAPI {
    * List of all game objects currently in the game state
    */
   private List<GameObject> myGameObjects;
-
+  private mapObject myMapObject;
 
   /**
    * Returns the list of all {@link GameObject}s currently in the game.
@@ -53,8 +63,11 @@ public class DefaultGameController implements GameControllerAPI {
     return myGameObjects;
   }
 
+  /**
+   * @return a collection of immutable game objects
+   */
   @Override
-  public List<GameObjectRecord> getImmutableObjects() {
+  public List<ViewObject> getImmutableObjects() {
     return makeGameObjectsImmutable();
   }
 
@@ -74,6 +87,28 @@ public class DefaultGameController implements GameControllerAPI {
   }
 
   /**
+   * @return a mapping of UUID to game object
+   */
+  public mapObject getMapObject(){
+    return myMapObject;
+  }
+
+  /**
+   * Retrieves a game object given its UUID
+   * @param uuid unique id of object to retrieve
+   * @return GameObject with corresponding UUID
+   */
+  @Override
+  public ViewObject getObjectByUUID(String uuid) {
+    try {
+      return convertToViewObject(myGameObjectMap.get(uuid));
+    }
+    catch (NullPointerException e) {
+      throw new NoSuchElementException(CONTROLLER_RESOURCES.getString("NoObjectWithUUID") + uuid);
+    }
+  }
+
+  /**
    * Updates the game state.
    * <p>
    * Currently unimplemented — this method should contain logic for progressing the game, handling
@@ -81,7 +116,7 @@ public class DefaultGameController implements GameControllerAPI {
    */
   @Override
   public void updateGameState() {
-    EventHandler eventHandler = new DefaultEventHandler(inputProvider,this);
+    collisionHandler.updateCollisions();
     for (GameObject gameObject : myGameObjects) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
@@ -104,21 +139,27 @@ public class DefaultGameController implements GameControllerAPI {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
-    System.out.println(myGameObjects);
+    myMapObject = new mapObject(data.levelWidth(), data.levelHeight());
   }
 
-  private List<GameObjectRecord> makeGameObjectsImmutable() {
-    List<GameObjectRecord> immutableObjects = new ArrayList<>();
+  private List<ViewObject> makeGameObjectsImmutable() {
+    List<ViewObject> immutableObjects = new ArrayList<>();
     for (GameObject gameObject : myGameObjects) {
-      GameObjectRecord record = new GameObjectRecord(
-          gameObject.getSpriteX(),
-          gameObject.getSpriteY(),
-          gameObject.getCurrentFrame()
-      );
+      ViewObject viewObject = convertToViewObject(gameObject);
+      // only gives objects to view if there's a real image
       if (gameObject.getCurrentFrame() != null) {
-        immutableObjects.add(record);
+        immutableObjects.add(viewObject);
       }
     }
     return immutableObjects;
+  }
+
+  private static ViewObject convertToViewObject(GameObject gameObject) {
+    return new ViewObject(gameObject);
+  }
+
+
+  public CollisionHandler getCollisionHandler() {
+    return collisionHandler;
   }
 }

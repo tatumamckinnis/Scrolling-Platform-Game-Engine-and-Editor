@@ -1,15 +1,12 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.controller.ViewObject;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.engine.view.util.ViewObjectToImageConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is the view for a level in a game. It includes all visual elements in a level.
@@ -17,23 +14,19 @@ import oogasalad.engine.model.object.GameObject;
  * @author Aksel Bell
  */
 public class LevelView extends Display {
+
   // has a background and foreground
   // need to store all the game objects and render all of them
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
-  private boolean isPaused;
-  private Map<String,viewGameObject> spriteImageMap;
+  private static final Logger LOG = LogManager.getLogger();
+  private ViewObjectToImageConverter myConverter;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
   public LevelView() {
-    isPaused = true;
-    spriteImageMap = new HashMap<>();
-  }
-
-  public void setPlay(boolean isPaused) {
-    this.isPaused = isPaused;
+    myConverter = new ViewObjectToImageConverter();
   }
 
   /**
@@ -42,63 +35,22 @@ public class LevelView extends Display {
   @Override
   public void render() {
     // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
-    Rectangle r1 = new Rectangle(50, 50, Color.RED);
-    r1.setX(50);
-    r1.setY(50);
-    r1.setId("0");
-
-    Rectangle r2 = new Rectangle(50, 50, Color.GREEN);
-    r2.setX(150);
-    r2.setY(50);
-    r2.setId("1");
-
-    Rectangle r3 = new Rectangle(50, 50, Color.BLUE);
-    r3.setX(250);
-    r3.setY(50);
-    r3.setId("2");
-
-    Text text = new Text(200, 200, "This is my level view");
-    text.setId("3");
-
-
-
-    this.getChildren().addAll(r1, r2, r3, text);
-    setInitialCameraPosition();
+    LOG.info("Rendering level...");
   }
 
   /**
    * Re-renders all game objects that have been updated in the backend.
+   *
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
-    GameObjectToViewObjectConverter converter = new GameObjectToViewObjectConverter();
-    List<viewGameObject> sprites =  converter.convertGameObjects(gameObjects,spriteImageMap);
-    spriteImageMap = converter.getImagetoUUIDMap();
-   for (viewGameObject sprite : sprites) {
-     this.getChildren().add(sprite.getImageView());
-     this.getChildren().add(sprite.getHitBox());
-   }
+    List<ObjectImage> sprites = myConverter.convertObjectsToImages(gameObjects);
+    for (ObjectImage sprite : sprites) {
+      this.getChildren().add(sprite.getImageView());
+      this.getChildren().add(sprite.getHitBox());
+    }
   }
 
-  /**
-   * Method to set camera fixed on portion of map.
-   */
-  private void setInitialCameraPosition() {
-    double translateX = -100;
-    double translateY = -100;
-
-    this.setTranslateX(-translateX);
-    this.setTranslateY(-translateY);
-  }
-
-  /**
-   * Sample method to move camera.
-   */
-  private void moveRight() {
-    double translateX = 1;
-
-    this.setTranslateX(this.getTranslateX() - translateX);
-  }
 }

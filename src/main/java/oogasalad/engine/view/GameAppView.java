@@ -1,19 +1,19 @@
 package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import oogasalad.engine.controller.DefaultGameManager;
-import oogasalad.engine.controller.GameManagerAPI;
-import oogasalad.engine.exception.InputException;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.exception.ViewInitializationException;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.controller.ViewObject;
+import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,12 +23,19 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class GameAppView implements GameAppAPI {
+  private static final Logger LOG = LogManager.getLogger();
+  private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(GameAppView.class.getPackage().getName() + "." + "Level");
+  private static final int LEVEL_WIDTH = Integer.parseInt(GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
+  private static final int LEVEL_HEIGHT = Integer.parseInt(GAME_APP_VIEW_RESOURCES.getString("LevelHeight"));;
+
   private Display currentDisplay;
   private Scene currentScene;
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
+  private GameScene game;
   private final List<KeyCode> currentInputs = new ArrayList<>();
-  private static final Logger LOG = LogManager.getLogger();
+  private Camera myCamera;
+
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
@@ -36,6 +43,8 @@ public class GameAppView implements GameAppAPI {
   public GameAppView(Stage stage, GameManagerAPI gameManager) throws ViewInitializationException {
     this.currentStage = stage;
     this.gameManager = gameManager;
+    this.myCamera = new TimeCamera();
+    this.game = new GameScene(gameManager);
   }
 
   /**
@@ -62,20 +71,14 @@ public class GameAppView implements GameAppAPI {
   }
 
   /**
-   * @see GameAppView#renderGameObjects(List)
+   * @see GameAppView#renderGameObjects(List, ViewObject)
    */
   @Override
-  public void renderGameObjects(List<GameObject> gameObjects)
+  public void renderGameObjects(List<ViewObject> gameObjects, ViewObject cameraObjectToFollow)
       throws RenderingException, FileNotFoundException {
     currentDisplay.renderGameObjects(gameObjects);
-  }
+    myCamera.updateCamera(game, cameraObjectToFollow);
 
-  /**
-   * @see GameAppAPI#setGameCamera()
-   */
-  @Override
-  public void setGameCamera() {
-    currentDisplay.shiftNode();
   }
 
   /**
@@ -91,7 +94,7 @@ public class GameAppView implements GameAppAPI {
    * @throws ViewInitializationException if errors with initialization.
    */
   private void startGame() throws ViewInitializationException {
-    GameScene game = new GameScene();
+    game = new GameScene(gameManager);
 
     game.setControlButtonsClicked(() -> { // TODO needs to set all other buttons that change the scene in this function
           try {
@@ -100,16 +103,12 @@ public class GameAppView implements GameAppAPI {
             LOG.warn("Failed to start game: " + e.getMessage());
           }
         });
-    gameManager.playGame();
 
     currentDisplay = game;
     currentDisplay.render();
     currentScene.setRoot(currentDisplay);
-
-    int newWidth = 500; // Change this to actual GameScene width
-    int newHeight = 500; // Change this to actual GameScene height
-    currentStage.setWidth(newWidth);
-    currentStage.setHeight(newHeight);
+    currentStage.setWidth(LEVEL_WIDTH);
+    currentStage.setHeight(LEVEL_HEIGHT);
 
     currentScene.setOnKeyPressed(event -> {
       KeyCode keyCode = event.getCode(); // Store KeyCode instead of int

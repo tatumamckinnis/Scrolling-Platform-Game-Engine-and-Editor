@@ -49,6 +49,17 @@ public class EditorObject {
     this.collision = new CollisionData();
   }
 
+  /**
+   * Returns the unique identifier of this editor object.
+   * @return The UUID of the object.
+   */
+  public UUID getId() {
+    if (this.identity != null) {
+      return this.identity.getId();
+    }
+    return null;
+  }
+
   public IdentityData getIdentityData() {
     return identity;
   }

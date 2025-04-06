@@ -6,7 +6,6 @@ package oogasalad.engine.controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
@@ -16,13 +15,14 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import oogasalad.engine.exception.InputException;
-import oogasalad.engine.exception.RenderingException;
-import oogasalad.engine.exception.ViewInitializationException;
+import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.GameAppView;
-import oogasalad.fileparser.FileParserAPI;
-import oogasalad.fileparser.records.LevelData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,7 +82,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
         GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
-    double secondDelay = 1.0 / (framesPerSecond*4);
+    double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
@@ -139,25 +139,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myLevelAPI.selectGame(game, category, level);
   }
 
-
-  /**
-   * default file selecting for sprint 1 demo
-   * @param filePath
-   */
-  @Override
-  public void selectDefaultGame(String filePath) {
-    myLevelAPI.selectFilePath(filePath);
-  }
-
-  /**
-   * Returns the internal {@link Timeline} game loop.
-   *
-   * @return the game loop timeline
-   */
-  public Timeline getGameLoop() {
-    return myGameLoop;
-  }
-
   /**
    *
    * @param  keyCode to check
@@ -173,7 +154,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
-    myView.renderGameObjects(myGameController.getObjects());
+    // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
   /**
@@ -181,8 +163,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    */
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();
-
   }
-
 
 }
