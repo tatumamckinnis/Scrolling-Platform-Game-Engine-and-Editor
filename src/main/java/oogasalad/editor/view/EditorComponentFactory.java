@@ -95,6 +95,11 @@ public class EditorComponentFactory {
    *
    * @return The fully assembled editor Scene.
    */
+  /**
+   * Creates the main editor scene, assembling the map pane and component pane.
+   *
+   * @return The fully assembled editor Scene.
+   */
   public Scene createEditorScene() {
     SplitPane root = new SplitPane();
     root.setId("editor-root");
@@ -113,7 +118,9 @@ public class EditorComponentFactory {
     Pane componentsPane = createComponentPane(editorHeight);
 
     root.getItems().addAll(leftSplit, componentsPane);
-    root.setDividerPositions(0.6); // TODO: Make this a property
+
+    root.setDividerPositions(0.7); // TODO: Make this a property
+
 
     Scene scene = new Scene(root, editorWidth, editorHeight);
     try {
@@ -211,7 +218,7 @@ public class EditorComponentFactory {
         uiBundle.getString(KEY_ADD_ENEMY_TOOL), enemyTool, false);
 
     toolbar.getChildren().addAll(entityButton, enemyButton);
-    gameView.setCurrentTool(entityTool); // Set default tool
+    gameView.setCurrentTool(entityTool);
     LOG.debug("Toolbar created with configured placement tools.");
     return toolbar;
   }
@@ -280,12 +287,12 @@ public class EditorComponentFactory {
   private Pane createPropertiesPane() {
     VBox propertiesPane = new VBox(DEFAULT_SPACING);
     propertiesPane.setPadding(new Insets(SECTION_PADDING));
-    propertiesPane.setId("properties-pane-content"); // Apply CSS ID
-    propertiesPane.setAlignment(Pos.CENTER); // Center placeholder
+    propertiesPane.setId("properties-pane-content");
+    propertiesPane.setAlignment(Pos.CENTER);
 
     // TODO: Implement the actual property editing UI here.
     Label placeholderLabel = new Label(uiBundle.getString(KEY_PROPERTIES_PLACEHOLDER));
-    placeholderLabel.getStyleClass().add("placeholder-label"); // Apply CSS Class
+    placeholderLabel.getStyleClass().add("placeholder-label");
     propertiesPane.getChildren().add(placeholderLabel);
 
     LOG.debug("Properties pane content created (placeholder).");
@@ -297,7 +304,7 @@ public class EditorComponentFactory {
    */
   private Tab createInputTab() {
     Tab inputTab = new Tab(uiBundle.getString(KEY_INPUT_TAB));
-    inputTab.setId("input-tab"); // Apply CSS ID
+    inputTab.setId("input-tab");
     inputTab.setClosable(false);
     Pane inputPane = inputTabFactory.createInputTabPanel();
     inputTab.setContent(inputPane);

@@ -3,12 +3,12 @@ package oogasalad.editor.controller;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import oogasalad.editor.model.data.EditorObject; // Import necessary model types
+import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
-import oogasalad.editor.view.EditorViewListener; // Import listener interface
+import oogasalad.editor.view.EditorViewListener;
 
 /**
  * Defines the contract between the Editor View components and the underlying Controller logic.
@@ -23,8 +23,8 @@ public interface EditorController {
   /**
    * Requests the placement of a new game object.
    */
-  void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX, int worldY,
-      int cellSize);
+  void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX, int worldY, int cellSize);
+
 
   /**
    * Notifies the controller that an object has been selected in the view.
@@ -74,7 +74,7 @@ public interface EditorController {
   /**
    * Requests an update to an existing game object using the provided data.
    */
-  void requestObjectUpdate(EditorObject updatedObject); // Assumes EditorObject holds updated data
+  void requestObjectUpdate(EditorObject updatedObject);
 
 
   /**
@@ -117,4 +117,6 @@ public interface EditorController {
    * Unregisters a listener.
    */
   void unregisterViewListener(EditorViewListener listener);
+
+
 }
