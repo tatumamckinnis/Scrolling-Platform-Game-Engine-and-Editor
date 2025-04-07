@@ -38,11 +38,7 @@ public class EditorObject {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
 
-    // TODO: Set defaults in a property file
-    if (level.getLayers().isEmpty()) {
-      level.addLayer(new Layer("layer0", 0));
-    }
-    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getLayers().get(0));
+    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getFirstLayer());
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
@@ -51,6 +47,17 @@ public class EditorObject {
     this.input = new InputData();
     this.physics = new PhysicsData();
     this.collision = new CollisionData();
+  }
+
+  /**
+   * Returns the unique identifier of this editor object.
+   * @return The UUID of the object.
+   */
+  public UUID getId() {
+    if (this.identity != null) {
+      return this.identity.getId();
+    }
+    return null;
   }
 
   public IdentityData getIdentityData() {

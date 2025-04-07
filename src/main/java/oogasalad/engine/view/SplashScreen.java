@@ -173,7 +173,7 @@ public class SplashScreen extends Display {
     if (buttonID.equals("splashButtonGameType")) {
       currButton.setOnAction(event -> {
         try {
-          gameManager.selectGame("Dinosaur Jump", "Easy", "level1");
+          gameManager.selectGame("dinosaurgame", "Easy", "DinoLevel1.xml");
         } catch (DataFormatException | IOException | ClassNotFoundException |
                  InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException e) {

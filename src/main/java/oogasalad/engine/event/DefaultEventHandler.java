@@ -6,6 +6,8 @@ package oogasalad.engine.event;
 
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.InputProvider;
+import oogasalad.engine.event.condition.EventCondition;
+import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
@@ -37,7 +39,7 @@ public class DefaultEventHandler implements EventHandler {
             boolean validGroup = false; // This group is false until proven true
 
             for (EventCondition eventCondition : conditionGroup) {
-                if (conditionChecker.checkCondition(eventCondition.getConditionType(), gameObject)) {
+                if (conditionChecker.checkCondition(eventCondition.conditionType(), gameObject)) {
                     validGroup = true; // One condition in this OR-group is true
                     break; // No need to check further in this OR-group
                 }
@@ -52,7 +54,7 @@ public class DefaultEventHandler implements EventHandler {
         if (validEvent) {
             for (EventOutcome outcome : event.getOutcomes()) {
                // System.out.println("Executing Outcome: "+outcome.getOutcomeType().toString());
-                outcomeExecutor.executeOutcome(outcome.getOutcomeType(), gameObject);
+                outcomeExecutor.executeOutcome(outcome.outcomeType(), gameObject);
             }
         }
     }

@@ -1,7 +1,12 @@
 package oogasalad.editor.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -10,210 +15,527 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.tools.ObjectPlacementTool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Display a grid where visual game elements can be added and updated.
- * This component implements a configurable grid-based editor view for game designers.
+ * Displays a grid where visual game elements are added/updated. Implements EditorViewListener to
+ * react to model changes notified by the controller. Handles drawing, basic object selection
+ * notification, and delegates placement actions. (DESIGN-01, DESIGN-09, DESIGN-20: Observer
+ * Pattern)
+ *
  * @author Tatum McKinnis
  */
-public class EditorGameView extends Pane {
-  private Canvas gridCanvas;
-  private Canvas objectCanvas;
-  private final int width;
-  private final int height;
+public class EditorGameView extends Pane implements EditorViewListener {
+
+  private static final Logger LOG = LogManager.getLogger(EditorGameView.class);
+
+  private static final Color GRID_BACKGROUND_COLOR = Color.WHITE;
+  private static final Color GRID_LINE_COLOR = Color.LIGHTGRAY;
+  private static final Color GRID_HORIZON_COLOR = Color.DARKGRAY;
+  private static final Color OBJECT_PLACEHOLDER_FILL = Color.LIGHTBLUE;
+  private static final Color OBJECT_PLACEHOLDER_TEXT_FILL = Color.BLACK;
+  private static final Color SELECTION_BORDER_COLOR = Color.BLUE;
+  private static final double GRID_LINE_WIDTH = 1.0;
+  private static final double GRID_HORIZON_WIDTH = 2.0;
+  private static final double SELECTION_BORDER_WIDTH = 2.0;
+  private static final double GRID_HORIZON_RATIO = 0.8;
+  private static final double PLACEHOLDER_FONT_SIZE = 10.0;
+  private static final String PLACEHOLDER_FONT_NAME = "System";
+
+  private final Canvas gridCanvas;
+  private final Canvas objectCanvas;
+  private final GraphicsContext gridGraphicsContext;
+  private final GraphicsContext objectGraphicsContext;
+
   private final int cellSize;
-  private GraphicsContext gridGC;
-  private GraphicsContext objectGC;
-  private EditorDataAPI editorDataAPI;
-  private EditorAppAPI editorAppAPI;
-  private List<UUID> displayedObjects = new ArrayList<>();
-  private Map<UUID, Image> objectImages = new HashMap<>();
+  private double zoomScale;
+  private final EditorController editorController;
+  private final Map<UUID, Image> objectImages = new HashMap<>();
+  private final List<UUID> displayedObjectIds = new ArrayList<>();
   private ObjectPlacementTool currentTool;
+  private UUID selectedObjectId;
 
   /**
-   * Creates a new editor game view with the specified dimensions.
+   * Creates a new editor game view.
    *
-   * @param width Width of the game area in pixels
-   * @param height Height of the game area in pixels
-   * @param cellSize Size of each grid cell in pixels
-   * @param editorDataAPI API for editor data access
+   * @param width            Width of the game view area in pixels.
+   * @param height           Height of the game view area in pixels.
+   * @param cellSize         Size of each grid cell in pixels.
+   * @param editorController Controller for handling actions and state changes.
+   * @throws IllegalArgumentException if editorController is null or dimensions/cellSize are
+   *                                  non-positive.
    */
-  public EditorGameView(int width, int height, int cellSize, EditorDataAPI editorDataAPI, EditorAppAPI editorAppAPI) {
-    this.width = width;
-    this.height = height;
-    this.cellSize = cellSize;
-    this.editorDataAPI = editorDataAPI;
-    this.editorAppAPI = editorAppAPI;
+  public EditorGameView(int cellSize, double zoomScale, EditorController editorController) {
+    if (editorController == null) {
+      throw new IllegalArgumentException("EditorController cannot be null.");
+    }
+    if (cellSize <= 0) {
+      LOG.error("Invalid dimensions provided: cellSize={}", cellSize);
+      throw new IllegalArgumentException("View dimensions and cell size must be positive.");
+    }
 
-    initializeCanvases();
+    this.cellSize = cellSize;
+    this.zoomScale = zoomScale;
+    this.editorController = editorController;
+
+    this.gridCanvas = new Canvas();
+    this.objectCanvas = new Canvas();
+    this.gridGraphicsContext = gridCanvas.getGraphicsContext2D();
+    this.objectGraphicsContext = objectCanvas.getGraphicsContext2D();
+
+    this.setId("editor-game-view");
+    getChildren().addAll(gridCanvas, objectCanvas);
+
+    gridCanvas.widthProperty().bind(widthProperty());
+    gridCanvas.heightProperty().bind(heightProperty());
+    objectCanvas.widthProperty().bind(widthProperty());
+    objectCanvas.heightProperty().bind(heightProperty());
+
+    gridCanvas.widthProperty().addListener((obs, oldVal, newVal) -> drawGrid());
+    gridCanvas.heightProperty().addListener((obs, oldVal, newVal) -> drawGrid());
+
+    objectCanvas.widthProperty().addListener((obs, oldVal, newVal) -> redrawObjects());
+    objectCanvas.heightProperty().addListener((obs, oldVal, newVal) -> redrawObjects());
+
+    initializeView();
+    LOG.info("EditorGameView initialized with cell size {}", cellSize);
+  }
+
+  /**
+   * Initializes the view by drawing the grid and setting up event handlers. This is called
+   * internally by the constructor.
+   */
+  private void initializeView() {
     drawGrid();
     setupEventHandlers();
+    setupZoom();
   }
 
   /**
-   * Initializes the canvas layers for grid and game objects
-   */
-  private void initializeCanvases() {
-    gridCanvas = new Canvas(width, height);
-    objectCanvas = new Canvas(width, height);
-
-    gridGC = gridCanvas.getGraphicsContext2D();
-    objectGC = objectCanvas.getGraphicsContext2D();
-
-    getChildren().addAll(gridCanvas, objectCanvas);
-  }
-
-  /**
-   * Draws the grid on the grid canvas
+   * Draws the background grid lines on the dedicated grid canvas.
    */
   public void drawGrid() {
-    gridGC.setFill(Color.WHITE);
-    gridGC.fillRect(0, 0, width, height);
+    double width = gridCanvas.getWidth();
+    double height = gridCanvas.getHeight();
 
-    gridGC.setStroke(Color.LIGHTGRAY);
-    gridGC.setLineWidth(1.0);
+    gridGraphicsContext.setFill(GRID_BACKGROUND_COLOR);
+    gridGraphicsContext.fillRect(0, 0, width, height);
+
+    gridGraphicsContext.setStroke(GRID_LINE_COLOR);
+    gridGraphicsContext.setLineWidth(GRID_LINE_WIDTH);
 
     for (int x = 0; x <= width; x += cellSize) {
-      gridGC.strokeLine(x, 0, x, height);
+      gridGraphicsContext.strokeLine(x, 0, x, height);
     }
-
     for (int y = 0; y <= height; y += cellSize) {
-      gridGC.strokeLine(0, y, width, y);
+      gridGraphicsContext.strokeLine(0, y, width, y);
     }
-
-    int horizonY = (int)(height * 0.8);
-    gridGC.setStroke(Color.DARKGRAY);
-    gridGC.setLineWidth(2.0);
-    gridGC.strokeLine(0, horizonY, width, horizonY);
+    LOG.trace("Grid drawn with dynamic width={}, height={}.", width, height);
   }
 
   /**
-   * Sets up mouse event handlers for the editor view
+   * Sets up mouse event handlers for interaction on the object canvas, primarily for handling
+   * clicks related to object placement or selection.
    */
   private void setupEventHandlers() {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
   }
 
+  private void setupZoom() {
+    this.setOnScroll(event -> {
+      if (event.isControlDown()) {
+        double delta = event.getDeltaY();  // positive if user scrolls up
+        double factor = 0.05;             // how fast to zoom
+
+        if (delta > 0) {
+          zoomScale += factor;
+        } else {
+          zoomScale -= factor;
+          if (zoomScale < 0.1) zoomScale = 0.1; // clamp to avoid negative scale
+        }
+
+        setScaleX(zoomScale);
+        setScaleY(zoomScale);
+
+        event.consume();
+      }
+    });
+  }
+
   /**
-   * Handles a click on the grid
+   * Handles mouse clicks on the object canvas. If a placement tool is active, it delegates the
+   * click to the tool. Otherwise, it attempts to select an object at the click location.
    *
-   * @param event The mouse click event
+   * @param event The MouseEvent associated with the click.
    */
   private void handleGridClick(MouseEvent event) {
-    if (currentTool != null) {
-      int gridX = (int)(event.getX() / cellSize);
-      int gridY = (int)(event.getY() / cellSize);
+    int gridX = (int) (event.getX() / cellSize);
+    int gridY = (int) (event.getY() / cellSize);
+    LOG.debug("Grid clicked at ({}, {}) -> Grid ({}, {})", event.getX(), event.getY(), gridX,
+        gridY);
 
+    if (currentTool != null) {
+      LOG.info("Delegating click to tool: {}", currentTool.getClass().getSimpleName());
       currentTool.placeObjectAt(gridX, gridY);
+    } else {
+      selectObjectAt(event.getX(), event.getY());
+      LOG.debug("No tool active, attempting selection.");
     }
   }
 
   /**
-   * Sets the current object placement tool
+   * Attempts to find an object located at the specified world coordinates (pixels). It iterates
+   * through displayed objects in reverse order (approximating Z-order) and performs a simple
+   * rectangular hit detection based on the object's sprite data. If an object is found, it notifies
+   * the controller about the selection.
    *
-   * @param tool The tool to use for placing objects
+   * @param worldX The x-coordinate of the click in the view's coordinate system.
+   * @param worldY The y-coordinate of the click in the view's coordinate system.
+   */
+  private void selectObjectAt(double worldX, double worldY) {
+    UUID foundId = null;
+    List<UUID> idsToCheck = new ArrayList<>(displayedObjectIds);
+    java.util.Collections.reverse(idsToCheck);
+
+    for (UUID id : idsToCheck) {
+      try {
+        EditorObject obj = editorController.getEditorObject(id);
+        if (obj != null && obj.getSpriteData() != null) {
+          SpriteData sd = obj.getSpriteData();
+          if (worldX >= sd.getX() && worldX < sd.getX() + cellSize &&
+              worldY >= sd.getY() && worldY < sd.getY() + cellSize) {
+            foundId = id;
+            LOG.trace("Object {} found at click location.", foundId);
+            break;
+          }
+        }
+      } catch (Exception e) {
+        LOG.error("Error checking object {} during selection: {}", id, e.getMessage());
+      }
+    }
+    editorController.notifyObjectSelected(foundId);
+  }
+
+  /**
+   * Sets the currently active object placement tool for the view. If null, click actions will
+   * default to selection.
+   *
+   * @param tool The ObjectPlacementTool to activate, or null to deactivate placement.
    */
   public void setCurrentTool(ObjectPlacementTool tool) {
     this.currentTool = tool;
+    LOG.info("Current placement tool set to: {}",
+        (tool != null) ? tool.getClass().getSimpleName() : "None");
   }
 
   /**
-   * Adds an object to the view
-   *
-   * @param id The UUID of the object
-   */
-  public void addObject(UUID id) {
-    displayedObjects.add(id);
-    editorAppAPI.setCurrentObjectID(id);
-    EditorObject object = editorDataAPI.getEditorObject(id);
-
-    SpriteData spriteData = object.getSpriteData();
-    if (spriteData != null && spriteData.getSpritePath() != null) {
-      try {
-        Image image = new Image(spriteData.getSpritePath());
-        objectImages.put(id, image);
-      } catch (Exception e) {
-        System.err.println("Failed to load image: " + e.getMessage());
-      }
-    }
-
-    redrawObjects();
-  }
-
-  /**
-   * Removes an object from the view
-   *
-   * @param id The UUID of the object to remove
-   */
-  public void removeObject(UUID id) {
-    displayedObjects.remove(id);
-    objectImages.remove(id);
-    redrawObjects();
-  }
-
-  /**
-   * Redraws all objects on the object canvas
+   * Initiates a redraw of all objects currently displayed on the object canvas. Ensures the drawing
+   * operations occur on the JavaFX Application Thread.
    */
   private void redrawObjects() {
-    objectGC.clearRect(0, 0, width, height);
-
-    for (UUID entry : displayedObjects) {
-      UUID id = entry;
-      EditorObject object = editorDataAPI.getEditorObject(id);
-
-      SpriteData spriteData = object.getSpriteData();
-      if (spriteData == null) continue;
-
-      double x = spriteData.getX();
-      double y = spriteData.getY();
-
-      if (objectImages.containsKey(id)) {
-        Image image = objectImages.get(id);
-        objectGC.drawImage(image, x, y, cellSize, cellSize);
-      } else {
-        objectGC.setFill(Color.LIGHTBLUE);
-        objectGC.fillRect(x, y, cellSize, cellSize);
-
-        objectGC.setFill(Color.BLACK);
-        objectGC.setFont(new Font(10));
-        objectGC.setTextAlign(TextAlignment.CENTER);
-        String type = object.getIdentityData().getGroup();
-        objectGC.fillText(type, x + cellSize/2, y + cellSize/2);
-      }
+    if (!Platform.isFxApplicationThread()) {
+      Platform.runLater(this::redrawObjectsInternal);
+    } else {
+      redrawObjectsInternal();
     }
   }
 
   /**
-   * Gets the cell size used by this grid
+   * Performs the actual drawing logic on the JavaFX Application Thread. Clears the object canvas
+   * and then iterates through the `displayedObjectIds`, drawing each object's image or a
+   * placeholder if the image isn't available. Also draws a selection indicator around the currently
+   * selected object.
+   */
+  private void redrawObjectsInternal() {
+    double width = objectCanvas.getWidth();
+    double height = objectCanvas.getHeight();
+
+    objectGraphicsContext.clearRect(0, 0, width, height);
+    LOG.trace("Object canvas cleared for redraw.");
+    List<UUID> idsToDraw = new ArrayList<>(displayedObjectIds);
+
+    for (UUID id : idsToDraw) {
+      try {
+        EditorObject object = editorController.getEditorObject(id);
+        if (object == null || object.getSpriteData() == null) {
+          LOG.warn("Object ID {} or its SpriteData not found during redraw, cannot draw.", id);
+          continue;
+        }
+        SpriteData spriteData = object.getSpriteData();
+        double x = spriteData.getX();
+        double y = spriteData.getY();
+        Image image = objectImages.get(id);
+
+        if (image != null && !image.isError() && image.getProgress() >= 1.0) {
+          objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
+        } else {
+          drawPlaceholder(objectGraphicsContext, object, x, y);
+        }
+
+        if (id.equals(selectedObjectId)) {
+          drawSelectionIndicator(objectGraphicsContext, x, y);
+        }
+
+      } catch (Exception e) {
+        LOG.error("Error drawing object with ID {}: {}", id, e.getMessage(), e);
+      }
+    }
+    LOG.trace("Finished redrawing {} objects.", idsToDraw.size());
+  }
+
+  /**
+   * Draws a placeholder rectangle with the object's group type displayed inside. Used when the
+   * object's image is not available or failed to load.
    *
-   * @return The cell size in pixels
+   * @param g      The GraphicsContext to draw on.
+   * @param object The EditorObject for which to draw the placeholder. Used to get type info.
+   * @param x      The x-coordinate where the placeholder should be drawn.
+   * @param y      The y-coordinate where the placeholder should be drawn.
+   */
+  private void drawPlaceholder(GraphicsContext g, EditorObject object, double x, double y) {
+    g.setFill(OBJECT_PLACEHOLDER_FILL);
+    g.fillRect(x, y, cellSize, cellSize);
+    g.setFill(OBJECT_PLACEHOLDER_TEXT_FILL);
+    g.setFont(Font.font(PLACEHOLDER_FONT_NAME, PLACEHOLDER_FONT_SIZE));
+    g.setTextAlign(TextAlignment.CENTER);
+    String type = "?";
+    if (object != null && object.getIdentityData() != null
+        && object.getIdentityData().getGroup() != null) {
+      type = object.getIdentityData().getGroup();
+    }
+    g.fillText(type, x + cellSize / 2.0, y + cellSize / 2.0 + PLACEHOLDER_FONT_SIZE / 3.0);
+  }
+
+  /**
+   * Draws a visual indicator (a border) around the cell occupied by the selected object.
+   *
+   * @param g The GraphicsContext to draw on.
+   * @param x The x-coordinate of the selected object's cell.
+   * @param y The y-coordinate of the selected object's cell.
+   */
+  private void drawSelectionIndicator(GraphicsContext g, double x, double y) {
+    g.save();
+    g.setStroke(SELECTION_BORDER_COLOR);
+    g.setLineWidth(SELECTION_BORDER_WIDTH);
+    g.strokeRect(x - SELECTION_BORDER_WIDTH / 2, y - SELECTION_BORDER_WIDTH / 2,
+        cellSize + SELECTION_BORDER_WIDTH, cellSize + SELECTION_BORDER_WIDTH);
+    g.restore();
+  }
+
+  /**
+   * Attempts to load the image associated with a given object ID. It retrieves the image path from
+   * the object's data via the controller, resolves the path to a loadable URL (handling resource
+   * vs. file paths), checks if a valid image is already cached, and if not, loads the image
+   * asynchronously. It sets up listeners to redraw the view when the image finishes loading or if
+   * an error occurs.
+   *
+   * @param id The UUID of the object whose image needs to be loaded or retrieved.
+   */
+  private void preloadObjectImage(UUID id) {
+    try {
+      EditorObject object = editorController.getEditorObject(id);
+      if (object == null || object.getSpriteData() == null
+          || object.getSpriteData().getSpritePath() == null || object.getSpriteData()
+          .getSpritePath().isEmpty()) {
+        objectImages.remove(id);
+        LOG.trace("No valid sprite path found for object ID {}", id);
+        return;
+      }
+
+      String imagePath = object.getSpriteData().getSpritePath();
+      String url = resolveImagePath(imagePath);
+
+      if (url == null) {
+        LOG.error("Could not resolve image resource path: {}", imagePath);
+        objectImages.remove(id);
+        return;
+      }
+
+      Image cachedImage = objectImages.get(id);
+      if (cachedImage == null || !cachedImage.getUrl().equals(url) || cachedImage.isError()) {
+        LOG.debug("Loading image for object ID {} from resolved URL: {}", id, url);
+        Image image = new Image(url, true);
+        image.errorProperty().addListener((obs, oldErr, newErr) -> {
+          if (newErr) {
+            LOG.error("Failed to load image from {}: {}", url, image.getException().getMessage());
+            redrawObjects();
+          }
+        });
+        image.progressProperty().addListener((obs, oldProgress, newProgress) -> {
+          if (newProgress.doubleValue() >= 1.0) {
+            redrawObjects();
+          }
+        });
+        objectImages.put(id, image);
+      }
+    } catch (Exception e) {
+      LOG.error("Failed to preload image for object ID {}: {}", id, e.getMessage(), e);
+      objectImages.remove(id);
+      redrawObjects();
+    }
+  }
+
+  /**
+   * Helper method to resolve an image path string into a loadable URL string. Attempts to
+   * differentiate between absolute/URL paths and relative resource paths. For relative paths, it
+   * assumes they are located within the application's resources.
+   *
+   * @param path The image path string to resolve.
+   * @return A string representation of the URL to load the image from, or null if the path cannot
+   * be resolved or is invalid.
+   */
+  private String resolveImagePath(String path) {
+    try {
+      if (path == null || path.trim().isEmpty()) {
+        return null;
+      }
+      if (path.startsWith("/") || path.matches("^[a-zA-Z]+:.*")) {
+        return path;
+      } else {
+        String resourcePath = path.startsWith("/") ? path : "/" + path;
+        java.net.URL resourceUrl = getClass().getResource(resourcePath);
+        if (resourceUrl != null) {
+          return resourceUrl.toExternalForm();
+        } else {
+          LOG.warn("Resource not found for relative path: {}", resourcePath);
+          return null;
+        }
+      }
+    } catch (Exception e) {
+      LOG.warn("Could not resolve path: {}", path, e);
+      return null;
+    }
+  }
+
+
+  /**
+   * Handles the notification that a new object has been added to the model. Adds the object's ID to
+   * the list of displayed objects, preloads its image, and ensures these operations occur on the
+   * JavaFX Application Thread. Redrawing is often implicitly triggered by a subsequent selection
+   * change.
+   *
+   * @param objectId The UUID of the newly added object.
+   */
+  @Override
+  public void onObjectAdded(UUID objectId) {
+    Platform.runLater(() -> {
+      LOG.debug("EditorGameView received: onObjectAdded {}", objectId);
+      if (!displayedObjectIds.contains(objectId)) {
+        displayedObjectIds.add(objectId);
+        preloadObjectImage(objectId);
+      }
+    });
+  }
+
+  /**
+   * Handles the notification that an object has been removed from the model. Removes the object's
+   * ID from the list of displayed objects, removes its image from the cache, and triggers a redraw
+   * to reflect the removal. Ensures these operations occur on the JavaFX Application Thread.
+   *
+   * @param objectId The UUID of the removed object.
+   */
+  @Override
+  public void onObjectRemoved(UUID objectId) {
+    Platform.runLater(() -> {
+      LOG.debug("EditorGameView received: onObjectRemoved {}", objectId);
+      if (displayedObjectIds.remove(objectId)) {
+        objectImages.remove(objectId);
+        redrawObjects();
+      }
+    });
+  }
+
+  /**
+   * Handles the notification that an existing object's data has been updated. Preloads the object's
+   * image again (in case the sprite path changed) and triggers a redraw to reflect any visual
+   * changes (position, sprite, etc.). Ensures these operations occur on the JavaFX Application
+   * Thread.
+   *
+   * @param objectId The UUID of the updated object.
+   */
+  @Override
+  public void onObjectUpdated(UUID objectId) {
+    Platform.runLater(() -> {
+      LOG.debug("EditorGameView received: onObjectUpdated {}", objectId);
+      if (displayedObjectIds.contains(objectId)) {
+        preloadObjectImage(objectId);
+        redrawObjects();
+      }
+    });
+  }
+
+  /**
+   * Handles the notification that the currently selected object has changed. Updates the internal
+   * `selectedObjectId` state and triggers a redraw to update the visual selection indicator.
+   * Ensures these operations occur on the JavaFX Application Thread.
+   *
+   * @param selectedObjectId The UUID of the newly selected object, or null if no object is
+   *                         selected.
+   */
+  @Override
+  public void onSelectionChanged(UUID selectedObjectId) {
+    Platform.runLater(() -> {
+      LOG.debug("EditorGameView received: onSelectionChanged {}", selectedObjectId);
+      if (!Objects.equals(this.selectedObjectId, selectedObjectId)) {
+        this.selectedObjectId = selectedObjectId;
+        redrawObjects();
+      }
+    });
+  }
+
+  /**
+   * Handles the notification that dynamic variables (like game parameters) have changed. This view
+   * typically does not need to react directly to these changes.
+   */
+  @Override
+  public void onDynamicVariablesChanged() {
+    LOG.trace("EditorGameView received: onDynamicVariablesChanged (no action)");
+  }
+
+  /**
+   * Handles the notification that an error occurred elsewhere in the editor. Logs the error
+   * message. In a more complex UI, this might update a status bar. Ensures any UI updates happen on
+   * the JavaFX Application Thread.
+   *
+   * @param errorMessage A description of the error that occurred.
+   */
+  @Override
+  public void onErrorOccurred(String errorMessage) {
+    LOG.warn("EditorGameView received: onErrorOccurred: {}", errorMessage);
+    Platform.runLater(() -> {
+    });
+  }
+
+
+  /**
+   * Gets the size of each grid cell in pixels.
+   *
+   * @return The cell size.
    */
   public int getCellSize() {
     return cellSize;
   }
 
   /**
-   * Gets the width of the game area
+   * Gets the width of the game view grid area in pixels.
    *
-   * @return The width in pixels
+   * @return The grid width.
    */
-  public int getGridWidth() {
-    return width;
+  public double getGridWidth() {
+    return gridCanvas.getWidth();
   }
 
   /**
-   * Gets the height of the game area
+   * Gets the height of the game view grid area in pixels.
    *
-   * @return The height in pixels
+   * @return The grid height.
    */
-  public int getGridHeight() {
-    return height;
+  public double getGridHeight() {
+    return gridCanvas.getHeight();
   }
 }

@@ -1,0 +1,197 @@
+/* Basic CSS for Editor UI Elements */
+
+/* --- General Styles --- */
+.root {
+  /* Default font, etc. */
+  -fx-font-family: "System";
+  -fx-font-size: 13px; /* Slightly larger base font */
+}
+
+/* --- Map Pane --- */
+#map-pane {
+  -fx-background-color: lightblue;
+  -fx-border-color: gray;
+  -fx-border-width: 1px;
+}
+
+#map-toolbar {
+  /* Styles for the toolbar HBox */
+  -fx-background-color: #E0E0E0; /* Light gray */
+  -fx-border-color: gray;
+  -fx-border-width: 0 0 1px 0; /* Bottom border */
+  -fx-padding: 5px;
+}
+
+.tool-button {
+  /* Styles for toggle buttons in the toolbar */
+  -fx-pref-width: 100px;
+}
+
+/* --- Component Pane --- */
+#component-pane {
+  -fx-background-color: white;
+  -fx-border-color: gray;
+  -fx-border-width: 1px;
+}
+
+#properties-tab {
+  /* Specific styles for the properties tab if needed */
+}
+
+#input-tab {
+  /* Specific styles for the input tab if needed */
+  /* Remove padding if main pane adds it */
+  /* -fx-padding: 0; */
+}
+
+#input-tab-main {
+  /* Style for the root BorderPane of the input tab */
+  -fx-padding: 15px; /* Increased padding */
+}
+
+/* --- Input Tab Sections --- */
+.input-section {
+  /* Common styles for Events (VBox), Conditions/Outcomes (HBox?) */
+  -fx-border-color: #cccccc; /* Light grey border */
+  -fx-border-width: 1px;
+  -fx-border-radius: 5px;
+  -fx-padding: 15px; /* Inner padding for sections */
+  -fx-background-color: #f9f9f9; /* Very light grey background */
+  -fx-background-radius: 5px;
+}
+
+.input-section-hbox {
+  /* Specific style for the HBox holding conditions/outcomes */
+  /* Remove border/background if inherited from .input-section is unwanted */
+  -fx-border-width: 0;
+  -fx-background-color: transparent;
+  -fx-padding: 0; /* Use sub-section padding instead */
+}
+
+
+.input-sub-section {
+  /* Styles for Conditions and Outcomes VBox panes */
+  -fx-padding: 10px; /* Padding within sub-sections */
+  /* Add more spacing between elements inside */
+  -fx-spacing: 8px; /* Was implicitly using VBox default spacing */
+}
+
+/* --- Shared UI Elements --- */
+.header-label { /* Existing style, may not be used by input tab now */
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 0 5px 0;
+}
+
+.placeholder-label {
+  -fx-font-style: italic;
+  -fx-text-fill: gray;
+  -fx-padding: 20px;
+  -fx-alignment: center;
+}
+
+/* --- Input Tab Specific Headers --- */
+.section-header { /* Used in Input Tab Builders */
+  -fx-font-size: 1.15em; /* Make slightly larger */
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333; /* Darker text */
+  -fx-padding-bottom: 8px; /* Space below header */
+  -fx-border-color: transparent transparent #cccccc transparent; /* Bottom border only */
+  -fx-border-width: 1px;
+  -fx-alignment: center-left; /* Align text left */
+}
+
+/* --- Input Tab Lists --- */
+.data-list-view {
+  -fx-border-color: #dddddd;
+  -fx-border-radius: 3px;
+  -fx-focus-color: transparent; /* Remove default focus ring */
+  -fx-faint-focus-color: transparent;
+  -fx-pref-height: 150px; /* Ensure consistent height */
+}
+
+.data-list-view .list-cell:filled:selected:focused,
+.data-list-view .list-cell:filled:selected {
+  -fx-background-color: #4a90e2; /* Blue selection color */
+  -fx-text-fill: white;
+}
+
+.data-list-view .list-cell {
+  -fx-padding: 5px 8px; /* Adjust cell padding */
+}
+
+
+/* --- Input Tab Buttons --- */
+.action-button {
+  /* Default style for Add buttons */
+  -fx-background-color: #5cb85c; /* Green background */
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 4px;
+  -fx-padding: 6px 12px;
+  -fx-min-width: 80px; /* Give buttons a minimum width */
+  -fx-alignment: center;
+}
+
+.action-button:hover {
+  -fx-background-color: #4cae4c; /* Darker green on hover */
+  -fx-cursor: hand;
+}
+
+/* Specific style for Remove buttons */
+.remove-button {
+  -fx-background-color: #d9534f; /* Red background */
+}
+
+.remove-button:hover {
+  -fx-background-color: #c9302c; /* Darker red on hover */
+}
+
+/* Style for the small '+' button */
+.small-button {
+  -fx-padding: 3px 8px;
+  -fx-font-size: 1.1em; /* Make '+' slightly larger */
+  -fx-font-weight: bold;
+  -fx-min-width: 30px; /* Small fixed width */
+  -fx-max-width: 30px;
+  /* Use default button background or customize */
+  /* -fx-background-color: #eeeeee; */
+  /* -fx-text-fill: black; */
+}
+
+/* --- Input Tab TextFields and ComboBoxes --- */
+.text-field, .combo-box {
+  -fx-pref-height: 32px; /* Consistent height */
+  -fx-border-color: #cccccc;
+  -fx-border-radius: 4px;
+  -fx-background-radius: 4px;
+  -fx-font-size: 1.0em; /* Ensure readable font size */
+  /* Add a little inner padding */
+  -fx-padding: 0px 5px;
+}
+
+.combo-box .list-cell {
+  /* Padding for items in dropdown */
+  -fx-padding: 6px 10px;
+}
+
+/* --- Dynamic Variable Dialog --- */
+.dynamic-variable-dialog-pane {
+  /* Style for the dialog pane itself */
+  -fx-font-size: 1.0em;
+}
+
+.dynamic-variable-dialog-pane .label {
+  -fx-padding: 5px 0; /* Add padding to labels in the grid */
+}
+
+.dialog-button {
+  /* Style for OK/Cancel buttons in dialogs */
+  -fx-font-weight: bold;
+  -fx-padding: 6px 15px;
+}
+
+/* Style for error dialogs if needed */
+.error-dialog-pane {
+  /* -fx-background-color: #fff0f0; */ /* Example: light red background */
+}
