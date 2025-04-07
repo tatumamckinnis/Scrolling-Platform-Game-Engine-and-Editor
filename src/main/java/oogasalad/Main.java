@@ -4,6 +4,7 @@ package oogasalad;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
+import oogasalad.engine.controller.DefaultLevel;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

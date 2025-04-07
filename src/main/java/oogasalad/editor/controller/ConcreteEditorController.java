@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  * view and the editor data backend (EditorDataAPI). Manages listeners and notifies them of changes
  * using the Observer pattern. (DESIGN-01, DESIGN-09: Controller Role, DESIGN-20: Observer Pattern,
  * DESIGN-21: Logging)
- *
- * @author Tatum McKinnis
  */
 public class ConcreteEditorController implements EditorController {
 
@@ -198,13 +196,12 @@ public class ConcreteEditorController implements EditorController {
     try {
       newObjectId = editorDataAPI.createEditorObject();
       String objectName = String.format("%s%d_%d", objectNamePrefix, worldX / cellSize,
-          worldY / cellSize); // Generate name based on grid pos
+          worldY / cellSize);
+
       editorDataAPI.getIdentityDataAPI().setName(newObjectId, objectName);
       editorDataAPI.getIdentityDataAPI().setGroup(newObjectId, objectGroup);
       editorDataAPI.getSpriteDataAPI().setX(newObjectId, worldX);
       editorDataAPI.getSpriteDataAPI().setY(newObjectId, worldY);
-
-      // TODO: Set default sprite path based on config/group in EditorObject constructor or here
       editorDataAPI.getHitboxDataAPI().setX(newObjectId, worldX);
       editorDataAPI.getHitboxDataAPI().setY(newObjectId, worldY);
       editorDataAPI.getHitboxDataAPI().setWidth(newObjectId, cellSize);
@@ -241,10 +238,10 @@ public class ConcreteEditorController implements EditorController {
 
       if (removed) {
         LOG.debug("Successfully processed removal for object {}", objectId);
-        notifyObjectRemoved(objectId); // Notify listeners AFTER successful removal
+        notifyObjectRemoved(objectId);
 
         if (objectId.equals(currentSelectedObjectId)) {
-          notifyObjectSelected(null); // Clear selection if removed object was selected
+          notifyObjectSelected(null);
         }
       } else {
         LOG.warn("Removal request processed but object {} was not found or not removed by backend.",
@@ -278,7 +275,7 @@ public class ConcreteEditorController implements EditorController {
 
       if (updated) {
         LOG.debug("Successfully processed update for object {}", objectId);
-        notifyObjectUpdated(objectId); // Notify listeners AFTER successful update
+        notifyObjectUpdated(objectId);
       } else {
         LOG.warn("Update request processed but object {} was not found or not updated by backend.",
             objectId);
@@ -329,7 +326,7 @@ public class ConcreteEditorController implements EditorController {
     LOG.debug("Controller adding event '{}' to object {}", eventId, objectId);
     try {
       editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to add event '{}' to object {}: {}", eventId, objectId, e.getMessage(), e);
       notifyErrorOccurred("Failed to add event: " + e.getMessage());
@@ -351,7 +348,7 @@ public class ConcreteEditorController implements EditorController {
     LOG.debug("Controller removing event '{}' from object {}", eventId, objectId);
     try {
       editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to remove event '{}' from object {}: {}", eventId, objectId, e.getMessage(),
           e);
@@ -377,7 +374,7 @@ public class ConcreteEditorController implements EditorController {
         objectId);
     try {
       editorDataAPI.getInputDataAPI().addEventCondition(objectId, eventId, condition);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to add condition '{}' to event '{}' on object {}: {}", condition, eventId,
           objectId, e.getMessage(), e);
@@ -403,7 +400,7 @@ public class ConcreteEditorController implements EditorController {
         objectId);
     try {
       editorDataAPI.getInputDataAPI().removeEventCondition(objectId, eventId, condition);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to remove condition '{}' from event '{}' on object {}: {}", condition,
           eventId, objectId, e.getMessage(), e);
@@ -430,12 +427,11 @@ public class ConcreteEditorController implements EditorController {
         parameter, eventId, objectId);
     try {
       editorDataAPI.getInputDataAPI().addEventOutcome(objectId, eventId, outcome);
-      // Handle parameter setting - ensure null is passed if parameter string is empty/null
       String paramToSet =
           (parameter != null && !parameter.trim().isEmpty()) ? parameter.trim() : null;
       editorDataAPI.getInputDataAPI()
           .setEventOutcomeParameter(objectId, eventId, outcome, paramToSet);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to add outcome '{}' to event '{}' on object {}: {}", outcome, eventId,
           objectId, e.getMessage(), e);
@@ -447,7 +443,7 @@ public class ConcreteEditorController implements EditorController {
    * Removes an outcome from the specified event of an object.
    *
    * @param objectId The ID of the object from which the outcome is to be removed. Must not be
-   *                 null.
+   * null.
    * @param eventId  The ID of the event from which the outcome is to be removed. Must not be null.
    * @param outcome  The outcome type to be removed. Must not be null.
    * @throws NullPointerException If any of the provided parameters are null.
@@ -461,7 +457,7 @@ public class ConcreteEditorController implements EditorController {
         objectId);
     try {
       editorDataAPI.getInputDataAPI().removeEventOutcome(objectId, eventId, outcome);
-      notifyObjectUpdated(objectId); // Object's data changed
+      notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to remove outcome '{}' from event '{}' on object {}: {}", outcome, eventId,
           objectId, e.getMessage(), e);
@@ -514,7 +510,6 @@ public class ConcreteEditorController implements EditorController {
     }
     try {
       EditorObject obj = editorDataAPI.getEditorObject(objectId);
-
       return obj;
     } catch (Exception e) {
       LOG.error("Failed to get EditorObject for ID {}: {}", objectId, e.getMessage(), e);
@@ -528,7 +523,7 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the events associated with the specified object ID.
    *
    * @param objectId The ID of the object for which events are to be retrieved. If null, returns an
-   *                 empty map.
+   * empty map.
    * @return A map of event IDs to corresponding {@link EditorEvent} objects, or an empty map if no
    * events are found or an error occurs.
    */
@@ -551,9 +546,9 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the conditions associated with the specified event of an object.
    *
    * @param objectId The ID of the object for which event conditions are to be retrieved. Must not
-   *                 be null.
+   * be null.
    * @param eventId  The ID of the event for which conditions are to be retrieved. Must not be
-   *                 null.
+   * null.
    * @return A list of {@link ConditionType} objects associated with the event, or an empty list if
    * no conditions are found or an error occurs.
    */
@@ -578,7 +573,7 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the outcomes associated with the specified event of an object.
    *
    * @param objectId The ID of the object for which event outcomes are to be retrieved. Must not be
-   *                 null.
+   * null.
    * @param eventId  The ID of the event for which outcomes are to be retrieved. Must not be null.
    * @return A list of {@link OutcomeType} objects associated with the event, or an empty list if no
    * outcomes are found or an error occurs.
@@ -604,9 +599,9 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the parameter associated with the specified outcome of an event for an object.
    *
    * @param objectId The ID of the object for which the outcome parameter is to be retrieved. Must
-   *                 not be null.
+   * not be null.
    * @param eventId  The ID of the event for which the outcome parameter is to be retrieved. Must
-   *                 not be null.
+   * not be null.
    * @param outcome  The outcome type for which the parameter is to be retrieved. Must not be null.
    * @return The parameter associated with the outcome, or null if not found or an error occurs.
    */
@@ -628,25 +623,15 @@ public class ConcreteEditorController implements EditorController {
   /**
    * Retrieves the dynamic variables available for the specified object ID.
    *
-   * @param objectId The ID of the object for which dynamic variables are to be retrieved. Must not
-   *                 be null.
-   * @return A list of {@link DynamicVariable} objects available for the object, or an empty list if
-   * no variables are found or an error occurs.
+   * @param objectId The ID of the object (currently ignored). Must not be null.
+   * @return A list of {@link DynamicVariable} objects available, or an empty list if none are found or an error occurs.
    */
   @Override
   public List<DynamicVariable> getAvailableDynamicVariables(UUID objectId) {
-    LOG.debug("Entering getAvailableDynamicVariables for objectId: {}", objectId);
     try {
       DynamicVariableContainer container = editorDataAPI.getDynamicVariableContainer();
-      LOG.debug("Retrieved container instance: {}",
-          (container != null ? container.getClass().getName() + "@" + Integer.toHexString(
-              System.identityHashCode(container)) : "null"));
-
       if (container != null) {
         Collection<DynamicVariable> varsCollection = container.getAllVariables();
-        LOG.debug("Retrieved variable collection from container: {}",
-            (varsCollection != null ? "Collection[size=" + varsCollection.size() + "]" : "null"));
-
         if (varsCollection != null) {
           return new ArrayList<>(varsCollection);
         } else {
@@ -663,4 +648,6 @@ public class ConcreteEditorController implements EditorController {
       return Collections.emptyList();
     }
   }
+
+
 }

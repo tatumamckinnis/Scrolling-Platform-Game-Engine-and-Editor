@@ -32,8 +32,11 @@ public abstract class Display extends Group {
    * Special implementation of javafx setTranslate() function such that some types of nodes can
    * implement the shift or choose not to. Default implementation chooses not to shift node.
    * For example, a splash screen should never be able to be translated but a levelView should.
+   *
+   * @param camera a camera instance which the node should shift relative to.
+   * @param cameraObjectToFollow a central ViewObject to follow.
    */
-  public void shiftNode() {}
+  public void shiftNode(Camera camera, ViewObject cameraObjectToFollow) {}
 
   /**
    * This method will provide the option to hide the display from the scene.
