@@ -2,9 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
-import java.util.zip.DataFormatException;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -13,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.view.factory.ButtonActionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Initial splash screen a user sees when running the game engine.
@@ -25,11 +26,10 @@ public class SplashScreen extends Display {
   private static final Properties splashComponentProperties = new Properties();
   private int splashWidth;
   private int splashHeight;
-  private Runnable onStartClicked;
   private final GameManagerAPI gameManager;
-  private final GameAppAPI gameView;
+  private final ViewAPI gameView;
 
-  public SplashScreen(GameAppAPI view, GameManagerAPI gameManager) {
+  public SplashScreen(ViewAPI view, GameManagerAPI gameManager) {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
       splashComponentProperties.load(stream);
@@ -53,15 +53,6 @@ public class SplashScreen extends Display {
 
   public int getSplashHeight() {
     return splashHeight;
-  }
-
-  /**
-   * Allows the view API to define the behavior when this button is clicked. Helps toggle between
-   * screens when specific button is clicked.
-   * @param onStartClicked a runnable function to be called when the button is clicked.
-   */
-  public void setOnStartClicked(Runnable onStartClicked) {
-    this.onStartClicked = onStartClicked;
   }
 
   private void initializeSplashScreen() {
@@ -140,7 +131,6 @@ public class SplashScreen extends Display {
    * @return VBox of splash scene buttons
    */
   private VBox createSplashButtonBox() {
-
     VBox splashBox = new VBox();
     String[] buttonTexts = getSplashButtonTexts();
     String[] buttonIDs = getSplashButtonIDs();
@@ -163,26 +153,11 @@ public class SplashScreen extends Display {
   }
 
   private void setButtonAction(String buttonID, Button currButton) {
-    SplashButtonActionsFactory factory = new SplashButtonActionsFactory(gameView);
-    // then do curButton.setOnAction{runnable.run}
+    ButtonActionFactory factory = new ButtonActionFactory(gameManager, gameView);
 
-    if (buttonID.equals("splashButtonStartEngine")) { // TODO make not hard coded and add other buttons
-      currButton.setOnAction(event -> {
-        factory.getAction("splashButtonStartEngine").run();
-      });
-    }
-
-    if (buttonID.equals("splashButtonGameType")) {
-      currButton.setOnAction(event -> {
-        try {
-          gameManager.selectGame("dinosaurgame", "Easy", "DinoLevel1.xml");
-        } catch (DataFormatException | IOException | ClassNotFoundException |
-                 InvocationTargetException | NoSuchMethodException | InstantiationException |
-                 IllegalAccessException e) {
-          throw new RuntimeException(e);
-        }
-      });
-    }
+    currButton.setOnAction(event -> {
+        factory.getAction(buttonID).run();
+    });
   }
 
   /**

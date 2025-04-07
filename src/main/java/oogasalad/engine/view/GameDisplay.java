@@ -15,22 +15,22 @@ import oogasalad.engine.view.components.NewGameComponents;
  *
  * @author Aksel Bell
  */
-public class GameScene extends Display {
+public class GameDisplay extends Display {
   private GameManagerAPI myGameManager;
   private GameControlPanel myGameControlPanel;
   private HUD myHUD;
   private NewGameComponents myNewGameComponents;
-  private LevelView myLevelView;
+  private LevelDisplay myLevelView;
 
   /**
    * Initializes a game scene object.
    */
-  public GameScene(GameManagerAPI gameManager) {
+  public GameDisplay(ViewAPI gameView, GameManagerAPI gameManager) {
     this.myGameManager = gameManager;
-    this.myGameControlPanel = new GameControlPanel();
+    this.myGameControlPanel = new GameControlPanel(gameManager, gameView);
     this.myHUD = new HUD();
     this.myNewGameComponents = new NewGameComponents(gameManager);
-    this.myLevelView = new LevelView(); //sets background and sets to pause
+    this.myLevelView = new LevelDisplay(); //sets background and sets to pause
   }
 
   /**
@@ -41,10 +41,6 @@ public class GameScene extends Display {
   public void renderGameObjects(List<ViewObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
-  }
-
-  public void setControlButtonsClicked(Runnable function) {
-    myGameControlPanel.setOnHomeClicked(function);
   }
 
   /**

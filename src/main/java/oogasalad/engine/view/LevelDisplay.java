@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Aksel Bell
  */
-public class LevelView extends Display {
+public class LevelDisplay extends Display {
 
   // has a background and foreground
   // need to store all the game objects and render all of them
@@ -25,7 +25,7 @@ public class LevelView extends Display {
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
-  public LevelView() {
+  public LevelDisplay() {
     myConverter = new ViewObjectToImageConverter();
   }
 
@@ -34,7 +34,6 @@ public class LevelView extends Display {
    */
   @Override
   public void render() {
-    // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
     LOG.info("Rendering level...");
   }
 
