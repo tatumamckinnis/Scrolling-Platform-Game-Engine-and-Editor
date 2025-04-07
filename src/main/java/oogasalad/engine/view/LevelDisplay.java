@@ -52,4 +52,14 @@ public class LevelDisplay extends Display {
     }
   }
 
+  /**
+   * Shifts the camera view focused on this level view.
+   * @param myCamera a camera instance which the node should shift relative to.
+   * @param cameraObjectToFollow a central ViewObject to follow.
+   */
+  @Override
+  public void shiftNode(Camera myCamera, ViewObject cameraObjectToFollow) {
+    myCamera.updateCamera(this, cameraObjectToFollow);
+  }
+
 }

@@ -58,7 +58,7 @@ public class GameDisplay extends Display {
    * Shifts the level view focus.
    */
   @Override
-  public void shiftNode() {
-    myLevelView.shiftNode();
+  public void shiftNode(Camera myCamera, ViewObject cameraObjectToFollow) {
+    myLevelView.shiftNode(myCamera, cameraObjectToFollow);
   }
 }

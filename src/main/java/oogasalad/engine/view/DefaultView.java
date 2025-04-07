@@ -35,7 +35,6 @@ public class DefaultView implements ViewAPI {
   private List<KeyCode> currentInputs;
   private Camera myCamera;
 
-
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
    */
@@ -68,10 +67,7 @@ public class DefaultView implements ViewAPI {
   public void renderGameObjects(List<ViewObject> gameObjects, ViewObject cameraObjectToFollow)
       throws RenderingException, FileNotFoundException {
     currentDisplay.renderGameObjects(gameObjects);
-
-    if (currentDisplay instanceof GameDisplay) { // TODO make this no longer instance of
-      myCamera.updateCamera(currentDisplay, cameraObjectToFollow);
-    }
+    currentDisplay.shiftNode(myCamera, cameraObjectToFollow);
   }
 
   /**
