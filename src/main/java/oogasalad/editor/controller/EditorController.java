@@ -32,6 +32,11 @@ public interface EditorController {
   void notifyObjectSelected(UUID objectId);
 
   /**
+   * Returns the editorDataAPI
+   */
+  EditorDataAPI getEditorDataAPI();
+
+  /**
    * Adds a new event definition to the specified object.
    */
   void addEvent(UUID objectId, String eventId);
@@ -117,6 +122,4 @@ public interface EditorController {
    * Unregisters a listener.
    */
   void unregisterViewListener(EditorViewListener listener);
-
-
 }

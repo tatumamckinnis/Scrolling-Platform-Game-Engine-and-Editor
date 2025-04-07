@@ -44,6 +44,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private static final double GRID_HORIZON_WIDTH = 2.0;
   private static final double SELECTION_BORDER_WIDTH = 2.0;
   private static final double GRID_HORIZON_RATIO = 0.8;
+  private static final int GRID_MIN = -500;
+  private static final int GRID_MAX = 500;
   private static final double PLACEHOLDER_FONT_SIZE = 10.0;
   private static final String PLACEHOLDER_FONT_NAME = "System";
 
@@ -53,6 +55,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext objectGraphicsContext;
 
   private final int cellSize;
+  private double cameraX;
+  private double cameraY;
   private double zoomScale;
   private final EditorController editorController;
   private final Map<UUID, Image> objectImages = new HashMap<>();
@@ -63,8 +67,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
   /**
    * Creates a new editor game view.
    *
-   * @param width            Width of the game view area in pixels.
-   * @param height           Height of the game view area in pixels.
    * @param cellSize         Size of each grid cell in pixels.
    * @param editorController Controller for handling actions and state changes.
    * @throws IllegalArgumentException if editorController is null or dimensions/cellSize are
@@ -80,6 +82,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     }
 
     this.cellSize = cellSize;
+    this.cameraX = 0;
+    this.cameraY = 0;
     this.zoomScale = zoomScale;
     this.editorController = editorController;
 
@@ -126,15 +130,23 @@ public class EditorGameView extends Pane implements EditorViewListener {
     gridGraphicsContext.setFill(GRID_BACKGROUND_COLOR);
     gridGraphicsContext.fillRect(0, 0, width, height);
 
-    gridGraphicsContext.setStroke(GRID_LINE_COLOR);
-    gridGraphicsContext.setLineWidth(GRID_LINE_WIDTH);
+    gridGraphicsContext.save();
 
-    for (int x = 0; x <= width; x += cellSize) {
-      gridGraphicsContext.strokeLine(x, 0, x, height);
+    gridGraphicsContext.translate(-cameraX, -cameraY);
+    gridGraphicsContext.scale(zoomScale, zoomScale);
+
+    int gridMinPixels = GRID_MIN * cellSize;
+    int gridMaxPixels = GRID_MAX * cellSize;
+    gridGraphicsContext.setStroke(GRID_LINE_COLOR);
+
+    for (int x = gridMinPixels; x <= gridMaxPixels; x += cellSize) {
+      gridGraphicsContext.strokeLine(x, gridMinPixels, x, gridMaxPixels);
     }
-    for (int y = 0; y <= height; y += cellSize) {
-      gridGraphicsContext.strokeLine(0, y, width, y);
+    for (int y = gridMinPixels; y <= gridMaxPixels; y += cellSize) {
+      gridGraphicsContext.strokeLine(gridMinPixels, y, gridMaxPixels, y);
     }
+
+    gridGraphicsContext.restore();
     LOG.trace("Grid drawn with dynamic width={}, height={}.", width, height);
   }
 
@@ -149,18 +161,21 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
-        double delta = event.getDeltaY();  // positive if user scrolls up
-        double factor = 0.05;             // how fast to zoom
+        double oldZoom = zoomScale;
+        double delta = event.getDeltaY();
+        double factor = 0.02;
 
         if (delta > 0) {
           zoomScale += factor;
         } else {
           zoomScale -= factor;
-          if (zoomScale < 0.1) zoomScale = 0.1; // clamp to avoid negative scale
+          if (zoomScale < 0.1) {
+            zoomScale = 0.1;
+          }
         }
 
-        setScaleX(zoomScale);
-        setScaleY(zoomScale);
+        drawGrid();
+        redrawObjects();
 
         event.consume();
       }
@@ -174,10 +189,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * @param event The MouseEvent associated with the click.
    */
   private void handleGridClick(MouseEvent event) {
-    int gridX = (int) (event.getX() / cellSize);
-    int gridY = (int) (event.getY() / cellSize);
-    LOG.debug("Grid clicked at ({}, {}) -> Grid ({}, {})", event.getX(), event.getY(), gridX,
-        gridY);
+
+    double screenX = event.getX();
+    double screenY = event.getY();
+
+    double worldX = (screenX / zoomScale) + cameraX;
+    double worldY = (screenY / zoomScale) + cameraY;
+
+    int gridX = (int) (worldX / cellSize);
+    int gridY = (int) (worldY / cellSize);
+    LOG.debug("Click at screen=({},{}) => world=({},{}) => grid=({},{})", screenX, screenY, worldX,
+        worldY, gridX, gridY);
 
     if (currentTool != null) {
       LOG.info("Delegating click to tool: {}", currentTool.getClass().getSimpleName());
@@ -256,6 +278,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double height = objectCanvas.getHeight();
 
     objectGraphicsContext.clearRect(0, 0, width, height);
+    objectGraphicsContext.save();
+    objectGraphicsContext.translate(-cameraX, -cameraY);
+    objectGraphicsContext.scale(zoomScale, zoomScale);
+
     LOG.trace("Object canvas cleared for redraw.");
     List<UUID> idsToDraw = new ArrayList<>(displayedObjectIds);
 
@@ -285,6 +311,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
         LOG.error("Error drawing object with ID {}: {}", id, e.getMessage(), e);
       }
     }
+    objectGraphicsContext.restore();
     LOG.trace("Finished redrawing {} objects.", idsToDraw.size());
   }
 

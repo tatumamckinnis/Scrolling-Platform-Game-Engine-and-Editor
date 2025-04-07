@@ -74,6 +74,10 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  public EditorDataAPI getEditorDataAPI() {
+    return editorDataAPI;
+  }
+
   /**
    * Notifies all registered view listeners that a new object has been added.
    *

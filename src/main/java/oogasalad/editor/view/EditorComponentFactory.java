@@ -36,7 +36,8 @@ public class EditorComponentFactory {
   private static final String PROP_MAP_WIDTH = "editor.map.width";
   private static final String PROP_COMPONENT_WIDTH = "editor.component.width";
   private static final String PROP_CELL_SIZE = "editor.map.cellSize";
-  private static final String PROP_ZOOM = "editor.map.zoom";
+  private static final String PROP_ZOOM_SCALE = "editor.map.zoomScale";
+  private static final String PROP_ZOOM_STEP = "editor.map.zoomStep";
   private static final String PROP_PLAYER_TYPE = "editor.tool.player.type";
   private static final String PROP_PLAYER_PREFIX = "editor.tool.player.prefix";
   private static final String PROP_ENEMY_TYPE = "editor.tool.enemy.type";
@@ -63,6 +64,7 @@ public class EditorComponentFactory {
   private final ResourceBundle uiBundle;
   private final EditorController editorController; // Use the controller interface
   private final InputTabComponentFactory inputTabFactory;
+  private final PropertiesTabComponentFactory propertiesTabFactory;
 
   private EditorGameView gameView;
 
@@ -85,7 +87,9 @@ public class EditorComponentFactory {
 
     this.inputTabFactory = new InputTabComponentFactory(editorController);
     editorController.registerViewListener(inputTabFactory);
-    LOG.info("InputTabComponentFactory created and registered as listener.");
+    this.propertiesTabFactory = new PropertiesTabComponentFactory(editorController);
+    editorController.registerViewListener(propertiesTabFactory);
+    LOG.info("TabComponentFactories created and registered as listeners.");
 
     LOG.info("EditorComponentFactory initialized.");
   }
@@ -169,7 +173,8 @@ public class EditorComponentFactory {
    */
   private void createGameView() {
     int cellSize = getIntProperty(PROP_CELL_SIZE, 32);
-    double zoomScale = getDoubleProperty(PROP_ZOOM, 1);
+    double zoomScale = getDoubleProperty(PROP_ZOOM_SCALE, 1);
+    double zoomStep = getDoubleProperty(PROP_ZOOM_STEP, 0.05);
 
     gameView = new EditorGameView(cellSize, zoomScale, editorController);
     LOG.debug("EditorGameView created with cell size {}", cellSize);
@@ -275,28 +280,12 @@ public class EditorComponentFactory {
     Tab propertiesTab = new Tab(uiBundle.getString(KEY_PROPERTIES_TAB));
     propertiesTab.setId("properties-tab");
     propertiesTab.setClosable(false);
-    Pane propertiesPane = createPropertiesPane();
+
+    ScrollPane propertiesPane = propertiesTabFactory.createPropertiesPane();
+
     propertiesTab.setContent(propertiesPane);
     LOG.debug("Properties tab created.");
     return propertiesTab;
-  }
-
-  /**
-   * Creates the content pane for the "Properties" tab (currently a placeholder).
-   */
-  private Pane createPropertiesPane() {
-    VBox propertiesPane = new VBox(DEFAULT_SPACING);
-    propertiesPane.setPadding(new Insets(SECTION_PADDING));
-    propertiesPane.setId("properties-pane-content");
-    propertiesPane.setAlignment(Pos.CENTER);
-
-    // TODO: Implement the actual property editing UI here.
-    Label placeholderLabel = new Label(uiBundle.getString(KEY_PROPERTIES_PLACEHOLDER));
-    placeholderLabel.getStyleClass().add("placeholder-label");
-    propertiesPane.getChildren().add(placeholderLabel);
-
-    LOG.debug("Properties pane content created (placeholder).");
-    return propertiesPane;
   }
 
   /**
