@@ -3,12 +3,8 @@
  */
 package oogasalad.engine.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.event.*;
@@ -76,8 +72,9 @@ public class DefaultGameController implements GameControllerAPI {
    * @return a map of UUID strings to their associated {@link GameObject} instances
    */
   @Override
-  public Map<String, GameObject> getGameObjectMap() {
-    return myGameObjectMap;
+  public GameObject getGameObjectByUUID(String id) {
+
+    return myGameObjectMap.getOrDefault(id, null);
   }
 
   /**
@@ -93,7 +90,7 @@ public class DefaultGameController implements GameControllerAPI {
    * @return GameObject with corresponding UUID
    */
   @Override
-  public ViewObject getObjectByUUID(String uuid) {
+  public ViewObject getViewObjectByUUID(String uuid) {
     try {
       return convertToViewObject(myGameObjectMap.get(uuid));
     }
@@ -164,7 +161,6 @@ public class DefaultGameController implements GameControllerAPI {
    * @param gameObject to remove
    */
   public void destroyGameObject(GameObject gameObject) {
-    System.out.println("Destroying: " + gameObject.getUuid());
     myGameObjects.remove(gameObject);
     myGameObjectMap.remove(gameObject.getUuid());
   }

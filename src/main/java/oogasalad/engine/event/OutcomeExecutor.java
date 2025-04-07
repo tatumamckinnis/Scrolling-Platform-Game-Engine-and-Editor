@@ -33,6 +33,8 @@ public class OutcomeExecutor {
                 new LoseGameOutcome());
         outcomeMap.put(EventOutcome.OutcomeType.DESTROY_OBJECT,
                 new DestroyObjectOutcome(gameController));
+        outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,
+                new PlatformPassThroughOutcome(gameController));
     }
 
 

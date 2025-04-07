@@ -175,7 +175,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     updateInputList();
     myGameController.updateGameState();
     // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
-    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
   /**

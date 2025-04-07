@@ -14,7 +14,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
         APPLY_GRAVITY,
         LOSE_GAME,
         PATROL,
-        DESTROY_OBJECT
+        DESTROY_OBJECT,
+        PLATFORM_PASS_THROUGH_BEHAVIOR,
     }
 
     /**

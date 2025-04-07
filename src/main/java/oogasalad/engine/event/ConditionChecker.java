@@ -29,6 +29,8 @@ public class ConditionChecker {
                 new TrueCondition());
         conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLAYER,
                 new CollisionCondition(collisionHandler, "player"));
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
+                new CollisionCondition(collisionHandler, "platform"));
 
     }
     /**

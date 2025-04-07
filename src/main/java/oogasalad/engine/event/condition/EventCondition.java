@@ -16,6 +16,7 @@ public record EventCondition(EventCondition.ConditionType conditionType) {
         SPACE_KEY_PRESSED,
         COLLIDED_WITH_ENEMY,
         COLLIDED_WITH_PLAYER,
+        COLLIDED_WITH_PLATFORM,
         UP_ARROW_PRESSED,
         W_KEY_PRESSED,
     }
