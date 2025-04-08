@@ -52,7 +52,8 @@ public class DefaultView implements ViewAPI {
    */
   @Override
   public void initialize() throws ViewInitializationException {
-    SplashScreen splashScreen = new SplashScreen(this, gameManager);
+    ViewState currentState = new ViewState(currentStage, gameManager, this);
+    SplashScreen splashScreen = new SplashScreen(currentState);
 
     splashScreen.render();
     int width = splashScreen.getSplashWidth();
@@ -85,20 +86,6 @@ public class DefaultView implements ViewAPI {
    */
   public Scene getCurrentScene() {
     return currentScene;
-  }
-
-  /**
-   * @return the current stage.
-   */
-  Stage getCurrentStage() {
-    return currentStage;
-  }
-
-  /**
-   * @return the game manager.
-   */
-  GameManagerAPI getGameManager() {
-    return gameManager;
   }
 
   /**

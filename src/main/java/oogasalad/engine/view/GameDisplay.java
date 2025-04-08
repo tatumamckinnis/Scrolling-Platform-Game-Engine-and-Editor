@@ -16,7 +16,7 @@ import oogasalad.engine.view.components.NewGameComponents;
  * @author Aksel Bell
  */
 public class GameDisplay extends Display {
-  private GameManagerAPI myGameManager;
+  private ViewState myViewState;
   private GameControlPanel myGameControlPanel;
   private HUD myHUD;
   private NewGameComponents myNewGameComponents;
@@ -25,11 +25,11 @@ public class GameDisplay extends Display {
   /**
    * Initializes a game scene object.
    */
-  public GameDisplay(ViewAPI gameView, GameManagerAPI gameManager) {
-    this.myGameManager = gameManager;
-    this.myGameControlPanel = new GameControlPanel(gameManager, gameView);
+  public GameDisplay(ViewState viewState) {
+    this.myViewState = viewState;
+    this.myGameControlPanel = new GameControlPanel(viewState);
     this.myHUD = new HUD();
-    this.myNewGameComponents = new NewGameComponents(gameManager);
+    this.myNewGameComponents = new NewGameComponents(viewState);
     this.myLevelView = new LevelDisplay(); //sets background and sets to pause
   }
 

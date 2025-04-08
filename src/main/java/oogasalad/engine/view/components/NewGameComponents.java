@@ -5,21 +5,22 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
+import oogasalad.engine.view.ViewState;
 
 public class NewGameComponents extends Display {
   // contains a game over object if it is game ober
   // contains a play again
   // contains a high score object
-  private GameManagerAPI myGameManager;
+  private ViewState viewState;
   private Text highScore;
   private Button play;
 
-  public NewGameComponents(GameManagerAPI gameManager) {
-    myGameManager = gameManager;
+  public NewGameComponents(ViewState viewState) {
+    this.viewState = viewState;
     highScore = new Text("High score: " + 0);
     play = new Button("Play");
     play.setOnAction(event -> {
-      gameManager.playGame();
+      viewState.getGameManager().playGame();
       this.hide();
     });
   }
