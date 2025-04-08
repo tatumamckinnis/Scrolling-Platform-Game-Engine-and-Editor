@@ -48,6 +48,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private static final int GRID_MAX = 500;
   private static final double PLACEHOLDER_FONT_SIZE = 10.0;
   private static final String PLACEHOLDER_FONT_NAME = "System";
+  private static final double ZOOM_SPEED = 0.02;
+  private static final double MIN_ZOOM = 0.5;
 
   private final Canvas gridCanvas;
   private final Canvas objectCanvas;
@@ -161,18 +163,18 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
-        double oldZoom = zoomScale;
         double delta = event.getDeltaY();
-        double factor = 0.02;
 
-        if (delta > 0) {
-          zoomScale += factor;
+        zoomScale = 1 / zoomScale;
+        if (delta < 0) {
+          zoomScale += ZOOM_SPEED;
         } else {
-          zoomScale -= factor;
-          if (zoomScale < 0.1) {
-            zoomScale = 0.1;
+          zoomScale -= ZOOM_SPEED;
+          if (zoomScale < MIN_ZOOM) {
+            zoomScale = MIN_ZOOM;
           }
         }
+        zoomScale = 1 / zoomScale;
 
         drawGrid();
         redrawObjects();
