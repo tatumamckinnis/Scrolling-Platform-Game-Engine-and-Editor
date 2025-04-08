@@ -88,9 +88,11 @@ public class OutcomesSectionBuilder {
     outcomeComboBox = new ComboBox<>(FXCollections.observableArrayList(OutcomeType.values()));
     outcomeComboBox.setPromptText(PROMPT_SELECT_OUTCOME);
     outcomeComboBox.setMaxWidth(Double.MAX_VALUE);
+    outcomeComboBox.setId("outcomeTypeComboBox");
 
     Node parameterRow = createParameterSelectionRow();
     outcomesListView = createListView(LIST_VIEW_HEIGHT);
+    outcomesListView.setId("outcomesListView");
 
     Button addButton = createButton(KEY_ADD_OUTCOME_BUTTON, e -> {
       OutcomeType selectedOutcome = outcomeComboBox.getSelectionModel().getSelectedItem();
@@ -102,6 +104,7 @@ public class OutcomesSectionBuilder {
 
       }
     });
+    addButton.setId("addOutcomeButton");
 
     Button removeButton = createButton(KEY_REMOVE_OUTCOME_BUTTON, e -> {
       String selectedOutcomeStrWithParam = outcomesListView.getSelectionModel().getSelectedItem();
@@ -119,6 +122,7 @@ public class OutcomesSectionBuilder {
 
       }
     });
+    removeButton.setId("removeOutcomeButton");
     removeButton.getStyleClass().add("remove-button");
 
     HBox buttonRow = createCenteredButtonBox(addButton, removeButton);
@@ -187,11 +191,12 @@ public class OutcomesSectionBuilder {
 
     Label label = new Label(uiBundle.getString(KEY_PARAMETER_LABEL) + ":");
     parameterComboBox = new ComboBox<>();
+    parameterComboBox.setId("parameterComboBox");
     parameterComboBox.setPromptText(PROMPT_SELECT_PARAMETER);
     parameterComboBox.setMaxWidth(Double.MAX_VALUE);
 
     Button createButton = createButton(KEY_CREATE_PARAM_BUTTON, e -> createParameterHandler.run());
-
+    createButton.setId("addVariableButton");
     paramBox.getChildren().addAll(label, parameterComboBox, createButton);
     HBox.setHgrow(parameterComboBox, Priority.ALWAYS);
     return paramBox;

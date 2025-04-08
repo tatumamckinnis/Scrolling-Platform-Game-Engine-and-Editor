@@ -241,7 +241,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * placeholder if the image isn't available. Also draws a selection indicator around the currently
    * selected object.
    */
-  private void redrawObjectsInternal() {
+  void redrawObjectsInternal() {
     double width = objectCanvas.getWidth();
     double height = objectCanvas.getHeight();
 
