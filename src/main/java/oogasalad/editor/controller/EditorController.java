@@ -32,6 +32,13 @@ public interface EditorController {
   void notifyObjectSelected(UUID objectId);
 
   /**
+   * Returns the editorDataAPI
+   */
+  EditorDataAPI getEditorDataAPI();
+
+  void notifyObjectDeselected();
+
+  /**
    * Adds a new event definition to the specified object.
    */
   void addEvent(UUID objectId, String eventId);
@@ -118,5 +125,8 @@ public interface EditorController {
    */
   void unregisterViewListener(EditorViewListener listener);
 
-
+  /**
+   * Retrieves the object at specific coordinates.
+   */
+  UUID getObjectIDAt(double x, double y);
 }

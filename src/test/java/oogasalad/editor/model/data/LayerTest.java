@@ -33,7 +33,7 @@ class LayerTest {
     assertEquals("Background", layer.getName());
     assertNotNull(layer.getInteractingLayers());
     assertTrue(layer.getInteractingLayers().contains(layer));
-    assertEquals(0, layer.getPriority());
+    assertEquals(1, layer.getPriority());
   }
 
   /**
