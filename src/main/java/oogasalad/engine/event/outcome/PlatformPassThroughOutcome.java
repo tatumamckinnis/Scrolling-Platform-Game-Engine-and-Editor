@@ -16,6 +16,7 @@ public class PlatformPassThroughOutcome implements Outcome {
     }
     @Override
     public void execute(GameObject player) {
+        System.out.println("PlatformPassThroughOutcome executed");
         String platformId = player.getParams().get("Platform_id");
         GameObject platform = gameExecutor.getGameObjectByUUID(platformId);
         //set grounded, remove y velocity
