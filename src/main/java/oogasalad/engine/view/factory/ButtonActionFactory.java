@@ -1,13 +1,17 @@
 package oogasalad.engine.view.factory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.DataFormatException;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.ViewState;
@@ -145,21 +149,28 @@ public class ButtonActionFactory {
    */
   private Runnable setGameType() {
     return () -> {
-      try {
-        viewState.getGameManager().selectGame("DinoLevel1.xml");
-      } catch (Exception e) {
-        LOG.error("Error setting game type", e);
+      FileChooser fileChooser = new FileChooser();
+      // TODO the catching of the errors
+      File selectedFile = fileChooser.showOpenDialog(viewState.getStage());
+      if (selectedFile != null) {
+        try {
+          viewState.getGameManager().selectGame(selectedFile.getAbsolutePath());
+        } catch (DataFormatException e) {
+          throw new RuntimeException(e);
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+          throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+          throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+          throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+          throw new RuntimeException(e);
+        }
       }
     };
   }
-//  TODO make open file chooser
-//    return () -> {
-//      FileChooser fileChooser = new FileChooser();
-//
-//      File selectedFile = fileChooser.showOpenDialog(ViewVariableBridge.getStage((DefaultView) gameView));
-//      if (selectedFile != null) {
-//        // TODO set the game type based on the file
-//      }
-//    };
-//  }
 }
