@@ -39,8 +39,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
-  //game, category, level
-  private String[] currentLevel;
+
+  private String currentLevel;
 
 
   public DefaultGameManager()
@@ -48,8 +48,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myGameLoop = initGameLoop();
     myGameController = new DefaultGameController(this);
     myLevelAPI = new DefaultLevel(myGameController);
-    currentLevel = new String[3]; //consider updating to default level selection
-
     initializeMyView();
   }
 
@@ -68,21 +66,19 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   @Override
   public void restartGame() throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-    if (!(currentLevel[0] == null)) {
-      myLevelAPI.selectGame(currentLevel[0], currentLevel[1], currentLevel[2]);
+    if (!(currentLevel == null)) {
+      myLevelAPI.selectGame(currentLevel);
       playGame();
     }
   }
 
 
   @Override
-  public void selectGame(String game, String category, String level)
+  public void selectGame(String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
       NoSuchMethodException, InstantiationException, IllegalAccessException {
-    currentLevel[0] = game;
-    currentLevel[1] = category;
-    currentLevel[2] = level;
-    myLevelAPI.selectGame(game, category, level);
+    currentLevel = level;
+    myLevelAPI.selectGame(level);
   }
 
 

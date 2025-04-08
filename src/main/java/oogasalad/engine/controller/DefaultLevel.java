@@ -21,6 +21,7 @@ public class DefaultLevel implements LevelAPI {
   Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
   private FileParserAPI myFileParser;
   private GameControllerAPI myGameController;
+  private static final String LEVEL_FILE_PATH = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";
 
   public DefaultLevel(GameControllerAPI gameController) {
     myFileParser = new DefaultFileParser();
@@ -28,10 +29,9 @@ public class DefaultLevel implements LevelAPI {
   }
 
   @Override
-  public void selectGame(String game, String category, String level) {
-    //String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/DinoLevel1.xml";
-    String filePath = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/" + game + "/" + level;
-    LOG.info(filePath);
+  public void selectGame(String level) {
+    LOG.info(LEVEL_FILE_PATH);
+    String filePath = LEVEL_FILE_PATH + level;
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }
@@ -39,8 +39,7 @@ public class DefaultLevel implements LevelAPI {
   @Override
   public List<String> listLevels() {
     List<String> levels = new ArrayList<>();
-    String levelsDirPath = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame";
-    File levelsDir = new File(levelsDirPath);
+    File levelsDir = new File(LEVEL_FILE_PATH);
 
     if (levelsDir.exists() && levelsDir.isDirectory()) {
       File[] files = levelsDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
@@ -50,7 +49,6 @@ public class DefaultLevel implements LevelAPI {
         }
       }
     }
-
     return levels;
   }
 

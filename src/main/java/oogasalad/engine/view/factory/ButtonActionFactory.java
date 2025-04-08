@@ -139,7 +139,7 @@ public class ButtonActionFactory {
   private Runnable setGameType() {
     return () -> {
       try {
-        gameManager.selectGame("dinosaurgame", "Easy", "DinoLevel1.xml");
+        gameManager.selectGame("DinoLevel1.xml");
       } catch (Exception e) {
         LOG.error("Error setting game type", e);
       }
