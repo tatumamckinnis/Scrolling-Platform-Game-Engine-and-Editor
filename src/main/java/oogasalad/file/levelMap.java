@@ -11,8 +11,10 @@ import java.util.logging.Logger;
 public class levelMap {
 
   private static Logger LOG = Logger.getLogger(levelMap.class.getName());
+
   /**
    * reads the levels directory and builds the nested map structure.
+   *
    * @param baseDirPath the file path of the level to retrieve
    * @return a map of games to level file paths
    */
