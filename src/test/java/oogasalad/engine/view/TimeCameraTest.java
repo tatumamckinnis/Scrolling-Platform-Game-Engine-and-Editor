@@ -9,10 +9,9 @@ import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import oogasalad.engine.controller.ViewObject;
 import oogasalad.engine.model.object.DefaultGameObject;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
@@ -21,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 class TimeCameraTest {
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelView.class.getPackage().getName() + ".Level");
+      LevelDisplay.class.getPackage().getName() + ".Level");
   private static final double EXPECTED_CAMERA_OFFSET_X = Double.parseDouble(
       LEVEL_RESOURCES.getString("LevelWidth")) / 2.0;
   private static final double EXPECTED_CAMERA_OFFSET_Y = Double.parseDouble(
