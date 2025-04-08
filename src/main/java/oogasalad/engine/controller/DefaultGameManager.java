@@ -74,11 +74,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
 
   @Override
-  public void selectGame(String level)
+  public void selectGame(String filePath)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
       NoSuchMethodException, InstantiationException, IllegalAccessException {
-    currentLevel = level;
-    myLevelAPI.selectGame(level);
+    currentLevel = filePath;
+    myLevelAPI.selectGame(filePath);
   }
 
 

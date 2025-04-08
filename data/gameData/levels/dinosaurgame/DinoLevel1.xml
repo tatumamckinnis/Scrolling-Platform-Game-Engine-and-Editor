@@ -43,7 +43,7 @@ interact with each other -->
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23">
+    <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
