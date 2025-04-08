@@ -28,6 +28,10 @@ public class DefaultLevel implements LevelAPI {
     myGameController = gameController;
   }
 
+  /**
+   * Select game to load, updating game controller data
+   * @param level    String level name of the game(requires .xml)
+   */
   @Override
   public void selectGame(String level) {
     LOG.info(LEVEL_FILE_PATH);
@@ -36,6 +40,10 @@ public class DefaultLevel implements LevelAPI {
     myGameController.setLevelData(levelData);
   }
 
+  /**
+   * List all saved level files
+   * @return
+   */
   @Override
   public List<String> listLevels() {
     List<String> levels = new ArrayList<>();
