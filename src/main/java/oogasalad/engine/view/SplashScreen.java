@@ -154,7 +154,6 @@ public class SplashScreen extends Display {
 
   private void setButtonAction(String buttonID, Button currButton) {
     ButtonActionFactory factory = new ButtonActionFactory(gameManager, gameView);
-
     currButton.setOnAction(event -> {
         factory.getAction(buttonID).run();
     });

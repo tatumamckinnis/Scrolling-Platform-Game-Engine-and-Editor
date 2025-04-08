@@ -1,5 +1,6 @@
 package oogasalad.engine.view.factory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -8,7 +9,9 @@ import java.util.List;
 import java.util.Properties;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javax.swing.JFileChooser;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
 import oogasalad.exceptions.InputException;
@@ -82,7 +85,7 @@ public class ButtonActionFactory {
         game.render();
         ViewVariableBridge.setDisplay(view, game);
 
-        currentStage.setWidth(1000);
+        currentStage.setWidth(1000); // TODO set this to the game size
         currentStage.setHeight(1000);
 
         setCurrentInputs(view.getCurrentScene()).run();
@@ -90,6 +93,16 @@ public class ButtonActionFactory {
         LOG.error("Error starting game", e);
       }
     };
+  }
+
+  /**
+   * Help/credits button on home page
+   * @return a runnable that opens the help/credits page
+   * @throws ViewInitializationException thrown if issue with initialization.
+   */
+  private Runnable openHelp() throws ViewInitializationException {
+    // TODO need to implement
+    return null;
   }
 
   /**
@@ -145,4 +158,14 @@ public class ButtonActionFactory {
       }
     };
   }
+//  TODO make open file chooser
+//    return () -> {
+//      FileChooser fileChooser = new FileChooser();
+//
+//      File selectedFile = fileChooser.showOpenDialog(ViewVariableBridge.getStage((DefaultView) gameView));
+//      if (selectedFile != null) {
+//        // TODO set the game type based on the file
+//      }
+//    };
+//  }
 }

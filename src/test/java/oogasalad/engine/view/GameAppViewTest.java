@@ -5,21 +5,25 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.zip.DataFormatException;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.exceptions.ViewInitializationException;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
 public class GameAppViewTest extends ApplicationTest {
-  private DefaultView gameAppView;
+  private MockDefaultView gameAppView;
   private Stage testStage;
 
   @Override
   public void start(Stage stage) throws ViewInitializationException {
     this.testStage = stage;
-    gameAppView = new DefaultView(testStage, new DefaultGameManager());
+    gameAppView = new MockDefaultView(testStage, new DefaultGameManager());
     gameAppView.initialize();
     testStage.setScene(gameAppView.getCurrentScene());
     testStage.show();
@@ -43,5 +47,39 @@ public class GameAppViewTest extends ApplicationTest {
   void startGame_StartEngineClicked_SceneChanges() {
     clickOn("#splashButtonStartEngine");
     assertFalse(testStage.getScene().getRoot() instanceof SplashScreen, "Screen should change from splash screen");
+  }
+
+  private class MockDefaultView extends DefaultView {
+    /**
+     * Constructor to initialize the GameAppView with a Stage reference.
+     *
+     * @param stage
+     * @param gameManager
+     */
+    public MockDefaultView(Stage stage, GameManagerAPI gameManager)
+        throws ViewInitializationException {
+      super(stage, gameManager);
+    }
+
+    @Override
+    public void initialize() throws ViewInitializationException {
+      SplashScreen splashScreen = new SplashScreen(this, getGameManager());
+
+      splashScreen.render();
+      int width = splashScreen.getSplashWidth();
+      int height = splashScreen.getSplashHeight();
+      setCurrentDisplay(splashScreen);
+      setDefaultPath();
+    }
+
+    private void setDefaultPath() throws ViewInitializationException {
+
+      try {
+        getGameManager().selectGame("dinosaurgame", "Easy", "DinoLevel1.xml");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
   }
 }

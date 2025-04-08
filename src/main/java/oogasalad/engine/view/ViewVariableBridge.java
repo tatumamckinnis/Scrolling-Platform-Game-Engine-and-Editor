@@ -29,11 +29,21 @@ public class ViewVariableBridge {
     return view.getCurrentStage();
   }
 
+  /**
+   * Sets the display of the given view.
+   * @param view the desired view whose display will be set.
+   * @param display the new display which the view will change to.
+   */
   public static void setDisplay(DefaultView view, Display display) {
     checkClassCaller();
     view.setCurrentDisplay(display);
   }
 
+  /**
+   * Sets the current inputs of the given view.
+   * @param view the desired view whose current inputs will be set.
+   * @param currentInputs a List containing the current inputs.
+   */
   public static void setCurrentInputs(DefaultView view, List<KeyCode> currentInputs) {
     checkClassCaller();
     view.setCurrentInputs(currentInputs);
