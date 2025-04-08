@@ -19,33 +19,14 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultLevel implements LevelAPI {
   Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
-
-  /**
-   * API for parsing level files
-   */
   private FileParserAPI myFileParser;
-
-  /**
-   * Controller responsible for managing game state
-   */
   private GameControllerAPI myGameController;
 
   public DefaultLevel(GameControllerAPI gameController) {
     myFileParser = new DefaultFileParser();
     myGameController = gameController;
   }
-  /**
-   * Selects a game level based on the provided game, category, and level identifiers.
-   * <p>
-   * This method constructs the file path, parses the corresponding level file using the file
-   * parser, and passes the resulting {@link LevelData} to the game controller to initialize the
-   * game state.
-   *
-   * @param game     the name of the game
-   * @param category the category or world within the game
-   * @param level    the specific level identifier
-   * @author Alana Zinkin
-   */
+
   @Override
   public void selectGame(String game, String category, String level) {
     //String filePath =  System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/dinosaurgame/DinoLevel1.xml";

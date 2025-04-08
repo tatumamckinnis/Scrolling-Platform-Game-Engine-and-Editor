@@ -1,9 +1,8 @@
-package oogasalad.engine.controller;
+package oogasalad.engine.model.object;
 
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.FrameData;
 
-public class ViewObject implements ImmutableGameObject{
+public class ViewObject implements ImmutableGameObject {
 
   private final GameObject gameObject;
 

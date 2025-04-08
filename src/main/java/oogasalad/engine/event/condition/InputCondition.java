@@ -1,7 +1,7 @@
 package oogasalad.engine.event.condition;
 
 import javafx.scene.input.KeyCode;
-import oogasalad.engine.controller.InputProvider;
+import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.object.GameObject;
 
 public class InputCondition implements Condition {

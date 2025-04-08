@@ -6,20 +6,18 @@
 
 package oogasalad.engine.event.outcome;
 
-import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
-import java.util.UUID;
-
 public class PlatformPassThroughOutcome implements Outcome {
-    private GameControllerAPI gameControllerAPI;
-    public PlatformPassThroughOutcome(GameControllerAPI gameControllerAPI) {
-        this.gameControllerAPI = gameControllerAPI;
+    private final GameExecutor gameExecutor;
+    public PlatformPassThroughOutcome(GameExecutor gameExecutor) {
+        this.gameExecutor = gameExecutor;
     }
     @Override
     public void execute(GameObject player) {
         String platformId = player.getParams().get("Platform_id");
-        GameObject platform = gameControllerAPI.getGameObjectByUUID(platformId);
+        GameObject platform = gameExecutor.getGameObjectByUUID(platformId);
         //set grounded, remove y velocity
         if (player.getY() + player.getHitBoxHeight() > platform.getY()) {
             player.setGrounded(true);

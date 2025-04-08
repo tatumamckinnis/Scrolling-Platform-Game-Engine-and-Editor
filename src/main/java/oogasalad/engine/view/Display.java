@@ -3,7 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.exceptions.RenderingException;
 
 /**
