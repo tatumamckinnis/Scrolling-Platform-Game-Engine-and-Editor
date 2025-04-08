@@ -12,7 +12,12 @@ public class levelMap {
 
   private static Logger LOG = Logger.getLogger(levelMap.class.getName());
 
-  //reads the levels directory and builds the nested map structure.
+  /**
+   * reads the levels directory and builds the nested map structure.
+   *
+   * @param baseDirPath the file path of the level to retrieve
+   * @return a map of games to level file paths
+   */
   public static Map<String, Map<String, List<String>>> readLevels(String baseDirPath) {
     File levelsDir = new File(baseDirPath);
     if (!levelsDir.isDirectory()) {
