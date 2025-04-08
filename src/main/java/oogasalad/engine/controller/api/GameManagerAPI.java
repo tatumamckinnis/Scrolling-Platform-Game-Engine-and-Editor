@@ -38,7 +38,7 @@ public interface GameManagerAPI {
    * Loads a new level or game scene, possibly by calling into file loaders, parsing game data, and
    * updating the current model.
    */
-  void selectGame(String game, String category, String level)
+  void selectGame(String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   /**

@@ -1,8 +1,9 @@
 package oogasalad.engine.view;
 
+import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
@@ -36,8 +37,17 @@ public class TimeCamera implements Camera {
    */
   @Override
   public void updateCamera(Group gameWorld, ViewObject objectToFollow) {
-    gameWorld.setTranslateX(CAMERA_OFFSET_X - objectToFollow.getX());
-    gameWorld.setTranslateY(CAMERA_OFFSET_Y - objectToFollow.getY());
+    if (gameWorld == null) {
+      throw new NullPointerException(LEVEL_RESOURCES.getString("GameWorldNull"));
+    }
+    try {
+      gameWorld.setTranslateX(CAMERA_OFFSET_X - objectToFollow.getX());
+      gameWorld.setTranslateY(CAMERA_OFFSET_Y - objectToFollow.getY());
+    }
+    catch (Exception e) {
+      throw new NoSuchElementException(LEVEL_RESOURCES.getString("ObjectDoesntExist"));
+    }
+
   }
 }
 

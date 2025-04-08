@@ -29,8 +29,8 @@ class EditorLevelDataTest {
     assertNotNull(levelData.getGroups());
     assertTrue(levelData.getGroups().isEmpty());
     assertNotNull(levelData.getLayers());
-    assertEquals(1, levelData.getLayers().size());
-    assertEquals("layer0", levelData.getLayers().get(0).getName());
+    assertEquals(2, levelData.getLayers().size());
+    assertEquals("New Layer", levelData.getLayers().get(0).getName());
     assertEquals(0, levelData.getLayers().get(0).getPriority());
   }
 
@@ -96,7 +96,7 @@ class EditorLevelDataTest {
     // So "layer0"(0) was there initially, but "highLayer"(10) > midLayer(5) > layer0(0) > lowLayer(-1)
     assertEquals("highLayer", layers.get(0).getName());
     assertEquals("midLayer", layers.get(1).getName());
-    assertEquals("layer0", layers.get(2).getName());
+    assertEquals("New Layer", layers.get(2).getName());
     assertEquals("lowLayer", layers.get(3).getName());
   }
 
@@ -117,7 +117,7 @@ class EditorLevelDataTest {
   void removeLayer_whenLayerHasObjects_shouldReturnFalse() {
     UUID newObjId = levelData.createEditorObject();
     Layer defaultLayer = levelData.getLayers().get(0);
-    assertEquals("layer0", defaultLayer.getName());
+    assertEquals("New Layer", defaultLayer.getName());
     assertFalse(levelData.removeLayer("layer0"));
   }
 

@@ -12,7 +12,8 @@ import javafx.scene.layout.*;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
-import oogasalad.editor.view.tools.ObjectPlacementTool;
+import oogasalad.editor.view.tools.ObjectInteractionTool;
+import oogasalad.editor.view.tools.SelectionTool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,15 +37,14 @@ public class EditorComponentFactory {
   private static final String PROP_MAP_WIDTH = "editor.map.width";
   private static final String PROP_COMPONENT_WIDTH = "editor.component.width";
   private static final String PROP_CELL_SIZE = "editor.map.cellSize";
-  private static final String PROP_ZOOM = "editor.map.zoom";
-  private static final String PROP_PLAYER_TYPE = "editor.tool.player.type";
-  private static final String PROP_PLAYER_PREFIX = "editor.tool.player.prefix";
-  private static final String PROP_ENEMY_TYPE = "editor.tool.enemy.type";
-  private static final String PROP_ENEMY_PREFIX = "editor.tool.enemy.prefix";
+  private static final String PROP_ZOOM_SCALE = "editor.map.zoomScale";
+  private static final String PROP_ZOOM_STEP = "editor.map.zoomStep";
+  private static final String PROP_ENTITY_TYPE = "editor.tool.entity.type";
+  private static final String PROP_ENTITY_PREFIX = "editor.tool.entity.prefix";
 
   private static final String KEY_MAP_TITLE = "mapTitle";
   private static final String KEY_ADD_ENTITY_TOOL = "addEntityTool";
-  private static final String KEY_ADD_ENEMY_TOOL = "addEnemyTool";
+  private static final String KEY_SELECT_TOOL = "selectTool";
   private static final String KEY_PROPERTIES_TITLE = "propertiesTitle";
   private static final String KEY_PROPERTIES_TAB = "propertiesTab";
   private static final String KEY_INPUT_TAB = "inputTab";
@@ -54,15 +54,14 @@ public class EditorComponentFactory {
   private static final double DEFAULT_SPACING = 10.0;
   private static final double SECTION_PADDING = 20.0;
 
-  private static final String DEFAULT_PLAYER_TYPE = "PLAYER";
-  private static final String DEFAULT_PLAYER_PREFIX = "Player_";
-  private static final String DEFAULT_ENEMY_TYPE = "ENEMY";
-  private static final String DEFAULT_ENEMY_PREFIX = "Enemy_";
+  private static final String DEFAULT_ENTITY_TYPE = "ENTITY";
+  private static final String DEFAULT_ENTITY_PREFIX = "Entity_";
 
   private final Properties editorProperties;
   private final ResourceBundle uiBundle;
   private final EditorController editorController; // Use the controller interface
   private final InputTabComponentFactory inputTabFactory;
+  private final PropertiesTabComponentFactory propertiesTabFactory;
 
   private EditorGameView gameView;
 
@@ -85,7 +84,9 @@ public class EditorComponentFactory {
 
     this.inputTabFactory = new InputTabComponentFactory(editorController);
     editorController.registerViewListener(inputTabFactory);
-    LOG.info("InputTabComponentFactory created and registered as listener.");
+    this.propertiesTabFactory = new PropertiesTabComponentFactory(editorController);
+    editorController.registerViewListener(propertiesTabFactory);
+    LOG.info("TabComponentFactories created and registered as listeners.");
 
     LOG.info("EditorComponentFactory initialized.");
   }
@@ -120,7 +121,6 @@ public class EditorComponentFactory {
     root.getItems().addAll(leftSplit, componentsPane);
 
     root.setDividerPositions(0.7); // TODO: Make this a property
-
 
     Scene scene = new Scene(root, editorWidth, editorHeight);
     try {
@@ -169,7 +169,8 @@ public class EditorComponentFactory {
    */
   private void createGameView() {
     int cellSize = getIntProperty(PROP_CELL_SIZE, 32);
-    double zoomScale = getDoubleProperty(PROP_ZOOM, 1);
+    double zoomScale = getDoubleProperty(PROP_ZOOM_SCALE, 1);
+    double zoomStep = getDoubleProperty(PROP_ZOOM_STEP, 0.05);
 
     gameView = new EditorGameView(cellSize, zoomScale, editorController);
     LOG.debug("EditorGameView created with cell size {}", cellSize);
@@ -202,23 +203,20 @@ public class EditorComponentFactory {
 
     ToggleGroup toolGroup = new ToggleGroup();
 
-    String playerType = editorProperties.getProperty(PROP_PLAYER_TYPE, DEFAULT_PLAYER_TYPE);
-    String playerPrefix = editorProperties.getProperty(PROP_PLAYER_PREFIX, DEFAULT_PLAYER_PREFIX);
-    String enemyType = editorProperties.getProperty(PROP_ENEMY_TYPE, DEFAULT_ENEMY_TYPE);
-    String enemyPrefix = editorProperties.getProperty(PROP_ENEMY_PREFIX, DEFAULT_ENEMY_PREFIX);
+    String entityType = editorProperties.getProperty(PROP_ENTITY_TYPE, DEFAULT_ENTITY_TYPE);
+    String entityPrefix = editorProperties.getProperty(PROP_ENTITY_PREFIX, DEFAULT_ENTITY_PREFIX);
 
-    ObjectPlacementTool entityTool = new GameObjectPlacementTool(gameView, editorController,
-        playerType, playerPrefix);
-    ObjectPlacementTool enemyTool = new GameObjectPlacementTool(gameView, editorController,
-        enemyType, enemyPrefix);
-
+    ObjectInteractionTool entityTool = new GameObjectPlacementTool(gameView, editorController,
+        entityType, entityPrefix);
     ToggleButton entityButton = createToolToggleButton(toolGroup,
-        uiBundle.getString(KEY_ADD_ENTITY_TOOL), entityTool, true);
-    ToggleButton enemyButton = createToolToggleButton(toolGroup,
-        uiBundle.getString(KEY_ADD_ENEMY_TOOL), enemyTool, false);
+        uiBundle.getString(KEY_ADD_ENTITY_TOOL), entityTool, false);
 
-    toolbar.getChildren().addAll(entityButton, enemyButton);
-    gameView.setCurrentTool(entityTool);
+    ObjectInteractionTool selectTool = new SelectionTool(gameView, editorController);
+    ToggleButton selectButton = createToolToggleButton(toolGroup,
+        uiBundle.getString(KEY_SELECT_TOOL), selectTool, false);
+
+    toolbar.getChildren().addAll(entityButton, selectButton);
+    gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
     return toolbar;
   }
@@ -227,14 +225,18 @@ public class EditorComponentFactory {
    * Helper method to create a styled ToggleButton for the toolbar.
    */
   private ToggleButton createToolToggleButton(ToggleGroup group, String text,
-      ObjectPlacementTool tool, boolean selected) {
+      ObjectInteractionTool tool, boolean selected) {
     ToggleButton button = new ToggleButton(text);
     button.setToggleGroup(group);
     button.setSelected(selected);
     button.setOnAction(e -> {
       if (gameView != null && button.isSelected()) {
-        gameView.setCurrentTool(tool);
+        gameView.updateCurrentTool(tool);
         LOG.debug("Tool selected: {}", tool.getClass().getSimpleName());
+      }
+      if (gameView != null && !button.isSelected()) {
+        gameView.updateCurrentTool(null);
+        LOG.debug("Tool deselected: {}", tool.getClass().getSimpleName());
       }
     });
     button.getStyleClass().add("tool-button");
@@ -275,28 +277,12 @@ public class EditorComponentFactory {
     Tab propertiesTab = new Tab(uiBundle.getString(KEY_PROPERTIES_TAB));
     propertiesTab.setId("properties-tab");
     propertiesTab.setClosable(false);
-    Pane propertiesPane = createPropertiesPane();
+
+    ScrollPane propertiesPane = propertiesTabFactory.createPropertiesPane();
+
     propertiesTab.setContent(propertiesPane);
     LOG.debug("Properties tab created.");
     return propertiesTab;
-  }
-
-  /**
-   * Creates the content pane for the "Properties" tab (currently a placeholder).
-   */
-  private Pane createPropertiesPane() {
-    VBox propertiesPane = new VBox(DEFAULT_SPACING);
-    propertiesPane.setPadding(new Insets(SECTION_PADDING));
-    propertiesPane.setId("properties-pane-content");
-    propertiesPane.setAlignment(Pos.CENTER);
-
-    // TODO: Implement the actual property editing UI here.
-    Label placeholderLabel = new Label(uiBundle.getString(KEY_PROPERTIES_PLACEHOLDER));
-    placeholderLabel.getStyleClass().add("placeholder-label");
-    propertiesPane.getChildren().add(placeholderLabel);
-
-    LOG.debug("Properties pane content created (placeholder).");
-    return propertiesPane;
   }
 
   /**

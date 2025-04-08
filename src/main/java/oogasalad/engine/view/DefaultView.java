@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.ViewInitializationException;
@@ -42,6 +43,7 @@ public class DefaultView implements ViewAPI {
     this.currentStage = stage;
     this.gameManager = gameManager;
     this.myCamera = new TimeCamera();
+    currentScene = new Scene(new Group(), LEVEL_WIDTH, LEVEL_HEIGHT);
     currentInputs = new ArrayList<>();
   }
 
@@ -50,7 +52,8 @@ public class DefaultView implements ViewAPI {
    */
   @Override
   public void initialize() throws ViewInitializationException {
-    SplashScreen splashScreen = new SplashScreen(this, gameManager);
+    ViewState currentState = new ViewState(currentStage, gameManager, this);
+    SplashScreen splashScreen = new SplashScreen(currentState);
 
     splashScreen.render();
     int width = splashScreen.getSplashWidth();
@@ -83,20 +86,6 @@ public class DefaultView implements ViewAPI {
    */
   public Scene getCurrentScene() {
     return currentScene;
-  }
-
-  /**
-   * @return the current stage.
-   */
-  Stage getCurrentStage() {
-    return currentStage;
-  }
-
-  /**
-   * @return the game manager.
-   */
-  GameManagerAPI getGameManager() {
-    return gameManager;
   }
 
   /**

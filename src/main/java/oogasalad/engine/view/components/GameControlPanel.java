@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewAPI;
+import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 
 /**
@@ -18,18 +19,16 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
  */
 public class GameControlPanel extends Display {
   private List<Button> buttons;
-  private ViewAPI gameView;
   private String homeButtonID = "levelHomeButton";
-  private GameManagerAPI gameManager;
+  private ViewState viewState;
   // TODO make it read from a property file the type of button, the image of the button
 
   /**
    * Adds initial buttons to the control panel.
    */
-  public GameControlPanel(GameManagerAPI gameManager, ViewAPI view) {
+  public GameControlPanel(ViewState viewState) {
     buttons = new ArrayList<>();
-    gameView = view;
-    this.gameManager = gameManager;
+    this.viewState = viewState;
     createHomeButton();
   }
 
@@ -56,7 +55,7 @@ public class GameControlPanel extends Display {
     Button homeButton = new Button();
     homeButton.setGraphic(imageView);
     homeButton.setMinSize(40, 40);
-    ButtonActionFactory factory = new ButtonActionFactory(gameManager, gameView);
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
     homeButton.setOnAction(event -> {
       factory.getAction(homeButtonID).run();
     });
