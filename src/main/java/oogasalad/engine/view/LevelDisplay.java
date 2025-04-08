@@ -2,6 +2,8 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+
+import javafx.scene.Node;
 import oogasalad.engine.controller.ViewObject;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
@@ -13,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Aksel Bell
  */
-public class LevelView extends Display {
+public class LevelDisplay extends Display {
 
   // has a background and foreground
   // need to store all the game objects and render all of them
@@ -25,7 +27,7 @@ public class LevelView extends Display {
   /**
    * Default constructor for a level view. Sets the level to pause.
    */
-  public LevelView() {
+  public LevelDisplay() {
     myConverter = new ViewObjectToImageConverter();
   }
 
@@ -34,7 +36,6 @@ public class LevelView extends Display {
    */
   @Override
   public void render() {
-    // should do nothing, maybe add empty text saying game is loading...? or maybe just add the background UI?
     LOG.info("Rendering level...");
   }
 
@@ -51,6 +52,16 @@ public class LevelView extends Display {
       this.getChildren().add(sprite.getImageView());
       this.getChildren().add(sprite.getHitBox());
     }
+  }
+
+  /**
+   * Shifts the camera view focused on this level view.
+   * @param myCamera a camera instance which the node should shift relative to.
+   * @param cameraObjectToFollow a central ViewObject to follow.
+   */
+  @Override
+  public void shiftNode(Camera myCamera, ViewObject cameraObjectToFollow) {
+    myCamera.updateCamera(this, cameraObjectToFollow);
   }
 
 }

@@ -27,6 +27,10 @@ public class ConditionChecker {
                 new CollisionCondition(collisionHandler, "enemies"));
         conditionMap.put(EventCondition.ConditionType.TRUE,
                 new TrueCondition());
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLAYER,
+                new CollisionCondition(collisionHandler, "player"));
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
+                new CollisionCondition(collisionHandler, "platform"));
 
     }
     /**

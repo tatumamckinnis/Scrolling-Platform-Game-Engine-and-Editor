@@ -12,7 +12,7 @@ import oogasalad.engine.controller.ViewObject;
 public class TimeCamera implements Camera {
 
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelView.class.getPackage().getName() + ".Level");
+      LevelDisplay.class.getPackage().getName() + ".Level");
 
   /**
    * Horizontal offset to center the camera based on level width.

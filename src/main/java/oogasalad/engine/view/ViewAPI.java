@@ -16,7 +16,7 @@ import oogasalad.exceptions.ViewInitializationException;
  *
  * @author Aksel Bell
  */
-public interface GameAppAPI {
+public interface ViewAPI {
   /**
    * Initializes the view as a splash screen with the specified parameters.
    * Should be called before any rendering operations.

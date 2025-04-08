@@ -33,19 +33,30 @@ public interface GameControllerAPI {
   List<ViewObject> getImmutableObjects();
 
   /**
-   * Returns a map of all game objects currently loaded in the engine.
-   *
-   * <p>The map uses each object's unique UUID as the key and the corresponding
-   * {@link GameObject} as the value. This allows for efficient lookup and manipulation of
-   * individual game objects by their identifier.
-   *
-   * @return a map of UUID strings to their associated {@link GameObject} instances
+   * returns data associated with current level's dimensions
+   * @return mapObject model data
    */
-  Map<String, GameObject> getGameObjectMap();
-
   mapObject getMapObject();
 
-  ViewObject getObjectByUUID(String uuid);
+  /**
+   * removes game object from the level
+   * @param gameObject to remove
+   */
+  void destroyGameObject(GameObject gameObject);
+
+  /**
+   * returns view object data using id
+   * @param uuid string version of uuid
+   * @return view object model data
+   */
+  ViewObject getViewObjectByUUID(String uuid);
+
+  /**
+   * returns backend object data using id
+   * @param uuid string version of uuid
+   * @return game object model data
+   */
+  GameObject getGameObjectByUUID(String uuid);
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller
    * (input, physics, collision, etc.) 2) Resolving any post-update tasks (e.g. removing destroyed
@@ -59,5 +70,9 @@ public interface GameControllerAPI {
    */
   void setLevelData(LevelData data);
 
+  /**
+   * returns collision handler class tied to game controller's game objects
+   * @return CollisionHandler class
+   */
   CollisionHandler getCollisionHandler();
 }

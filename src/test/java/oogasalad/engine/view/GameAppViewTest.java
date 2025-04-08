@@ -13,13 +13,13 @@ import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 
 public class GameAppViewTest extends ApplicationTest {
-  private GameAppView gameAppView;
+  private DefaultView gameAppView;
   private Stage testStage;
 
   @Override
   public void start(Stage stage) throws ViewInitializationException {
     this.testStage = stage;
-    gameAppView = new GameAppView(testStage, new DefaultGameManager());
+    gameAppView = new DefaultView(testStage, new DefaultGameManager());
     gameAppView.initialize();
     testStage.setScene(gameAppView.getCurrentScene());
     testStage.show();

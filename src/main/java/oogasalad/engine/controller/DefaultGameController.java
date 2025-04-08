@@ -3,12 +3,8 @@
  */
 package oogasalad.engine.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.event.*;
@@ -41,15 +37,9 @@ public class DefaultGameController implements GameControllerAPI {
     this.myGameObjects = new ArrayList<>();
 
   }
-
-  /**
-   * Map of UUUID (as Strings) to GameObjects
-   */
+  //Map of UUUID (as Strings) to GameObjects
   private Map<String, GameObject> myGameObjectMap;
-
-  /**
-   * List of all game objects currently in the game state
-   */
+  //List of all game objects currently in the game state
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
 
@@ -82,8 +72,9 @@ public class DefaultGameController implements GameControllerAPI {
    * @return a map of UUID strings to their associated {@link GameObject} instances
    */
   @Override
-  public Map<String, GameObject> getGameObjectMap() {
-    return myGameObjectMap;
+  public GameObject getGameObjectByUUID(String id) {
+
+    return myGameObjectMap.getOrDefault(id, null);
   }
 
   /**
@@ -99,7 +90,7 @@ public class DefaultGameController implements GameControllerAPI {
    * @return GameObject with corresponding UUID
    */
   @Override
-  public ViewObject getObjectByUUID(String uuid) {
+  public ViewObject getViewObjectByUUID(String uuid) {
     try {
       return convertToViewObject(myGameObjectMap.get(uuid));
     }
@@ -117,7 +108,8 @@ public class DefaultGameController implements GameControllerAPI {
   @Override
   public void updateGameState() {
     collisionHandler.updateCollisions();
-    for (GameObject gameObject : myGameObjects) {
+    List<GameObject> objectsCopy = new ArrayList<>(myGameObjects);
+    for (GameObject gameObject : objectsCopy) {
       List<Event> objectEvents = gameObject.getEvents();
       for (Event event : objectEvents) {
         eventHandler.handleEvent(event);
@@ -159,7 +151,17 @@ public class DefaultGameController implements GameControllerAPI {
   }
 
 
+  //should refactor
   public CollisionHandler getCollisionHandler() {
     return collisionHandler;
+  }
+
+  /**
+   * Removes game object from level
+   * @param gameObject to remove
+   */
+  public void destroyGameObject(GameObject gameObject) {
+    myGameObjects.remove(gameObject);
+    myGameObjectMap.remove(gameObject.getUuid());
   }
 }

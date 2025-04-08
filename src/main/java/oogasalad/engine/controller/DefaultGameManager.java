@@ -22,7 +22,7 @@ import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.ViewInitializationException;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.view.GameAppView;
+import oogasalad.engine.view.DefaultView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,7 +45,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private List<GameObject> myGameObjects;
   private GameControllerAPI myGameController;
   private LevelAPI myLevelAPI;
-  private GameAppView myView;
+  private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
   //game, category, level
   private String[] currentLevel;
@@ -67,7 +67,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private void initializeMyView() throws ViewInitializationException {
     Stage primaryStage = new Stage();
-    myView = new GameAppView(primaryStage, this);
+    myView = new DefaultView(primaryStage, this);
     myView.initialize();
     primaryStage.setScene(myView.getCurrentScene());
     primaryStage.show();
@@ -175,7 +175,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     updateInputList();
     myGameController.updateGameState();
     // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
-    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
   /**

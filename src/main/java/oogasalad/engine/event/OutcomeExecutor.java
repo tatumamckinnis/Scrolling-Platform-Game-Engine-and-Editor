@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OutcomeExecutor {
-    private GameControllerAPI gameController;
-    private mapObject map;
-    private Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
+    private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
 
     /**
      * Initialize the executor with a game controller
@@ -22,8 +20,6 @@ public class OutcomeExecutor {
      * Initialize mapping of outcome enum to outcome interface
      */
     public OutcomeExecutor(GameControllerAPI gameController) {
-        this.gameController = gameController;
-        this.map = gameController.getMapObject();
         this.outcomeMap = new HashMap<>();
         outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
                 new MoveRightOutcome());
@@ -35,6 +31,10 @@ public class OutcomeExecutor {
                 new PatrolOutcome(gameController.getMapObject()));
         outcomeMap.put(EventOutcome.OutcomeType.LOSE_GAME,
                 new LoseGameOutcome());
+        outcomeMap.put(EventOutcome.OutcomeType.DESTROY_OBJECT,
+                new DestroyObjectOutcome(gameController));
+        outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,
+                new PlatformPassThroughOutcome(gameController));
     }
 
 
