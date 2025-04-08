@@ -3,16 +3,16 @@
  */
 package oogasalad.engine.event.outcome;
 
-import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
 public class DestroyObjectOutcome implements Outcome {
-    private GameControllerAPI gameControllerAPI;
-    public DestroyObjectOutcome(GameControllerAPI gameControllerAPI) {
-        this.gameControllerAPI = gameControllerAPI;
+    private GameExecutor gameExecutor;
+    public DestroyObjectOutcome(GameExecutor gameExecutor) {
+        this.gameExecutor = gameExecutor;
     }
     @Override
     public void execute(GameObject obj) {
-        gameControllerAPI.destroyGameObject(obj);
+        gameExecutor.destroyGameObject(obj);
     }
 }

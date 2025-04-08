@@ -13,13 +13,11 @@ public interface LevelAPI {
   /**
    * selects a new Game or Level
    *
-   * @param game     game folder to search
-   * @param category category of game to play
    * @param level    level of the game
    * @throws DataFormatException if the filepath is not properly formatted
    * @throws IOException         if a file cannot be retrieved
    */
-  void selectGame(String game, String category, String level)
+  void selectGame(String level)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   /**

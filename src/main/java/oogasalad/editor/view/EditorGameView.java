@@ -11,6 +11,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -18,7 +19,7 @@ import javafx.scene.text.TextAlignment;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
-import oogasalad.editor.view.tools.ObjectPlacementTool;
+import oogasalad.editor.view.tools.ObjectInteractionTool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,8 +45,14 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private static final double GRID_HORIZON_WIDTH = 2.0;
   private static final double SELECTION_BORDER_WIDTH = 2.0;
   private static final double GRID_HORIZON_RATIO = 0.8;
+  private static final int GRID_MIN = -500;
+  private static final int GRID_MAX = 500;
   private static final double PLACEHOLDER_FONT_SIZE = 10.0;
   private static final String PLACEHOLDER_FONT_NAME = "System";
+  private static final double ZOOM_SPEED = 0.02;
+  private static final double MIN_ZOOM = 0.5;
+  private static final Color HITBOX_COLOR = new Color(1, 0, 0, 0.2);
+
 
   private final Canvas gridCanvas;
   private final Canvas objectCanvas;
@@ -53,18 +60,19 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext objectGraphicsContext;
 
   private final int cellSize;
+  private double cameraX;
+  private double cameraY;
   private double zoomScale;
   private final EditorController editorController;
   private final Map<UUID, Image> objectImages = new HashMap<>();
   private final List<UUID> displayedObjectIds = new ArrayList<>();
-  private ObjectPlacementTool currentTool;
+  private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
+  private boolean drawHitboxes = false;
 
   /**
    * Creates a new editor game view.
    *
-   * @param width            Width of the game view area in pixels.
-   * @param height           Height of the game view area in pixels.
    * @param cellSize         Size of each grid cell in pixels.
    * @param editorController Controller for handling actions and state changes.
    * @throws IllegalArgumentException if editorController is null or dimensions/cellSize are
@@ -80,6 +88,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     }
 
     this.cellSize = cellSize;
+    this.cameraX = 0;
+    this.cameraY = 0;
     this.zoomScale = zoomScale;
     this.editorController = editorController;
 
@@ -126,15 +136,23 @@ public class EditorGameView extends Pane implements EditorViewListener {
     gridGraphicsContext.setFill(GRID_BACKGROUND_COLOR);
     gridGraphicsContext.fillRect(0, 0, width, height);
 
-    gridGraphicsContext.setStroke(GRID_LINE_COLOR);
-    gridGraphicsContext.setLineWidth(GRID_LINE_WIDTH);
+    gridGraphicsContext.save();
 
-    for (int x = 0; x <= width; x += cellSize) {
-      gridGraphicsContext.strokeLine(x, 0, x, height);
+    gridGraphicsContext.translate(-cameraX, -cameraY);
+    gridGraphicsContext.scale(zoomScale, zoomScale);
+
+    int gridMinPixels = GRID_MIN * cellSize;
+    int gridMaxPixels = GRID_MAX * cellSize;
+    gridGraphicsContext.setStroke(GRID_LINE_COLOR);
+
+    for (int x = gridMinPixels; x <= gridMaxPixels; x += cellSize) {
+      gridGraphicsContext.strokeLine(x, gridMinPixels, x, gridMaxPixels);
     }
-    for (int y = 0; y <= height; y += cellSize) {
-      gridGraphicsContext.strokeLine(0, y, width, y);
+    for (int y = gridMinPixels; y <= gridMaxPixels; y += cellSize) {
+      gridGraphicsContext.strokeLine(gridMinPixels, y, gridMaxPixels, y);
     }
+
+    gridGraphicsContext.restore();
     LOG.trace("Grid drawn with dynamic width={}, height={}.", width, height);
   }
 
@@ -149,18 +167,21 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
-        double delta = event.getDeltaY();  // positive if user scrolls up
-        double factor = 0.05;             // how fast to zoom
+        double delta = event.getDeltaY();
 
-        if (delta > 0) {
-          zoomScale += factor;
+        zoomScale = 1 / zoomScale;
+        if (delta < 0) {
+          zoomScale += ZOOM_SPEED;
         } else {
-          zoomScale -= factor;
-          if (zoomScale < 0.1) zoomScale = 0.1; // clamp to avoid negative scale
+          zoomScale -= ZOOM_SPEED;
         }
+        if (zoomScale < MIN_ZOOM) {
+          zoomScale = MIN_ZOOM;
+        }
+        zoomScale = 1 / zoomScale;
 
-        setScaleX(zoomScale);
-        setScaleY(zoomScale);
+        drawGrid();
+        redrawObjects();
 
         event.consume();
       }
@@ -174,61 +195,30 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * @param event The MouseEvent associated with the click.
    */
   private void handleGridClick(MouseEvent event) {
-    int gridX = (int) (event.getX() / cellSize);
-    int gridY = (int) (event.getY() / cellSize);
-    LOG.debug("Grid clicked at ({}, {}) -> Grid ({}, {})", event.getX(), event.getY(), gridX,
-        gridY);
+
+    double screenX = event.getX();
+    double screenY = event.getY();
+
+    double worldX = (screenX / zoomScale) + cameraX;
+    double worldY = (screenY / zoomScale) + cameraY;
+
+    LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
+        worldY);
 
     if (currentTool != null) {
       LOG.info("Delegating click to tool: {}", currentTool.getClass().getSimpleName());
-      currentTool.placeObjectAt(gridX, gridY);
-    } else {
-      selectObjectAt(event.getX(), event.getY());
-      LOG.debug("No tool active, attempting selection.");
+      currentTool.interactObjectAt((int) worldX, (int) worldY);
     }
   }
 
   /**
-   * Attempts to find an object located at the specified world coordinates (pixels). It iterates
-   * through displayed objects in reverse order (approximating Z-order) and performs a simple
-   * rectangular hit detection based on the object's sprite data. If an object is found, it notifies
-   * the controller about the selection.
-   *
-   * @param worldX The x-coordinate of the click in the view's coordinate system.
-   * @param worldY The y-coordinate of the click in the view's coordinate system.
-   */
-  private void selectObjectAt(double worldX, double worldY) {
-    UUID foundId = null;
-    List<UUID> idsToCheck = new ArrayList<>(displayedObjectIds);
-    java.util.Collections.reverse(idsToCheck);
-
-    for (UUID id : idsToCheck) {
-      try {
-        EditorObject obj = editorController.getEditorObject(id);
-        if (obj != null && obj.getSpriteData() != null) {
-          SpriteData sd = obj.getSpriteData();
-          if (worldX >= sd.getX() && worldX < sd.getX() + cellSize &&
-              worldY >= sd.getY() && worldY < sd.getY() + cellSize) {
-            foundId = id;
-            LOG.trace("Object {} found at click location.", foundId);
-            break;
-          }
-        }
-      } catch (Exception e) {
-        LOG.error("Error checking object {} during selection: {}", id, e.getMessage());
-      }
-    }
-    editorController.notifyObjectSelected(foundId);
-  }
-
-  /**
-   * Sets the currently active object placement tool for the view. If null, click actions will
-   * default to selection.
+   * Sets the currently active object placement tool for the view.
    *
    * @param tool The ObjectPlacementTool to activate, or null to deactivate placement.
    */
-  public void setCurrentTool(ObjectPlacementTool tool) {
+  public void updateCurrentTool(ObjectInteractionTool tool) {
     this.currentTool = tool;
+    //TODO: deselect all other tools
     LOG.info("Current placement tool set to: {}",
         (tool != null) ? tool.getClass().getSimpleName() : "None");
   }
@@ -256,36 +246,63 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double height = objectCanvas.getHeight();
 
     objectGraphicsContext.clearRect(0, 0, width, height);
+    objectGraphicsContext.save();
+    objectGraphicsContext.translate(-cameraX, -cameraY);
+    objectGraphicsContext.scale(zoomScale, zoomScale);
+
     LOG.trace("Object canvas cleared for redraw.");
     List<UUID> idsToDraw = new ArrayList<>(displayedObjectIds);
 
     for (UUID id : idsToDraw) {
       try {
-        EditorObject object = editorController.getEditorObject(id);
-        if (object == null || object.getSpriteData() == null) {
-          LOG.warn("Object ID {} or its SpriteData not found during redraw, cannot draw.", id);
-          continue;
-        }
-        SpriteData spriteData = object.getSpriteData();
-        double x = spriteData.getX();
-        double y = spriteData.getY();
-        Image image = objectImages.get(id);
-
-        if (image != null && !image.isError() && image.getProgress() >= 1.0) {
-          objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
-        } else {
-          drawPlaceholder(objectGraphicsContext, object, x, y);
-        }
-
-        if (id.equals(selectedObjectId)) {
-          drawSelectionIndicator(objectGraphicsContext, x, y);
+        redrawSprites(id);
+        if (drawHitboxes) {
+          redrawHitboxes(id);
         }
 
       } catch (Exception e) {
         LOG.error("Error drawing object with ID {}: {}", id, e.getMessage(), e);
       }
     }
+    objectGraphicsContext.restore();
     LOG.trace("Finished redrawing {} objects.", idsToDraw.size());
+  }
+
+  private void redrawSprites(UUID id) {
+    EditorObject object = editorController.getEditorObject(id);
+    if (object == null || object.getSpriteData() == null) {
+      LOG.warn("Object ID {} or its SpriteData not found during redraw, cannot draw.", id);
+      return;
+    }
+    SpriteData spriteData = object.getSpriteData();
+    double x = spriteData.getX();
+    double y = spriteData.getY();
+    Image image = objectImages.get(id);
+
+    if (image != null && !image.isError() && image.getProgress() >= 1.0) {
+      objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
+    } else {
+      drawPlaceholder(objectGraphicsContext, object, x, y);
+    }
+
+    if (id.equals(selectedObjectId)) {
+      drawSelectionIndicator(objectGraphicsContext, x, y);
+    }
+  }
+
+  private void redrawHitboxes(UUID id) {
+    EditorObject object = editorController.getEditorObject(id);
+    if (object == null || object.getHitboxData() == null) {
+      LOG.warn("Object ID {} or its HitboxData not found during redraw, cannot draw.", id);
+      return;
+    }
+    int hitboxX = object.getHitboxData().getX();
+    int hitboxY = object.getHitboxData().getY();
+    int hitboxWidth = object.getHitboxData().getWidth();
+    int hitboxHeight = object.getHitboxData().getHeight();
+
+    objectGraphicsContext.setFill(HITBOX_COLOR);
+    objectGraphicsContext.fillRect(hitboxX, hitboxY, hitboxWidth, hitboxHeight); // TODO: Other shapes other than rect
   }
 
   /**

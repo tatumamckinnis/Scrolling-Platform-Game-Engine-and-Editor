@@ -10,6 +10,12 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer; // Import ne
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Provides an API to manage editor data by interfacing with the various underlying data managers.
+ * This class acts as a facade for performing operations on editor objects, layers, groups, and
+ * dynamic variables, and delegates tasks to corresponding data managers within an
+ * {@link EditorLevelData} instance.
+ */
 public class EditorDataAPI {
 
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
@@ -23,8 +29,11 @@ public class EditorDataAPI {
   private final EditorLevelData level;
   private final DynamicVariableContainer dynamicVariableContainer; // Field already exists
 
-
-  public EditorDataAPI(){
+  /**
+   * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
+   * all related data managers.
+   */
+  public EditorDataAPI() {
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
@@ -36,17 +45,34 @@ public class EditorDataAPI {
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
-  // --- Core Object Methods (Including previous fixes) ---
+  /**
+   * Creates a new editor object in the underlying {@link EditorLevelData}.
+   *
+   * @return the UUID of the newly created editor object.
+   */
   public UUID createEditorObject() {
     UUID newId = level.createEditorObject();
     LOG.debug("Created new EditorObject via EditorLevelData, ID: {}", newId);
     return newId;
   }
 
+  /**
+   * Retrieves the editor object associated with the given UUID.
+   *
+   * @param id the unique identifier of the editor object.
+   * @return the corresponding {@link EditorObject} or null if no object is found.
+   */
   public EditorObject getEditorObject(UUID id) {
     return level.getEditorObject(id);
   }
 
+  /**
+   * Removes the editor object corresponding to the provided UUID. Also attempts to remove the
+   * object from its associated layer.
+   *
+   * @param id the unique identifier of the editor object to be removed.
+   * @return whether the object was successfully removed.
+   */
   public boolean removeEditorObject(UUID id) {
     Objects.requireNonNull(id, "Object ID cannot be null for removal.");
     LOG.debug("Attempting to remove object {} via EditorLevelData.", id);
@@ -57,7 +83,8 @@ public class EditorDataAPI {
       if (objectLayer != null) {
         boolean removedFromLayer = level.removeObjectFromLayer(objectLayer, removedObject);
         if (!removedFromLayer) {
-          LOG.warn("Object {} removed from main map but not found in expected layer {} map.", id, objectLayer.getName());
+          LOG.warn("Object {} removed from main map but not found in expected layer {} map.", id,
+              objectLayer.getName());
         }
       } else {
         LOG.warn("Removed object {} had no layer information.", id);
@@ -67,6 +94,12 @@ public class EditorDataAPI {
     return false;
   }
 
+  /**
+   * Updates an existing editor object with new data.
+   *
+   * @param updatedObject the editor object containing the updated data.
+   * @return whether the object was successfully updated
+   */
   public boolean updateEditorObject(EditorObject updatedObject) {
     Objects.requireNonNull(updatedObject, "Updated object cannot be null.");
     UUID id = updatedObject.getId();
@@ -76,7 +109,8 @@ public class EditorDataAPI {
     if (level.getEditorObject(id) != null) {
       boolean success = level.updateObjectInDataMap(id, updatedObject);
       if (!success) {
-        LOG.error("Object {} exists but failed to update in data map (EditorLevelData issue?).", id);
+        LOG.error("Object {} exists but failed to update in data map (EditorLevelData issue?).",
+            id);
       }
       return success;
     } else {
@@ -85,7 +119,11 @@ public class EditorDataAPI {
     }
   }
 
-
+  /**
+   * Adds a new layer to the editor level with a specified name.
+   *
+   * @param layerName the name of the layer to add.
+   */
   public void addLayer(String layerName) {
     LOG.debug("Adding layer '{}' via EditorLevelData.", layerName);
     int newPriority = 0;
@@ -95,39 +133,121 @@ public class EditorDataAPI {
     level.addLayer(new Layer(layerName, newPriority));
   }
 
+  /**
+   * Retrieves the list of Layers in the editor level.
+   *
+   * @return a list of {@link Layer} objects.
+   */
   public List<Layer> getLayers() {
     return level.getLayers();
   }
 
+  /**
+   * Removes the layer identified by the given layer name from the editor level.
+   *
+   * @param layerName the name of the layer to remove.
+   */
   public void removeLayer(String layerName) {
     LOG.debug("Removing layer '{}' via EditorLevelData.", layerName);
     level.removeLayer(layerName);
   }
 
+  /**
+   * Adds a new group to the editor level with the specified group name.
+   *
+   * @param groupName the name of the group to add.
+   */
   public void addGroup(String groupName) {
     LOG.debug("Adding group '{}' via EditorLevelData.", groupName);
     level.addGroup(groupName);
   }
 
+  /**
+   * Retrieves the list of groups in the editor level.
+   *
+   * @return a list of group names.
+   */
   public List<String> getGroups() {
     return level.getGroups();
   }
 
+  /**
+   * Removes the group identified by the provided group name from the editor level.
+   *
+   * @param groupName the name of the group to remove.
+   */
   public void removeGroup(String groupName) {
     LOG.debug("Removing group '{}' via EditorLevelData.", groupName);
     level.removeGroup(groupName);
   }
 
-  public EditorLevelData getLevel() { return level; }
-  public IdentityDataManager getIdentityDataAPI() { return identityAPI; }
-  public HitboxDataManager getHitboxDataAPI() { return hitboxAPI; }
-  public InputDataManager getInputDataAPI() { return inputAPI; }
-  public PhysicsDataManager getPhysicsDataAPI() { return physicsAPI; }
-  public CollisionDataManager getCollisionDataAPI() { return collisionAPI; }
-  public SpriteDataManager getSpriteDataAPI() { return spriteAPI; }
   /**
-   * Gets the container holding dynamic variables for the editor session.
-   * @return The DynamicVariableContainer instance.
+   * Gets the {@link EditorLevelData} instance of the API.
+   *
+   * @return the current {@link EditorLevelData}.
+   */
+  public EditorLevelData getLevel() {
+    return level;
+  }
+
+  /**
+   * Retrieves the {@link IdentityDataManager} used by the editor.
+   *
+   * @return the IdentityDataManager instance.
+   */
+  public IdentityDataManager getIdentityDataAPI() {
+    return identityAPI;
+  }
+
+  /**
+   * Retrieves the {@link HitboxDataManager} used by the editor.
+   *
+   * @return the HitboxDataManager instance.
+   */
+  public HitboxDataManager getHitboxDataAPI() {
+    return hitboxAPI;
+  }
+
+  /**
+   * Retrieves the {@link InputDataManager} used by the editor to manage input data and events.
+   *
+   * @return the InputDataManager instance.
+   */
+  public InputDataManager getInputDataAPI() {
+    return inputAPI;
+  }
+
+  /**
+   * Retrieves the {@link PhysicsDataManager} used by the editor.
+   *
+   * @return the PhysicsDataManager instance.
+   */
+  public PhysicsDataManager getPhysicsDataAPI() {
+    return physicsAPI;
+  }
+
+  /**
+   * Retrieves the {@link CollisionDataManager} used by the editor.
+   *
+   * @return the CollisionDataManager instance.
+   */
+  public CollisionDataManager getCollisionDataAPI() {
+    return collisionAPI;
+  }
+
+  /**
+   * Retrieves the {@link SpriteDataManager} used by the editor.
+   *
+   * @return the SpriteDataManager instance.
+   */
+  public SpriteDataManager getSpriteDataAPI() {
+    return spriteAPI;
+  }
+
+  /**
+   * Gets the container holding dynamic variables for this instance of the API.
+   *
+   * @return the {@link DynamicVariableContainer} instance.
    */
   public DynamicVariableContainer getDynamicVariableContainer() {
     return dynamicVariableContainer;

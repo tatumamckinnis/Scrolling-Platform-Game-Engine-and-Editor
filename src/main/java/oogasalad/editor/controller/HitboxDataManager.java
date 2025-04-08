@@ -4,8 +4,7 @@ import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 
 public class HitboxDataManager {
-
-  EditorLevelData level;
+  private EditorLevelData level;
 
   public HitboxDataManager(EditorLevelData level) {
     this.level = level;

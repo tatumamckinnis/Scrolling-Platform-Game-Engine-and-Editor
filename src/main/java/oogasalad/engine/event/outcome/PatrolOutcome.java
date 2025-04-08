@@ -4,22 +4,23 @@
  */
 package oogasalad.engine.event.outcome;
 
+import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.mapObject;
 
 public class PatrolOutcome implements Outcome {
-    private final mapObject map;
+    private final GameExecutor gameExecutor;
 
-    public PatrolOutcome(mapObject map) {
-        this.map = map;
+    public PatrolOutcome(GameExecutor gameExecutor) {
+        this.gameExecutor = gameExecutor;
     }
+
     @Override
     public void execute(GameObject gameObject) {
         int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MovementAmount", "4"));
         if(gameObject.getX() < 0){
             gameObject.setXVelocity(dx);
         }
-        else if(gameObject.getX()+gameObject.getHitBoxWidth() >= map.width()){
+        else if(gameObject.getX()+gameObject.getHitBoxWidth() >= gameExecutor.getMapObject().width()){
             gameObject.setXVelocity(-dx);
         }
         else if(gameObject.getXVelocity() == 0){

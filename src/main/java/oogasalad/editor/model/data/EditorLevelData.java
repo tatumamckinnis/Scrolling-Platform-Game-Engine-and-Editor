@@ -17,7 +17,6 @@ public class EditorLevelData {
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
   private Map<UUID, EditorObject> myObjectDataMap;
-  private Layer myCurrentLayer;
 
   private static final Properties editorConfig = new Properties();
   private static final String propertyFile = "oogasalad/config/editorConfig.properties";
@@ -28,6 +27,7 @@ public class EditorLevelData {
       editorConfig.load(is);
     } catch (IOException e) {
       e.printStackTrace();
+      // TODO: Pass logger
     }
   }
 
@@ -135,5 +135,9 @@ public class EditorLevelData {
 
   public Properties getEditorConfig() {
     return editorConfig;
+  }
+
+  public Map<UUID, EditorObject> getObjectDataMap() {
+    return myObjectDataMap;
   }
 }
