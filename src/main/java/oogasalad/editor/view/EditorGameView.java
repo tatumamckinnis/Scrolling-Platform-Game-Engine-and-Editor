@@ -174,9 +174,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
           zoomScale += ZOOM_SPEED;
         } else {
           zoomScale -= ZOOM_SPEED;
-          if (zoomScale < MIN_ZOOM) {
-            zoomScale = MIN_ZOOM;
-          }
+        }
+        if (zoomScale < MIN_ZOOM) {
+          zoomScale = MIN_ZOOM;
         }
         zoomScale = 1 / zoomScale;
 

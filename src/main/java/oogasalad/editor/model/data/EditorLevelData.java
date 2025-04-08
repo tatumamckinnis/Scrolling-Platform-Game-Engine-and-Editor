@@ -27,6 +27,7 @@ public class EditorLevelData {
       editorConfig.load(is);
     } catch (IOException e) {
       e.printStackTrace();
+      // TODO: Pass logger
     }
   }
 

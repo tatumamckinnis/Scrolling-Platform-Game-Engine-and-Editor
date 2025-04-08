@@ -23,6 +23,8 @@ import org.apache.logging.log4j.Logger;
  * view and the editor data backend (EditorDataAPI). Manages listeners and notifies them of changes
  * using the Observer pattern. (DESIGN-01, DESIGN-09: Controller Role, DESIGN-20: Observer Pattern,
  * DESIGN-21: Logging)
+ *
+ * @author Tatum McKinnis, Jacob You
  */
 public class ConcreteEditorController implements EditorController {
 
@@ -308,6 +310,9 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  /**
+   * Notifies listeners that no objects have been selected.
+   */
   @Override
   public void notifyObjectDeselected() {
     this.currentSelectedObjectId = null;
@@ -660,6 +665,15 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  /**
+   * Given a X and Y of the entire grid, return the object if its hitbox exists at that point. If
+   * there are multiple hitboxes, sorts by Layer Priority before choosing an arbitrary object. If no
+   * object exists, returns null, otherwise, returns the UUID.
+   *
+   * @param gridX The X coordinate of the grid location to check
+   * @param gridY The Y coordinate of the grid location to check
+   * @return The UUID of the object, or null if nonexistent
+   */
   public UUID getObjectIDAt(double gridX, double gridY) {
     List<UUID> hitCandidates = new ArrayList<>();
     for (Map.Entry<UUID, EditorObject> entry : editorDataAPI.getLevel().getObjectDataMap()
@@ -677,6 +691,14 @@ public class ConcreteEditorController implements EditorController {
     return hitCandidates.isEmpty() ? null : hitCandidates.get(0);
   }
 
+  /**
+   * Checks whether the object's hitbox overlaps with the given point on the grid.
+   *
+   * @param obj    The object to check the hitbox of
+   * @param worldX The X coordinate of the world grid to check
+   * @param worldY The Y coordinate of the world grid to check
+   * @return Whether the object hitbox overlaps the point
+   */
   private boolean ifCollidesObject(EditorObject obj, double worldX, double worldY) {
     if (obj == null) {
       return false;

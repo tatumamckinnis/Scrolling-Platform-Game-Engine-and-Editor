@@ -15,16 +15,15 @@ import oogasalad.editor.view.EditorViewListener;
  * Includes methods for actions, data fetching, and listener management for view updates (Observer
  * Pattern). (DESIGN-09, DESIGN-11, DESIGN-18, DESIGN-20)
  *
- * @author Tatum McKinnis
+ * @author Tatum McKinnis, Jacob You
  */
 public interface EditorController {
-
 
   /**
    * Requests the placement of a new game object.
    */
-  void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX, int worldY, int cellSize);
-
+  void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX, int worldY,
+      int cellSize);
 
   /**
    * Notifies the controller that an object has been selected in the view.
@@ -82,7 +81,6 @@ public interface EditorController {
    * Requests an update to an existing game object using the provided data.
    */
   void requestObjectUpdate(EditorObject updatedObject);
-
 
   /**
    * Gets the EditorObject associated with the given ID.
