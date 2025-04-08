@@ -23,13 +23,13 @@ public class ConditionChecker {
         conditionMap.put(EventCondition.ConditionType.UP_ARROW_PRESSED,
                 new InputCondition(inputProvider, KeyCode.UP));
         conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_ENEMY,
-                new CollisionCondition(collisionHandler, "enemies"));
+                new CollisionCondition(collisionHandler, "enemy"));
         conditionMap.put(EventCondition.ConditionType.TRUE,
                 new TrueCondition());
         conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLAYER,
                 new CollisionCondition(collisionHandler, "player"));
         conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
-                new CollisionCondition(collisionHandler, "platform"));
+                new CollisionCondition(collisionHandler, "platforms"));
 
     }
     /**

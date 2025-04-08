@@ -35,7 +35,7 @@ interact with each other -->
         <objectGroup name="entities">
             <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
             <!-- Objects should also have a defined hit box-->
-            <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22">
+            <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22,23">
                 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
                 <properties>
                     <variables>
@@ -69,7 +69,7 @@ interact with each other -->
 
             <outcomes list="JUMP"/>
             <parameters>
-                <parameter name="JumpAmount">20</parameter>
+                <parameter name="JumpAmount">50</parameter>
                 <parameter name="jumpType">Floaty</parameter>
             </parameters>
         </event>
@@ -81,7 +81,7 @@ interact with each other -->
                 <conditions>
                     <condition list="TRUE"/>
                 </conditions>
-                <outcomes list="APPLY_GRAVITY"/>
+                <outcomes list="APPLY_GRAVITY, MOVE_RIGHT"/>
                 <parameters>
                     <parameter name="ApplyGravityAmount">0.1</parameter>
                 </parameters>
@@ -90,9 +90,9 @@ interact with each other -->
         <event>
             <event type="physics" id="23">
                 <conditions>
-                    <condition list="COLLIDED_WITH_PLAYER"/>
+                    <condition list="COLLIDED_WITH_PLATFORM"/>
                 </conditions>
-                <outcomes list="DESTROY_OBJECT"/>
+                <outcomes list="PLATFORM_PASS_THROUGH_BEHAVIOR"/>
             </event>
         </event>
     </events>
