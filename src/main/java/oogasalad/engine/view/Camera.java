@@ -1,7 +1,7 @@
 package oogasalad.engine.view;
 
 import javafx.scene.Group;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 
 /**
  * The {@code Camera} interface defines behavior for updating the view of the game world.

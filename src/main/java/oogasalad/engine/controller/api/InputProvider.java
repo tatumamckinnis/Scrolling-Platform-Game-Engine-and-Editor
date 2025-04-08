@@ -2,7 +2,7 @@
  * interface to provide event system user input
  * @author Gage Garcia
  */
-package oogasalad.engine.controller;
+package oogasalad.engine.controller.api;
 
 import javafx.scene.input.KeyCode;
 

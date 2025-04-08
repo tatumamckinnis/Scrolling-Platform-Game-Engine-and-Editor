@@ -2,7 +2,7 @@ package oogasalad.engine.view;
 
 import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that

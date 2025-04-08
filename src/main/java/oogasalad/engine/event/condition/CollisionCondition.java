@@ -1,6 +1,7 @@
 package oogasalad.engine.event.condition;
 
 import oogasalad.engine.event.CollisionHandler;
+import oogasalad.engine.event.DefaultCollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;

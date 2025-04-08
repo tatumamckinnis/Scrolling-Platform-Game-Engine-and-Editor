@@ -5,10 +5,10 @@ package oogasalad.engine.controller;
 
 import java.util.*;
 
-import oogasalad.engine.controller.api.EngineFileConverterAPI;
-import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.*;
 import oogasalad.engine.event.*;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.model.object.mapObject;
 import oogasalad.fileparser.records.LevelData;
 
@@ -22,73 +22,46 @@ import oogasalad.fileparser.records.LevelData;
  *
  * @author Alana Zinkin
  */
-public class DefaultGameController implements GameControllerAPI {
-  private static ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(DefaultGameController.class.getPackageName() + "." + "Controller");
-  private EventHandler eventHandler;
-  private CollisionHandler collisionHandler;
-
-  /**
-   * constructor for creating a game controller
-   * @param inputProvider used to determine which keys were pressed
-   */
-  public DefaultGameController(InputProvider inputProvider) {
-    this.collisionHandler = new CollisionHandler(this);
-    this.eventHandler = new DefaultEventHandler(inputProvider,this);
-    this.myGameObjects = new ArrayList<>();
-
-  }
-  //Map of UUUID (as Strings) to GameObjects
+public class DefaultGameController implements GameControllerAPI, GameObjectProvider, GameExecutor {
+  private static final ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(DefaultGameController.class.getPackageName() + "." + "Controller");
+  private final EventHandler eventHandler;
+  private final CollisionHandler collisionHandler;
   private Map<String, GameObject> myGameObjectMap;
-  //List of all game objects currently in the game state
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
 
-  /**
-   * Returns the list of all {@link GameObject}s currently in the game.
-   *
-   * @return a list of game objects
-   */
+  public DefaultGameController(InputProvider inputProvider) {
+    this.collisionHandler = new DefaultCollisionHandler(this);
+    this.eventHandler = new DefaultEventHandler(inputProvider, collisionHandler, this);
+    this.myGameObjects = new ArrayList<>();
+
+  }
+
   @Override
-  public List<GameObject> getObjects() {
+  public List<GameObject> getGameObjects() {
     return myGameObjects;
   }
 
-  /**
-   * @return a collection of immutable game objects
-   */
+
   @Override
   public List<ViewObject> getImmutableObjects() {
     return makeGameObjectsImmutable();
   }
 
 
-  /**
-   * Returns a map of all game objects currently loaded in the engine.
-   *
-   * <p>The map uses each object's unique UUID as the key and the corresponding
-   * {@link GameObject} as the value. This allows for efficient lookup and manipulation of
-   * individual game objects by their identifier.
-   *
-   * @return a map of UUID strings to their associated {@link GameObject} instances
-   */
+
   @Override
   public GameObject getGameObjectByUUID(String id) {
 
     return myGameObjectMap.getOrDefault(id, null);
   }
 
-  /**
-   * @return a mapping of UUID to game object
-   */
+  @Override
   public mapObject getMapObject(){
     return myMapObject;
   }
 
-  /**
-   * Retrieves a game object given its UUID
-   * @param uuid unique id of object to retrieve
-   * @return GameObject with corresponding UUID
-   */
+
   @Override
   public ViewObject getViewObjectByUUID(String uuid) {
     try {
@@ -99,12 +72,7 @@ public class DefaultGameController implements GameControllerAPI {
     }
   }
 
-  /**
-   * Updates the game state.
-   * <p>
-   * Currently unimplemented — this method should contain logic for progressing the game, handling
-   * interactions, updating variables, etc.
-   */
+
   @Override
   public void updateGameState() {
     collisionHandler.updateCollisions();
@@ -119,19 +87,18 @@ public class DefaultGameController implements GameControllerAPI {
 
   }
 
-  /**
-   * Loads a new level into the game using the provided {@link LevelData}.
-   * <p>
-   * This method uses the {@link EngineFileConverterAPI} to parse and convert level data into game objects.
-   *
-   * @param data the level data to load
-   */
   @Override
   public void setLevelData(LevelData data) {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
     myMapObject = new mapObject(data.levelWidth(), data.levelHeight());
+  }
+
+  @Override
+  public void destroyGameObject(GameObject gameObject) {
+    myGameObjects.remove(gameObject);
+    myGameObjectMap.remove(gameObject.getUuid());
   }
 
   private List<ViewObject> makeGameObjectsImmutable() {
@@ -150,18 +117,4 @@ public class DefaultGameController implements GameControllerAPI {
     return new ViewObject(gameObject);
   }
 
-
-  //should refactor
-  public CollisionHandler getCollisionHandler() {
-    return collisionHandler;
-  }
-
-  /**
-   * Removes game object from level
-   * @param gameObject to remove
-   */
-  public void destroyGameObject(GameObject gameObject) {
-    myGameObjects.remove(gameObject);
-    myGameObjectMap.remove(gameObject.getUuid());
-  }
 }
