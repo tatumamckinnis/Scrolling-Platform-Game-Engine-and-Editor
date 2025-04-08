@@ -2,22 +2,70 @@ package oogasalad.engine.model.object;
 
 import oogasalad.fileparser.records.FrameData;
 
+/**
+ * An immutable interface for accessing read-only properties of a {@link GameObject}.
+ *
+ * <p>This interface defines the contract for game object representations that are safe to pass to
+ * the view layer. Implementations like {@link ViewObject} provide access to essential rendering
+ * information without exposing internal mutability.
+ *
+ * <p>This promotes encapsulation and ensures that the view cannot alter the game state.
+ */
 public interface ImmutableGameObject {
 
-  public String getUuid();
+  /**
+   * Returns the unique identifier (UUID) of the game object.
+   *
+   * @return UUID as a string
+   */
+  String getUuid();
 
-  public int getX();
+  /**
+   * Returns the x-coordinate of the game object's hitbox.
+   *
+   * @return x-position in pixels
+   */
+  int getX();
 
-  public int getY();
+  /**
+   * Returns the y-coordinate of the game object's hitbox.
+   *
+   * @return y-position in pixels
+   */
+  int getY();
 
-  public FrameData getCurrentFrame() ;
+  /**
+   * Returns the current frame data used for rendering the object.
+   *
+   * @return current {@link FrameData}
+   */
+  FrameData getCurrentFrame();
 
-  public int getHitBoxWidth() ;
+  /**
+   * Returns the width of the object's hitbox.
+   *
+   * @return hitbox width in pixels
+   */
+  int getHitBoxWidth();
 
-  public int getHitBoxHeight();
+  /**
+   * Returns the height of the object's hitbox.
+   *
+   * @return hitbox height in pixels
+   */
+  int getHitBoxHeight();
 
-  public int getSpriteDx();
+  /**
+   * Returns the horizontal offset of the sprite relative to the hitbox.
+   *
+   * @return sprite x-offset in pixels
+   */
+  int getSpriteDx();
 
-  public int getSpriteDy();
-
+  /**
+   * Returns the vertical offset of the sprite relative to the hitbox.
+   *
+   * @return sprite y-offset in pixels
+   */
+  int getSpriteDy();
 }
