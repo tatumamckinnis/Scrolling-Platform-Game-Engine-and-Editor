@@ -68,6 +68,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final List<UUID> displayedObjectIds = new ArrayList<>();
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
+  private boolean drawHitboxes = false;
 
   /**
    * Creates a new editor game view.
@@ -201,8 +202,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double worldX = (screenX / zoomScale) + cameraX;
     double worldY = (screenY / zoomScale) + cameraY;
 
-    int gridX = (int) (worldX / cellSize);
-    int gridY = (int) (worldY / cellSize);
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
         worldY);
 
@@ -257,7 +256,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
     for (UUID id : idsToDraw) {
       try {
         redrawSprites(id);
-        redrawHitboxes(id);
+        if (drawHitboxes) {
+          redrawHitboxes(id);
+        }
 
       } catch (Exception e) {
         LOG.error("Error drawing object with ID {}: {}", id, e.getMessage(), e);
