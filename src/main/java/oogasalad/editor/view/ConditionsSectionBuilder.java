@@ -73,10 +73,12 @@ public class ConditionsSectionBuilder {
 
     Label header = createHeaderLabel(KEY_CONDITIONS_HEADER);
     conditionComboBox = new ComboBox<>(FXCollections.observableArrayList(ConditionType.values()));
+    conditionComboBox.setId("conditionComboBox");
     conditionComboBox.setPromptText(PROMPT_SELECT_CONDITION);
     conditionComboBox.setMaxWidth(Double.MAX_VALUE);
 
     conditionsListView = createListView(LIST_VIEW_HEIGHT);
+    conditionsListView.setId("conditionsListView");
 
     Button addButton = createButton(KEY_ADD_CONDITION_BUTTON, e -> {
       ConditionType selected = conditionComboBox.getSelectionModel().getSelectedItem();
@@ -86,6 +88,7 @@ public class ConditionsSectionBuilder {
         LOG.warn("Attempted to add null condition type.");
       }
     });
+    addButton.setId("addConditionButton");
 
     Button removeButton = createButton(KEY_REMOVE_CONDITION_BUTTON, e -> {
       String selectedStr = conditionsListView.getSelectionModel().getSelectedItem();
@@ -100,6 +103,7 @@ public class ConditionsSectionBuilder {
         LOG.warn("Attempted to remove null condition.");
       }
     });
+    removeButton.setId("removeConditionButton");
     removeButton.getStyleClass().add("remove-button");
 
     HBox buttonRow = createCenteredButtonBox(addButton, removeButton);
