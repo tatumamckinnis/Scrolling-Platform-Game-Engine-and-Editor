@@ -36,6 +36,8 @@ public interface EditorController {
    */
   EditorDataAPI getEditorDataAPI();
 
+  void notifyObjectDeselected();
+
   /**
    * Adds a new event definition to the specified object.
    */
@@ -122,4 +124,9 @@ public interface EditorController {
    * Unregisters a listener.
    */
   void unregisterViewListener(EditorViewListener listener);
+
+  /**
+   * Retrieves the object at specific coordinates.
+   */
+  UUID getObjectIDAt(double x, double y);
 }

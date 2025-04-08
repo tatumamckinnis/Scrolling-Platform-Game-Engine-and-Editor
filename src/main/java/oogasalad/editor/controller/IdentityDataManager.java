@@ -2,6 +2,7 @@ package oogasalad.editor.controller;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.EditorObject;
 
 public class IdentityDataManager {
   private EditorLevelData level;
@@ -24,5 +25,9 @@ public class IdentityDataManager {
 
   public void setGroup(UUID id, String group) {
     level.getEditorObject(id).getIdentityData().setGroup(group);
+  }
+
+  public int getLayerPriority(UUID id) {
+    return level.getEditorObject(id).getIdentityData().getLayer().getPriority();
   }
 }

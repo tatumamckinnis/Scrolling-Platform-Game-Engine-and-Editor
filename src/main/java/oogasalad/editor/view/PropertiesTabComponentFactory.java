@@ -114,6 +114,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Label hitboxLabel = new Label("Hitbox");
     hitboxLabel.getStyleClass().add("section-header");
 
+    // TODO: Implement a factory instead
     xField = new TextField();
     xField.setPromptText("X");
     xField.textProperty().addListener((obs, oldVal, newVal) -> {

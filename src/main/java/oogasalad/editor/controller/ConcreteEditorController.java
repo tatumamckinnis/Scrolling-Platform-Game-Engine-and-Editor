@@ -308,6 +308,12 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  @Override
+  public void notifyObjectDeselected() {
+    this.currentSelectedObjectId = null;
+    LOG.info("Controller state updated: Object deselected");
+  }
+
   /**
    * Adds an event to an object. The event ID cannot be null or empty. If successful, listeners are
    * notified of the object's update. Otherwise, an error message is reported to listeners.
@@ -447,7 +453,7 @@ public class ConcreteEditorController implements EditorController {
    * Removes an outcome from the specified event of an object.
    *
    * @param objectId The ID of the object from which the outcome is to be removed. Must not be
-   * null.
+   *                 null.
    * @param eventId  The ID of the event from which the outcome is to be removed. Must not be null.
    * @param outcome  The outcome type to be removed. Must not be null.
    * @throws NullPointerException If any of the provided parameters are null.
@@ -527,7 +533,7 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the events associated with the specified object ID.
    *
    * @param objectId The ID of the object for which events are to be retrieved. If null, returns an
-   * empty map.
+   *                 empty map.
    * @return A map of event IDs to corresponding {@link EditorEvent} objects, or an empty map if no
    * events are found or an error occurs.
    */
@@ -550,9 +556,9 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the conditions associated with the specified event of an object.
    *
    * @param objectId The ID of the object for which event conditions are to be retrieved. Must not
-   * be null.
+   *                 be null.
    * @param eventId  The ID of the event for which conditions are to be retrieved. Must not be
-   * null.
+   *                 null.
    * @return A list of {@link ConditionType} objects associated with the event, or an empty list if
    * no conditions are found or an error occurs.
    */
@@ -577,7 +583,7 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the outcomes associated with the specified event of an object.
    *
    * @param objectId The ID of the object for which event outcomes are to be retrieved. Must not be
-   * null.
+   *                 null.
    * @param eventId  The ID of the event for which outcomes are to be retrieved. Must not be null.
    * @return A list of {@link OutcomeType} objects associated with the event, or an empty list if no
    * outcomes are found or an error occurs.
@@ -603,9 +609,9 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the parameter associated with the specified outcome of an event for an object.
    *
    * @param objectId The ID of the object for which the outcome parameter is to be retrieved. Must
-   * not be null.
+   *                 not be null.
    * @param eventId  The ID of the event for which the outcome parameter is to be retrieved. Must
-   * not be null.
+   *                 not be null.
    * @param outcome  The outcome type for which the parameter is to be retrieved. Must not be null.
    * @return The parameter associated with the outcome, or null if not found or an error occurs.
    */
@@ -628,7 +634,8 @@ public class ConcreteEditorController implements EditorController {
    * Retrieves the dynamic variables available for the specified object ID.
    *
    * @param objectId The ID of the object (currently ignored). Must not be null.
-   * @return A list of {@link DynamicVariable} objects available, or an empty list if none are found or an error occurs.
+   * @return A list of {@link DynamicVariable} objects available, or an empty list if none are found
+   * or an error occurs.
    */
   @Override
   public List<DynamicVariable> getAvailableDynamicVariables(UUID objectId) {
@@ -653,5 +660,33 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  public UUID getObjectIDAt(double gridX, double gridY) {
+    List<UUID> hitCandidates = new ArrayList<>();
+    for (Map.Entry<UUID, EditorObject> entry : editorDataAPI.getLevel().getObjectDataMap()
+        .entrySet()) {
+      UUID id = entry.getKey();
+      EditorObject obj = entry.getValue();
+      if (obj != null && ifCollidesObject(obj, gridX, gridY)) {
+        hitCandidates.add(id);
+      }
+    }
+    Collections.sort(hitCandidates, (a, b) ->
+        Integer.compare(editorDataAPI.getIdentityDataAPI().getLayerPriority(b),
+            editorDataAPI.getIdentityDataAPI().getLayerPriority(a))
+    );
+    return hitCandidates.isEmpty() ? null : hitCandidates.get(0);
+  }
 
+  private boolean ifCollidesObject(EditorObject obj, double worldX, double worldY) {
+    if (obj == null) {
+      return false;
+    }
+
+    double x = obj.getHitboxData().getX();
+    double y = obj.getHitboxData().getY();
+    int width = obj.getHitboxData().getWidth();
+    int height = obj.getHitboxData().getHeight();
+
+    return (worldX >= x && worldX < x + width) && (worldY >= y && worldY < y + height);
+  }
 }
