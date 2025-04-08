@@ -6,7 +6,10 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
+import oogasalad.engine.view.ViewAPI;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 
 /**
  * This class holds a panel of buttons such as a home button and a play/pause button.
@@ -15,14 +18,18 @@ import oogasalad.engine.view.Display;
  */
 public class GameControlPanel extends Display {
   private List<Button> buttons;
-  private Runnable onHomeClicked;
+  private ViewAPI gameView;
+  private String homeButtonID = "levelHomeButton";
+  private GameManagerAPI gameManager;
   // TODO make it read from a property file the type of button, the image of the button
 
   /**
    * Adds initial buttons to the control panel.
    */
-  public GameControlPanel() {
+  public GameControlPanel(GameManagerAPI gameManager, ViewAPI view) {
     buttons = new ArrayList<>();
+    gameView = view;
+    this.gameManager = gameManager;
     createHomeButton();
   }
 
@@ -49,21 +56,12 @@ public class GameControlPanel extends Display {
     Button homeButton = new Button();
     homeButton.setGraphic(imageView);
     homeButton.setMinSize(40, 40);
+    ButtonActionFactory factory = new ButtonActionFactory(gameManager, gameView);
     homeButton.setOnAction(event -> {
-      if (onHomeClicked != null) {
-        onHomeClicked.run();
-      }
+      factory.getAction(homeButtonID).run();
     });
 
     homeButton.setFocusTraversable(false);
     buttons.add(homeButton);
-  }
-
-  /**
-   * Defines what happens when the home button is clicked.
-   * @param onHomeClicked function to be triggered when home button clicked.
-   */
-  public void setOnHomeClicked(Runnable onHomeClicked) {
-    this.onHomeClicked = onHomeClicked;
   }
 }

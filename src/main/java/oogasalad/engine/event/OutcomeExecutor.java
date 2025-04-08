@@ -3,27 +3,22 @@
  * @author Gage Garcia
  */
 package oogasalad.engine.event;
-import oogasalad.engine.controller.api.GameControllerAPI;
+import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.event.outcome.*;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.mapObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class OutcomeExecutor {
-    private GameControllerAPI gameController;
-    private mapObject map;
-    private Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
+    private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
 
     /**
      * Initialize the executor with a game controller
      * @param gameController
      * Initialize mapping of outcome enum to outcome interface
      */
-    public OutcomeExecutor(GameControllerAPI gameController) {
-        this.gameController = gameController;
-        this.map = gameController.getMapObject();
+    public OutcomeExecutor(GameExecutor gameExecutor) {
         this.outcomeMap = new HashMap<>();
         outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
                 new MoveRightOutcome());
@@ -32,9 +27,13 @@ public class OutcomeExecutor {
         outcomeMap.put(EventOutcome.OutcomeType.APPLY_GRAVITY,
                 new GravityOutcome());
         outcomeMap.put(EventOutcome.OutcomeType.PATROL,
-                new PatrolOutcome(gameController.getMapObject()));
+                new PatrolOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.LOSE_GAME,
                 new LoseGameOutcome());
+        outcomeMap.put(EventOutcome.OutcomeType.DESTROY_OBJECT,
+                new DestroyObjectOutcome(gameExecutor));
+        outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,
+                new PlatformPassThroughOutcome(gameExecutor));
     }
 
 

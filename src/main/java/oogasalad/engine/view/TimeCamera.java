@@ -3,7 +3,7 @@ package oogasalad.engine.view;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.engine.controller.ViewObject;
+import oogasalad.engine.model.object.ViewObject;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
@@ -13,7 +13,7 @@ import oogasalad.engine.controller.ViewObject;
 public class TimeCamera implements Camera {
 
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelView.class.getPackage().getName() + ".Level");
+      LevelDisplay.class.getPackage().getName() + ".Level");
 
   /**
    * Horizontal offset to center the camera based on level width.

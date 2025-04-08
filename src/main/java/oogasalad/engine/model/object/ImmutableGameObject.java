@@ -1,7 +1,6 @@
-package oogasalad.engine.controller;
+package oogasalad.engine.model.object;
 
 import oogasalad.fileparser.records.FrameData;
-import oogasalad.fileparser.records.SpriteData;
 
 public interface ImmutableGameObject {
 

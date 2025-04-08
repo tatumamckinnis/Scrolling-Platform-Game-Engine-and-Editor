@@ -4,12 +4,11 @@
  */
 package oogasalad.engine.event;
 import javafx.scene.input.KeyCode;
-import oogasalad.engine.controller.InputProvider;
+import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.event.condition.*;
 import oogasalad.engine.model.object.GameObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ConditionChecker {
@@ -27,6 +26,10 @@ public class ConditionChecker {
                 new CollisionCondition(collisionHandler, "enemies"));
         conditionMap.put(EventCondition.ConditionType.TRUE,
                 new TrueCondition());
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLAYER,
+                new CollisionCondition(collisionHandler, "player"));
+        conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
+                new CollisionCondition(collisionHandler, "platform"));
 
     }
     /**

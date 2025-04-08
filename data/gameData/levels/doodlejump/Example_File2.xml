@@ -42,15 +42,15 @@ interact with each other -->
             <data keys="W,Up" eventChainID="jumpDino"/>
             <data keys="S,Down" eventChainID="" animation="duck-walk"/>
           </inputHandler>
-          <collisionHandler>
-            <!-- collisionHandler data has three main tags:
+          <defaultCollisionHandler>
+            <!-- defaultCollisionHandler data has three main tags:
             groupObjectInteraction: defines a group of objects that causes the object to call an event chain:
             using a file system format with commas files structure is defined as: objectGroup/objectType
              (if no object type defined then the whole object group will be added to the object list that activates the collision
             objectSpecificInteractionIDs: defines objects based on the object id for specific objects
             eventChainID: The event chain id you want the collision to activate - defined later -->
             <data groupObjectInteraction="entities/enemies" objectSpecificInteractionIDs="1,3" eventChainID=""/>
-          </collisionHandler>
+          </defaultCollisionHandler>
           <physicsHandler>
             <data name = "velocity.x" value = "0"/>
             <data name = "velocity.y" value = "0"/>
