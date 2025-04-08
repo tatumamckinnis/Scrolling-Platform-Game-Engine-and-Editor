@@ -7,18 +7,30 @@
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
+import java.util.List;
+
 public class PlatformPassThroughOutcome implements Outcome {
-    private final GameExecutor gameExecutor;
-    public PlatformPassThroughOutcome(GameExecutor gameExecutor) {
-        this.gameExecutor = gameExecutor;
+    private final CollisionHandler collisionHandler;
+    private GameObject player;
+    public PlatformPassThroughOutcome(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
     }
     @Override
     public void execute(GameObject player) {
-        String platformId = "e0373626-9e90-4ed3-9863-39e287926802";
-        GameObject platform = gameExecutor.getGameObjectByUUID(platformId);
+        this.player = player;
+        List<GameObject> collisions = collisionHandler.getCollisions(player);
+        for (GameObject platform : collisions) {
+            if (platform.getType().equals("platforms")) {
+                handlePlatform(platform);
+            }
+        }
 
+    }
+
+    private void handlePlatform(GameObject platform) {
         int playerBottom = player.getY() + player.getHitBoxHeight();
         int playerTop = player.getY();
         int platformTop = platform.getY();
