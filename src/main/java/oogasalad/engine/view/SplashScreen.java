@@ -26,10 +26,9 @@ public class SplashScreen extends Display {
   private static final Properties splashComponentProperties = new Properties();
   private int splashWidth;
   private int splashHeight;
-  private final GameManagerAPI gameManager;
-  private final ViewAPI gameView;
+  private ViewState viewState;
 
-  public SplashScreen(ViewAPI view, GameManagerAPI gameManager) {
+  public SplashScreen(ViewState viewState) {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
       splashComponentProperties.load(stream);
@@ -38,8 +37,7 @@ public class SplashScreen extends Display {
     }
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
-    this.gameManager = gameManager;
-    gameView = view;
+    this.viewState = viewState;
   }
 
   @Override
@@ -153,7 +151,7 @@ public class SplashScreen extends Display {
   }
 
   private void setButtonAction(String buttonID, Button currButton) {
-    ButtonActionFactory factory = new ButtonActionFactory(gameManager, gameView);
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
     currButton.setOnAction(event -> {
         factory.getAction(buttonID).run();
     });

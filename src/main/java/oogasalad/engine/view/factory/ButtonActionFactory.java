@@ -1,6 +1,5 @@
 package oogasalad.engine.view.factory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -9,17 +8,13 @@ import java.util.List;
 import java.util.Properties;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.swing.JFileChooser;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import oogasalad.engine.view.Display;
+import oogasalad.engine.view.ViewState;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.engine.view.ViewAPI;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.engine.view.GameDisplay;
-import oogasalad.engine.view.ViewVariableBridge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,21 +27,19 @@ public class ButtonActionFactory {
   private static final Logger LOG = LogManager.getLogger();
   private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
   private static final Properties buttonIDToActionProperties = new Properties();
-  private final ViewAPI gameView;
-  private final GameManagerAPI gameManager;
+  private ViewState viewState;
 
   /**
    * Loads property file map of buttonIDs to Actions.
    */
-  public ButtonActionFactory(GameManagerAPI gameManager, ViewAPI gameView) {
+  public ButtonActionFactory(ViewState state) {
     try {
       InputStream stream = getClass().getResourceAsStream(buttonIDToActionFilePath);
       buttonIDToActionProperties.load(stream);
     } catch (IOException e) {
       LOG.warn("Unable to load button action properties");
     }
-    this.gameManager = gameManager;
-    this.gameView = gameView;
+    this.viewState = state;
   }
 
   /**
@@ -76,19 +69,20 @@ public class ButtonActionFactory {
   private Runnable startGame() throws ViewInitializationException, InputException {
     return () -> {
       try {
-        DefaultView view = (DefaultView) gameView;
-        Stage currentStage = ViewVariableBridge.getStage(view);
+        DefaultView gameView = viewState.getDefaultView();
+        GameManagerAPI gameManager = viewState.getGameManager();
+        Stage currentStage = viewState.getStage();
 
-        GameDisplay game = new GameDisplay(gameView, gameManager);
+        GameDisplay game = new GameDisplay(viewState);
         gameManager.playGame();
 
         game.render();
-        ViewVariableBridge.setDisplay(view, game);
+        viewState.setDisplay(game);
 
         currentStage.setWidth(1000); // TODO set this to the game size
         currentStage.setHeight(1000);
 
-        setCurrentInputs(view.getCurrentScene()).run();
+        setCurrentInputs(gameView.getCurrentScene()).run();
       } catch (Exception e) {
         LOG.error("Error starting game", e);
       }
@@ -112,10 +106,10 @@ public class ButtonActionFactory {
   private Runnable goToHome() throws ViewInitializationException {
     return () -> {
       try {
-        DefaultView view = (DefaultView) gameView;
-        gameManager.pauseGame();
-        gameView.initialize();
-        Stage currentStage = ViewVariableBridge.getStage(view);
+        DefaultView view = viewState.getDefaultView();
+        viewState.getGameManager().pauseGame();
+        view.initialize();
+        Stage currentStage = viewState.getStage();
         currentStage.setWidth(view.getCurrentScene().getWidth());
         currentStage.setHeight(view.getCurrentScene().getHeight());
         currentStage.setScene(view.getCurrentScene());
@@ -130,7 +124,7 @@ public class ButtonActionFactory {
    */
   private Runnable setCurrentInputs(Scene currentScene) throws ViewInitializationException {
     List<KeyCode> currentInputs = new ArrayList<>();
-    ViewVariableBridge.setCurrentInputs((DefaultView) gameView, currentInputs);
+    viewState.setCurrentInputs(currentInputs);
     return () -> {
       currentScene.setOnKeyPressed(event -> {
         KeyCode keyCode = event.getCode();
@@ -152,7 +146,7 @@ public class ButtonActionFactory {
   private Runnable setGameType() {
     return () -> {
       try {
-        gameManager.selectGame("DinoLevel1.xml");
+        viewState.getGameManager().selectGame("DinoLevel1.xml");
       } catch (Exception e) {
         LOG.error("Error setting game type", e);
       }
