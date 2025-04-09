@@ -14,8 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Builds the "Properties" tab UI, displaying Identity & Hitbox data, etc.
- * Implements EditorViewListener to update whenever the selected object changes.
+ * Builds the "Properties" tab UI, displaying Identity & Hitbox data, etc. Implements
+ * EditorViewListener to update whenever the selected object changes.
  */
 public class PropertiesTabComponentFactory implements EditorViewListener {
 
@@ -38,16 +38,18 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Constructs a new factory for the Properties tab.
+   *
    * @param editorController the main controller, must not be null.
    */
   public PropertiesTabComponentFactory(EditorController editorController) {
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
     LOG.info("PropertiesTabComponentFactory initialized.");
   }
 
   /**
-   * Creates the scrollable Pane that holds our Identity & Hitbox sections.
-   * This method is called by the code that sets up the "Properties" tab in EditorComponentFactory.
+   * Creates the scrollable Pane that holds our Identity & Hitbox sections. This method is called by
+   * the code that sets up the "Properties" tab in EditorComponentFactory.
    */
   public ScrollPane createPropertiesPane() {
     VBox contentBox = new VBox(15);
@@ -117,7 +119,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     xField.setPromptText("X");
     xField.textProperty().addListener((obs, oldVal, newVal) -> {
       if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI().setX(currentObjectId, parseSafeInt(newVal));
+        editorController.getEditorDataAPI().getHitboxDataAPI()
+            .setX(currentObjectId, parseSafeInt(newVal));
       }
     });
 
@@ -125,7 +128,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     yField.setPromptText("Y");
     yField.textProperty().addListener((obs, oldVal, newVal) -> {
       if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI().setY(currentObjectId, parseSafeInt(newVal));
+        editorController.getEditorDataAPI().getHitboxDataAPI()
+            .setY(currentObjectId, parseSafeInt(newVal));
       }
     });
 
@@ -133,7 +137,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     widthField.setPromptText("Width");
     widthField.textProperty().addListener((obs, oldVal, newVal) -> {
       if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI().setWidth(currentObjectId, parseSafeInt(newVal));
+        editorController.getEditorDataAPI().getHitboxDataAPI()
+            .setWidth(currentObjectId, parseSafeInt(newVal));
       }
     });
 
@@ -141,7 +146,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     heightField.setPromptText("Height");
     heightField.textProperty().addListener((obs, oldVal, newVal) -> {
       if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI().setHeight(currentObjectId, parseSafeInt(newVal));
+        editorController.getEditorDataAPI().getHitboxDataAPI()
+            .setHeight(currentObjectId, parseSafeInt(newVal));
       }
     });
 
@@ -215,8 +221,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Loads the Identity + Hitbox data from the model for the currently selected object,
-   * and displays it in our fields.
+   * Loads the Identity + Hitbox data from the model for the currently selected object, and displays
+   * it in our fields.
    */
   private void refreshFields() {
     if (currentObjectId == null) {
@@ -227,8 +233,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     // Switch to the FX thread if we might not be on it
     Platform.runLater(() -> {
       // Identity
-      String currentName = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
-      String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI().getGroup(currentObjectId);
+      String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
+          .getName(currentObjectId);
+      String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+          .getGroup(currentObjectId);
 
       nameField.setText(currentName == null ? "" : currentName);
       groupField.setText(currentGroup == null ? "" : currentGroup);
@@ -238,7 +246,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       int y = editorController.getEditorDataAPI().getHitboxDataAPI().getY(currentObjectId);
       int w = editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(currentObjectId);
       int h = editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(currentObjectId);
-      String shape = editorController.getEditorDataAPI().getHitboxDataAPI().getShape(currentObjectId);
+      String shape = editorController.getEditorDataAPI().getHitboxDataAPI()
+          .getShape(currentObjectId);
 
       xField.setText(String.valueOf(x));
       yField.setText(String.valueOf(y));

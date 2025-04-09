@@ -7,10 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Concrete implementation of ObjectInteractionTool for placing standard game objects like entities
- * or enemies. Delegates actual object creation to the EditorController. (DESIGN-04: DRY, DESIGN-09:
- * MVC, DESIGN-11, DESIGN-20: Strategy Pattern)
- *
+ * Concrete implementation of ObjectInteractionTool for placing standard game objects
+ * like entities or enemies. Delegates actual object creation to the EditorController.
+ * (DESIGN-04: DRY, DESIGN-09: MVC, DESIGN-11, DESIGN-20: Strategy Pattern)
  * @author Tatum McKinnis
  */
 public class GameObjectPlacementTool implements ObjectInteractionTool {
@@ -50,7 +49,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate on the grid.
    */
   @Override
-  public void interactObjectAt(double worldX, double worldY) {
+  public void interactObjectAt(int gridX, int gridY) {
     try {
       int cellSize = editorView.getCellSize();
       if (cellSize <= 0) {
@@ -59,18 +58,17 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
         return;
       }
 
-      // TODO: To disable locking to grid, disable this line.
-      worldX = (Math.floor(worldX / cellSize) * cellSize);
-      worldY = (Math.floor(worldY / cellSize) * cellSize);
+      int worldX = gridX * cellSize;
+      int worldY = gridY * cellSize;
 
-      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, (int) worldX, (int) worldY,
+      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
           cellSize);
       LOG.debug("Delegated object placement request to controller for type '{}' at world ({}, {})",
           objectGroup, worldX, worldY);
 
     } catch (Exception e) {
       LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
-          worldX, worldY, e.getMessage(), e);
+          gridX, gridY, e.getMessage(), e);
     }
   }
 }

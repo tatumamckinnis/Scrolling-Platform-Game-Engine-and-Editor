@@ -1,3 +1,4 @@
+// oogasalad_team03/src/test/java/oogasalad/editor/view/EventsSectionBuilderTest.java
 package oogasalad.editor.view;
 
 import java.util.ResourceBundle;
