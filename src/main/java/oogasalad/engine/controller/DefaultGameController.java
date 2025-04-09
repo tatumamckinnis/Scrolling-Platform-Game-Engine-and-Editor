@@ -29,13 +29,15 @@ import oogasalad.fileparser.records.LevelData;
  *
  * <p>This class is responsible for managing game objects, loading level data,
  * and updating the game state based on the loaded data. It delegates file handling to an
- * {@link EngineFileConverterAPI} and stores a local list of {@link GameObject}s that represent the current
- * game state.
+ * {@link EngineFileConverterAPI} and stores a local list of {@link GameObject}s that represent the
+ * current game state.
  *
  * @author Alana Zinkin
  */
 public class DefaultGameController implements GameControllerAPI, GameObjectProvider, GameExecutor {
-  private static final ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(DefaultGameController.class.getPackageName() + "." + "Controller");
+
+  private static final ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(
+      DefaultGameController.class.getPackageName() + "." + "Controller");
   private final EventHandler eventHandler;
   private final CollisionHandler collisionHandler;
   private Map<String, GameObject> myGameObjectMap;
@@ -43,6 +45,12 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   private mapObject myMapObject;
   private final GameManagerAPI myGameManager;
 
+  /**
+   * Constructor for the default game controller
+   *
+   * @param inputProvider object for retrieving any keys or human input
+   * @param gameManager   the manager controls the execution of the game loop
+   */
   public DefaultGameController(InputProvider inputProvider, GameManagerAPI gameManager) {
     this.collisionHandler = new DefaultCollisionHandler(this);
     this.eventHandler = new DefaultEventHandler(inputProvider, collisionHandler, this);
@@ -74,7 +82,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
-  public mapObject getMapObject(){
+  public mapObject getMapObject() {
     return myMapObject;
   }
 
@@ -83,8 +91,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   public ViewObject getViewObjectByUUID(String uuid) {
     try {
       return convertToViewObject(myGameObjectMap.get(uuid));
-    }
-    catch (NullPointerException e) {
+    } catch (NullPointerException e) {
       throw new NoSuchElementException(CONTROLLER_RESOURCES.getString("NoObjectWithUUID") + uuid);
     }
   }
@@ -109,7 +116,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
-    myMapObject = new mapObject(data.levelWidth(), data.levelHeight(), data.levelWidth(), data.levelHeight());
+    myMapObject = new mapObject(data.minX(), data.minY(), data.maxX(), data.maxY());
   }
 
   @Override
