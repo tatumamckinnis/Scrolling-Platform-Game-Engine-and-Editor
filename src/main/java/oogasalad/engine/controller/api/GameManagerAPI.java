@@ -46,10 +46,8 @@ public interface GameManagerAPI {
 
   /**
    * Pauses the timeline and displays a splashscreen when the user either wins or loses
-   * @param text the text to display on the front-end ("You won! or "You lost!")
-   * @param gameObject typically the player object to display game stats
    */
-  void endGame(String text, GameObject gameObject);
+  void endGame();
 
   /**
    * Lists all available levels for user to select

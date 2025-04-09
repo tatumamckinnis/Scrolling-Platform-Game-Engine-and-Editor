@@ -38,7 +38,7 @@ public class OutcomeExecutor {
         outcomeMap.put(EventOutcome.OutcomeType.PATROL,
                 new PatrolOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.LOSE_GAME,
-                new LoseGameOutcome());
+                new LoseGameOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.DESTROY_OBJECT,
                 new DestroyObjectOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,

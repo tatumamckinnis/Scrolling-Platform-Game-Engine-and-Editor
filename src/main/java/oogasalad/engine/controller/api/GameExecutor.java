@@ -31,4 +31,9 @@ public interface GameExecutor {
    * @return the game object model
    */
   GameObject getGameObjectByUUID(String id);
+
+  /**
+   * Ends the game using game manager methods
+   */
+  void endGame();
 }

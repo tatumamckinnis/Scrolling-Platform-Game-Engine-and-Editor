@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.GameObjectProvider;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.event.CollisionHandler;
@@ -40,11 +41,13 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   private Map<String, GameObject> myGameObjectMap;
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
+  private final GameManagerAPI myGameManager;
 
-  public DefaultGameController(InputProvider inputProvider) {
+  public DefaultGameController(InputProvider inputProvider, GameManagerAPI gameManager) {
     this.collisionHandler = new DefaultCollisionHandler(this);
     this.eventHandler = new DefaultEventHandler(inputProvider, collisionHandler, this);
     this.myGameObjects = new ArrayList<>();
+    this.myGameManager = gameManager;
 
   }
 
@@ -59,7 +62,10 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     return makeGameObjectsImmutable();
   }
 
-
+  @Override
+  public void endGame() {
+    myGameManager.endGame();
+  }
 
   @Override
   public GameObject getGameObjectByUUID(String id) {

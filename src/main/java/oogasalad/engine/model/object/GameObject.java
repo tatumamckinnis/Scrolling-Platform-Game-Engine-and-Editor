@@ -75,10 +75,6 @@ public abstract class GameObject {
       setYPosition(500 - getHitBoxHeight());
     }
 
-    if (getXPosition() >= 500 - getHitBoxWidth()) {
-      setXPosition(500 - getHitBoxWidth());
-    }
-
     // Uncomment to clamp left side:
     // if (getXPosition() < 0) {
     //   setXPosition(0);

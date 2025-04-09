@@ -38,14 +38,13 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
-
   private String currentLevel;
 
 
   public DefaultGameManager()
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myGameController = new DefaultGameController(this);
+    myGameController = new DefaultGameController(this, this);
     myLevelAPI = new DefaultLevel(myGameController);
     initializeMyView();
   }
@@ -102,11 +101,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   /**
-   * @see GameManagerAPI#endGame(String, GameObject)
+   * @see GameManagerAPI#endGame()
    */
   @Override
-  public void endGame(String text, GameObject gameObject) {
+  public void endGame() {
     pauseGame();
+    LOG.debug("ENDING GAME");
     //myView.renderEndGameScreen(text, gameObject);
   }
 

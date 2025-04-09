@@ -13,6 +13,7 @@
 package oogasalad.engine.event.outcome;
 
 import java.util.logging.Logger;
+import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
 /**
@@ -21,10 +22,13 @@ import oogasalad.engine.model.object.GameObject;
  * @author Alana Zinkin
  */
 public class LoseGameOutcome implements Outcome {
+  private final GameExecutor executor;
 
   /** Logger used to record loss events */
   Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
-
+  public LoseGameOutcome(GameExecutor executor) {
+    this.executor = executor;
+  }
   /**
    * Executes the outcome, logging that the player has lost the game.
    *
@@ -32,6 +36,7 @@ public class LoseGameOutcome implements Outcome {
    */
   @Override
   public void execute(GameObject gameObject) {
+    executor.endGame();
     LOG.info("You lose the game");
   }
 }
