@@ -54,7 +54,9 @@ public class SpriteDataParser {
   private final String pathToSpriteData;
 
 
-  // Constructor that loads the properties file and sets the graphics data path.
+  /**
+   * Constructor that loads the properties file and sets the graphics data path
+   */
   public SpriteDataParser() {
     this.pathToGraphicsData = loadDataPaths()[0];
     this.pathToSpriteData = loadDataPaths()[1];

@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
  * @author Billy McCune
  */
 public class EventDataParser {
-  List<EventData> events;
+  private List<EventData> events;
 
   /**
    * Extracts the list of event data from the provided XML root element.
