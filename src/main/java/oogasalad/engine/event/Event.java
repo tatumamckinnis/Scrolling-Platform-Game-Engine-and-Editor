@@ -1,11 +1,3 @@
-/**
- * Core Event class for engine gameplay Has predefined Condition variables that need to be fulfilled
- * to execute list of Events Associated with a gameObject GameObject stores
- * DynamicVariableCollection of parameters representing data for condition checker and outcome
- * execution
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event;
 
 import java.util.List;
@@ -14,35 +6,48 @@ import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * Core Event class for engine gameplay Has predefined Condition variables that need to be fulfilled
+ * to execute list of Events Associated with a gameObject GameObject stores
+ * DynamicVariableCollection of parameters representing data for condition checker and outcome
+ * execution
+ *
+ * @author Gage Garcia
+ */
 public class Event {
 
-    private final GameObject gameObject;
-    private final List<List<EventCondition>> conditions;
-    private final List<EventOutcome> outcomes;
-    private final EventType eventType;
-    //stored within game object
-    private final Map<String, Double> doubleParams;
+  private final GameObject gameObject;
+  private final List<List<EventCondition>> conditions;
+  private final List<EventOutcome> outcomes;
+  private final EventType eventType;
+  //stored within game object
+  private final Map<String, Double> doubleParams;
 
-    public enum EventType {
-        INPUT,
-        PHYSICS,
-        COLLISION,
-        END
-    }
+  /**
+   * defines valid event types
+   */
+  public enum EventType {
+    INPUT,
+    PHYSICS,
+    COLLISION,
+    END
+  }
 
-    /**
-     * Event constructor
-     * @param gameObject -> object associated with the event
-     * @param conditions -> List of Conditions that need to be met to execute events
-     * @param outcomes -> List of Events to execute
-     */
-    public Event(GameObject gameObject, List<List<EventCondition>> conditions, List<EventOutcome> outcomes, EventType eventType) {
-        this.gameObject = gameObject;
-        this.conditions = conditions;
-        this.outcomes = outcomes;
-        this.doubleParams = gameObject.getDoubleParams();
-        this.eventType = eventType;
-    }
+  /**
+   * Event constructor
+   *
+   * @param gameObject -> object associated with the event
+   * @param conditions -> List of Conditions that need to be met to execute events
+   * @param outcomes   -> List of Events to execute
+   */
+  public Event(GameObject gameObject, List<List<EventCondition>> conditions,
+      List<EventOutcome> outcomes, EventType eventType) {
+    this.gameObject = gameObject;
+    this.conditions = conditions;
+    this.outcomes = outcomes;
+    this.doubleParams = gameObject.getDoubleParams();
+    this.eventType = eventType;
+  }
 
   /**
    * @return this Event's list of event conditions

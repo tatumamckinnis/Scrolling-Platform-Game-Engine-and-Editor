@@ -1,14 +1,15 @@
+
+
+package oogasalad.engine.event.condition;
+
 /**
  * Condition Object defining enums for valid conditions to check for ConditionChecker controller
  * will have logic for checking condition
  *
  * @author Gage Garcia
  */
-
-package oogasalad.engine.event.condition;
-
-
 public record EventCondition(EventCondition.ConditionType conditionType) {
+
   /**
    * Define list of valid conditions enums
    */

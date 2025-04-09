@@ -1,8 +1,3 @@
-/**
- * Event handling class that implements event EventHandler interface
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event;
 
 import java.util.List;
@@ -12,7 +7,11 @@ import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
-
+/**
+ * Event handling class that implements event EventHandler interface
+ *
+ * @author Gage Garcia
+ */
 public class DefaultEventHandler implements EventHandler {
 
   private final ConditionChecker conditionChecker;

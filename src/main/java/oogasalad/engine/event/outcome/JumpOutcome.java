@@ -1,12 +1,12 @@
-/**
- * Applies jump movement to the game object
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * Outcome that applies gravity to the game object
+ *
+ * @author Gage Garcia
+ */
 public class JumpOutcome implements Outcome {
 
   @Override

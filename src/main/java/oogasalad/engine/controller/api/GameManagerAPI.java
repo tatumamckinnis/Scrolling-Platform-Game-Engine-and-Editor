@@ -1,7 +1,4 @@
-/**
- * Interface between engine model and view Handles Timeline actions(play/pause), and changing level
- * state
- */
+
 package oogasalad.engine.controller.api;
 
 import java.io.FileNotFoundException;
