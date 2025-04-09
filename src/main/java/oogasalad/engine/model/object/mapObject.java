@@ -5,4 +5,6 @@ public record mapObject(
     int minY,
     int maxX,
     int maxY
-    ){}
+) {
+
+}
