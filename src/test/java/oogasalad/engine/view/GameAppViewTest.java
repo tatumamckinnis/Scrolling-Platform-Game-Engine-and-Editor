@@ -61,16 +61,16 @@ public class GameAppViewTest extends ApplicationTest {
       super(stage, gameManager);
     }
 
-    @Override
-    public void initialize() throws ViewInitializationException {
-      SplashScreen splashScreen = new SplashScreen(this, getGameManager());
-
-      splashScreen.render();
-      int width = splashScreen.getSplashWidth();
-      int height = splashScreen.getSplashHeight();
-      setCurrentDisplay(splashScreen);
-      setDefaultPath();
-    }
+//    @Override
+//    public void initialize() throws ViewInitializationException {
+//      SplashScreen splashScreen = new SplashScreen(this, getGameManager());
+//
+//      splashScreen.render();
+//      int width = splashScreen.getSplashWidth();
+//      int height = splashScreen.getSplashHeight();
+//      setCurrentDisplay(splashScreen);
+//      setDefaultPath();
+//    }
 
     private void setDefaultPath() throws ViewInitializationException {
 

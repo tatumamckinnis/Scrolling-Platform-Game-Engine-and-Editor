@@ -18,14 +18,12 @@ public class EventsSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(EventsSectionBuilder.class);
 
-  // Constants needed by this builder
   private static final double LIST_VIEW_HEIGHT = 150.0;
   private static final String KEY_EVENTS_HEADER = "eventsHeader";
   private static final String KEY_EVENT_ID_LABEL = "eventIdLabel";
   private static final String KEY_ADD_EVENT_BUTTON = "addEventButton";
   private static final String KEY_REMOVE_EVENT_BUTTON = "removeEventButton";
 
-  // Using constants potentially defined in Factory or shared constants class
   private static final double DEFAULT_PADDING = 12.0;
   private static final double DEFAULT_SPACING = 12.0;
 
@@ -130,7 +128,6 @@ public class EventsSectionBuilder {
         addEventHandler.accept(eventId.trim());
       } else {
         LOG.warn("Attempted to add empty event ID.");
-        // Consider showing error via factory's showErrorAlert if needed
       }
     });
     addButton.setId("addEventButton");

@@ -363,7 +363,7 @@ public class InputTabComponentFactory implements EditorViewListener {
       try {
         Map<String, ?> events = editorController.getEventsForObject(currentObjectId);
         if (eventListView != null && events != null && !events.isEmpty()) {
-          eventListView.getItems().addAll(events.keySet());
+          eventListView.getItems().addAll(events.keySet()); // Add all events
           LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId, events.size());
         } else {
           LOG.debug("No events found for object {}.", currentObjectId);
@@ -397,7 +397,7 @@ public class InputTabComponentFactory implements EditorViewListener {
       try {
         List<ConditionType> conditions = editorController.getConditionsForEvent(currentObjectId, currentEventId);
         if (conditionsListView != null && conditions != null) {
-          conditions.forEach(condition -> conditionsListView.getItems().add(condition.toString()));
+          conditions.forEach(condition -> conditionsListView.getItems().add(condition.toString())); // Add all conditions
           LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId, conditions.size());
         } else {
           LOG.debug("No conditions found for event '{}'.", currentEventId);
@@ -442,7 +442,7 @@ public class InputTabComponentFactory implements EditorViewListener {
             String displayString = (parameter != null && !parameter.isEmpty())
                 ? String.format("%s (%s)", outcome.toString(), parameter)
                 : outcome.toString();
-            outcomesListView.getItems().add(displayString);
+            outcomesListView.getItems().add(displayString); // Add all outcomes
           });
           LOG.debug("Refreshed outcomes list for event '{}': {} outcomes.", currentEventId, outcomes.size());
         } else {

@@ -302,7 +302,7 @@ public class EditorComponentFactory {
   /**
    * Safely retrieves an integer property from the loaded properties.
    */
-  private int getIntProperty(String key, int defaultValue) {
+  int getIntProperty(String key, int defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {
@@ -320,7 +320,7 @@ public class EditorComponentFactory {
   /**
    * Safely retrieves an double property from the loaded properties.
    */
-  private double getDoubleProperty(String key, double defaultValue) {
+  double getDoubleProperty(String key, double defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {

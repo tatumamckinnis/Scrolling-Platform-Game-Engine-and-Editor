@@ -26,43 +26,49 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    *
    * @param editorView       The editor view to get grid information from.
    * @param editorController The controller to handle object creation requests.
-   * @param objectGroup      The group/type identifier for the objects created by this tool (e.g., "PLAYER").
+   * @param objectGroup      The group/type identifier for the objects created by this tool (e.g.,
+   *                         "PLAYER").
    * @param objectNamePrefix The prefix used for generating default names (e.g., "Player_").
    */
   public GameObjectPlacementTool(EditorGameView editorView, EditorController editorController,
       String objectGroup, String objectNamePrefix) {
     this.editorView = Objects.requireNonNull(editorView, "EditorGameView cannot be null.");
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
     this.objectGroup = Objects.requireNonNull(objectGroup, "objectGroup cannot be null.");
-    this.objectNamePrefix = Objects.requireNonNull(objectNamePrefix, "objectNamePrefix cannot be null.");
+    this.objectNamePrefix = Objects.requireNonNull(objectNamePrefix,
+        "objectNamePrefix cannot be null.");
     LOG.info("Created GameObjectPlacementTool for type: {}", objectGroup);
   }
 
   /**
-   * Handles the logic for initiating object placement when the grid is clicked.
-   * Calculates position and calls the EditorController to handle the actual creation.
+   * Handles the logic for initiating object placement when the grid is clicked. Calculates position
+   * and calls the EditorController to handle the actual creation.
    *
    * @param worldX X-coordinate on the grid.
    * @param worldY Y-coordinate on the grid.
    */
   @Override
-  public void interactObjectAt(int worldX, int worldY) {
+  public void interactObjectAt(int gridX, int gridY) {
     try {
       int cellSize = editorView.getCellSize();
       if (cellSize <= 0) {
-        LOG.error("Invalid cell size ({}) obtained from EditorGameView. Cannot place object.", cellSize);
+        LOG.error("Invalid cell size ({}) obtained from EditorGameView. Cannot place object.",
+            cellSize);
         return;
       }
 
-      // TODO: To disable locking to grid, disable this line.
-      worldX = (worldX / cellSize) * cellSize;
-      worldY = (worldY / cellSize) * cellSize;
+      int worldX = gridX * cellSize;
+      int worldY = gridY * cellSize;
 
-      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY, cellSize);
-      LOG.debug("Delegated object placement request to controller for type '{}' at world ({}, {})", objectGroup, worldX, worldY);
+      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
+          cellSize);
+      LOG.debug("Delegated object placement request to controller for type '{}' at world ({}, {})",
+          objectGroup, worldX, worldY);
 
     } catch (Exception e) {
-      LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup, worldX, worldY, e.getMessage(), e);
+      LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
+          gridX, gridY, e.getMessage(), e);
     }
   }
 }
