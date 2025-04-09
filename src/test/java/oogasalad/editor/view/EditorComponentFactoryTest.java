@@ -1,3 +1,4 @@
+// oogasalad_team03/src/test/java/oogasalad/editor/view/EditorComponentFactoryTest.java
 package oogasalad.editor.view;
 
 import static org.junit.jupiter.api.Assertions.*;
