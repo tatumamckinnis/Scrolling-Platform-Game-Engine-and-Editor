@@ -49,7 +49,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate on the grid.
    */
   @Override
-  public void interactObjectAt(int gridX, int gridY) {
+  public void interactObjectAt(double gridX, double gridY) {
     try {
       int cellSize = editorView.getCellSize();
       if (cellSize <= 0) {
@@ -58,8 +58,8 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
         return;
       }
 
-      int worldX = gridX * cellSize;
-      int worldY = gridY * cellSize;
+      double worldX = gridX * cellSize;
+      double worldY = gridY * cellSize;
 
       editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
           cellSize);
@@ -70,5 +70,10 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
       LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
           gridX, gridY, e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void interactObjectAt(int gridX, int gridY) {
+
   }
 }
