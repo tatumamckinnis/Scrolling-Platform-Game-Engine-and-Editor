@@ -43,7 +43,7 @@ public class EventsSectionBuilder {
    * @param removeEventHandler     The runnable to handle removing the selected event.
    * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the
    *                               new selection.
-   * @throws NullPointerException if any of the provided arguments are {@code null}.
+   * @throws NullPointerException if any of the provided arguments are null.
    */
   public EventsSectionBuilder(ResourceBundle uiBundle,
       Consumer<String> addEventHandler,
