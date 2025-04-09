@@ -20,6 +20,12 @@ public class ConditionChecker {
                 new InputCondition(inputProvider, KeyCode.SPACE));
         conditionMap.put(EventCondition.ConditionType.W_KEY_PRESSED,
                 new InputCondition(inputProvider, KeyCode.W));
+        conditionMap.put(EventCondition.ConditionType.A_KEY_PRESSED,
+                new InputCondition(inputProvider, KeyCode.A));
+        conditionMap.put(EventCondition.ConditionType.S_KEY_PRESSED,
+                new InputCondition(inputProvider, KeyCode.S));
+        conditionMap.put(EventCondition.ConditionType.D_KEY_PRESSED,
+                new InputCondition(inputProvider, KeyCode.D));
         conditionMap.put(EventCondition.ConditionType.UP_ARROW_PRESSED,
                 new InputCondition(inputProvider, KeyCode.UP));
         conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_ENEMY,

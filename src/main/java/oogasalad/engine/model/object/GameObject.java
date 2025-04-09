@@ -106,16 +106,6 @@ public abstract class GameObject {
       myHitBoxY = 500 - myHitBoxHeight;
     }
 
-    // Clamp object to the right boundary
-    if (myHitBoxX >= 500 - myHitBoxWidth) {
-      myHitBoxX = 500 - myHitBoxWidth;
-    }
-
-    // Optionally clamp left boundary
-    // if (myHitBoxX < 0) {
-    //   myHitBoxX = 0;
-    //   xVelocity *= -1;
-    // }
   }
 
   /**

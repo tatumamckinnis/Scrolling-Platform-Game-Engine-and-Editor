@@ -10,6 +10,7 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
      */
     public enum OutcomeType {
         MOVE_RIGHT,
+        MOVE_LEFT,
         JUMP,
         APPLY_GRAVITY,
         LOSE_GAME,

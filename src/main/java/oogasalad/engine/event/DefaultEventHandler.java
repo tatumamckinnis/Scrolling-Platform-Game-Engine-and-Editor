@@ -12,6 +12,7 @@ import oogasalad.engine.model.object.GameObject;
 
 import java.util.List;
 
+
 public class DefaultEventHandler implements EventHandler {
     private final ConditionChecker conditionChecker;
     private final OutcomeExecutor outcomeExecutor;

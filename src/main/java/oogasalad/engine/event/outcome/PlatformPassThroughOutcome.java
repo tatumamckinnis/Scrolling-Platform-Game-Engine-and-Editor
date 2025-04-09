@@ -21,20 +21,25 @@ public class PlatformPassThroughOutcome implements Outcome {
     @Override
     public void execute(GameObject player) {
         this.player = player;
+        //player.setGrounded(false); // Assume ungrounded until proven otherwise
+
         List<GameObject> collisions = collisionHandler.getCollisions(player);
         for (GameObject platform : collisions) {
             if (platform.getType().equals("platforms")) {
-                handlePlatform(platform);
+                if (trySnapToPlatform(platform)) {
+                    player.setGrounded(true); // Re-ground if standing on valid platform
+                    //break;
+                }
             }
         }
 
     }
 
-    private void handlePlatform(GameObject platform) {
+    private boolean trySnapToPlatform(GameObject platform) {
         int playerBottom = player.getY() + player.getHitBoxHeight();
         int playerTop = player.getY();
         int platformTop = platform.getY();
-        int platformBottom = platform.getY() + platform.getHitBoxHeight();
+
         double yVelocity = player.getYVelocity();
 
         boolean isFalling = yVelocity >= 0;
@@ -44,16 +49,12 @@ public class PlatformPassThroughOutcome implements Outcome {
                         player.getX() < platform.getX() + platform.getHitBoxWidth();
 
         if (isFalling && verticallyOverlapping && horizontallyOverlapping) {
-            // Snap player to platform top
-            player.setY(platformTop - player.getHitBoxHeight());
+            player.setY(platformTop - player.getHitBoxHeight() + 1);
             player.setYVelocity(0);
-            player.setGrounded(true);
-        } else {
-            // Only unground if player is clearly no longer on the platform
-            if (player.getY() + player.getHitBoxHeight() < platformTop - 2 || !horizontallyOverlapping) {
-                player.setGrounded(false);
-            }
+            return true;
         }
+
+        return false;
     }
 
 }

@@ -15,17 +15,19 @@ public class OutcomeExecutor {
 
     /**
      * Initialize the executor with a game controller
-     * @param gameController
+     * @param gameExecutor api that allows updates to game state
      * Initialize mapping of outcome enum to outcome interface
      */
     public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor) {
         this.outcomeMap = new HashMap<>();
         outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
                 new MoveRightOutcome());
+        outcomeMap.put(EventOutcome.OutcomeType.MOVE_LEFT,
+                new MoveLeftOutcome());
         outcomeMap.put(EventOutcome.OutcomeType.JUMP,
                 new JumpOutcome());
         outcomeMap.put(EventOutcome.OutcomeType.APPLY_GRAVITY,
-                new GravityOutcome());
+                new GravityOutcome(collisionHandler));
         outcomeMap.put(EventOutcome.OutcomeType.PATROL,
                 new PatrolOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.LOSE_GAME,
