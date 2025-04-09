@@ -20,7 +20,7 @@ public class Event {
     private final List<EventOutcome> outcomes;
     private final EventType eventType;
     //stored within game object
-    private final Map<String, String> params;
+    private final Map<String, Double> doubleParams;
 
     public enum EventType {
         INPUT,
@@ -38,7 +38,7 @@ public class Event {
         this.gameObject = gameObject;
         this.conditions = conditions;
         this.outcomes = outcomes;
-        this.params = gameObject.getParams();
+        this.doubleParams = gameObject.getDoubleParams();
         this.eventType = eventType;
     }
 

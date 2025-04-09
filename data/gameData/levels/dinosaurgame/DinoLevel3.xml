@@ -9,7 +9,6 @@ interact with each other -->
   <layers>
     <layer name="backGround" width="500" height="500" z="0">
       <data>
-        <object id="12" coordinates="(100,300)" uid="e0373626-9e90-4ed3-9863-39e287926802"/>
       </data>
     </layer>
     <layer name="foreground" width="500" height="500" z="1">

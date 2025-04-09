@@ -31,26 +31,26 @@ public class PlatformPassThroughOutcome implements Outcome {
     }
 
     private void handlePlatform(GameObject platform) {
-        int playerBottom = player.getY() + player.getHitBoxHeight();
-        int playerTop = player.getY();
-        int platformTop = platform.getY();
-        int platformBottom = platform.getY() + platform.getHitBoxHeight();
+        int playerBottom = player.getYPosition() + player.getHitBoxHeight();
+        int playerTop = player.getYPosition();
+        int platformTop = platform.getYPosition();
+        int platformBottom = platform.getYPosition() + platform.getHitBoxHeight();
         double yVelocity = player.getYVelocity();
 
         boolean isFalling = yVelocity >= 0;
         boolean verticallyOverlapping = playerBottom >= platformTop && playerTop < platformTop;
         boolean horizontallyOverlapping =
-                player.getX() + player.getHitBoxWidth() > platform.getX() &&
-                        player.getX() < platform.getX() + platform.getHitBoxWidth();
+                player.getXPosition() + player.getHitBoxWidth() > platform.getXPosition() &&
+                        player.getXPosition() < platform.getXPosition() + platform.getHitBoxWidth();
 
         if (isFalling && verticallyOverlapping && horizontallyOverlapping) {
             // Snap player to platform top
-            player.setY(platformTop - player.getHitBoxHeight());
+            player.setYPosition(platformTop - player.getHitBoxHeight());
             player.setYVelocity(0);
             player.setGrounded(true);
         } else {
             // Only unground if player is clearly no longer on the platform
-            if (player.getY() + player.getHitBoxHeight() < platformTop - 2 || !horizontallyOverlapping) {
+            if (player.getYPosition() + player.getHitBoxHeight() < platformTop - 2 || !horizontallyOverlapping) {
                 player.setGrounded(false);
             }
         }

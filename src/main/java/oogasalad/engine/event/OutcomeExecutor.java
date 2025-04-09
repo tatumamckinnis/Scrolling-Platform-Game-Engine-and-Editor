@@ -15,7 +15,7 @@ public class OutcomeExecutor {
 
     /**
      * Initialize the executor with a game controller
-     * @param gameController
+     * @param gameExecutor
      * Initialize mapping of outcome enum to outcome interface
      */
     public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor) {

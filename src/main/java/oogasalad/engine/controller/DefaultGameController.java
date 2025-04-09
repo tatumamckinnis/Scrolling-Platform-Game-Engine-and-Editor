@@ -138,7 +138,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
-    myMapObject = new mapObject(data.levelWidth(), data.levelHeight());
+    myMapObject = new mapObject(data.levelWidth(), data.levelHeight(), data.levelWidth(), data.levelHeight());
   }
 
   /**
@@ -150,7 +150,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   @Override
   public void destroyGameObject(GameObject gameObject) {
     myGameObjects.remove(gameObject);
-    myGameObjectMap.remove(gameObject.getUuid());
+    myGameObjectMap.remove(gameObject.getUUID());
   }
 
   /**

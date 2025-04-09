@@ -6,8 +6,8 @@ public class MoveLeftOutcome implements Outcome {
 
   @Override
   public void execute(GameObject gameObject) {
-    int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveLeftAmount", "4"));
-    gameObject.setX(gameObject.getX() - 4);
+    double dx = gameObject.getDoubleParams().getOrDefault("MoveLeftAmount", 4.0);
+    gameObject.setXPosition((int) (gameObject.getXPosition() - dx));
   }
 
 }

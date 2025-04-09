@@ -8,7 +8,8 @@ import oogasalad.engine.model.object.GameObject;
 public class MoveRightOutcome implements Outcome {
     @Override
     public void execute(GameObject gameObject) {
-        int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "4"));
-        gameObject.setX(gameObject.getX() + dx);
+        double dx = gameObject.getDoubleParams().getOrDefault("MoveRightAmount", 4.0);
+        gameObject.setXPosition((int) (gameObject.getXPosition() + dx));
+        System.out.println(gameObject.getType() + gameObject.getXPosition());
     }
 }

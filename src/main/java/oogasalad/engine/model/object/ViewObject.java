@@ -33,7 +33,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public String getUuid() {
-    return gameObject.getUuid();
+    return gameObject.getUUID();
   }
 
   /**
@@ -43,7 +43,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public int getX() {
-    return gameObject.getX();
+    return gameObject.getXPosition();
   }
 
   /**
@@ -53,7 +53,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public int getY() {
-    return gameObject.getY();
+    return gameObject.getYPosition();
   }
 
   /**
