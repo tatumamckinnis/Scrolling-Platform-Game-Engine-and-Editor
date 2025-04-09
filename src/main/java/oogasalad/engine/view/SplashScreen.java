@@ -133,23 +133,30 @@ public class SplashScreen extends Display {
     VBox splashBox = new VBox();
     String[] buttonTexts = getSplashButtonTexts();
     String[] buttonIDs = getSplashButtonIDs();
+    String[] buttonStyles = getSplashButtonStyles();
 
     double buttonWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.button.width"));
     double buttonHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.button.height"));
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
-      currButton.setId(buttonIDs[i]);
       currButton.setPrefSize(buttonWidth, buttonHeight);
-      currButton.getStyleClass().addAll("button", "engine-button"); // TODO: Externalize button CSS
-      currButton.setWrapText(true);
-      setButtonAction(buttonIDs[i], currButton);
+      setButtonStyle(currButton, buttonIDs[i], buttonStyles[i]);
       splashBox.getChildren().add(currButton);
     }
 
     int buttonSpacing = Integer.parseInt(splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  private void setButtonStyle(Button currButton, String buttonID, String buttonStyle) {
+    currButton.setId(buttonID);
+    String defaultButtonStyle = splashComponentProperties.getProperty("splash.button.default.style");
+    currButton.getStyleClass().add(defaultButtonStyle);
+    currButton.getStyleClass().add(buttonStyle);
+    currButton.setWrapText(true);
+    setButtonAction(buttonID, currButton);
   }
 
   private void setButtonAction(String buttonID, Button currButton) {
@@ -175,10 +182,10 @@ public class SplashScreen extends Display {
    * @return array of strings for button strings
    */
   private String[] getSplashButtonTexts() {
-    return new String[]{splashComponentProperties.getProperty("splash.button.gameType"),
-        splashComponentProperties.getProperty("splash.button.startEngine"),
-        splashComponentProperties.getProperty("splash.button.startEditor"),
-        splashComponentProperties.getProperty("splash.button.help")
+    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.text"),
+        splashComponentProperties.getProperty("splash.button.startEngine.text"),
+        splashComponentProperties.getProperty("splash.button.startEditor.text"),
+        splashComponentProperties.getProperty("splash.button.help.text")
     };
   }
 
@@ -187,11 +194,22 @@ public class SplashScreen extends Display {
    * @return array of strings for button IDs
    */
   private String[] getSplashButtonIDs() {
-    // TODO make not hard coded
-    return new String[]{"splashButtonGameType",
-        "splashButtonStartEngine",
-        "splashButtonStartEditor",
-        "splashButtonHelp"
+    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.id"),
+            splashComponentProperties.getProperty("splash.button.startEngine.id"),
+            splashComponentProperties.getProperty("splash.button.startEditor.id"),
+            splashComponentProperties.getProperty("splash.button.help.id")
+    };
+  }
+
+  /**
+   * Provides button styles for the splash scene to allow for custom CSS styling
+   * @return array of strings for button styles
+   */
+  private String[] getSplashButtonStyles() {
+    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.style"),
+            splashComponentProperties.getProperty("splash.button.startEngine.style"),
+            splashComponentProperties.getProperty("splash.button.startEditor.style"),
+            splashComponentProperties.getProperty("splash.button.help.style")
     };
   }
 }

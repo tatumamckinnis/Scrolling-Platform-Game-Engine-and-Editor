@@ -12,18 +12,26 @@ html {
 }
 
 .button {
-    -fx-pref-width: 200px;
     -fx-font-family: "Montserrat", "Lato", serif;
     -fx-font-weight: bold;
     -fx-font-size: 24px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-width: 5px;
+    -fx-border-style: solid;
+}
+
+.type-button {
+    -fx-border-color: #ff746c;
+}
+
+.type-button:hover {
+    -fx-background-color: #ff746c;
+    -fx-text-fill: white;
 }
 
 .engine-button {
-    -fx-background-color: white;
-    -fx-text-fill: black;
     -fx-border-color: #ffbe4e;
-    -fx-border-width: 5px;
-    -fx-border-style: solid;
 }
 
 .engine-button:hover {
@@ -32,15 +40,20 @@ html {
 }
 
 .editor-button {
-    -fx-background-color: white;
-    -fx-text-color: black;
     -fx-border-color: #535bff;
-    -fx-border-width: 5px;
-    -fx-border-style: solid;
 }
 
 .editor-button:hover {
     -fx-background-color: #535bff;
+    -fx-text-fill: white;
+}
+
+.help-button {
+    -fx-border-color: #ccccff;
+}
+
+.help-button:hover {
+    -fx-background-color: #ccccff;
     -fx-text-fill: white;
 }
 
