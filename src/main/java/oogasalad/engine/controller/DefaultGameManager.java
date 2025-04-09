@@ -1,4 +1,6 @@
-
+/**
+ * Game manager api implementation
+ */
 package oogasalad.engine.controller;
 
 import java.io.FileNotFoundException;
@@ -24,11 +26,7 @@ import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Game manager api implementation
- *
- * @author Gage Garcia
- */
+
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -40,6 +38,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
+
   private String currentLevel;
 
 
@@ -82,7 +81,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myLevelAPI.selectGame(filePath);
   }
 
-
   @Override
   public List<String> listLevels() {
     return myLevelAPI.listLevels();
@@ -103,12 +101,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   /**
-   * @see GameManagerAPI#endGame()
+   * @see GameManagerAPI#endGame() (String, GameObject)
    */
   @Override
   public void endGame() {
     pauseGame();
-    LOG.debug("ENDING GAME");
     //myView.renderEndGameScreen(text, gameObject);
   }
 

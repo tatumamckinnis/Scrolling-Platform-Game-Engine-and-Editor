@@ -8,6 +8,11 @@ package oogasalad.exceptions;
  */
 public class ViewInitializationException extends Exception {
 
+  /**
+   * Constructs a new view visualization error
+   *
+   * @param message the message to display to user
+   */
   public ViewInitializationException(String message) {
     super(message);
   }

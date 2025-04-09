@@ -19,12 +19,17 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultLevel implements LevelAPI {
 
-  Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
+  private Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
   private final FileParserAPI myFileParser;
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
       System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";
 
+  /**
+   * Default level constructor
+   *
+   * @param gameController the game controller manages the back-end of the game
+   */
   public DefaultLevel(GameControllerAPI gameController) {
     myFileParser = new DefaultFileParser();
     myGameController = gameController;
@@ -33,7 +38,7 @@ public class DefaultLevel implements LevelAPI {
   /**
    * Select game to load, updating game controller data
    *
-   * @param level String level name of the game(requires .xml)
+   * @param filePath String level name of the game(requires .xml)
    */
   @Override
   public void selectGame(String filePath) {
