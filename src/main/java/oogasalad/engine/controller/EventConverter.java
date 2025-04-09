@@ -8,8 +8,10 @@ import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.OutcomeData;
 
 /**
  * Utility class responsible for converting {@link EventData} from the file parser into fully
@@ -63,11 +65,12 @@ public class EventConverter {
    */
   private static List<List<EventCondition>> makeEventConditions(EventData eventData) {
     List<List<EventCondition>> eventConditions = new ArrayList<>();
-    for (List<String> eventCondition : eventData.conditions()) {
+    for (List<ConditionData> eventCondition : eventData.conditions()) {
       List<EventCondition> conditions = new ArrayList<>();
-      for (String condition : eventCondition) {
+      for (ConditionData condition : eventCondition) {
         EventCondition newCondition = new EventCondition(
-            EventCondition.ConditionType.valueOf(condition));
+            EventCondition.ConditionType.valueOf(condition.name()), condition.stringProperties(),
+            condition.doubleProperties());
         conditions.add(newCondition);
       }
       eventConditions.add(conditions);
@@ -84,8 +87,9 @@ public class EventConverter {
    */
   private static List<EventOutcome> makeEventOutcomes(EventData eventData) {
     List<EventOutcome> eventOutcomes = new ArrayList<>();
-    for (String outcome : eventData.outcomes()) {
-      EventOutcome newOutcome = new EventOutcome(EventOutcome.OutcomeType.valueOf(outcome));
+    for (OutcomeData outcome : eventData.outcomes()) {
+      EventOutcome newOutcome = new EventOutcome(EventOutcome.OutcomeType.valueOf(outcome.name()),
+          outcome.stringProperties(), outcome.doubleProperties());
       eventOutcomes.add(newOutcome);
     }
     return eventOutcomes;

@@ -2,13 +2,17 @@
 
 package oogasalad.engine.event.condition;
 
+import java.util.Map;
+
 /**
  * Condition Object defining enums for valid conditions to check for ConditionChecker controller
  * will have logic for checking condition
  *
  * @author Gage Garcia
  */
-public record EventCondition(EventCondition.ConditionType conditionType) {
+public record EventCondition(EventCondition.ConditionType conditionType,
+                             Map<String,String> stringProperties,
+                             Map<String,Double> doubleProperties) {
 
   /**
    * Define list of valid conditions enums
