@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Represents the level data used by the editor, including groups, layers, and mappings between
@@ -19,6 +20,8 @@ import java.util.UUID;
  * @author Jacob You
  */
 public class EditorLevelData {
+
+  private static Logger LOG = Logger.getLogger(EditorLevelData.class.getName());
 
   private List<String> myGroups;
   private List<Layer> myLayers;
@@ -33,8 +36,7 @@ public class EditorLevelData {
         .getResourceAsStream(propertyFile)) {
       editorConfig.load(is);
     } catch (IOException e) {
-      e.printStackTrace();
-      // TODO: Pass logger
+      LOG.info(e.getMessage());
     }
   }
 
