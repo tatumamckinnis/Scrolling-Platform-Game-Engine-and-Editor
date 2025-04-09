@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
  * This class acts as a facade for performing operations on editor objects, layers, groups, and
  * dynamic variables, and delegates tasks to corresponding data managers within an
  * {@link EditorLevelData} instance.
+ *
+ * @author Jacob You
  */
 public class EditorDataAPI {
 

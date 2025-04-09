@@ -9,6 +9,8 @@ import java.util.Map;
  * A container for managing dynamic variables used in the editor. This class provides methods to add
  * and retrieve {@link DynamicVariable} objects by their name, as well as retrieving an unmodifiable
  * collection of all stored variables.
+ *
+ * @author Jacob You
  */
 public class DynamicVariableContainer {
 

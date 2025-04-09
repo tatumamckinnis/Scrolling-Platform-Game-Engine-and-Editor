@@ -6,6 +6,8 @@ import oogasalad.editor.model.data.EditorLevelData;
 /**
  * Manages sprite data for EditorObjects, providing methods to access and modify
  * the x and y coordinates of an object's sprite.
+ *
+ * @author Jacob You
  */
 public class SpriteDataManager {
 

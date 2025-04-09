@@ -4,6 +4,14 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
 
+/**
+ * Defines the API for converting Editor data to and from files. Implementations of this interface
+ * are responsible for saving the current editor scene to a file, as well as loading a scene from an
+ * existing file. The conversion process involves translating editor objects into a format
+ * understood by the file parser and vice versa.
+ *
+ * @author Jacob You
+ */
 public interface EditorFileConverterAPI {
 
   /**
@@ -14,7 +22,8 @@ public interface EditorFileConverterAPI {
    * @throws IOException         if underlying file operations fail
    * @throws DataFormatException if data cannot be translated into the parser's model
    */
-  void saveEditorDataToFile(EditorLevelData editorLevelData) throws IOException, DataFormatException;
+  void saveEditorDataToFile(EditorLevelData editorLevelData)
+      throws IOException, DataFormatException;
 
   /**
    * Loads an existing file into the Editor by: 1) Calling GameFileParserAPI to parse the file into

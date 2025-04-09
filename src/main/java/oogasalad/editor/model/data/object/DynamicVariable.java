@@ -3,6 +3,8 @@ package oogasalad.editor.model.data.object;
 /**
  * Represents a dynamic variable used in the editor, encapsulating its name, type, value, and
  * description.
+ *
+ * @author Jacob You
  */
 public class DynamicVariable {
 
