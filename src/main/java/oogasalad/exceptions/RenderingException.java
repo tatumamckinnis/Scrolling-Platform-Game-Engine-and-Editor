@@ -8,6 +8,11 @@ package oogasalad.exceptions;
  */
 public class RenderingException extends Exception {
 
+  /**
+   * constructor for creating a rendering exception
+   *
+   * @param message the message to display to user
+   */
   public RenderingException(String message) {
     super(message);
   }

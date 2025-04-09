@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
@@ -46,6 +47,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
    */
   @Override
   public void saveLevelStatus() throws IOException, DataFormatException {
+    // TODO: will be implemented soon...
   }
 
   /**
@@ -87,37 +89,27 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     Map<String, Double> parametersMap = makeParametersMap(blueprintData);
 
     GameObject newGameObject;
+
+    UUID uniqueId = gameObjectData.uniqueId();
+    String type = blueprintData.type();
+    int layer = gameObjectData.layer();
+    int xVelocity = 0;
+    int yVelocity = 0;
+    HitBox hitBox = new HitBox(gameObjectData.x(), gameObjectData.y(), blueprintData.hitBoxData().hitBoxWidth(),
+        blueprintData.hitBoxData().hitBowHeight());
+    Sprite sprite = new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap, blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy());
+    List<Event> emptyEvents = new ArrayList<>();
+    //TODO make map based on player data
+    Map<String, Double> displayedStats = new HashMap<>();
+    Map<String, String> properties = blueprintData.objectProperties();
+
     if (blueprintData.type().equals("Player")) {
-      newGameObject = new Player(
-          gameObjectData.uniqueId(),
-          blueprintData.type(),
-          gameObjectData.layer(),
-          0,
-          0,
-          new HitBox(gameObjectData.x(), gameObjectData.y(), blueprintData.hitBoxData().hitBoxWidth(),
-              blueprintData.hitBoxData().hitBowHeight()),
-          new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap, blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy()),
-          new ArrayList<>(),
-          //TODO make map based on player data
-          new HashMap<>(),
-          blueprintData.objectProperties(),
-          parametersMap
-      );
+      newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+          emptyEvents, displayedStats, properties, new HashMap<>());
     }
     else {
-      newGameObject = new Entity(
-          gameObjectData.uniqueId(),
-          blueprintData.type(),
-          gameObjectData.layer(),
-          0,
-          0,
-          new HitBox(gameObjectData.x(), gameObjectData.y(), blueprintData.hitBoxData().hitBoxWidth(),
-              blueprintData.hitBoxData().hitBowHeight()),
-          new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap, blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy()),
-          new ArrayList<>(),
-          blueprintData.objectProperties(),
-          parametersMap
-      );
+      newGameObject = new Entity(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+          emptyEvents, properties, parametersMap);
     }
 
     List<Event> events = EventConverter.convertEventData(gameObjectData, newGameObject, bluePrintMap);

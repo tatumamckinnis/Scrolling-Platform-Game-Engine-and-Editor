@@ -22,13 +22,22 @@ import oogasalad.engine.model.object.GameObject;
  * @author Alana Zinkin
  */
 public class LoseGameOutcome implements Outcome {
+
   private final GameExecutor executor;
 
-  /** Logger used to record loss events */
+  /**
+   * Logger used to record loss events
+   */
   Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
+
+  /**
+   * Outcome that the player has lost the game
+   * @param executor allows for access to the game manager
+   */
   public LoseGameOutcome(GameExecutor executor) {
     this.executor = executor;
   }
+
   /**
    * Executes the outcome, logging that the player has lost the game.
    *
