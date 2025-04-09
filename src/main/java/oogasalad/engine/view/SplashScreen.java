@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.factory.ButtonActionFactory;
@@ -71,8 +72,8 @@ public class SplashScreen extends Display {
    * @param splashHeight height of the left pane
    * @return pane containing the logo
    */
-  private Pane createLogoPane(int splashHeight) {
-    Pane logoPane = new Pane();
+  private StackPane createLogoPane(int splashHeight) {
+    StackPane logoPane = new StackPane();
     int logoPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
     logoPane.getStyleClass().add("logo-pane");
@@ -86,8 +87,8 @@ public class SplashScreen extends Display {
    * @param splashHeight height of the left pane
    * @return pane containing the button box
    */
-  private Pane createOptionsPane(int splashHeight) {
-    Pane optionsPane = new Pane();
+  private StackPane createOptionsPane(int splashHeight) {
+    StackPane optionsPane = new StackPane();
     int optionsPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.rightPane.width"));
     optionsPane.setPrefSize(optionsPaneWidth, splashHeight);
     optionsPane.getStyleClass().add("options-pane");
