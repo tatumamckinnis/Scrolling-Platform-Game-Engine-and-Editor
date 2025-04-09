@@ -200,7 +200,7 @@ class OutcomesSectionBuilderTest {
 
     robot.clickOn(outcomeListView);
     robot.clickOn(itemText);
-    waitForFxEvents();
+    waitForFxEvents(); // Ensure selection is processed
 
     robot.clickOn(lookupButtonWithText(uiBundle.getString(REMOVE_BUTTON_KEY)));
     waitForFxEvents();
