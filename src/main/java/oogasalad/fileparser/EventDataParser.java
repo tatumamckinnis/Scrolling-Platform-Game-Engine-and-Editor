@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
+import oogasalad.fileparser.records.OutcomeData;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -12,23 +16,40 @@ import org.w3c.dom.NodeList;
  * Parses event-related data from an XML document into a list of {@link EventData} records.
  * <p>
  * This parser extracts events found in the XML and creates {@code EventData} objects by
- * processing the event's attributes, conditions, outcomes, and parameters.
+ * processing the event’s type, id, conditions, outcomes, and parameters.
+ * </p>
+ * <p>
+ * Each event node is expected to have nested <code>conditions</code> with one or more
+ * <code>conditionSet</code> elements (each with one or more <code>condition</code> children)
+ * and <code>outcomes</code> with one or more <code>outcome</code> children. Conditions and outcomes
+ * use dedicated <code>doubleParameters</code> and <code>stringParameters</code> sections to specify
+ * their parameter data.
  * </p>
  *
- * @author Billy McCune
+ * Example usage:
+ * <pre>
+ *   Element root = ...; // obtain your XML root element
+ *   EventDataParser parser = new EventDataParser();
+ *   List&lt;EventData&gt; events = parser.getLevelEvents(root);
+ * </pre>
+ *
+ * @author Billy
  */
 public class EventDataParser {
-  List<EventData> events;
+
+  // A single instance of the PropertyParser to handle our property parsing.
+  private final PropertyParser myPropertyParser = new PropertyParser();
 
   /**
    * Extracts the list of event data from the provided XML root element.
    *
    * @param root the XML {@link Element} that contains the event nodes.
    * @return a list of {@link EventData} objects parsed from the XML.
+   * @throws BlueprintParseException if there is any issue parsing the property data.
    */
-  public List<EventData> getLevelEvents(Element root) {
+  public List<EventData> getLevelEvents(Element root) throws BlueprintParseException, EventParseException {
     NodeList eventNodes = root.getElementsByTagName("event");
-    events = new ArrayList<>();
+    List<EventData> events = new ArrayList<>();
     for (int i = 0; i < eventNodes.getLength(); i++) {
       Element eventElement = (Element) eventNodes.item(i);
       events.add(parseEventNode(eventElement));
@@ -37,102 +58,146 @@ public class EventDataParser {
   }
 
   /**
-   * Parses an individual event node into an {@link EventData} object.
+   * Parses an individual event node into an {@link EventData} record.
    *
    * @param eventElement the XML {@link Element} representing an event.
-   * @return the {@link EventData} object containing the parsed event data.
+   * @return the {@link EventData} record containing the parsed event data.
+   * @throws BlueprintParseException if property parsing fails.
    */
-  private EventData parseEventNode(Element eventElement) {
+  private EventData parseEventNode(Element eventElement) throws BlueprintParseException, EventParseException {
     String type = eventElement.getAttribute("type");
     String id = eventElement.getAttribute("id");
 
-    // Parse conditions from the "conditions" element
-    List<List<String>> conditions = parseEventConditions(
-        (Element) eventElement.getElementsByTagName("conditions").item(0));
+    // Parse conditions and outcomes using explicit loops.
+    List<List<ConditionData>> conditions = parseConditions(eventElement);
+    List<OutcomeData> outcomes = parseOutcomes(eventElement);
 
-    // Parse outcomes from the "outcomes" element
-    List<String> outcomes = parseOutcomes(
-        (Element) eventElement.getElementsByTagName("outcomes").item(0));
-
-    // Parse parameters from the "parameters" element
-    Map<String, String> parameters = parseParameters(
-        (Element) eventElement.getElementsByTagName("parameters").item(0));
-
-    return new EventData(type, id, conditions, outcomes, parameters);
+    return new EventData(type, id, conditions, outcomes);
   }
 
   /**
-   * Parses the conditions defined in an event's <code>conditions</code> element.
-   * <p>
-   * Each <code>condition</code> element is expected to have a "list" attribute containing a
-   * comma-separated string of condition tokens.
-   * </p>
+   * Parses all the condition sets from an event element.
    *
-   * @param conditionsElement the XML {@link Element} that holds the event conditions.
-   * @return a list of condition lists; each inner list contains condition tokens for a single
-   *         condition.
+   * @param eventElement the XML {@link Element} representing an event.
+   * @return a list of condition lists, each list representing a condition set.
+   * @throws BlueprintParseException if condition parsing fails.
    */
-  private List<List<String>> parseEventConditions(Element conditionsElement) {
-    List<List<String>> conditions = new ArrayList<>();
-    if (conditionsElement != null) {
-      NodeList conditionNodes = conditionsElement.getElementsByTagName("condition");
-      for (int i = 0; i < conditionNodes.getLength(); i++) {
-        Element condition = (Element) conditionNodes.item(i);
-        String conditionValue = condition.getAttribute("list");
-        List<String> conditionList = new ArrayList<>();
-        // Split by comma in case multiple tokens are provided in the "list" attribute.
-        for (String token : conditionValue.split(",")) {
-          conditionList.add(token.trim());
+  private List<List<ConditionData>> parseConditions(Element eventElement) throws BlueprintParseException, EventParseException{
+    try {
+      List<List<ConditionData>> conditions = new ArrayList<>();
+      Element conditionsElement = getFirstElementByTagName(eventElement, "conditions");
+        NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
+        for (int i = 0; i < conditionSetNodes.getLength(); i++) {
+          Element conditionSetElement = (Element) conditionSetNodes.item(i);
+          List<ConditionData> conditionList = new ArrayList<>();
+          NodeList conditionNodes = conditionSetElement.getElementsByTagName("condition");
+          for (int j = 0; j < conditionNodes.getLength(); j++) {
+            Element conditionElement = (Element) conditionNodes.item(j);
+            conditionList.add(parseCondition(conditionElement));
+          }
+          conditions.add(conditionList);
         }
-        conditions.add(conditionList);
-      }
+      return conditions;
+    } catch (NullPointerException e){
+      throw new EventParseException(e.getMessage());
     }
-    return conditions;
   }
 
   /**
-   * Parses the outcomes defined in an event's <code>outcomes</code> element.
-   * <p>
-   * The outcomes element should have a "list" attribute containing a comma-separated string of
-   * outcome tokens.
-   * </p>
+   * Parses all the outcomes from an event element.
    *
-   * @param outcomeElement the XML {@link Element} that holds the event outcomes.
-   * @return a list of outcome tokens.
+   * @param eventElement the XML {@link Element} representing an event.
+   * @return a list of {@link OutcomeData} records.
+   * @throws BlueprintParseException if outcome parsing fails.
    */
-  private List<String> parseOutcomes(Element outcomeElement) {
-    List<String> outcomes = new ArrayList<>();
-    if (outcomeElement != null) {
-      String outcomeValue = outcomeElement.getAttribute("list");
-      // Split by comma to support multiple outcomes if needed.
-      for (String token : outcomeValue.split(",")) {
-        outcomes.add(token.trim());
+  private List<OutcomeData> parseOutcomes(Element eventElement) throws BlueprintParseException, EventParseException {
+    try {
+      List<OutcomeData> outcomes = new ArrayList<>();
+      Element outcomesElement = getFirstElementByTagName(eventElement, "outcomes");
+      if (outcomesElement != null) {
+        NodeList outcomeNodes = outcomesElement.getElementsByTagName("outcome");
+        for (int i = 0; i < outcomeNodes.getLength(); i++) {
+          Element outcomeElement = (Element) outcomeNodes.item(i);
+          outcomes.add(parseOutcome(outcomeElement));
+        }
       }
+      return outcomes;
+    } catch (NullPointerException e){
+      throw new EventParseException(e.getMessage());
     }
-    return outcomes;
   }
 
   /**
-   * Parses the parameters defined in an event's <code>parameters</code> element.
-   * <p>
-   * Each parameter is represented by a <code>parameter</code> element with a "name" attribute
-   * and its value provided as text content.
-   * </p>
+   * Parses a condition element into a {@link ConditionData} record.
    *
-   * @param parametersElement the XML {@link Element} that holds the event parameters.
-   * @return a map where the keys are parameter names and the values are the corresponding parameter values.
+   * @param conditionElement the XML {@link Element} representing a condition.
+   * @return the parsed {@link ConditionData} record.
+   * @throws BlueprintParseException if property parsing fails.
    */
-  private Map<String, String> parseParameters(Element parametersElement) {
-    Map<String, String> parameters = new HashMap<>();
-    if (parametersElement != null) {
-      NodeList parameterNodes = parametersElement.getElementsByTagName("parameter");
-      for (int i = 0; i < parameterNodes.getLength(); i++) {
-        Element parameter = (Element) parameterNodes.item(i);
-        String paramName = parameter.getAttribute("name");
-        String paramValue = parameter.getTextContent().trim();
-        parameters.put(paramName, paramValue);
-      }
+  private ConditionData parseCondition(Element conditionElement) throws BlueprintParseException {
+    String name = conditionElement.getAttribute("name");
+    Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
+    Map<String, String> stringProperties = extractStringProperties(conditionElement);
+    return new ConditionData(name, stringProperties, doubleProperties);
+  }
+
+  /**
+   * Parses an outcome element into an {@link OutcomeData} record.
+   *
+   * @param outcomeElement the XML {@link Element} representing an outcome.
+   * @return the parsed {@link OutcomeData} record.
+   * @throws BlueprintParseException if property parsing fails.
+   */
+  private OutcomeData parseOutcome(Element outcomeElement) throws BlueprintParseException {
+    // In the new XML, outcome uses the "type" attribute to denote its action.
+    String outcomeName = outcomeElement.getAttribute("type");
+    if (outcomeName == null || outcomeName.isEmpty()) {
+      outcomeName = outcomeElement.getAttribute("name");
     }
-    return parameters;
+    Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
+    Map<String, String> stringProperties = extractStringProperties(outcomeElement);
+    return new OutcomeData(outcomeName, stringProperties, doubleProperties);
+  }
+
+  /**
+   * Extracts double properties from an element by finding its "doubleParameters" child.
+   *
+   * @param element the element from which to extract double properties.
+   * @return a map of double properties; an empty map if none are found.
+   * @throws BlueprintParseException if property parsing fails.
+   */
+  private Map<String, Double> extractDoubleProperties(Element element) throws BlueprintParseException {
+    Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
+    if (doubleParams != null) {
+      return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters", "parameter");
+    }
+    return new HashMap<>();
+  }
+
+  /**
+   * Extracts string properties from an element by finding its "stringParameters" child.
+   *
+   * @param element the element from which to extract string properties.
+   * @return a map of string properties; an empty map if none are found.
+   * @throws BlueprintParseException if property parsing fails.
+   */
+  private Map<String, String> extractStringProperties(Element element) throws BlueprintParseException, EventParseException{
+    Element stringParams = getFirstElementByTagName(element, "stringParameters");
+    if (stringParams != null) {
+      return myPropertyParser.parseStringProperties(stringParams, "stringParameters", "parameter");
+    }
+    return new HashMap<>();
+  }
+
+  /**
+   * Helper method to get the first direct child element with the given tag name.
+   *
+   * @param parent  the parent element.
+   * @param tagName the tag name to search for.
+   * @return the first matching child element, or null if not found.
+   */
+  private Element getFirstElementByTagName(Element parent, String tagName) {
+    NodeList nodeList = parent.getElementsByTagName(tagName);
+    return (nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
   }
 }

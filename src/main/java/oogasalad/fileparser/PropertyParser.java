@@ -38,14 +38,14 @@ public class PropertyParser {
    * Parses the <code>&lt;doubleProperties&gt;</code> element containing child elements
    * with the given tag holding property data.
    *
-   * @param blueprintDataNode the XML element containing the <code>&lt;doubleProperties&gt;</code> node.
+   * @param ObjectNode the XML element containing the <code>&lt;doubleProperties&gt;</code> node.
    * @param childTag          the tag name of the child elements holding property data.
    * @return a map with property names and their corresponding double values.
    * @throws BlueprintParseException if the node is not found or if a value cannot be parsed as a double.
    */
-  public Map<String, Double> parseDoubleProperties(Element blueprintDataNode, String childTag)
+  public Map<String, Double> parseDoubleProperties(Element ObjectNode,  String propertiesTag, String childTag)
       throws BlueprintParseException {
-    return parseProperties(blueprintDataNode, "doubleProperties", childTag, Double::parseDouble,
+    return parseProperties(ObjectNode, propertiesTag, childTag, Double::parseDouble,
         "error.invalid.doubleValue");
   }
 
@@ -54,14 +54,14 @@ public class PropertyParser {
    * Parses the <code>&lt;stringProperties&gt;</code> element containing child elements
    * with the given tag name holding property data.
    *
-   * @param blueprintDataNode the XML element containing the <code>&lt;stringProperties&gt;</code> node.
+   * @param ObjectNode the XML element containing the <code>&lt;stringProperties&gt;</code> node.
    * @param childTag          the tag name of the child elements holding property data.
    * @return a map with property names and their corresponding string values.
    * @throws BlueprintParseException if the node is not in the expected format.
    */
-  public Map<String, String> parseStringProperties(Element blueprintDataNode, String childTag)
+  public Map<String, String> parseStringProperties(Element ObjectNode, String propertiesTag, String childTag)
       throws BlueprintParseException {
-    return parseProperties(blueprintDataNode, "stringProperties", childTag, s -> s,
+    return parseProperties(ObjectNode, propertiesTag, childTag, s -> s,
         "error.stringProperties.conversion");
   }
 
@@ -70,7 +70,7 @@ public class PropertyParser {
    * have been converted using the provided converter function.
    *
    * @param <T>               the type of the property value.
-   * @param blueprintDataNode the element that contains the properties node.
+   * @param ParentNode the element that contains the properties node.
    * @param propertiesTag     the tag name of the properties node (e.g., "doubleProperties"
    *                          or "stringProperties").
    * @param childTag          the tag name of the child elements holding property data.
@@ -80,10 +80,10 @@ public class PropertyParser {
    * @return a map of property names to their converted values.
    * @throws BlueprintParseException if the node is not found or if a conversion fails.
    */
-  private <T> Map<String, T> parseProperties(Element blueprintDataNode, String propertiesTag, String childTag,
+  private <T> Map<String, T> parseProperties(Element ParentNode, String propertiesTag, String childTag,
       Function<String, T> converter, String errorPrefix) throws BlueprintParseException {
 
-    Element propertiesElement = getPropertiesElement(blueprintDataNode, propertiesTag);
+    Element propertiesElement = getPropertiesElement(ParentNode, propertiesTag);
     if (propertiesElement == null) {
       return new HashMap<>();
     }
@@ -93,14 +93,14 @@ public class PropertyParser {
   /**
    * Retrieves the properties element from the blueprint node using the specified tag.
    *
-   * @param blueprintDataNode the element that contains the properties node.
+   * @param ParentNode the element that contains the properties node.
    * @param propertiesTag     the tag name of the properties node.
    * @return the properties element if present; {@code null} otherwise.
    * @throws BlueprintParseException if the node is found but is not an element.
    */
-  private Element getPropertiesElement(Element blueprintDataNode, String propertiesTag)
+  private Element getPropertiesElement(Element ParentNode, String propertiesTag)
       throws BlueprintParseException {
-    NodeList propertyList = blueprintDataNode.getElementsByTagName(propertiesTag);
+    NodeList propertyList = ParentNode.getElementsByTagName(propertiesTag);
     if (propertyList.getLength() > 0) {
       Node node = propertyList.item(0);
       if (!(node instanceof Element)) {

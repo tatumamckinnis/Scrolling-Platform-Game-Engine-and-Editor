@@ -14,12 +14,12 @@ import oogasalad.fileparser.records.SpriteData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import oogasalad.exceptions.SpriteParseException;
 
 /**
  * Parses a sprite XML file and builds a SpriteData object.
  * <p>
- * The file is located using: user directory + graphics data path + game + group + type + sprite
- * file.
+ * The file is located using: user directory + graphics data path + game + group + type + sprite file.
  * <p>
  * Example XML file:
  * <pre>
@@ -44,26 +44,31 @@ import org.w3c.dom.NodeList;
  * &lt;/spriteFile&gt;
  * </pre>
  *
- * @author Billy McCune
+ * @author ...
  */
 public class SpriteDataParser {
 
-
-  // Base path to the graphics data.
+  // Base path to the graphics data and sprite data.
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
 
-
-  // Constructor that loads the properties file and sets the graphics data path.
+  // Constructor that loads the properties file and sets the paths.
   public SpriteDataParser() {
-    this.pathToGraphicsData = loadDataPaths()[0];
-    this.pathToSpriteData = loadDataPaths()[1];
+    String[] paths = loadDataPaths();
+    if (paths.length < 2) {
+      // Handle error appropriately; here we default to empty paths.
+      this.pathToGraphicsData = "";
+      this.pathToSpriteData = "";
+    } else {
+      this.pathToGraphicsData = paths[0];
+      this.pathToSpriteData = paths[1];
+    }
   }
 
   /**
-   * Loads the graphics data path from the properties file.
+   * Loads the required data paths from the properties file.
    *
-   * @return the full path to the graphics data as a String
+   * @return an array where index 0 is the graphics data path and index 1 is the sprite data path.
    */
   private String[] loadDataPaths() {
     Properties properties = new Properties();
@@ -72,114 +77,58 @@ public class SpriteDataParser {
       properties.load(input);
     } catch (IOException e) {
       e.printStackTrace();
-      // Return a default or empty string if loading fails.
+      // Return an empty array if loading fails.
       return new String[0];
     }
-    // Combine with the user directory if the property is relative.
-    String[] paths = new String[properties.size()];
-    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty(
-        "path.to.game.data");
-    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty(
-        "path.to.graphics.data");
+    String[] paths = new String[2];
+    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.graphics.data");
+    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.game.data");
     return paths;
   }
 
   /**
    * Retrieves a SpriteData record from an XML sprite file.
    *
-   * @param gameName   the name of the game
-   * @param group      the group folder name
-   * @param type       the type folder name
-   * @param spriteName the name of the sprite to locate
-   * @param spriteFile the XML file containing the sprite information
-   * @return a SpriteData object, or null if parsing fails
+   * @param gameName   the name of the game.
+   * @param group      the group folder name.
+   * @param type       the type folder name.
+   * @param spriteName the name of the sprite to locate.
+   * @param spriteFile the XML file containing the sprite information.
+   * @return a SpriteData object.
+   * @throws SpriteParseException if parsing fails.
    */
   public SpriteData getSpriteData(String gameName, String group, String type,
-      String spriteName, String spriteFile) throws RuntimeException {
-    // Build the file path using user directory, graphics data path, and provided folders.
+      String spriteName, String spriteFile) throws SpriteParseException {
+    // Build the file path.
     String filePath = buildFilePath(gameName, group, type, spriteFile);
-    try {
+    Document doc = loadDocument(filePath);
+    Element spriteFileElement = doc.getDocumentElement();
 
-      File xmlFile = new File(filePath);
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      Document doc = builder.parse(xmlFile);
-      doc.getDocumentElement().normalize();
+    // Retrieve the sprite sheet file.
+    File spriteSheetFile = getSpriteSheetFile(spriteFileElement, gameName);
 
-      // The root element is expected to be <spriteFile>.
-      Element spriteFileElement = doc.getDocumentElement();
-      // Retrieve the sprite sheet image file from the spriteFile element.
-      String imagePath = spriteFileElement.getAttribute("imagePath");
-      File spriteSheetFile = new File(pathToGraphicsData + File.separator + gameName, imagePath);
-
-      // Find the <sprite> element with a matching name.
-      NodeList spriteNodes = spriteFileElement.getElementsByTagName("sprite");
-      Element targetSprite = null;
-      for (int i = 0; i < spriteNodes.getLength(); i++) {
-        Element spriteElement = (Element) spriteNodes.item(i);
-        if (spriteElement.getAttribute("name").equals(spriteName)) {
-          targetSprite = spriteElement;
-          break;
-        }
-      }
-      if (targetSprite == null) {
-        throw new RuntimeException("Sprite with name " + spriteName
-            + " not found in file " + filePath);
-      }
-      // Create a base image from the sprite element's attributes.
-      int baseX = Integer.parseInt(targetSprite.getAttribute("x"));
-      int baseY = Integer.parseInt(targetSprite.getAttribute("y"));
-      int baseWidth = 0;
-      int baseHeight = 0;
-      if (targetSprite.getAttribute("width") != "") {
-        baseWidth = Integer.parseInt(targetSprite.getAttribute("width"));
-      }
-      if (targetSprite.getAttribute("height") != "") {
-        baseHeight = Integer.parseInt(targetSprite.getAttribute("height"));
-      }
-      FrameData baseImage = new FrameData(spriteName, baseX, baseY, baseWidth, baseHeight,
-          spriteSheetFile);
-
-      // Parse frames from the <frames> element.
-      List<FrameData> frames = new ArrayList<>();
-      NodeList framesNodes = targetSprite.getElementsByTagName("frames");
-      if (framesNodes.getLength() > 0) {
-        Element framesElement = (Element) framesNodes.item(0);
-        NodeList frameNodes = framesElement.getElementsByTagName("frame");
-        for (int i = 0; i < frameNodes.getLength(); i++) {
-          Element frameElement = (Element) frameNodes.item(i);
-          frames.add(parseFrameData(frameElement, spriteSheetFile));
-        }
-      }
-
-      // Parse animations from the <animations> element.
-      List<AnimationData> animations = new ArrayList<>();
-      NodeList animationsNodes = targetSprite.getElementsByTagName("animations");
-      if (animationsNodes.getLength() > 0) {
-        Element animationsElement = (Element) animationsNodes.item(0);
-        NodeList animationNodes = animationsElement.getElementsByTagName("animation");
-        for (int i = 0; i < animationNodes.getLength(); i++) {
-          Element animationElement = (Element) animationNodes.item(i);
-          animations.add(parseAnimationData(animationElement));
-        }
-      }
-
-      // Return the constructed SpriteData record.
-      return new SpriteData(spriteName, baseImage, frames, animations);
-    } catch (Exception e) {
-      e.printStackTrace();
+    // Locate the target sprite in the XML.
+    Element targetSprite = getTargetSprite(spriteFileElement, spriteName);
+    if (targetSprite == null) {
+      throw new SpriteParseException("Sprite with name " + spriteName + " not found in file " + filePath);
     }
-    return null;
+
+    // Parse base image data, frames, and animations.
+    FrameData baseImage = parseBaseImage(targetSprite, spriteName);
+    List<FrameData> frames = parseFrames(targetSprite, spriteSheetFile);
+    List<AnimationData> animations = parseAnimations(targetSprite);
+
+    return new SpriteData(spriteName, spriteSheetFile, baseImage, frames, animations);
   }
 
   /**
    * Builds the file path to the sprite XML file.
    *
-   * @param gameName   the game name
-   * @param group      the group folder name
-   * @param type       the type folder name
-   * @param spriteFile the sprite file name
-   * @return the full file path as a String
+   * @param gameName   the game name.
+   * @param group      the group folder name.
+   * @param type       the type folder name.
+   * @param spriteFile the sprite file name.
+   * @return the full file path as a String.
    */
   private String buildFilePath(String gameName, String group, String type, String spriteFile) {
     return pathToSpriteData + File.separator + gameName + File.separator + group
@@ -187,11 +136,105 @@ public class SpriteDataParser {
   }
 
   /**
+   * Loads an XML Document from the given file path.
+   *
+   * @param filePath the path to the XML file.
+   * @return the loaded Document.
+   * @throws SpriteParseException if an error occurs while loading the document.
+   */
+  private Document loadDocument(String filePath) throws SpriteParseException {
+    try {
+      File xmlFile = new File(filePath);
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(xmlFile);
+      doc.getDocumentElement().normalize();
+      return doc;
+    } catch (Exception e) {
+      throw new SpriteParseException("Error loading document from file " + filePath + ": " + e.getMessage());
+    }
+  }
+
+  /**
+   * Retrieves the sprite sheet file from the spriteFile element's imagePath attribute.
+   *
+   * @param spriteFileElement the root element of the sprite file.
+   * @param gameName          the name of the game.
+   * @return the sprite sheet File object.
+   */
+  private File getSpriteSheetFile(Element spriteFileElement, String gameName) {
+    String imagePath = spriteFileElement.getAttribute("imagePath");
+    return new File(pathToGraphicsData + File.separator + gameName, imagePath);
+  }
+
+  /**
+   * Searches for and returns the <sprite> element with the given spriteName.
+   *
+   * @param spriteFileElement the root element of the sprite file.
+   * @param spriteName        the name of the sprite.
+   * @return the matching sprite element, or null if not found.
+   */
+  private Element getTargetSprite(Element spriteFileElement, String spriteName) {
+    NodeList spriteNodes = spriteFileElement.getElementsByTagName("sprite");
+    for (int i = 0; i < spriteNodes.getLength(); i++) {
+      Element spriteElement = (Element) spriteNodes.item(i);
+      if (spriteName.equals(spriteElement.getAttribute("name"))) {
+        return spriteElement;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Parses the base frame data (base image) from the target sprite element.
+   *
+   * @param targetSprite the sprite element representing the target sprite.
+   * @param spriteName   the name of the sprite.
+   * @return a FrameData record for the base image.
+   */
+  private FrameData parseBaseImage(Element targetSprite, String spriteName) {
+    int baseX = Integer.parseInt(targetSprite.getAttribute("x"));
+    int baseY = Integer.parseInt(targetSprite.getAttribute("y"));
+    int baseWidth = 0;
+    int baseHeight = 0;
+    String widthAttr = targetSprite.getAttribute("width");
+    String heightAttr = targetSprite.getAttribute("height");
+    if (!widthAttr.isEmpty()) {
+      baseWidth = Integer.parseInt(widthAttr);
+    }
+    if (!heightAttr.isEmpty()) {
+      baseHeight = Integer.parseInt(heightAttr);
+    }
+    return new FrameData(spriteName, baseX, baseY, baseWidth, baseHeight);
+  }
+
+  /**
+   * Parses all frame elements within the <frames> element.
+   *
+   * @param targetSprite    the sprite element containing the frames.
+   * @param spriteSheetFile the sprite sheet image file.
+   * @return a list of FrameData records.
+   */
+  private List<FrameData> parseFrames(Element targetSprite, File spriteSheetFile) {
+    List<FrameData> frames = new ArrayList<>();
+    NodeList framesNodes = targetSprite.getElementsByTagName("frames");
+    if (framesNodes.getLength() > 0) {
+      Element framesElement = (Element) framesNodes.item(0);
+      NodeList frameNodes = framesElement.getElementsByTagName("frame");
+      for (int i = 0; i < frameNodes.getLength(); i++) {
+        Element frameElement = (Element) frameNodes.item(i);
+        frames.add(parseFrameData(frameElement, spriteSheetFile));
+      }
+    }
+    return frames;
+  }
+
+  /**
    * Parses a <frame> element and returns a FrameData record.
    *
-   * @param frameElement    the frame element from the XML
-   * @param spriteSheetFile the File object for the sprite sheet image
-   * @return a FrameData record containing the frame's attributes
+   * @param frameElement    the frame element from the XML.
+   * @param spriteSheetFile the sprite sheet image file.
+   * @return a FrameData record containing the frame's attributes.
    */
   private FrameData parseFrameData(Element frameElement, File spriteSheetFile) {
     String name = frameElement.getAttribute("name");
@@ -199,14 +242,34 @@ public class SpriteDataParser {
     int y = Integer.parseInt(frameElement.getAttribute("y"));
     int width = Integer.parseInt(frameElement.getAttribute("width"));
     int height = Integer.parseInt(frameElement.getAttribute("height"));
-    return new FrameData(name, x, y, width, height, spriteSheetFile);
+    return new FrameData(name, x, y, width, height);
+  }
+
+  /**
+   * Parses all animation elements within the <animations> element.
+   *
+   * @param targetSprite the sprite element containing the animations.
+   * @return a list of AnimationData records.
+   */
+  private List<AnimationData> parseAnimations(Element targetSprite) {
+    List<AnimationData> animations = new ArrayList<>();
+    NodeList animationsNodes = targetSprite.getElementsByTagName("animations");
+    if (animationsNodes.getLength() > 0) {
+      Element animationsElement = (Element) animationsNodes.item(0);
+      NodeList animationNodes = animationsElement.getElementsByTagName("animation");
+      for (int i = 0; i < animationNodes.getLength(); i++) {
+        Element animationElement = (Element) animationNodes.item(i);
+        animations.add(parseAnimationData(animationElement));
+      }
+    }
+    return animations;
   }
 
   /**
    * Parses an <animation> element and returns an AnimationData record.
    *
-   * @param animationElement the animation element from the XML
-   * @return an AnimationData record containing the animation's attributes
+   * @param animationElement the animation element from the XML.
+   * @return an AnimationData record containing the animation's attributes.
    */
   private AnimationData parseAnimationData(Element animationElement) {
     String name = animationElement.getAttribute("name");

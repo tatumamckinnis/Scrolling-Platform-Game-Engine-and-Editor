@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
@@ -58,7 +59,7 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
-      throws BlueprintParseException {
+      throws BlueprintParseException, SpriteParseException {
     myEventDataList = eventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
@@ -97,7 +98,8 @@ public class BlueprintDataParser {
    * @return a {@link List} of {@link BlueprintData} records extracted from the game element.
    * @throws BlueprintParseException if any parsing error occurs.
    */
-  private List<BlueprintData> parseByGame(Element gameNode) throws BlueprintParseException {
+  private List<BlueprintData> parseByGame(Element gameNode)
+      throws BlueprintParseException, SpriteParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
     for (int i = 0; i < objectGroupNodes.getLength(); i++) {
@@ -120,7 +122,7 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
-      throws BlueprintParseException {
+      throws BlueprintParseException, SpriteParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
@@ -152,11 +154,13 @@ public class BlueprintDataParser {
    *                                 the correct format.
    */
   private BlueprintData parseGameObjectData(Element gameObjectNode)
-      throws BlueprintParseException {
+      throws BlueprintParseException, SpriteParseException {
     try {
       mySpriteDataParser = new SpriteDataParser();
 
       int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
+      double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
+      double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
@@ -170,11 +174,14 @@ public class BlueprintDataParser {
       HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
       List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
 
-      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode);
-      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode);
+      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,"doubleProperties","property");
+      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,"stringProperties" ,"property");
+      List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
 
       return new BlueprintData(
           id,
+          velocityX,
+          velocityY,
           gameName,
           groupName,
           type,
@@ -182,7 +189,8 @@ public class BlueprintDataParser {
           hitBoxData,
           eventDataList,
           stringProperties,
-          doubleProperties
+          doubleProperties,
+          displayedProperties
       );
     } catch (NumberFormatException e) {
       throw new BlueprintParseException("error.number.format");
@@ -221,5 +229,14 @@ public class BlueprintDataParser {
       }
     }
     return null;
+  }
+
+  private List<String> getDisplayedProperties(Element gameObjectNode) {
+    if (gameObjectNode.getElementsByTagName("displayedProperties").item(0) != null) {
+        Element displayedProperties = (Element) gameObjectNode.getElementsByTagName("displayedProperties").item(0);
+        return List.of(
+            displayedProperties.getAttribute("propertyList").split(","));
+    }
+    return new ArrayList<>();
   }
 }

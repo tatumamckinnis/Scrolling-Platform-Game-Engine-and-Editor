@@ -1,9 +1,7 @@
 package oogasalad.fileparser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,32 +43,22 @@ public class LayerDataParser {
    * </p>
    *
    * @param root the XML {@link Element} that contains the layer definitions.
-   * @return a {@link Map} where keys are layer z-index values and values are lists of {@link GameObjectData}
-   *         objects associated with each layer.
+   * @return a List of game objects with their z coordinates by layer
    */
-  public Map<Integer, List<GameObjectData>> getGameObjectDataMap(Element root) {
+  public List<GameObjectData> getGameObjectDataList(Element root) {
     Element layersElement = (Element) root.getElementsByTagName("layers").item(0);
-    /**
-     * A map associating a layer's z-index with a list of {@link GameObjectData} objects.
-     */
-    Map<Integer, List<GameObjectData>> gameObjectMap = new HashMap<>();
+    List<GameObjectData> gameObjects = new ArrayList<>();
     myGameObjectDataParser = new GameObjectDataParser();
+
     NodeList layers = layersElement.getElementsByTagName("layer");
+
     for (int i = 0; i < layers.getLength(); i++) {
       Element layerElement = (Element) layers.item(i);
       int z = Integer.parseInt(layerElement.getAttribute("z"));
-      // If the map already contains this z-index, add the new game objects; otherwise, add a new entry.
-      if (gameObjectMap.containsKey(z)) {
-        List<GameObjectData> gameObjects = readLayerData(layerElement, z);
-        for (GameObjectData gameObject : gameObjects) {
-          gameObjectMap.get(z).add(gameObject);
-        }
-      } else {
-        gameObjectMap.put(z, readLayerData(layerElement, z));
-      }
+      gameObjects.addAll(readLayerData(layerElement, z));
     }
-    return gameObjectMap;
-  }
+    return gameObjects;
+    }
 
   /**
    * Reads and extracts {@link GameObjectData} objects from a given layer element.

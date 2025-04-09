@@ -43,6 +43,7 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
+            <property name="lives" value="1"/>
           </doubleProperties>
         </properties>
       </object>
@@ -77,32 +78,34 @@ interact with each other -->
       <conditions>
         <conditionSet>
           <condition name="W_KEY_PRESSED">
-            <parameters>
+            <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
-            </parameters>
+            </doubleParameters>
           </condition>
         </conditionSet>
         <conditionSet>
           <condition name="UP_ARROW_PRESSED">
-            <parameters>
+            <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
-            </parameters>
+            </doubleParameters>
           </condition>
         </conditionSet>
         <conditionSet>
           <condition name="SPACE_KEY_PRESSED">
-            <parameters>
+            <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
-            </parameters>
+            </doubleParameters>
           </condition>
         </conditionSet>
       </conditions>
       <outcomes>
         <outcome type="JUMP">
-          <parameters>
+          <doubleParameters>
             <parameter name="JumpAmount" value="20"/>
+          </doubleParameters>
+          <stringParameters>
             <parameter name="jumpType" value="Floaty"/>
-          </parameters>
+          </stringParameters>
         </outcome>
       </outcomes>
     </event>
@@ -110,13 +113,12 @@ interact with each other -->
         <conditions>
           <conditionSet>
             <condition name="TRUE">
-              <parameters/>
             </condition>
           </conditionSet>
         </conditions>
         <outcomes>
           <outcome name="MOVE_RIGHT">
-            <parameters/>
+            <doubleParameters/>
           </outcome>
         </outcomes>
       </event>
@@ -124,15 +126,14 @@ interact with each other -->
         <conditions>
           <conditionSet>
             <condition name="TRUE">
-              <parameters/>
             </condition>
           </conditionSet>
         </conditions>
         <outcomes>
           <outcome name="APPLY_GRAVITY">
-            <parameters>
+            <doubleParameters>
               <parameter name="ApplyGravityAmount" value="0.1"/>
-            </parameters>
+            </doubleParameters>
           </outcome>
         </outcomes>
       </event>
@@ -140,13 +141,13 @@ interact with each other -->
       <conditions>
         <conditionSet>
           <condition name="COLLIDED_WITH_PLAYER">
-            <parameters/>
+            <doubleParameters/>
           </condition>
         </conditionSet>
       </conditions>
       <outcomes>
         <outcome name="DESTROY_OBJECT">
-          <parameters/>
+          <doubleParameters/>
         </outcome>
       </outcomes>
     </event>
