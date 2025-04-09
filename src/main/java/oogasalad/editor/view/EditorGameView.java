@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -51,6 +52,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private static final double ZOOM_SPEED = 0.02;
   private static final double MIN_ZOOM = 0.5;
   private static final Color HITBOX_COLOR = new Color(1, 0, 0, 0.2);
+  private double panVelocityX = 0;
+  private double panVelocityY = 0;
+  private AnimationTimer panTimer;
+  private final double PAN_SPEED = 200;
 
 
   private final Canvas gridCanvas;
@@ -64,8 +69,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final List<UUID> displayedObjectIds = new ArrayList<>();
   private double cornerCameraX;
   private double cornerCameraY;
-  private final double centerCameraX;
-  private final double centerCameraY;
+  private double centerCameraX;
+  private double centerCameraY;
   private double zoomScale;
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
@@ -124,6 +129,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private void initializeView() {
     setupEventHandlers();
     setupZoom();
+    setupPanning();
     drawGrid();
   }
 
@@ -166,6 +172,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
   }
 
+  /**
+   * Sets up input based event handlers for zooming in and out of the current grid.
+   */
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
@@ -193,6 +202,66 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
+   * Sets up input based event handlers for using arrow keys to pan the grid.
+   */
+  private void setupPanning() {
+    // TODO: this really needs to be broken up into smaller pieces
+    this.setFocusTraversable(true);
+    this.setOnKeyPressed(event -> {
+      switch (event.getCode()) {
+        case LEFT:
+          panVelocityX = -PAN_SPEED;
+          break;
+        case RIGHT:
+          panVelocityX = PAN_SPEED;
+          break;
+        case UP:
+          panVelocityY = -PAN_SPEED;
+          break;
+        case DOWN:
+          panVelocityY = PAN_SPEED;
+          break;
+        default:
+          break;
+      }
+      event.consume();
+    });
+    this.setOnKeyReleased(event -> {
+      switch (event.getCode()) {
+        case LEFT:
+        case RIGHT:
+          panVelocityX = 0;
+          break;
+        case UP:
+        case DOWN:
+          panVelocityY = 0;
+          break;
+        default:
+          break;
+      }
+      event.consume();
+    });
+    panTimer = new AnimationTimer() {
+      private long lastUpdate = -1;
+      @Override
+      public void handle(long now) {
+        if (lastUpdate < 0) {
+          lastUpdate = now;
+          return;
+        }
+        double deltaSeconds = (now - lastUpdate) / 1000000000.0;
+        lastUpdate = now;
+        centerCameraX += (panVelocityX / zoomScale) * deltaSeconds;
+        centerCameraY += (panVelocityY / zoomScale) * deltaSeconds;
+        updateCameraCoordinates();
+        drawGrid();
+        redrawObjects();
+      }
+    };
+    panTimer.start();
+  }
+
+  /**
    * Updates the top left camera coordinates based off of changing zoom, central x and y, and width
    * height.
    */
@@ -202,10 +271,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
     cornerCameraX = centerCameraX - (canvasWidth * 0.5);
     cornerCameraY = centerCameraY - (canvasHeight * 0.5);
-
-    LOG.debug("updateCameraCoordinates: center=({},{}), "
-            + "top left corner=({},{}), scale={}",
-        centerCameraX, centerCameraY, cornerCameraX, cornerCameraY, zoomScale);
   }
 
   /**
@@ -215,7 +280,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * @param event The MouseEvent associated with the click.
    */
   private void handleGridClick(MouseEvent event) {
-
+    this.requestFocus();
     double screenX = event.getX();
     double screenY = event.getY();
 
