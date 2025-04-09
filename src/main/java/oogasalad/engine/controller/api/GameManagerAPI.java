@@ -4,10 +4,12 @@
  */
 package oogasalad.engine.controller.api;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
+import oogasalad.exceptions.RenderingException;
 
 /**
  * API responsible for managing the game loop, including playing, pausing, and selecting a game
@@ -45,4 +47,11 @@ public interface GameManagerAPI {
    * Lists all available levels for user to select
    */
   List<String> listLevels();
+
+  /**
+   * Displays initial game objects when the level is first loaded.
+   * @throws RenderingException thrown if error rendering objects.
+   * @throws FileNotFoundException thrown if invalid level file.
+   */
+  void displayGameObjects() throws RenderingException, FileNotFoundException;
 }
