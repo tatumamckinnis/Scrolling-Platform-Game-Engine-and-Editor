@@ -1,14 +1,27 @@
-/**
- * Outcome that moves game object to the left
- */
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * An {@link Outcome} that moves a {@link GameObject} to the left when executed.
+ *
+ * <p>This outcome retrieves the "MoveLeftAmount" parameter from the object's dynamic
+ * parameters and shifts its x-position to the left by that amount. If the parameter
+ * is not defined, it defaults to 4.0 pixels.
+ *
+ * <p>This class is typically triggered by an event such as a user input or collision.
+ */
 public class MoveLeftOutcome implements Outcome {
 
+  /**
+   * Executes the leftward movement on the given {@link GameObject}.
+   *
+   * @param gameObject the game object to move
+   */
+  @Override
   public void execute(GameObject gameObject) {
-    int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MoveRightAmount", "4"));
-    gameObject.setX(gameObject.getX() - dx);
+    double dx = gameObject.getDoubleParams().getOrDefault("MoveLeftAmount", 4.0);
+    gameObject.setXPosition((int) (gameObject.getXPosition() - dx));
   }
 }
+

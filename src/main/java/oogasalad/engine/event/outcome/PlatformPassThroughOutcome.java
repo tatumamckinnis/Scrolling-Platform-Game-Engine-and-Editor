@@ -33,29 +33,26 @@ public class PlatformPassThroughOutcome implements Outcome {
         }
       }
     }
-
   }
+    private boolean trySnapToPlatform (GameObject platform){
+      int playerBottom = player.getYPosition() + player.getHitBoxHeight();
+      int playerTop = player.getYPosition();
+      int platformTop = platform.getYPosition();
 
-  private boolean trySnapToPlatform(GameObject platform) {
-    int playerBottom = player.getY() + player.getHitBoxHeight();
-    int playerTop = player.getY();
-    int platformTop = platform.getY();
+      double yVelocity = player.getYVelocity();
 
-    double yVelocity = player.getYVelocity();
+      boolean isFalling = yVelocity >= 0;
+      boolean verticallyOverlapping = playerBottom >= platformTop && playerTop < platformTop;
+      boolean horizontallyOverlapping =
+          player.getXPosition() + player.getHitBoxWidth() > platform.getXPosition() &&
+              player.getXPosition() < platform.getXPosition() + platform.getHitBoxWidth();
 
-    boolean isFalling = yVelocity >= 0;
-    boolean verticallyOverlapping = playerBottom >= platformTop && playerTop < platformTop;
-    boolean horizontallyOverlapping =
-        player.getX() + player.getHitBoxWidth() > platform.getX() &&
-            player.getX() < platform.getX() + platform.getHitBoxWidth();
-
-    if (isFalling && verticallyOverlapping && horizontallyOverlapping) {
-      player.setY(platformTop - player.getHitBoxHeight() + 1);
-      player.setYVelocity(0);
-      return true;
+      if (isFalling && verticallyOverlapping && horizontallyOverlapping) {
+        player.setYPosition(platformTop - player.getHitBoxHeight() + 1);
+        player.setYVelocity(0);
+        return true;
+      }
+      return false;
     }
-
-    return false;
-  }
 
 }

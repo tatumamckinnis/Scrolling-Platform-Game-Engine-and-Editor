@@ -11,9 +11,7 @@ public class JumpOutcome implements Outcome {
 
   @Override
   public void execute(GameObject gameObject) {
-    int dy = Integer.parseInt(gameObject.getParams().getOrDefault("JumpAmount", "60"));
-
-    // Only allow jumping if the object is on the ground
+    double dy = gameObject.getDoubleParams().getOrDefault("JumpAmount", 60.0);
     if (gameObject.isGrounded()) {
       gameObject.setYVelocity(-dy);
       gameObject.setGrounded(false); // Mark object as airborne

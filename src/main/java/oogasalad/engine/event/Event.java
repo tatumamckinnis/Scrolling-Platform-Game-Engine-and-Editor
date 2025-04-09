@@ -16,34 +16,33 @@ import oogasalad.engine.model.object.GameObject;
 
 public class Event {
 
-  private final GameObject gameObject;
-  private final List<List<EventCondition>> conditions;
-  private final List<EventOutcome> outcomes;
-  private final EventType eventType;
-  //stored within game object
-  private final Map<String, String> params;
+    private final GameObject gameObject;
+    private final List<List<EventCondition>> conditions;
+    private final List<EventOutcome> outcomes;
+    private final EventType eventType;
+    //stored within game object
+    private final Map<String, Double> doubleParams;
 
-  public enum EventType {
-    INPUT,
-    PHYSICS,
-    COLLISION
-  }
+    public enum EventType {
+        INPUT,
+        PHYSICS,
+        COLLISION,
+        END
+    }
 
-  /**
-   * Event constructor
-   *
-   * @param gameObject -> object associated with the event
-   * @param conditions -> List of Conditions that need to be met to execute events
-   * @param outcomes   -> List of Events to execute
-   */
-  public Event(GameObject gameObject, List<List<EventCondition>> conditions,
-      List<EventOutcome> outcomes, EventType eventType) {
-    this.gameObject = gameObject;
-    this.conditions = conditions;
-    this.outcomes = outcomes;
-    this.params = gameObject.getParams();
-    this.eventType = eventType;
-  }
+    /**
+     * Event constructor
+     * @param gameObject -> object associated with the event
+     * @param conditions -> List of Conditions that need to be met to execute events
+     * @param outcomes -> List of Events to execute
+     */
+    public Event(GameObject gameObject, List<List<EventCondition>> conditions, List<EventOutcome> outcomes, EventType eventType) {
+        this.gameObject = gameObject;
+        this.conditions = conditions;
+        this.outcomes = outcomes;
+        this.doubleParams = gameObject.getDoubleParams();
+        this.eventType = eventType;
+    }
 
   /**
    * @return this Event's list of event conditions
@@ -65,7 +64,6 @@ public class Event {
   public EventType getEventType() {
     return eventType;
   }
-
 
   /**
    * @return this Event's gameObject

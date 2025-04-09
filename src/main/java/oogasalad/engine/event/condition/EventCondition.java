@@ -9,7 +9,6 @@ package oogasalad.engine.event.condition;
 
 
 public record EventCondition(EventCondition.ConditionType conditionType) {
-
   /**
    * Define list of valid conditions enums
    */
@@ -20,6 +19,8 @@ public record EventCondition(EventCondition.ConditionType conditionType) {
     COLLIDED_WITH_PLAYER,
     COLLIDED_WITH_PLATFORM,
     UP_ARROW_PRESSED,
+    RIGHT_ARROW_PRESSED,
+    LEFT_ARROW_PRESSED,
     W_KEY_PRESSED,
     A_KEY_PRESSED,
     S_KEY_PRESSED,

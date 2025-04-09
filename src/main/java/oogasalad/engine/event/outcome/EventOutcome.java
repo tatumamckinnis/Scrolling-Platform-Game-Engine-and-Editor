@@ -6,7 +6,6 @@
 package oogasalad.engine.event.outcome;
 
 public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
-
   /**
    * Defines valid outcome types
    */

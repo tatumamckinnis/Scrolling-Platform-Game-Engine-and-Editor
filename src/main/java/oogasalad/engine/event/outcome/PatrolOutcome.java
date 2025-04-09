@@ -18,11 +18,11 @@ public class PatrolOutcome implements Outcome {
 
   @Override
   public void execute(GameObject gameObject) {
-    int dx = Integer.parseInt(gameObject.getParams().getOrDefault("MovementAmount", "4"));
-    if (gameObject.getX() < 0) {
+    double dx = gameObject.getDoubleParams().getOrDefault("MovementAmount", 4.0);
+    if (gameObject.getXPosition() < 0) {
       gameObject.setXVelocity(dx);
-    } else if (gameObject.getX() + gameObject.getHitBoxWidth() >= gameExecutor.getMapObject()
-        .width()) {
+    } else if (gameObject.getXPosition() + gameObject.getHitBoxWidth()
+        >= gameExecutor.getMapObject().maxX()) {
       gameObject.setXVelocity(-dx);
     } else if (gameObject.getXVelocity() == 0) {
       gameObject.setXVelocity(-dx);

@@ -42,6 +42,10 @@ public class ConditionChecker {
         new CollisionCondition(collisionHandler, "player"));
     conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
         new CollisionCondition(collisionHandler, "platforms"));
+    conditionMap.put(EventCondition.ConditionType.RIGHT_ARROW_PRESSED,
+        new InputCondition(inputProvider, KeyCode.RIGHT));
+    conditionMap.put(EventCondition.ConditionType.LEFT_ARROW_PRESSED,
+        new InputCondition(inputProvider, KeyCode.LEFT));
 
   }
 

@@ -101,6 +101,15 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
         myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
+  /**
+   * @see GameManagerAPI#endGame(String, GameObject)
+   */
+  @Override
+  public void endGame(String text, GameObject gameObject) {
+    pauseGame();
+    //myView.renderEndGameScreen(text, gameObject);
+  }
+
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
@@ -108,7 +117,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myView.renderGameObjects(myGameController.getImmutableObjects(),
         myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
-
 
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();
