@@ -63,7 +63,7 @@ public class GameAppViewTest extends ApplicationTest {
 
     @Override
     public void initialize() throws ViewInitializationException {
-      SplashScreen splashScreen = new SplashScreen(this, getGameManager());
+      SplashScreen splashScreen = new SplashScreen(new ViewState());
 
       splashScreen.render();
       int width = splashScreen.getSplashWidth();
