@@ -21,7 +21,7 @@ public class DefaultEventHandler implements EventHandler {
      * @param gameExecutor interface that allows outcome updates to game state
      */
     public DefaultEventHandler(InputProvider inputProvider, CollisionHandler collisionHandler, GameExecutor gameExecutor) {
-        outcomeExecutor = new OutcomeExecutor(gameExecutor);
+        outcomeExecutor = new OutcomeExecutor(collisionHandler, gameExecutor);
         conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
     }
 

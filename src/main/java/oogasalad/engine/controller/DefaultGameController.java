@@ -164,9 +164,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     for (GameObject gameObject : myGameObjects) {
       ViewObject viewObject = convertToViewObject(gameObject);
       // only gives objects to view if there's a real image
-      if (gameObject.getCurrentFrame() != null) {
-        immutableObjects.add(viewObject);
-      }
+      immutableObjects.add(viewObject);
     }
     return immutableObjects;
   }

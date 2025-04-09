@@ -18,7 +18,7 @@ public class OutcomeExecutor {
      * @param gameController
      * Initialize mapping of outcome enum to outcome interface
      */
-    public OutcomeExecutor(GameExecutor gameExecutor) {
+    public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor) {
         this.outcomeMap = new HashMap<>();
         outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
                 new MoveRightOutcome());
@@ -33,7 +33,7 @@ public class OutcomeExecutor {
         outcomeMap.put(EventOutcome.OutcomeType.DESTROY_OBJECT,
                 new DestroyObjectOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,
-                new PlatformPassThroughOutcome(gameExecutor));
+                new PlatformPassThroughOutcome(collisionHandler));
     }
 
 

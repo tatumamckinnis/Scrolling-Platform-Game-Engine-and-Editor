@@ -18,14 +18,12 @@ public class EventsSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(EventsSectionBuilder.class);
 
-  // Constants needed by this builder
   private static final double LIST_VIEW_HEIGHT = 150.0;
   private static final String KEY_EVENTS_HEADER = "eventsHeader";
   private static final String KEY_EVENT_ID_LABEL = "eventIdLabel";
   private static final String KEY_ADD_EVENT_BUTTON = "addEventButton";
   private static final String KEY_REMOVE_EVENT_BUTTON = "removeEventButton";
 
-  // Using constants potentially defined in Factory or shared constants class
   private static final double DEFAULT_PADDING = 12.0;
   private static final double DEFAULT_SPACING = 12.0;
 
@@ -40,10 +38,11 @@ public class EventsSectionBuilder {
   /**
    * Constructs an {@code EventsSectionBuilder} with the necessary dependencies.
    *
-   * @param uiBundle              The resource bundle containing UI labels and messages.
-   * @param addEventHandler       The consumer to handle adding a new event. Accepts the event ID.
-   * @param removeEventHandler    The runnable to handle removing the selected event.
-   * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the new selection.
+   * @param uiBundle               The resource bundle containing UI labels and messages.
+   * @param addEventHandler        The consumer to handle adding a new event. Accepts the event ID.
+   * @param removeEventHandler     The runnable to handle removing the selected event.
+   * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the
+   *                               new selection.
    * @throws NullPointerException if any of the provided arguments are {@code null}.
    */
   public EventsSectionBuilder(ResourceBundle uiBundle,
@@ -175,7 +174,8 @@ public class EventsSectionBuilder {
    * @param handler   The event handler to be executed when the button is clicked.
    * @return A styled {@code Button}.
    */
-  private Button createButton(String bundleKey, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
+  private Button createButton(String bundleKey,
+      javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
     Button button = new Button(uiBundle.getString(bundleKey));
     button.setOnAction(handler);
     button.getStyleClass().add("action-button");

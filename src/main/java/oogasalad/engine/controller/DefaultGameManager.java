@@ -92,6 +92,13 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     return currentKeysPressed.contains(keyCode);
   }
 
+  /**
+   * @see GameManagerAPI#displayGameObjects()
+   */
+  @Override
+  public void displayGameObjects() throws RenderingException, FileNotFoundException {
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+  }
 
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
