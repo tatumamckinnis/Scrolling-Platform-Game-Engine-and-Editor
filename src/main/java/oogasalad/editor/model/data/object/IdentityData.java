@@ -7,6 +7,8 @@ import oogasalad.editor.model.data.Layer;
  * Represents the identity data for an editor object. This class holds primary identifying
  * information for an editor object, including a unique identifier, name, group, and the layer to
  * which the object belongs.
+ *
+ * @author Jacob You
  */
 public class IdentityData {
 
