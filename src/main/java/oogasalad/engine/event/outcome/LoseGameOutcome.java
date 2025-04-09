@@ -28,7 +28,7 @@ public class LoseGameOutcome implements Outcome {
   /**
    * Logger used to record loss events
    */
-  Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
+  private Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
 
   /**
    * Outcome that the player has lost the game
