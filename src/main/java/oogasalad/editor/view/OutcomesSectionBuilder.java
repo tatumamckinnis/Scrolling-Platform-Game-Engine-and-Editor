@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 
 
 /**
- * Builds the UI section specifically for managing Outcomes associated with an Event within the
- * Input Tab. This includes selecting an OutcomeType, optionally associating a parameter (a
- * {@link DynamicVariable} by name), adding/removing outcomes, and providing a way to trigger the
- * creation of new parameters. Relies on handler functions passed during construction to delegate
- * actions.
+ * Builds the UI section specifically for managing Outcomes associated with an Event
+ * within the Input Tab. This includes selecting an OutcomeType, optionally associating
+ * a parameter (a {@link DynamicVariable} by name), adding/removing outcomes, and
+ * providing a way to trigger the creation of new parameters.
+ * Relies on handler functions passed during construction to delegate actions.
  */
 public class OutcomesSectionBuilder {
 
@@ -53,15 +53,12 @@ public class OutcomesSectionBuilder {
   /**
    * Constructs a builder for the outcomes UI section.
    *
-   * @param uiBundle               The resource bundle for localizing UI text. Must not be null.
-   * @param addOutcomeHandler      A BiConsumer function called when 'Add' is clicked, passing the
-   *                               selected OutcomeType and the selected parameter name (String, may
-   *                               be null). Must not be null.
-   * @param removeOutcomeHandler   A Consumer function called when 'Remove' is clicked, passing the
-   *                               OutcomeType derived from the selected item in the list view. Must
-   *                               not be null.
-   * @param createParameterHandler A Runnable function called when the 'Create Parameter' (+) button
-   *                               is clicked. Must not be null.
+   * @param uiBundle             The resource bundle for localizing UI text. Must not be null.
+   * @param addOutcomeHandler    A BiConsumer function called when 'Add' is clicked, passing the selected
+   * OutcomeType and the selected parameter name (String, may be null). Must not be null.
+   * @param removeOutcomeHandler A Consumer function called when 'Remove' is clicked, passing the
+   * OutcomeType derived from the selected item in the list view. Must not be null.
+   * @param createParameterHandler A Runnable function called when the 'Create Parameter' (+) button is clicked. Must not be null.
    * @throws NullPointerException if any argument is null.
    */
   public OutcomesSectionBuilder(ResourceBundle uiBundle,
@@ -75,10 +72,10 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Creates and lays out the UI components for the outcomes section. This includes a header, a
-   * ComboBox for selecting outcome types, a row for selecting an optional parameter (with a button
-   * to create new parameters), Add/Remove buttons, and a ListView to display the currently added
-   * outcomes with their parameters.
+   * Creates and lays out the UI components for the outcomes section.
+   * This includes a header, a ComboBox for selecting outcome types, a row for selecting
+   * an optional parameter (with a button to create new parameters), Add/Remove buttons,
+   * and a ListView to display the currently added outcomes with their parameters.
    *
    * @return A Node (specifically a VBox) containing all the UI elements for this section.
    */
@@ -117,8 +114,7 @@ public class OutcomesSectionBuilder {
           OutcomeType outcome = OutcomeType.valueOf(outcomeStr);
           removeOutcomeHandler.accept(outcome);
         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {
-          LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStrWithParam,
-              ex);
+          LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStrWithParam, ex);
 
         }
       } else {
@@ -138,8 +134,8 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Gets the ListView component used to display the outcomes (with parameters). Allows the parent
-   * component to populate or clear the list.
+   * Gets the ListView component used to display the outcomes (with parameters).
+   * Allows the parent component to populate or clear the list.
    *
    * @return The ListView<String> instance.
    */
@@ -148,8 +144,8 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Gets the ComboBox component used to select parameters (Dynamic Variable names). Allows the
-   * parent component to update the available items.
+   * Gets the ComboBox component used to select parameters (Dynamic Variable names).
+   * Allows the parent component to update the available items.
    *
    * @return The ComboBox<String> instance for parameters.
    */
@@ -161,8 +157,8 @@ public class OutcomesSectionBuilder {
    * Updates the items available in the parameter ComboBox based on a list of DynamicVariables.
    * Clears existing items and adds the names of the provided variables.
    *
-   * @param variables A List of {@link DynamicVariable} objects whose names should be displayed in
-   *                  the parameter ComboBox. Can be null or empty.
+   * @param variables A List of {@link DynamicVariable} objects whose names should be displayed
+   * in the parameter ComboBox. Can be null or empty.
    */
   public void updateParameterComboBox(List<DynamicVariable> variables) {
     parameterComboBox.getItems().clear();
@@ -184,8 +180,8 @@ public class OutcomesSectionBuilder {
 
 
   /**
-   * Creates the HBox layout containing the parameter label, the parameter selection ComboBox, and
-   * the 'Create Parameter' (+) button.
+   * Creates the HBox layout containing the parameter label, the parameter selection ComboBox,
+   * and the 'Create Parameter' (+) button.
    *
    * @return A Node (specifically an HBox) representing the parameter selection row.
    */
@@ -241,10 +237,8 @@ public class OutcomesSectionBuilder {
    * @param handler   The event handler to be executed when the button is clicked.
    * @return A configured Button node.
    */
-  private Button createButton(String bundleKey,
-      javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
-    String buttonText =
-        bundleKey.equals(KEY_CREATE_PARAM_BUTTON) ? "+" : uiBundle.getString(bundleKey);
+  private Button createButton(String bundleKey, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
+    String buttonText = bundleKey.equals(KEY_CREATE_PARAM_BUTTON) ? "+" : uiBundle.getString(bundleKey);
     Button button = new Button(buttonText);
     button.setOnAction(handler);
     button.getStyleClass().add("action-button");
@@ -259,8 +253,8 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Creates an HBox to hold buttons, centering them and applying default spacing. Allows the HBox
-   * to grow horizontally to fill available space.
+   * Creates an HBox to hold buttons, centering them and applying default spacing.
+   * Allows the HBox to grow horizontally to fill available space.
    *
    * @param buttons The Button nodes to add to the HBox.
    * @return A configured HBox node containing the buttons.
