@@ -3,6 +3,9 @@ package oogasalad.fileparser.records;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Billy McCune
+ */
 public record BlueprintData(
     int blueprintId,
     double velocityX,
