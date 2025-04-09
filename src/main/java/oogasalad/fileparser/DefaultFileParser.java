@@ -104,9 +104,8 @@ public class DefaultFileParser implements FileParserAPI {
 //      }
 
       // Construct and return the LevelData record.
-      return new LevelData(levelName, levelWidth, levelHeight, blueprintData, gameObjectsByLayer);
+      return new LevelData(levelName, 0, 0, levelWidth, levelHeight, blueprintData, gameObjectsByLayer);
     } catch (Exception e) {
-      e.printStackTrace();
       throw new RuntimeException("Error parsing level file ", e);
     }
   }
