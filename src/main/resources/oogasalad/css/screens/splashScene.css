@@ -1,0 +1,52 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+
+.logo-pane {
+    -fx-background-color: lightblue;
+}
+
+.options-pane {
+    -fx-background-color: lightgreen;
+}
+
+.button {
+    -fx-pref-width: 200px;
+    -fx-font-family: "Montserrat", "Lato", serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+}
+
+.engine-button {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-color: #ffbe4e;
+    -fx-border-width: 5px;
+    -fx-border-style: solid;
+}
+
+.engine-button:hover {
+    -fx-background-color: #ffbe4e;
+    -fx-text-fill: white;
+}
+
+.editor-button {
+    -fx-background-color: white;
+    -fx-text-color: black;
+    -fx-border-color: #535bff;
+    -fx-border-width: 5px;
+    -fx-border-style: solid;
+}
+
+.editor-button:hover {
+    -fx-background-color: #535bff;
+    -fx-text-fill: white;
+}
+
+body {
+    font-family: 'Montserrat', 'Lato', serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
+}

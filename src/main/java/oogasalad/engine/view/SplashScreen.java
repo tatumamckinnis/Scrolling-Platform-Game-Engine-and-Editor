@@ -2,6 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -24,6 +25,7 @@ public class SplashScreen extends Display {
   private static final Logger LOG = LogManager.getLogger();
   private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
+  private String splashStylesheet;
   private int splashWidth;
   private int splashHeight;
   private ViewState viewState;
@@ -35,6 +37,8 @@ public class SplashScreen extends Display {
     } catch (IOException e) {
       LOG.warn("Unable to load splash screen properties");
     }
+    String splashStylesheetFilepath = splashComponentProperties.getProperty("splash.stylesheet");
+    splashStylesheet = Objects.requireNonNull(getClass().getResource(splashStylesheetFilepath)).toExternalForm();
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
     this.viewState = viewState;
@@ -55,17 +59,15 @@ public class SplashScreen extends Display {
 
   private void initializeSplashScreen() {
     HBox root = new HBox();
-
     Pane logoPane = createLogoPane(splashHeight);
     Pane optionsPane = createOptionsPane(splashHeight);
-
     root.getChildren().addAll(logoPane, optionsPane);
     this.getChildren().add(root);
+    this.getStylesheets().add(splashStylesheet);
   }
 
   /**
    * Creates the left pane in the splash scene that contains the splash scene logo
-   * TODO: Externalize an CSS config for logoPane color
    * @param splashHeight height of the left pane
    * @return pane containing the logo
    */
@@ -73,14 +75,13 @@ public class SplashScreen extends Display {
     Pane logoPane = new Pane();
     int logoPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
-    logoPane.setStyle("-fx-background-color: lightblue;");
+    logoPane.getStyleClass().add("logo-pane");
     logoPane.getChildren().add(createSplashLogo());
     return logoPane;
   }
 
   /**
    * Creates the right pane containing the button box for the splash scene
-   * TODO: Externalize an CSS config for optionsPane color
    * @param splashHeight height of the left pane
    * @return pane containing the button box
    */
@@ -88,7 +89,7 @@ public class SplashScreen extends Display {
     Pane optionsPane = new Pane();
     int optionsPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.rightPane.width"));
     optionsPane.setPrefSize(optionsPaneWidth, splashHeight);
-    optionsPane.setStyle("-fx-background-color: lightgreen;");
+    optionsPane.getStyleClass().add("options-pane");
     optionsPane.getChildren().add(createSplashButtonBox());
     return optionsPane;
   }
@@ -140,6 +141,7 @@ public class SplashScreen extends Display {
       Button currButton = new Button(buttonTexts[i]);
       currButton.setId(buttonIDs[i]);
       currButton.setPrefSize(buttonWidth, buttonHeight);
+      currButton.getStyleClass().addAll("button", "engine-button"); // TODO: Externalize button CSS
       currButton.setWrapText(true);
       setButtonAction(buttonIDs[i], currButton);
       splashBox.getChildren().add(currButton);
