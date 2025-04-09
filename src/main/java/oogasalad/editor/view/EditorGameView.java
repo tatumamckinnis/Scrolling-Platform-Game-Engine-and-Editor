@@ -59,17 +59,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext objectGraphicsContext;
 
   private final int cellSize;
-  private double cornerCameraX;
-  private double cornerCameraY;
-  private double centerCameraX;
-  private double centerCameraY;
-  private double zoomScale;
   private final EditorController editorController;
   private final Map<UUID, Image> objectImages = new HashMap<>();
   private final List<UUID> displayedObjectIds = new ArrayList<>();
+  private double cornerCameraX;
+  private double cornerCameraY;
+  private final double centerCameraX;
+  private final double centerCameraY;
+  private double zoomScale;
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
-  private boolean drawHitboxes = true;
+  private final boolean drawHitboxes = true;
 
   /**
    * Creates a new editor game view.
@@ -200,19 +200,12 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double canvasWidth = gridCanvas.getWidth();
     double canvasHeight = gridCanvas.getHeight();
 
-    double worldViewWidth = canvasWidth / zoomScale;
-    double worldViewHeight = canvasHeight / zoomScale;
-
-    cornerCameraX = centerCameraX - (worldViewWidth * 0.5);
-    cornerCameraY = centerCameraY - (worldViewHeight * 0.5);
-
-    double bottomRightCameraX = centerCameraX + (worldViewWidth * 0.5);
-    double bottomRightCameraY = centerCameraY + (worldViewHeight * 0.5);
+    cornerCameraX = centerCameraX - (canvasWidth * 0.5);
+    cornerCameraY = centerCameraY - (canvasHeight * 0.5);
 
     LOG.debug("updateCameraCoordinates: center=({},{}), "
-            + "top left corner=({},{}) bottom right corner = ({}, {}), scale={}",
-        centerCameraX, centerCameraY, cornerCameraX, cornerCameraY, bottomRightCameraX,
-        bottomRightCameraY, zoomScale);
+            + "top left corner=({},{}), scale={}",
+        centerCameraX, centerCameraY, cornerCameraX, cornerCameraY, zoomScale);
   }
 
   /**
@@ -226,8 +219,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double screenX = event.getX();
     double screenY = event.getY();
 
-    double worldX = (screenX / zoomScale) + cornerCameraX;
-    double worldY = (screenY / zoomScale) + cornerCameraY;
+    double worldX = (screenX + cornerCameraX) / zoomScale;
+    double worldY = (screenY + cornerCameraY) / zoomScale;
 
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
         worldY);
