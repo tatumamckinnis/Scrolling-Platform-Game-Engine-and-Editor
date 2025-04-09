@@ -4,9 +4,8 @@ package oogasalad.engine.model.object;
  * Represents a dynamic variable used to define customizable properties of a game object.
  *
  * <p>This abstract class serves as the base for different types of dynamic variables (e.g.,
- * numeric, boolean, string).
- * Variables are expected to be castable to specific types due to the controlled nature of the
- * editor.
+ * numeric, boolean, string). Variables are expected to be castable to specific types due to the
+ * controlled nature of the editor.
  *
  * @author Alana Zinkin
  */

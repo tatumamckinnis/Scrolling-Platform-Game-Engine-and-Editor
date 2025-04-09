@@ -1,5 +1,5 @@
 package oogasalad.exceptions;
 
-public class HitBoxParseException extends Exception{
+public class HitBoxParseException extends Exception {
 
 }

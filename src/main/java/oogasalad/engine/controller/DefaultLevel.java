@@ -18,10 +18,12 @@ import oogasalad.fileparser.records.LevelData;
  * to the {@link GameControllerAPI} to update the engine with the parsed data.
  */
 public class DefaultLevel implements LevelAPI {
+
   Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
-  private FileParserAPI myFileParser;
-  private GameControllerAPI myGameController;
-  private static final String LEVEL_FILE_PATH = System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";
+  private final FileParserAPI myFileParser;
+  private final GameControllerAPI myGameController;
+  private static final String LEVEL_FILE_PATH =
+      System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";
 
   public DefaultLevel(GameControllerAPI gameController) {
     myFileParser = new DefaultFileParser();
@@ -30,7 +32,8 @@ public class DefaultLevel implements LevelAPI {
 
   /**
    * Select game to load, updating game controller data
-   * @param level    String level name of the game(requires .xml)
+   *
+   * @param level String level name of the game(requires .xml)
    */
   @Override
   public void selectGame(String filePath) {
@@ -41,6 +44,7 @@ public class DefaultLevel implements LevelAPI {
 
   /**
    * List all saved level files
+   *
    * @return
    */
   @Override
@@ -52,7 +56,8 @@ public class DefaultLevel implements LevelAPI {
       File[] files = levelsDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".xml"));
       if (files != null) {
         for (File file : files) {
-          levels.add(file.getName()); // or file.getName().replace(".xml", "") if you want cleaner names
+          levels.add(
+              file.getName()); // or file.getName().replace(".xml", "") if you want cleaner names
         }
       }
     }

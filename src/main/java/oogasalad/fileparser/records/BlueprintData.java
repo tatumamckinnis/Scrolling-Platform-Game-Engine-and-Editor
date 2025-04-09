@@ -11,5 +11,7 @@ public record BlueprintData(
     SpriteData spriteData,
     HitBoxData hitBoxData,
     List<EventData> eventDataList,
-    Map<String,String> objectProperties
-) {}
+    Map<String, String> objectProperties
+) {
+
+}

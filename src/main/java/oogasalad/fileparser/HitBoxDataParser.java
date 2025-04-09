@@ -1,13 +1,7 @@
 package oogasalad.fileparser;
 
 import oogasalad.fileparser.records.HitBoxData;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import oogasalad.fileparser.records.EventData;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 
 public class HitBoxDataParser {

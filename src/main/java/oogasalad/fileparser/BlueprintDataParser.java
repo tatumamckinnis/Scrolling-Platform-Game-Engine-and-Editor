@@ -7,20 +7,22 @@ import java.util.Map;
 import java.util.Objects;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.SpriteData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.SpriteData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class BlueprintDataParser {
+
   private String groupName = "";
   private String gameName = "";
   private SpriteDataParser mySpriteDataParser;
   private List<EventData> myEventDataList;
 
-  public Map<Integer,BlueprintData> getBlueprintData(Element root, List<EventData> EventList) throws BlueprintParseException {
+  public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> EventList)
+      throws BlueprintParseException {
     myEventDataList = EventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
@@ -36,9 +38,10 @@ public class BlueprintDataParser {
     return createBlueprintDataMap(gameObjectDataList);
   }
 
-  private Map<Integer,BlueprintData> createBlueprintDataMap(List<BlueprintData> blueprintDataList){
-    Map<Integer,BlueprintData> blueprintDataMap = new HashMap<>();
-    for(int i = 0; i < blueprintDataList.size(); i++){
+  private Map<Integer, BlueprintData> createBlueprintDataMap(
+      List<BlueprintData> blueprintDataList) {
+    Map<Integer, BlueprintData> blueprintDataMap = new HashMap<>();
+    for (int i = 0; i < blueprintDataList.size(); i++) {
       blueprintDataMap.put(blueprintDataList.get(i).blueprintId(), blueprintDataList.get(i));
     }
     return blueprintDataMap;
@@ -59,7 +62,8 @@ public class BlueprintDataParser {
     return gameObjectsList;
   }
 
-  private List<BlueprintData> parseByObjectGroup(Element objectGroupNode) throws BlueprintParseException {
+  private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
+      throws BlueprintParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
@@ -101,7 +105,8 @@ public class BlueprintDataParser {
       int hitBoxHeight = hitBoxHeightStr.isEmpty() ? 0 : Integer.parseInt(hitBoxHeightStr);
       int spriteDx = spriteDxStr.isEmpty() ? 0 : Integer.parseInt(spriteDxStr);
       int spriteDy = spriteDyStr.isEmpty() ? 0 : Integer.parseInt(spriteDyStr);
-      HitBoxData hitBoxData = new HitBoxData(hitBoxType, hitBoxWidth, hitBoxHeight, spriteDx, spriteDy);
+      HitBoxData hitBoxData = new HitBoxData(hitBoxType, hitBoxWidth, hitBoxHeight, spriteDx,
+          spriteDy);
 
       // Parse event data: if eventIDs are provided, create dummy EventData objects.
       String eventIDs = gameObjectNode.getAttribute("eventIDs");
@@ -113,7 +118,6 @@ public class BlueprintDataParser {
           eventDataList.add(getEventByID(eventId));
         }
       }
-
 
       // Parse and flatten properties directly containing <data> elements.
       Map<String, String> objectProperties = parseProperties(gameObjectNode);
@@ -143,7 +147,8 @@ public class BlueprintDataParser {
   }
 
   // Helper method to parse and flatten the <properties> element containing <data> elements.
-  private Map<String, String> parseProperties(Element blueprintDataNode) throws BlueprintParseException {
+  private Map<String, String> parseProperties(Element blueprintDataNode)
+      throws BlueprintParseException {
     Map<String, String> propertiesMap = new HashMap<>();
     NodeList propertiesList = blueprintDataNode.getElementsByTagName("properties");
     if (propertiesList.getLength() > 0) {
@@ -156,7 +161,8 @@ public class BlueprintDataParser {
       for (int i = 0; i < dataNodes.getLength(); i++) {
         Node dataNode = dataNodes.item(i);
         // Skip text nodes that are only whitespace
-        if (dataNode.getNodeType() == Node.TEXT_NODE && dataNode.getTextContent().trim().isEmpty()) {
+        if (dataNode.getNodeType() == Node.TEXT_NODE && dataNode.getTextContent().trim()
+            .isEmpty()) {
           continue;
         }
         if (!(dataNode instanceof Element)) {

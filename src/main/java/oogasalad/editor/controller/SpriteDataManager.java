@@ -4,8 +4,8 @@ import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 
 /**
- * Manages sprite data for EditorObjects, providing methods to access and modify
- * the x and y coordinates of an object's sprite.
+ * Manages sprite data for EditorObjects, providing methods to access and modify the x and y
+ * coordinates of an object's sprite.
  *
  * @author Jacob You
  */
@@ -46,7 +46,7 @@ public class SpriteDataManager {
    * Sets the x-coordinate of the sprite for the specified EditorObject.
    *
    * @param id the unique identifier of the EditorObject.
-   * @param x the new x-coordinate to set for the object's sprite.
+   * @param x  the new x-coordinate to set for the object's sprite.
    */
   public void setX(UUID id, int x) {
     level.getEditorObject(id).getSpriteData().setX(x);
@@ -56,7 +56,7 @@ public class SpriteDataManager {
    * Sets the y-coordinate of the sprite for the specified EditorObject.
    *
    * @param id the unique identifier of the EditorObject.
-   * @param y the new y-coordinate to set for the object's sprite.
+   * @param y  the new y-coordinate to set for the object's sprite.
    */
   public void setY(UUID id, int y) {
     level.getEditorObject(id).getSpriteData().setY(y);

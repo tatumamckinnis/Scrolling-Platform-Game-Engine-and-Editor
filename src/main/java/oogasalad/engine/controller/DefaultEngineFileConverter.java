@@ -30,7 +30,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
       DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
-  private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
+  private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(
+      ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -41,7 +42,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
    * @throws DataFormatException if the data cannot be translated into the parser's model
    */
   @Override
-  public void saveLevelStatus() throws IOException, DataFormatException {}
+  public void saveLevelStatus() throws IOException, DataFormatException {
+  }
 
   /**
    * Loads a new level or resumes saved progress by translating the standardized LevelData structure
@@ -63,7 +65,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     return gameObjectDataList;
   }
 
-  private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects, Map<Integer, BlueprintData> bluePrintMap) {
+  private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects,
+      Map<Integer, BlueprintData> bluePrintMap) {
     Map<String, GameObject> gameObjectMap = new HashMap<>();
     for (GameObjectData gameObjectData : gameObjects) {
       GameObject newObject = makeGameObject(gameObjectData, bluePrintMap);
@@ -72,7 +75,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     return gameObjectMap;
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData, Map<Integer, BlueprintData> bluePrintMap) {
+  private GameObject makeGameObject(GameObjectData gameObjectData,
+      Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
 
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
@@ -104,7 +108,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static Map<String, FrameData> makeFrameMap(BlueprintData blueprintData) {
     Map<String, FrameData> frameMap = new HashMap<>();
-    for (FrameData frameData: blueprintData.spriteData().frames()) {
+    for (FrameData frameData : blueprintData.spriteData().frames()) {
       frameMap.put(frameData.name(), frameData);
     }
     return frameMap;
@@ -112,7 +116,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static Map<String, AnimationData> makeAnimationMap(BlueprintData blueprintData) {
     Map<String, AnimationData> animationMap = new HashMap<>();
-    for (AnimationData animationData: blueprintData.spriteData().animations()) {
+    for (AnimationData animationData : blueprintData.spriteData().animations()) {
       animationMap.put(animationData.name(), animationData);
     }
     return animationMap;

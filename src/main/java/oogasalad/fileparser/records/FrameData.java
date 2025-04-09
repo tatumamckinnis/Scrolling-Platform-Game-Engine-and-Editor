@@ -25,4 +25,6 @@ public record FrameData(
     int width,
     int height,
     File spriteFile
-) {}
+) {
+
+}

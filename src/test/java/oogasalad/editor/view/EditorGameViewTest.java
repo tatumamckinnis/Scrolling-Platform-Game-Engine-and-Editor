@@ -8,7 +8,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
-import oogasalad.editor.view.tools.ObjectPlacementTool;
+import oogasalad.editor.view.tools.ObjectInteractionTool;
 import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,13 +83,13 @@ class EditorGameViewTest {
   }
   @Test
   void testClickWithToolDelegatesToTool(FxRobot robot) {
-    ObjectPlacementTool mockTool = mock(ObjectPlacementTool.class);
-    gameView.setCurrentTool(mockTool);
+    ObjectInteractionTool mockTool = mock(ObjectInteractionTool.class);
+    gameView.updateCurrentTool(mockTool);
 
     robot.clickOn(gameView);
     waitForFxEvents();
 
-    verify(mockTool).placeObjectAt(anyInt(), anyInt());
+    verify(mockTool).interactObjectAt(anyInt(), anyInt());
     verify(mockController, never()).notifyObjectSelected(any());
   }
 

@@ -23,18 +23,21 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class DefaultView implements ViewAPI {
+
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(
       DefaultView.class.getPackage().getName() + "." + "Level");
-  private static final int LEVEL_WIDTH = Integer.parseInt(GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
-  private static final int LEVEL_HEIGHT = Integer.parseInt(GAME_APP_VIEW_RESOURCES.getString("LevelHeight"));;
+  private static final int LEVEL_WIDTH = Integer.parseInt(
+      GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
+  private static final int LEVEL_HEIGHT = Integer.parseInt(
+      GAME_APP_VIEW_RESOURCES.getString("LevelHeight"));
 
   private Display currentDisplay;
   private Scene currentScene;
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
   private List<KeyCode> currentInputs;
-  private Camera myCamera;
+  private final Camera myCamera;
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
@@ -98,6 +101,7 @@ public class DefaultView implements ViewAPI {
 
   /**
    * Set the current inputs.
+   *
    * @param currentInputs an arraylist to point to.
    */
   void setCurrentInputs(List<KeyCode> currentInputs) {

@@ -3,16 +3,14 @@ package oogasalad.fileparser;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import oogasalad.engine.event.Event;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.LevelData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import oogasalad.fileparser.records.LevelData;
 
 public class DefaultFileParser implements FileParserAPI {
 
@@ -22,7 +20,7 @@ public class DefaultFileParser implements FileParserAPI {
   // Map structure: <Game Name, <Level Directory, List of Level Files>>
   private Map<String, Map<String, List<File>>> mapOfGameLevels;
 
-  public DefaultFileParser(){
+  public DefaultFileParser() {
     // Initialize parsers. These could be injected as dependencies if preferred.
     layerDataParser = new LayerDataParser();
     myGameObjectParser = new BlueprintDataParser();
@@ -34,7 +32,7 @@ public class DefaultFileParser implements FileParserAPI {
 
   /**
    * Parses the level XML file and returns a LevelData record.
-   *
+   * <p>
    * Steps:
    * <ul>
    *   <li>Checks if the levels map contains the given filePath key.</li>
@@ -85,10 +83,12 @@ public class DefaultFileParser implements FileParserAPI {
       List<EventData> eventList = myEventDataParser.getLevelEvents(root);
       // Use the BlueprintDataParser to extract blueprint data.
       // Assume getBlueprintData returns a Map<Integer, BlueprintData>.
-      Map<Integer,BlueprintData> blueprintData = myGameObjectParser.getBlueprintData(root,eventList);
+      Map<Integer, BlueprintData> blueprintData = myGameObjectParser.getBlueprintData(root,
+          eventList);
       // Locate the layers element (assumed to be named "layers").
       // Use the LayerDataParser to extract game objects, organized by layer.
-      Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(root);
+      Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(
+          root);
 
 //      System.out.println(eventList.size());
 //      System.out.println(blueprintData.size());
@@ -104,7 +104,7 @@ public class DefaultFileParser implements FileParserAPI {
 //      }
 
       // Construct and return the LevelData record.
-      return new LevelData(levelName, levelWidth,levelHeight, blueprintData, gameObjectsByLayer);
+      return new LevelData(levelName, levelWidth, levelHeight, blueprintData, gameObjectsByLayer);
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException("Error parsing level file ", e);

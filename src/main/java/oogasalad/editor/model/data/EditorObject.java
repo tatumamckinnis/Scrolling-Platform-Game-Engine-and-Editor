@@ -54,9 +54,9 @@ public class EditorObject {
 
   /**
    * Constructs an EditorObject with default data components. ` The identity is initialized with a
-   * random UUID and a default name. The hitbox dimensions and shape are obtained from
-   * the editor configuration properties. Other data components (sprite, input, physics, collision)
-   * are initialized with default values.
+   * random UUID and a default name. The hitbox dimensions and shape are obtained from the editor
+   * configuration properties. Other data components (sprite, input, physics, collision) are
+   * initialized with default values.
    *
    * @param level the EditorLevelData instance managing this object
    */

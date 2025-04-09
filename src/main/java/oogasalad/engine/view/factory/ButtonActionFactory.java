@@ -14,11 +14,11 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.view.DefaultView;
+import oogasalad.engine.view.GameDisplay;
 import oogasalad.engine.view.ViewState;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.engine.view.DefaultView;
-import oogasalad.engine.view.GameDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,10 +28,11 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class ButtonActionFactory {
+
   private static final Logger LOG = LogManager.getLogger();
   private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
   private static final Properties buttonIDToActionProperties = new Properties();
-  private ViewState viewState;
+  private final ViewState viewState;
 
   /**
    * Loads property file map of buttonIDs to Actions.
@@ -48,6 +49,7 @@ public class ButtonActionFactory {
 
   /**
    * Returns the corresponding runnable function for the specified button.
+   *
    * @param buttonID string of the button's unique ID
    * @return runnable function for the button's onClick action
    */
@@ -67,8 +69,9 @@ public class ButtonActionFactory {
 
   /**
    * Start button on the home page.
+   *
    * @throws ViewInitializationException thrown if error initializing the view.
-   * @throws InputException if error parsing user key inputs.
+   * @throws InputException              if error parsing user key inputs.
    */
   private Runnable startGame() throws ViewInitializationException, InputException {
     return () -> {
@@ -94,6 +97,7 @@ public class ButtonActionFactory {
 
   /**
    * Help/credits button on home page
+   *
    * @return a runnable that opens the help/credits page
    * @throws ViewInitializationException thrown if issue with initialization.
    */
@@ -104,7 +108,8 @@ public class ButtonActionFactory {
 
   /**
    * Returns any view to the homepage.
-   @throws ViewInitializationException thrown if error initializing the view.
+   *
+   * @throws ViewInitializationException thrown if error initializing the view.
    */
   private Runnable goToHome() throws ViewInitializationException {
     return () -> {
