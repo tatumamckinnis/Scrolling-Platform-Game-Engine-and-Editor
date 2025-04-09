@@ -78,14 +78,13 @@ public class ButtonActionFactory {
         Stage currentStage = viewState.getStage();
 
         GameDisplay game = new GameDisplay(viewState);
-        gameManager.playGame();
-
         game.render();
         viewState.setDisplay(game);
 
         currentStage.setWidth(1000); // TODO set this to the game size
         currentStage.setHeight(1000);
 
+        gameManager.displayGameObjects();
         setCurrentInputs(gameView.getCurrentScene()).run();
       } catch (Exception e) {
         LOG.error("Error starting game", e);
