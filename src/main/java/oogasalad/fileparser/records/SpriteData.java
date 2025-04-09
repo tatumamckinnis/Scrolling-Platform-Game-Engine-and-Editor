@@ -1,5 +1,6 @@
 package oogasalad.fileparser.records;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ import java.util.List;
  */
 public record SpriteData(
     String name,
+    File spriteFile,
     FrameData baseImage,
     List<FrameData> frames,
     List<AnimationData> animations
