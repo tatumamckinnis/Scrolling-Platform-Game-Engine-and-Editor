@@ -59,8 +59,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext objectGraphicsContext;
 
   private final int cellSize;
-  private double cameraX;
-  private double cameraY;
+  private double cornerCameraX;
+  private double cornerCameraY;
+  private double centerCameraX;
+  private double centerCameraY;
   private double zoomScale;
   private final EditorController editorController;
   private final Map<UUID, Image> objectImages = new HashMap<>();
@@ -86,16 +88,16 @@ public class EditorGameView extends Pane implements EditorViewListener {
       throw new IllegalArgumentException("View dimensions and cell size must be positive.");
     }
 
-    this.cellSize = cellSize;
-    this.cameraX = 0;
-    this.cameraY = 0;
-    this.zoomScale = zoomScale;
-    this.editorController = editorController;
-
     this.gridCanvas = new Canvas();
     this.objectCanvas = new Canvas();
     this.gridGraphicsContext = gridCanvas.getGraphicsContext2D();
     this.objectGraphicsContext = objectCanvas.getGraphicsContext2D();
+
+    this.cellSize = cellSize;
+    this.centerCameraX = 0;
+    this.centerCameraY = 0;
+    this.zoomScale = zoomScale;
+    this.editorController = editorController;
 
     this.setId("editor-game-view");
     getChildren().addAll(gridCanvas, objectCanvas);
@@ -120,9 +122,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * internally by the constructor.
    */
   private void initializeView() {
-    drawGrid();
     setupEventHandlers();
     setupZoom();
+    drawGrid();
   }
 
   /**
@@ -131,13 +133,14 @@ public class EditorGameView extends Pane implements EditorViewListener {
   public void drawGrid() {
     double width = gridCanvas.getWidth();
     double height = gridCanvas.getHeight();
+    updateCameraCoordinates();
 
     gridGraphicsContext.setFill(GRID_BACKGROUND_COLOR);
     gridGraphicsContext.fillRect(0, 0, width, height);
 
     gridGraphicsContext.save();
 
-    gridGraphicsContext.translate(-cameraX, -cameraY);
+    gridGraphicsContext.translate(-cornerCameraX, -cornerCameraY);
     gridGraphicsContext.scale(zoomScale, zoomScale);
 
     int gridMinPixels = GRID_MIN * cellSize;
@@ -179,12 +182,37 @@ public class EditorGameView extends Pane implements EditorViewListener {
         }
         zoomScale = 1 / zoomScale;
 
+        updateCameraCoordinates();
+
         drawGrid();
         redrawObjects();
 
         event.consume();
       }
     });
+  }
+
+  /**
+   * Updates the top left camera coordinates based off of changing zoom, central x and y, and width
+   * height.
+   */
+  private void updateCameraCoordinates() {
+    double canvasWidth = gridCanvas.getWidth();
+    double canvasHeight = gridCanvas.getHeight();
+
+    double worldViewWidth = canvasWidth / zoomScale;
+    double worldViewHeight = canvasHeight / zoomScale;
+
+    cornerCameraX = centerCameraX - (worldViewWidth * 0.5);
+    cornerCameraY = centerCameraY - (worldViewHeight * 0.5);
+
+    double bottomRightCameraX = centerCameraX + (worldViewWidth * 0.5);
+    double bottomRightCameraY = centerCameraY + (worldViewHeight * 0.5);
+
+    LOG.debug("updateCameraCoordinates: center=({},{}), "
+            + "top left corner=({},{}) bottom right corner = ({}, {}), scale={}",
+        centerCameraX, centerCameraY, cornerCameraX, cornerCameraY, bottomRightCameraX,
+        bottomRightCameraY, zoomScale);
   }
 
   /**
@@ -198,8 +226,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double screenX = event.getX();
     double screenY = event.getY();
 
-    double worldX = (screenX / zoomScale) + cameraX;
-    double worldY = (screenY / zoomScale) + cameraY;
+    double worldX = (screenX / zoomScale) + cornerCameraX;
+    double worldY = (screenY / zoomScale) + cornerCameraY;
 
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
         worldY);
@@ -243,10 +271,11 @@ public class EditorGameView extends Pane implements EditorViewListener {
   void redrawObjectsInternal() {
     double width = objectCanvas.getWidth();
     double height = objectCanvas.getHeight();
+    updateCameraCoordinates();
 
     objectGraphicsContext.clearRect(0, 0, width, height);
     objectGraphicsContext.save();
-    objectGraphicsContext.translate(-cameraX, -cameraY);
+    objectGraphicsContext.translate(-cornerCameraX, -cornerCameraY);
     objectGraphicsContext.scale(zoomScale, zoomScale);
 
     LOG.trace("Object canvas cleared for redraw.");

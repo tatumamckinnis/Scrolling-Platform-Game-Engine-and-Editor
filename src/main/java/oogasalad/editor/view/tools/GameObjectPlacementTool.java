@@ -50,7 +50,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate on the grid.
    */
   @Override
-  public void interactObjectAt(int worldX, int worldY) {
+  public void interactObjectAt(double worldX, double worldY) {
     try {
       int cellSize = editorView.getCellSize();
       if (cellSize <= 0) {
@@ -60,10 +60,11 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
       }
 
       // TODO: To disable locking to grid, disable this line.
-      worldX = (worldX / cellSize) * cellSize;
-      worldY = (worldY / cellSize) * cellSize;
+      worldX = (Math.floor(worldX / cellSize) * cellSize);
+      worldY = (Math.floor(worldY / cellSize) * cellSize);
+      System.out.println(worldX + " " + worldY);
 
-      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
+      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, (int) worldX, (int) worldY,
           cellSize);
       LOG.debug("Delegated object placement request to controller for type '{}' at world ({}, {})",
           objectGroup, worldX, worldY);
