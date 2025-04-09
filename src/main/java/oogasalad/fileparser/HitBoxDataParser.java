@@ -3,7 +3,10 @@ package oogasalad.fileparser;
 import oogasalad.fileparser.records.HitBoxData;
 import org.w3c.dom.Element;
 
-
+/**
+ *
+ * @author Billy McCune
+ */
 public class HitBoxDataParser {
 
   public HitBoxData getHitBoxData(Element objectNode) {

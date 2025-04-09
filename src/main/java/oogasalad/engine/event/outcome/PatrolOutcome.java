@@ -1,17 +1,22 @@
-/**
- * movement pattern that moves object back and forth horizontally
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * movement pattern that moves object back and forth horizontally
+ *
+ * @author Gage Garcia
+ */
 public class PatrolOutcome implements Outcome {
 
   private final GameExecutor gameExecutor;
 
+  /**
+   * Requires a game executor
+   *
+   * @param gameExecutor interfaces that allows outcomes to change game state
+   */
   public PatrolOutcome(GameExecutor gameExecutor) {
     this.gameExecutor = gameExecutor;
   }

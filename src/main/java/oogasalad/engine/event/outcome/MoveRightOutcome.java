@@ -1,10 +1,12 @@
-/**
- * Outcome that moves game object to the right
- */
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * Outcome that moves game object to the right
+ *
+ * @author Gage Garcia
+ */
 public class MoveRightOutcome implements Outcome {
 
   @Override

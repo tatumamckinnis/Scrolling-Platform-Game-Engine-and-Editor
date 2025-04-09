@@ -14,16 +14,52 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * The BlueprintDataParser class is responsible for parsing XML blueprint data into a map of
+ * {@link BlueprintData} records. It processes various XML elements such as game nodes, object
+ * groups, individual game objects, events, and property nodes (delegated to {@link PropertyParser})
+ * for both double and string properties.
+ * <p>
+ * Example usage:
+ * <pre>
+ *   Element root = ...; // obtain the XML root element
+ *   List&lt;EventData&gt; events = ...; // get event data list
+ *   BlueprintDataParser parser = new BlueprintDataParser();
+ *   Map&lt;Integer, BlueprintData&gt; blueprintData = parser.getBlueprintData(root, events);
+ * </pre>
+ * </p>
+ *
+ * @author Billy
+ */
 public class BlueprintDataParser {
 
   private String groupName = "";
   private String gameName = "";
   private SpriteDataParser mySpriteDataParser;
+  private HitBoxDataParser myHitBoxDataParser;
   private List<EventData> myEventDataList;
+  private PropertyParser propertyParser;
 
-  public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> EventList)
+  /**
+   * Constructs a new BlueprintDataParser and initializes the required parsers.
+   */
+  public BlueprintDataParser() {
+    propertyParser = new PropertyParser();
+    myHitBoxDataParser = new HitBoxDataParser();
+  }
+
+  /**
+   * Extracts blueprint data from the provided XML root element.
+   *
+   * @param root      the root XML {@link Element} containing <code>&lt;game&gt;</code> nodes.
+   * @param eventList a list of {@link EventData} objects to be associated with blueprint event
+   *                  IDs.
+   * @return a {@link Map} of blueprint data, keyed by their blueprint ID.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
+  public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
       throws BlueprintParseException {
-    myEventDataList = EventList;
+    myEventDataList = eventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
     for (int i = 0; i < gameNodes.getLength(); i++) {
@@ -38,15 +74,29 @@ public class BlueprintDataParser {
     return createBlueprintDataMap(gameObjectDataList);
   }
 
+  /**
+   * Creates a map from a list of {@link BlueprintData} records using their blueprint IDs as keys.
+   *
+   * @param blueprintDataList the list of {@link BlueprintData} records.
+   * @return a {@link Map} where each key is a blueprint ID and the value is the corresponding
+   * {@link BlueprintData} record.
+   */
   private Map<Integer, BlueprintData> createBlueprintDataMap(
       List<BlueprintData> blueprintDataList) {
     Map<Integer, BlueprintData> blueprintDataMap = new HashMap<>();
-    for (int i = 0; i < blueprintDataList.size(); i++) {
-      blueprintDataMap.put(blueprintDataList.get(i).blueprintId(), blueprintDataList.get(i));
+    for (BlueprintData data : blueprintDataList) {
+      blueprintDataMap.put(data.blueprintId(), data);
     }
     return blueprintDataMap;
   }
 
+  /**
+   * Parses the blueprint data contained within a <code>&lt;game&gt;</code> element.
+   *
+   * @param gameNode the XML {@link Element} representing a game.
+   * @return a {@link List} of {@link BlueprintData} records extracted from the game element.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
   private List<BlueprintData> parseByGame(Element gameNode) throws BlueprintParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
@@ -62,13 +112,20 @@ public class BlueprintDataParser {
     return gameObjectsList;
   }
 
+  /**
+   * Parses the blueprint data contained within an <code>&lt;objectGroup&gt;</code> element.
+   *
+   * @param objectGroupNode the XML {@link Element} representing an object group.
+   * @return a {@link List} of {@link BlueprintData} records extracted from the object group.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
       throws BlueprintParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
       Node node = gameObjectNodes.item(i);
-      // Skip text nodes that are only whitespace
+      // Skip text nodes that are only whitespace.
       if (node.getNodeType() == Node.TEXT_NODE && node.getTextContent().trim().isEmpty()) {
         continue;
       }
@@ -81,46 +138,40 @@ public class BlueprintDataParser {
     return gameObjectsGroupList;
   }
 
-  private BlueprintData parseGameObjectData(Element gameObjectNode) throws BlueprintParseException {
+  /**
+   * Parses a single game object node into a {@link BlueprintData} record.
+   * <p>
+   * This method extracts basic attributes (ID, type, sprite name, and sprite file), creates the
+   * corresponding {@link SpriteData} and {@link HitBoxData} objects, processes event identifiers,
+   * and parses property nodes using the dedicated {@link PropertyParser}.
+   * </p>
+   *
+   * @param gameObjectNode the XML {@link Element} representing a game object.
+   * @return the {@link BlueprintData} record constructed from the game object.
+   * @throws BlueprintParseException if a parsing error occurs or if a required attribute is not in
+   *                                 the correct format.
+   */
+  private BlueprintData parseGameObjectData(Element gameObjectNode)
+      throws BlueprintParseException {
     try {
       mySpriteDataParser = new SpriteDataParser();
-      // Parse basic attributes
+
       int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
-      // Create SpriteData from spriteName and spriteFile.
+
       SpriteData spriteData = null;
-      if (!(gameName == null || gameName.isEmpty())) {
-        spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type,
-            spriteName, spriteFile);
-      }
-      // Parse HitBoxData from hitBoxWidth, hitBoxHeight, spriteDx, spriteDy.
-      String hitBoxWidthStr = gameObjectNode.getAttribute("hitBoxWidth");
-      String hitBoxHeightStr = gameObjectNode.getAttribute("hitBoxHeight");
-      String spriteDxStr = gameObjectNode.getAttribute("spriteDx");
-      String spriteDyStr = gameObjectNode.getAttribute("spriteDy");
-      String hitBoxType = gameObjectNode.getAttribute("hitBoxType");
-      int hitBoxWidth = hitBoxWidthStr.isEmpty() ? 0 : Integer.parseInt(hitBoxWidthStr);
-      int hitBoxHeight = hitBoxHeightStr.isEmpty() ? 0 : Integer.parseInt(hitBoxHeightStr);
-      int spriteDx = spriteDxStr.isEmpty() ? 0 : Integer.parseInt(spriteDxStr);
-      int spriteDy = spriteDyStr.isEmpty() ? 0 : Integer.parseInt(spriteDyStr);
-      HitBoxData hitBoxData = new HitBoxData(hitBoxType, hitBoxWidth, hitBoxHeight, spriteDx,
-          spriteDy);
-
-      // Parse event data: if eventIDs are provided, create dummy EventData objects.
-      String eventIDs = gameObjectNode.getAttribute("eventIDs");
-      List<EventData> eventDataList = new ArrayList<>();
-      if (eventIDs != null && !eventIDs.isEmpty()) {
-        String[] eventIdArray = eventIDs.split(",");
-        for (String eventId : eventIdArray) {
-          // Create a dummy EventData; other fields are set to empty or default values.
-          eventDataList.add(getEventByID(eventId));
-        }
+      if (gameName != null && !gameName.isEmpty()) {
+        spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type, spriteName,
+            spriteFile);
       }
 
-      // Parse and flatten properties directly containing <data> elements.
-      Map<String, String> objectProperties = parseProperties(gameObjectNode);
+      HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
+      List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
+
+      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode);
+      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode);
 
       return new BlueprintData(
           id,
@@ -130,13 +181,39 @@ public class BlueprintDataParser {
           spriteData,
           hitBoxData,
           eventDataList,
-          objectProperties
+          stringProperties,
+          doubleProperties
       );
     } catch (NumberFormatException e) {
       throw new BlueprintParseException("error.number.format");
     }
   }
 
+  /**
+   * Creates the event data list for the {@link BlueprintData} by retrieving events associated with
+   * the game object.
+   *
+   * @param gameObjectNode the node containing the comma separated eventIDs attribute.
+   * @return the full list of {@link EventData} objects, or an empty list if none are specified.
+   */
+  private List<EventData> getmyEventDataList(Element gameObjectNode) {
+    String eventIDs = gameObjectNode.getAttribute("eventIDs");
+    List<EventData> eventDataList = new ArrayList<>();
+    if (eventIDs != null && !eventIDs.isEmpty()) {
+      String[] eventIdArray = eventIDs.split(",");
+      for (String eventId : eventIdArray) {
+        eventDataList.add(getEventByID(eventId));
+      }
+    }
+    return eventDataList;
+  }
+
+  /**
+   * Retrieves the {@link EventData} matching the provided event ID from the internal event list.
+   *
+   * @param id the event ID to look for.
+   * @return the matching {@link EventData} if found; otherwise, {@code null}.
+   */
   private EventData getEventByID(String id) {
     for (EventData eventData : myEventDataList) {
       if (Objects.equals(id, eventData.eventId())) {
@@ -144,41 +221,5 @@ public class BlueprintDataParser {
       }
     }
     return null;
-  }
-
-  // Helper method to parse and flatten the <properties> element containing <data> elements.
-  private Map<String, String> parseProperties(Element blueprintDataNode)
-      throws BlueprintParseException {
-    Map<String, String> propertiesMap = new HashMap<>();
-    NodeList propertiesList = blueprintDataNode.getElementsByTagName("properties");
-    if (propertiesList.getLength() > 0) {
-      Node node = propertiesList.item(0);
-      if (!(node instanceof Element)) {
-        throw new BlueprintParseException("error.properties.notElement");
-      }
-      Element propertiesElement = (Element) node;
-      NodeList dataNodes = propertiesElement.getChildNodes();
-      for (int i = 0; i < dataNodes.getLength(); i++) {
-        Node dataNode = dataNodes.item(i);
-        // Skip text nodes that are only whitespace
-        if (dataNode.getNodeType() == Node.TEXT_NODE && dataNode.getTextContent().trim()
-            .isEmpty()) {
-          continue;
-        }
-        if (!(dataNode instanceof Element)) {
-          throw new BlueprintParseException("error.data.notElement");
-        }
-        Element dataElement = (Element) dataNode;
-        if (!"data".equals(dataElement.getTagName())) {
-          continue; // Only process <data> elements.
-        }
-        String name = dataElement.getAttribute("name");
-        String value = dataElement.getAttribute("value");
-        if (name != null && !name.isEmpty()) {
-          propertiesMap.put(name, value);
-        }
-      }
-    }
-    return propertiesMap;
   }
 }

@@ -39,7 +39,7 @@ public class SelectionTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate of the grid cell.
    */
   @Override
-  public void interactObjectAt(int worldX, int worldY) {
+  public void interactObjectAt(double worldX, double worldY) {
     LOG.debug("Attempting to select at grid coordinates ({}, {})", worldX, worldY);
     UUID id = editorController.getObjectIDAt(worldX, worldY);
     if (id != null) {

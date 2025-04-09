@@ -70,16 +70,12 @@ public abstract class GameObject {
     setXPosition((int) (getXPosition() + xVelocity));
     setYPosition((int) (getYPosition() + yVelocity));
 
+    //hardcoded floor, should be refactored later
     if (getYPosition() >= 500 - getHitBoxHeight()) {
       isGrounded = true;
       setYPosition(500 - getHitBoxHeight());
     }
 
-    // Uncomment to clamp left side:
-    // if (getXPosition() < 0) {
-    //   setXPosition(0);
-    //   xVelocity *= -1;
-    // }
   }
 
   /**

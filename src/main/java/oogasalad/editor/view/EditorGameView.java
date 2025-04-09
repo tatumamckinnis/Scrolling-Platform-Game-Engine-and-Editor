@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -51,6 +52,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private static final double ZOOM_SPEED = 0.02;
   private static final double MIN_ZOOM = 0.5;
   private static final Color HITBOX_COLOR = new Color(1, 0, 0, 0.2);
+  private double panVelocityX = 0;
+  private double panVelocityY = 0;
+  private AnimationTimer panTimer;
+  private final double PAN_SPEED = 200;
 
 
   private final Canvas gridCanvas;
@@ -59,15 +64,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext objectGraphicsContext;
 
   private final int cellSize;
-  private double cameraX;
-  private double cameraY;
-  private double zoomScale;
   private final EditorController editorController;
   private final Map<UUID, Image> objectImages = new HashMap<>();
   private final List<UUID> displayedObjectIds = new ArrayList<>();
+  private double cornerCameraX;
+  private double cornerCameraY;
+  private double centerCameraX;
+  private double centerCameraY;
+  private double zoomScale;
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
-  private boolean drawHitboxes = true;
+  private final boolean drawHitboxes = true;
 
   /**
    * Creates a new editor game view.
@@ -86,16 +93,16 @@ public class EditorGameView extends Pane implements EditorViewListener {
       throw new IllegalArgumentException("View dimensions and cell size must be positive.");
     }
 
-    this.cellSize = cellSize;
-    this.cameraX = 0;
-    this.cameraY = 0;
-    this.zoomScale = zoomScale;
-    this.editorController = editorController;
-
     this.gridCanvas = new Canvas();
     this.objectCanvas = new Canvas();
     this.gridGraphicsContext = gridCanvas.getGraphicsContext2D();
     this.objectGraphicsContext = objectCanvas.getGraphicsContext2D();
+
+    this.cellSize = cellSize;
+    this.centerCameraX = 0;
+    this.centerCameraY = 0;
+    this.zoomScale = zoomScale;
+    this.editorController = editorController;
 
     this.setId("editor-game-view");
     getChildren().addAll(gridCanvas, objectCanvas);
@@ -120,9 +127,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * internally by the constructor.
    */
   private void initializeView() {
-    drawGrid();
     setupEventHandlers();
     setupZoom();
+    setupPanning();
+    drawGrid();
   }
 
   /**
@@ -131,13 +139,14 @@ public class EditorGameView extends Pane implements EditorViewListener {
   public void drawGrid() {
     double width = gridCanvas.getWidth();
     double height = gridCanvas.getHeight();
+    updateCameraCoordinates();
 
     gridGraphicsContext.setFill(GRID_BACKGROUND_COLOR);
     gridGraphicsContext.fillRect(0, 0, width, height);
 
     gridGraphicsContext.save();
 
-    gridGraphicsContext.translate(-cameraX, -cameraY);
+    gridGraphicsContext.translate(-cornerCameraX, -cornerCameraY);
     gridGraphicsContext.scale(zoomScale, zoomScale);
 
     int gridMinPixels = GRID_MIN * cellSize;
@@ -163,6 +172,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
   }
 
+  /**
+   * Sets up input based event handlers for zooming in and out of the current grid.
+   */
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
@@ -179,6 +191,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
         }
         zoomScale = 1 / zoomScale;
 
+        updateCameraCoordinates();
+
         drawGrid();
         redrawObjects();
 
@@ -188,18 +202,90 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
+   * Sets up input based event handlers for using WASD keys to pan the grid.
+   */
+  private void setupPanning() {
+    // TODO: this really needs to be broken up into smaller pieces
+    this.setFocusTraversable(true);
+    this.setOnKeyPressed(event -> {
+      switch (event.getCode()) {
+        case A:
+          panVelocityX = -PAN_SPEED;
+          break;
+        case D:
+          panVelocityX = PAN_SPEED;
+          break;
+        case W:
+          panVelocityY = -PAN_SPEED;
+          break;
+        case S:
+          panVelocityY = PAN_SPEED;
+          break;
+        default:
+          break;
+      }
+      event.consume();
+    });
+    this.setOnKeyReleased(event -> {
+      switch (event.getCode()) {
+        case A:
+        case D:
+          panVelocityX = 0;
+          break;
+        case W:
+        case S:
+          panVelocityY = 0;
+          break;
+        default:
+          break;
+      }
+      event.consume();
+    });
+    panTimer = new AnimationTimer() {
+      private long lastUpdate = -1;
+      @Override
+      public void handle(long now) {
+        if (lastUpdate < 0) {
+          lastUpdate = now;
+          return;
+        }
+        double deltaSeconds = (now - lastUpdate) / 1000000000.0;
+        lastUpdate = now;
+        centerCameraX += (panVelocityX / zoomScale) * deltaSeconds;
+        centerCameraY += (panVelocityY / zoomScale) * deltaSeconds;
+        updateCameraCoordinates();
+        drawGrid();
+        redrawObjects();
+      }
+    };
+    panTimer.start();
+  }
+
+  /**
+   * Updates the top left camera coordinates based off of changing zoom, central x and y, and width
+   * height.
+   */
+  private void updateCameraCoordinates() {
+    double canvasWidth = gridCanvas.getWidth();
+    double canvasHeight = gridCanvas.getHeight();
+
+    cornerCameraX = centerCameraX - (canvasWidth * 0.5);
+    cornerCameraY = centerCameraY - (canvasHeight * 0.5);
+  }
+
+  /**
    * Handles mouse clicks on the object canvas. If a placement tool is active, it delegates the
    * click to the tool. Otherwise, it attempts to select an object at the click location.
    *
    * @param event The MouseEvent associated with the click.
    */
   private void handleGridClick(MouseEvent event) {
-
+    this.requestFocus();
     double screenX = event.getX();
     double screenY = event.getY();
 
-    double worldX = (screenX / zoomScale) + cameraX;
-    double worldY = (screenY / zoomScale) + cameraY;
+    double worldX = (screenX + cornerCameraX) / zoomScale;
+    double worldY = (screenY + cornerCameraY) / zoomScale;
 
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
         worldY);
@@ -243,10 +329,11 @@ public class EditorGameView extends Pane implements EditorViewListener {
   void redrawObjectsInternal() {
     double width = objectCanvas.getWidth();
     double height = objectCanvas.getHeight();
+    updateCameraCoordinates();
 
     objectGraphicsContext.clearRect(0, 0, width, height);
     objectGraphicsContext.save();
-    objectGraphicsContext.translate(-cameraX, -cameraY);
+    objectGraphicsContext.translate(-cornerCameraX, -cornerCameraY);
     objectGraphicsContext.scale(zoomScale, zoomScale);
 
     LOG.trace("Object canvas cleared for redraw.");
