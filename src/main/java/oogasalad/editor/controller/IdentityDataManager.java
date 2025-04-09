@@ -2,12 +2,16 @@ package oogasalad.editor.controller;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
+
 /**
  * Manages identity-related data for EditorObjects, including name, group, and layer information.
  * This manager provides a simplified API to interact with the identity aspects of EditorObjects
  * stored in the underlying {@link EditorLevelData}.
+ *
+ * @author Jacob You
  */
 public class IdentityDataManager {
+
   private EditorLevelData level;
 
   /**
@@ -42,7 +46,7 @@ public class IdentityDataManager {
   /**
    * Sets the name for the EditorObject associated with the given UUID.
    *
-   * @param id the UUID of the EditorObject.
+   * @param id   the UUID of the EditorObject.
    * @param name the new name to be set in the object's identity data.
    */
   public void setName(UUID id, String name) {
@@ -52,7 +56,7 @@ public class IdentityDataManager {
   /**
    * Sets the group for the EditorObject associated with the given UUID.
    *
-   * @param id the UUID of the EditorObject.
+   * @param id    the UUID of the EditorObject.
    * @param group the new group to be set in the object's identity data.
    */
   public void setGroup(UUID id, String group) {

@@ -1,24 +1,28 @@
 package oogasalad.editor.view;
 
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.Objects;
 
 /**
- * Builds the UI section specifically for managing Conditions associated with an Event within the
- * Input Tab. This class encapsulates the creation and layout of controls like ComboBoxes for
- * selection, ListViews for display, and Buttons for adding/removing conditions. It relies on
- * handler functions passed during construction to delegate actions back to the parent component
- * (InputTabComponentFactory).
+ * Builds the UI section specifically for managing Conditions associated with an Event
+ * within the Input Tab. This class encapsulates the creation and layout of controls
+ * like ComboBoxes for selection, ListViews for display, and Buttons for adding/removing conditions.
+ * It relies on handler functions passed during construction to delegate actions back to the parent component (InputTabComponentFactory).
  */
 public class ConditionsSectionBuilder {
 
@@ -45,13 +49,11 @@ public class ConditionsSectionBuilder {
   /**
    * Constructs a builder for the conditions UI section.
    *
-   * @param uiBundle               The resource bundle for localizing UI text (e.g., labels, button
-   *                               text). Must not be null.
-   * @param addConditionHandler    A consumer function to be called when the 'Add' button is
-   *                               clicked, passing the selected ConditionType. Must not be null.
-   * @param removeConditionHandler A consumer function to be called when the 'Remove' button is
-   *                               clicked, passing the ConditionType corresponding to the selected
-   *                               item in the list view. Must not be null.
+   * @param uiBundle             The resource bundle for localizing UI text (e.g., labels, button text). Must not be null.
+   * @param addConditionHandler  A consumer function to be called when the 'Add' button is clicked,
+   * passing the selected ConditionType. Must not be null.
+   * @param removeConditionHandler A consumer function to be called when the 'Remove' button is clicked,
+   * passing the ConditionType corresponding to the selected item in the list view. Must not be null.
    * @throws NullPointerException if any argument is null.
    */
   public ConditionsSectionBuilder(ResourceBundle uiBundle,
@@ -63,9 +65,9 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Creates and lays out the UI components for the conditions section. This includes a header
-   * label, a ComboBox to select condition types, Add/Remove buttons, and a ListView to display the
-   * currently added conditions.
+   * Creates and lays out the UI components for the conditions section.
+   * This includes a header label, a ComboBox to select condition types,
+   * Add/Remove buttons, and a ListView to display the currently added conditions.
    *
    * @return A Node (specifically a VBox) containing all the UI elements for this section.
    */
@@ -118,8 +120,8 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Gets the ListView component used to display the conditions. This allows the parent component
-   * (InputTabComponentFactory) to populate or clear the list.
+   * Gets the ListView component used to display the conditions.
+   * This allows the parent component (InputTabComponentFactory) to populate or clear the list.
    *
    * @return The ListView<String> instance displaying condition names.
    */
@@ -161,8 +163,7 @@ public class ConditionsSectionBuilder {
    * @param handler   The event handler to be executed when the button is clicked.
    * @return A configured Button node.
    */
-  private Button createButton(String bundleKey,
-      javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
+  private Button createButton(String bundleKey, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
     Button button = new Button(uiBundle.getString(bundleKey));
     button.setOnAction(handler);
     button.getStyleClass().add("action-button");
@@ -171,8 +172,8 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Creates an HBox to hold buttons, centering them and applying default spacing. Allows the HBox
-   * to grow horizontally to fill available space.
+   * Creates an HBox to hold buttons, centering them and applying default spacing.
+   * Allows the HBox to grow horizontally to fill available space.
    *
    * @param buttons The Button nodes to add to the HBox.
    * @return A configured HBox node containing the buttons.

@@ -1,0 +1,82 @@
+package oogasalad.engine.model.object;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import oogasalad.engine.event.Event;
+
+/**
+ * The {@code Player} class represents a user-controlled or central game character within the game.
+ *
+ * <p>It extends the abstract {@link GameObject} class and adds player-specific behavior and
+ * properties such as power-ups and visible/hidden stats. While players are typically controlled via
+ * keyboard input, this is not strictly required and depends on game design.
+ *
+ * <p>This class distinguishes between stats that are shown to the user (displayedStats)
+ * and internal metrics used for logic or balance (hiddenStats).
+ *
+ * @author Alana Zinkin
+ */
+public class Player extends GameObject {
+
+  private List<String> currentPowerUps;
+
+  private Map<String, Double> displayedStats;
+
+  private Map<String, Double> hiddenStats;
+
+  /**
+   * Constructs a new Player object with the provided data.
+   *
+   * @param uuid           unique identifier for this player
+   * @param type           string representing the type/category of the player
+   * @param layer          rendering layer for display ordering
+   * @param xVelocity      initial horizontal velocity
+   * @param yVelocity      initial vertical velocity
+   * @param hitBox         spatial hitbox definition for collisions
+   * @param spriteInfo     visual rendering and animation data
+   * @param events         list of events associated with the player
+   * @param displayedStats stats shown to the user (e.g., health)
+   * @param stringParams   string-based parameters passed to the player
+   * @param doubleParams   numeric parameters passed to the player (e.g., jump strength)
+   */
+  public Player(UUID uuid, String type, int layer, double xVelocity, double yVelocity,
+      HitBox hitBox, Sprite spriteInfo, List<Event> events, Map<String, Double> displayedStats,
+      Map<String, String> stringParams, Map<String, Double> doubleParams) {
+    super(uuid, type, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
+        doubleParams);
+    currentPowerUps = new ArrayList<>();
+    this.displayedStats = displayedStats;
+    this.hiddenStats = new HashMap<>();
+  }
+
+  /**
+   * Returns a map of the stats that are displayed to the player.
+   *
+   * @return a map of visible stat names and values
+   */
+  public Map<String, Double> getDisplayedStats() {
+    return displayedStats;
+  }
+
+  /**
+   * Returns a map of hidden stats used for internal calculations.
+   *
+   * @return a map of hidden stat names and values
+   */
+  public Map<String, Double> getHiddenStats() {
+    return hiddenStats;
+  }
+
+  /**
+   * Adds a new power-up to the player's list of active power-ups.
+   *
+   * @param powerUp the name of the power-up to add
+   */
+  public void addPowerUp(String powerUp) {
+    currentPowerUps.add(powerUp);
+  }
+}
+

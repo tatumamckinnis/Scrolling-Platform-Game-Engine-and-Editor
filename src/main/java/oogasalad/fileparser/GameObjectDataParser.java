@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.w3c.dom.Element;
 import oogasalad.fileparser.records.GameObjectData;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -18,7 +18,7 @@ public class GameObjectDataParser {
    * Parses a game object XML element and creates a list of GameObjectData objects.
    *
    * @param gameObjectElement the XML element representing the game object
-   * @param z the z-index for the game object
+   * @param z                 the z-index for the game object
    * @return a list of GameObjectData objects created from the element
    */
   public List<GameObjectData> getGameObjectData(Element gameObjectElement, int z) {

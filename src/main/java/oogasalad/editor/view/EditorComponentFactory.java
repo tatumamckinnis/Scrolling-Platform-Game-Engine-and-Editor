@@ -7,8 +7,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
@@ -302,7 +312,7 @@ public class EditorComponentFactory {
   /**
    * Safely retrieves an integer property from the loaded properties.
    */
-  private int getIntProperty(String key, int defaultValue) {
+  int getIntProperty(String key, int defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {
@@ -320,7 +330,7 @@ public class EditorComponentFactory {
   /**
    * Safely retrieves an double property from the loaded properties.
    */
-  private double getDoubleProperty(String key, double defaultValue) {
+  double getDoubleProperty(String key, double defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {

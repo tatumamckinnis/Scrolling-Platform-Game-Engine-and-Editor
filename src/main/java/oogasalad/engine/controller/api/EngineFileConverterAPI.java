@@ -22,14 +22,13 @@ public interface EngineFileConverterAPI {
    * @throws IOException         if underlying file operations fail
    * @throws DataFormatException if the data cannot be translated into the parser's model
    */
-  public void saveLevelStatus() throws IOException, DataFormatException;
+  void saveLevelStatus() throws IOException, DataFormatException;
 
   /**
    * Loads a new level or resumes saved progress by: 1) Calling GameFileParserAPI to parse the file
    * into a standardized data structure 2) Translating that structure into the Engine’s runtime
    * objects 3) Updating the current Engine state
-   *
    */
-  public Map<String, GameObject> loadFileToEngine(LevelData level) ;
+  Map<String, GameObject> loadFileToEngine(LevelData level);
 
 }

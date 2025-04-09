@@ -21,4 +21,6 @@ public record SpriteSheetData(
     int width,
     int height,
     List<SpriteData> sprites
-) {}
+) {
+
+}

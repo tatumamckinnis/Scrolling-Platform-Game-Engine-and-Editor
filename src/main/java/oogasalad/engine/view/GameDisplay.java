@@ -2,12 +2,11 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.model.object.ViewObject;
-import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
 import oogasalad.engine.view.components.NewGameComponents;
+import oogasalad.exceptions.RenderingException;
 
 /**
  * This class is the view for an active game. It manages rendering the game scene, displaying UI
@@ -16,11 +15,12 @@ import oogasalad.engine.view.components.NewGameComponents;
  * @author Aksel Bell
  */
 public class GameDisplay extends Display {
-  private ViewState myViewState;
-  private GameControlPanel myGameControlPanel;
-  private HUD myHUD;
-  private NewGameComponents myNewGameComponents;
-  private LevelDisplay myLevelView;
+
+  private final ViewState myViewState;
+  private final GameControlPanel myGameControlPanel;
+  private final HUD myHUD;
+  private final NewGameComponents myNewGameComponents;
+  private final LevelDisplay myLevelView;
 
   /**
    * Initializes a game scene object.
@@ -35,6 +35,7 @@ public class GameDisplay extends Display {
 
   /**
    * Updates objects visually based on backend changes.
+   *
    * @param gameObjects list of GameObjects to update or to add to the screen.
    * @throws RenderingException thrown if problem during rendering.
    */
@@ -52,6 +53,7 @@ public class GameDisplay extends Display {
     myGameControlPanel.render();
     myLevelView.render();
     myNewGameComponents.render();
+    myHUD.render();
   }
 
   /**

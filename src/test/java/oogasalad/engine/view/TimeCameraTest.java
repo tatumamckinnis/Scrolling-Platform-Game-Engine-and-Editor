@@ -5,13 +5,17 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.scene.Group;
-import oogasalad.engine.model.object.DefaultGameObject;
+import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.HitBox;
+import oogasalad.engine.model.object.Sprite;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
@@ -54,11 +58,40 @@ class TimeCameraTest {
   }
 
   private static ViewObject createTempViewObject() {
-    FrameData currentFrame = new FrameData("DinoRun1", 708, 0, 87, 94, new File("/Users/alanazinkin/Desktop/CS308/oogasalad_team03/data/gameData/gameObjects/dinosaurgame/dinosaurgame-sprites.xml"));
-    SpriteData expectedSpriteData1 = new SpriteData("DinoRun1", currentFrame, List.of(currentFrame), new ArrayList<>());
-    GameObject gameObjectToFollow = new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5,  10, 0, "Dino", "Player", expectedSpriteData1, currentFrame, new HashMap<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>(), new HitBoxData("default", 2, 4, 2, 4));
-    gameObjectToFollow.setX(100);
-    gameObjectToFollow.setY(100);
+    // Create FrameData and supporting sprite info
+    FrameData currentFrame = new FrameData(
+        "DinoRun1",
+        708,
+        0,
+        87,
+        94,
+        new File("/Users/alanazinkin/Desktop/CS308/oogasalad_team03/data/gameData/gameObjects/dinosaurgame/dinosaurgame-sprites.xml")
+    );
+
+    Map<String, FrameData> frameMap = Map.of("DinoRun1", currentFrame);
+    Map<String, AnimationData> animationMap = new HashMap<>();
+
+    // Construct Sprite object with offset (dx/dy) = 0
+    Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0);
+
+    // Construct HitBox for the object
+    HitBox hitBox = new HitBox(100, 100, 87, 94); // x, y, width, height
+
+    // Create the Entity with required params
+    GameObject gameObjectToFollow = new Entity(
+        new UUID(4, 1),
+        "Player",
+        1,
+        1.0,
+        1.0,
+        hitBox,
+        sprite,
+        new ArrayList<>(), // events
+        new HashMap<>(),   // stringParams
+        new HashMap<>()    // doubleParams
+    );
+
     return new ViewObject(gameObjectToFollow);
   }
+
 }
