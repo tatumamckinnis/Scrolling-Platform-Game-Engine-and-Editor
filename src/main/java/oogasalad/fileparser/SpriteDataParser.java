@@ -92,7 +92,7 @@ public class SpriteDataParser {
    * @return a SpriteData object, or null if parsing fails
    */
   public SpriteData getSpriteData(String gameName, String group, String type,
-      String spriteName, String spriteFile) {
+      String spriteName, String spriteFile) throws RuntimeException {
     // Build the file path using user directory, graphics data path, and provided folders.
     String filePath = buildFilePath(gameName, group, type, spriteFile);
     try {

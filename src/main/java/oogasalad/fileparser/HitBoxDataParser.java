@@ -9,7 +9,10 @@ import oogasalad.fileparser.records.EventData;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-
+/**
+ *
+ * @author Billy McCune
+ */
 public class HitBoxDataParser {
 
   public HitBoxData getHitBoxData(Element objectNode) {
