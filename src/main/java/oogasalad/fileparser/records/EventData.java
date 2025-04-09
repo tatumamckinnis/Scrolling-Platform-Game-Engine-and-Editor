@@ -10,7 +10,6 @@ import java.util.Map;
 public record EventData(
     String type,
     String eventId,
-    List<List<String>> conditions,
-    List<String> outcomes,
-    Map<String,String> parameters
+    List<List<ConditionData>> conditions,
+    List<OutcomeData> outcomes
 ) {}
