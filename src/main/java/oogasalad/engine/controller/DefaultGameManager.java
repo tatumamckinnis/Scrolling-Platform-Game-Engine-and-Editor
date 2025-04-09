@@ -1,6 +1,3 @@
-/**
- * Game manager api implementation
- */
 package oogasalad.engine.controller;
 
 import java.io.FileNotFoundException;
@@ -26,7 +23,9 @@ import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * Game manager api implementation
+ */
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -41,7 +40,10 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private String currentLevel;
 
-
+  /**
+   * default constructor for the game manager
+   * @throws ViewInitializationException if the view cannot render
+   */
   public DefaultGameManager()
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
