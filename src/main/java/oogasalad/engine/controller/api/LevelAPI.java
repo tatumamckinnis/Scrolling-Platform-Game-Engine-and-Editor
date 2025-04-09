@@ -17,7 +17,7 @@ public interface LevelAPI {
    * @throws DataFormatException if the filepath is not properly formatted
    * @throws IOException         if a file cannot be retrieved
    */
-  void selectGame(String level)
+  void selectGame(String filePath)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   /**

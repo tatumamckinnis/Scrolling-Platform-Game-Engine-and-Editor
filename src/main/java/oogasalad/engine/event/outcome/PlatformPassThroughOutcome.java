@@ -7,23 +7,53 @@
 package oogasalad.engine.event.outcome;
 
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
+import java.util.List;
+
 public class PlatformPassThroughOutcome implements Outcome {
-    private final GameExecutor gameExecutor;
-    public PlatformPassThroughOutcome(GameExecutor gameExecutor) {
-        this.gameExecutor = gameExecutor;
+    private final CollisionHandler collisionHandler;
+    private GameObject player;
+    public PlatformPassThroughOutcome(CollisionHandler collisionHandler) {
+        this.collisionHandler = collisionHandler;
     }
     @Override
     public void execute(GameObject player) {
-        String platformId = player.getParams().get("Platform_id");
-        GameObject platform = gameExecutor.getGameObjectByUUID(platformId);
-        //set grounded, remove y velocity
-        if (player.getY() + player.getHitBoxHeight() > platform.getY()) {
-            player.setGrounded(true);
-            player.setYVelocity(0);
-
+        this.player = player;
+        List<GameObject> collisions = collisionHandler.getCollisions(player);
+        for (GameObject platform : collisions) {
+            if (platform.getType().equals("platforms")) {
+                handlePlatform(platform);
+            }
         }
 
     }
+
+    private void handlePlatform(GameObject platform) {
+        int playerBottom = player.getY() + player.getHitBoxHeight();
+        int playerTop = player.getY();
+        int platformTop = platform.getY();
+        int platformBottom = platform.getY() + platform.getHitBoxHeight();
+        double yVelocity = player.getYVelocity();
+
+        boolean isFalling = yVelocity >= 0;
+        boolean verticallyOverlapping = playerBottom >= platformTop && playerTop < platformTop;
+        boolean horizontallyOverlapping =
+                player.getX() + player.getHitBoxWidth() > platform.getX() &&
+                        player.getX() < platform.getX() + platform.getHitBoxWidth();
+
+        if (isFalling && verticallyOverlapping && horizontallyOverlapping) {
+            // Snap player to platform top
+            player.setY(platformTop - player.getHitBoxHeight());
+            player.setYVelocity(0);
+            player.setGrounded(true);
+        } else {
+            // Only unground if player is clearly no longer on the platform
+            if (player.getY() + player.getHitBoxHeight() < platformTop - 2 || !horizontallyOverlapping) {
+                player.setGrounded(false);
+            }
+        }
+    }
+
 }

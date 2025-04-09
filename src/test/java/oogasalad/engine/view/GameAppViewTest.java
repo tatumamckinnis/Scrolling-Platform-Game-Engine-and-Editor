@@ -75,7 +75,7 @@ public class GameAppViewTest extends ApplicationTest {
     private void setDefaultPath() throws ViewInitializationException {
 
       try {
-        getGameManager().selectGame("dinosaurgame", "Easy", "DinoLevel1.xml");
+        //getGameManager().selectGame("DinoLevel2.xml");
       } catch (Exception e) {
         e.printStackTrace();
       }

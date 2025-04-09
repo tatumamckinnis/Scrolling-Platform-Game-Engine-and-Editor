@@ -35,7 +35,7 @@ interact with each other -->
   <objectGroup name="entities">
 <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
 <!-- Objects should also have a defined hit box-->
-    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23">
+    <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22">
 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
       <properties>
         <variables>
@@ -43,7 +43,7 @@ interact with each other -->
         </variables>
       </properties>
     </object>
-    <object spriteName="Bird" type="enemies" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23">
+    <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
@@ -95,16 +95,10 @@ interact with each other -->
       <event>
           <event type="physics" id="23">
               <conditions>
-                  <condition list="COLLIDED_WITH_ENEMY"/>
+                  <condition list="COLLIDED_WITH_PLAYER"/>
               </conditions>
-              <outcomes list="LOSE_GAME"/>
+              <outcomes list="DESTROY_OBJECT"/>
           </event>
       </event>
   </events>
-  <event type="physics" id="23">
-      <conditions>
-        <condition list="TRUE"/>
-      </conditions>
-     <outcomes list="PATROL"/>
-  </event>
 </map>

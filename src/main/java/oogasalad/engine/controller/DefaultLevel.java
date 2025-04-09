@@ -33,9 +33,8 @@ public class DefaultLevel implements LevelAPI {
    * @param level    String level name of the game(requires .xml)
    */
   @Override
-  public void selectGame(String level) {
+  public void selectGame(String filePath) {
     LOG.info(LEVEL_FILE_PATH);
-    String filePath = LEVEL_FILE_PATH + level;
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }
