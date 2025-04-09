@@ -19,6 +19,8 @@ public record EventCondition(EventCondition.ConditionType conditionType) {
         COLLIDED_WITH_PLATFORM,
         UP_ARROW_PRESSED,
         W_KEY_PRESSED,
+        RIGHT_ARROW_PRESSED,
+        LEFT_ARROW_PRESSED,
     }
 
 

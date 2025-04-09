@@ -34,6 +34,8 @@ public class OutcomeExecutor {
                 new DestroyObjectOutcome(gameExecutor));
         outcomeMap.put(EventOutcome.OutcomeType.PLATFORM_PASS_THROUGH_BEHAVIOR,
                 new PlatformPassThroughOutcome(collisionHandler));
+        outcomeMap.put(EventOutcome.OutcomeType.MOVE_LEFT,
+            new MoveLeftOutcome());
     }
 
 
