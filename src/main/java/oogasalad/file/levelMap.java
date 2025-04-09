@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Level Map returns a list of levels for a given game
+ */
 public class levelMap {
 
   private static Logger LOG = Logger.getLogger(levelMap.class.getName());
