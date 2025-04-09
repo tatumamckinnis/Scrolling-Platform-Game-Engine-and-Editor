@@ -76,6 +76,7 @@ public class SplashScreen extends Display {
     int logoPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
     logoPane.getStyleClass().add("logo-pane");
+    logoPane.getChildren().add(createSplashBackground());
     logoPane.getChildren().add(createSplashLogo());
     return logoPane;
   }
@@ -123,6 +124,33 @@ public class SplashScreen extends Display {
     splashLogo.setPickOnBounds(true);
     splashLogo.setPreserveRatio(true);
     splashLogo.setId("splashLogo");
+  }
+
+  /**
+   * TODO: Refactor createSplashLogo and createSplashBackground for reusable code (DRY)
+   * @return splash background image
+   */
+  private ImageView createSplashBackground() {
+    ImageView splashBackground = new ImageView();
+    try {
+      String logoFilepath = splashComponentProperties.getProperty("splash.background");
+      Image splashImage = new Image(getClass().getResourceAsStream(logoFilepath));
+      splashBackground.setImage(splashImage);
+      scaleSplashBackground(splashBackground);
+    } catch (NullPointerException e) {
+      throw new NullPointerException(String.format("OOGASalad splash background filepath not found: %s", e.getMessage()));
+    }
+    return splashBackground;
+  }
+
+  private void scaleSplashBackground(ImageView splashLogo) {
+    int backgroundWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
+    int backgroundHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
+    splashLogo.setFitWidth(backgroundWidth);
+    splashLogo.setFitHeight(backgroundHeight);
+    splashLogo.setPickOnBounds(true);
+    splashLogo.setPreserveRatio(true);
+    splashLogo.setId("splashBackground");
   }
 
   /**
