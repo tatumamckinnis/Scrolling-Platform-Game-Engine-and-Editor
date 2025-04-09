@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author Billy McCune
  */
 public record EventData(
@@ -12,5 +11,7 @@ public record EventData(
     String eventId,
     List<List<String>> conditions,
     List<String> outcomes,
-    Map<String,String> parameters
-) {}
+    Map<String, String> parameters
+) {
+
+}

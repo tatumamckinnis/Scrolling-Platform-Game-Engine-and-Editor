@@ -35,7 +35,7 @@ interact with each other -->
         <objectGroup name="entities">
             <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
             <!-- Objects should also have a defined hit box-->
-            <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22,23">
+            <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="18,19,20,22,23">
                 <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
                 <properties>
                     <variables>
@@ -61,6 +61,22 @@ interact with each other -->
         </objectGroup>
     </game>
     <events>
+        <event type="input" id="18">
+            <!--     Enums for event type, condition, and outcome-->
+            <conditions>
+                <condition list="D_KEY_PRESSED" />
+            </conditions>
+
+            <outcomes list="MOVE_RIGHT"/>
+        </event>
+        <event type="input" id="19">
+            <!--     Enums for event type, condition, and outcome-->
+            <conditions>
+                <condition list="A_KEY_PRESSED" />
+            </conditions>
+
+            <outcomes list="MOVE_LEFT"/>
+        </event>
         <event type="input" id="20">
             <!--     Enums for event type, condition, and outcome-->
             <conditions>
@@ -81,7 +97,7 @@ interact with each other -->
                 <conditions>
                     <condition list="TRUE"/>
                 </conditions>
-                <outcomes list="APPLY_GRAVITY, MOVE_RIGHT"/>
+                <outcomes list="APPLY_GRAVITY"/>
                 <parameters>
                     <parameter name="ApplyGravityAmount">0.1</parameter>
                 </parameters>

@@ -14,16 +14,15 @@ import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.view.DefaultView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,10 +32,10 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
       DefaultGameManager.class.getPackageName() + "." + "GameManager");
-  private Timeline myGameLoop;
+  private final Timeline myGameLoop;
   private List<GameObject> myGameObjects;
-  private GameControllerAPI myGameController;
-  private LevelAPI myLevelAPI;
+  private final GameControllerAPI myGameController;
+  private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
 

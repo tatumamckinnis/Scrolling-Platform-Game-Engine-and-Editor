@@ -1,15 +1,15 @@
 package oogasalad.engine.view.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import oogasalad.engine.model.object.ViewObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
 
@@ -20,7 +20,7 @@ import oogasalad.fileparser.records.FrameData;
  */
 public class ViewObjectToImageConverter {
 
-  private Map<String, ObjectImage> UUIDToImageMap;
+  private final Map<String, ObjectImage> UUIDToImageMap;
 
   /**
    * Constructs a new {@code ViewObjectToImageConverter} with an empty UUID-to-image map.

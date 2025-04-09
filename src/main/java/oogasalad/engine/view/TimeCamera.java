@@ -45,8 +45,7 @@ public class TimeCamera implements Camera {
     try {
       gameWorld.setTranslateX(CAMERA_OFFSET_X - objectToFollow.getX());
       gameWorld.setTranslateY(CAMERA_OFFSET_Y - objectToFollow.getY());
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       throw new NoSuchElementException(LEVEL_RESOURCES.getString("ObjectDoesntExist"));
     }
 

@@ -6,7 +6,7 @@ import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
-import oogasalad.editor.model.data.object.DynamicVariableContainer; // Import needed
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +15,8 @@ import org.apache.logging.log4j.Logger;
  * This class acts as a facade for performing operations on editor objects, layers, groups, and
  * dynamic variables, and delegates tasks to corresponding data managers within an
  * {@link EditorLevelData} instance.
+ *
+ * @author Jacob You
  */
 public class EditorDataAPI {
 

@@ -3,7 +3,8 @@ package oogasalad.fileparser.records;
 import java.util.List;
 
 /**
- * Represents a named animation composed of a sequence of frame names with a uniform frame duration.
+ * Represents a named animation composed of a sequence of frame names with a uniform frame
+ * duration.
  *
  * <p>This record defines how a sprite is animated by specifying the frame to frame speed and
  * the ordered list of frame identifiers to display.
@@ -23,4 +24,6 @@ public record AnimationData(
     String name,
     double frameLen,
     List<String> frameNames
-) {}
+) {
+
+}

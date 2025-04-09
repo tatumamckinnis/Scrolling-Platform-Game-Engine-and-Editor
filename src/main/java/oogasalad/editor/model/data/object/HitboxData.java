@@ -2,8 +2,11 @@ package oogasalad.editor.model.data.object;
 
 /**
  * Represents the hitbox data for an editor object, including its position, dimensions, and shape.
+ *
+ * @author Jacob You
  */
 public class HitboxData {
+
   private int x;
   private int y;
   private int width;
@@ -13,11 +16,11 @@ public class HitboxData {
   /**
    * Constructs a new HitboxData instance with the specified coordinates, dimensions, and shape.
    *
-   * @param x the x-coordinate of the hitbox
-   * @param y the y-coordinate of the hitbox
-   * @param width the width of the hitbox
+   * @param x      the x-coordinate of the hitbox
+   * @param y      the y-coordinate of the hitbox
+   * @param width  the width of the hitbox
    * @param height the height of the hitbox
-   * @param shape the shape of the hitbox
+   * @param shape  the shape of the hitbox
    */
   public HitboxData(int x, int y, int width, int height, String shape) {
     this.x = x;

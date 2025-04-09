@@ -1,15 +1,20 @@
 package oogasalad.editor.view;
 
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.util.Objects;
 
 /**
  * Builds the UI section for managing Events in the Input Tab.
@@ -43,7 +48,7 @@ public class EventsSectionBuilder {
    * @param removeEventHandler     The runnable to handle removing the selected event.
    * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the
    *                               new selection.
-   * @throws NullPointerException if any of the provided arguments are {@code null}.
+   * @throws NullPointerException if any of the provided arguments are null.
    */
   public EventsSectionBuilder(ResourceBundle uiBundle,
       Consumer<String> addEventHandler,

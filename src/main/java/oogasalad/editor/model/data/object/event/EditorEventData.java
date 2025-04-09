@@ -8,7 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Abstract base class holding common event data, specifically a map of event IDs to EditorEvent objects.
+ * Abstract base class holding common event data, specifically a map of event IDs to EditorEvent
+ * objects.
+ *
+ * @author Jacob You
  */
 public abstract class EditorEventData {
 
@@ -24,8 +27,8 @@ public abstract class EditorEventData {
   }
 
   /**
-   * Returns an unmodifiable view of the events map.
-   * Prevents external modification of the internal map. (DESIGN-10)
+   * Returns an unmodifiable view of the events map. Prevents external modification of the internal
+   * map. (DESIGN-10)
    *
    * @return An unmodifiable Map of event IDs to EditorEvent objects.
    */

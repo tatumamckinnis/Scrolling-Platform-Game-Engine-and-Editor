@@ -13,7 +13,7 @@ public interface LevelAPI {
   /**
    * selects a new Game or Level
    *
-   * @param level    level of the game
+   * @param level level of the game
    * @throws DataFormatException if the filepath is not properly formatted
    * @throws IOException         if a file cannot be retrieved
    */
@@ -22,6 +22,7 @@ public interface LevelAPI {
 
   /**
    * Lists all available levels to play
+   *
    * @return list of string representations of "game/level"
    */
   List<String> listLevels();

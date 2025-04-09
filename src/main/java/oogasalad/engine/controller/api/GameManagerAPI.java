@@ -58,7 +58,8 @@ public interface GameManagerAPI {
 
   /**
    * Displays initial game objects when the level is first loaded.
-   * @throws RenderingException thrown if error rendering objects.
+   *
+   * @throws RenderingException    thrown if error rendering objects.
    * @throws FileNotFoundException thrown if invalid level file.
    */
   void displayGameObjects() throws RenderingException, FileNotFoundException;
