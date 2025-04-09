@@ -7,9 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Concrete implementation of ObjectInteractionTool for placing standard game objects
- * like entities or enemies. Delegates actual object creation to the EditorController.
- * (DESIGN-04: DRY, DESIGN-09: MVC, DESIGN-11, DESIGN-20: Strategy Pattern)
+ * Concrete implementation of ObjectInteractionTool for placing standard game objects like entities
+ * or enemies. Delegates actual object creation to the EditorController. (DESIGN-04: DRY, DESIGN-09:
+ * MVC, DESIGN-11, DESIGN-20: Strategy Pattern)
+ *
  * @author Tatum McKinnis
  */
 public class GameObjectPlacementTool implements ObjectInteractionTool {
@@ -49,7 +50,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate on the grid.
    */
   @Override
-  public void interactObjectAt(int gridX, int gridY) {
+  public void interactObjectAt(int worldX, int worldY) {
     try {
       int cellSize = editorView.getCellSize();
       if (cellSize <= 0) {
@@ -58,8 +59,9 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
         return;
       }
 
-      int worldX = gridX * cellSize;
-      int worldY = gridY * cellSize;
+      // TODO: To disable locking to grid, disable this line.
+      worldX = (worldX / cellSize) * cellSize;
+      worldY = (worldY / cellSize) * cellSize;
 
       editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
           cellSize);
@@ -68,7 +70,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
 
     } catch (Exception e) {
       LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
-          gridX, gridY, e.getMessage(), e);
+          worldX, worldY, e.getMessage(), e);
     }
   }
 }

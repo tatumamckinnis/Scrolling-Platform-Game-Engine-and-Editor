@@ -9,8 +9,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A tool for selecting objects rather than creating new ones.
- * When a grid square is clicked, it performs a hit test and notifies the controller of selection.
+ * A tool for selecting objects rather than creating new ones. When a grid square is clicked, it
+ * performs a hit test and notifies the controller of selection.
  */
 public class SelectionTool implements ObjectInteractionTool {
 
@@ -22,12 +22,13 @@ public class SelectionTool implements ObjectInteractionTool {
   /**
    * Constructs a new SelectionTool.
    *
-   * @param editorView the EditorGameView instance; must not be null.
+   * @param editorView       the EditorGameView instance; must not be null.
    * @param editorController the controller to use for selection notifications; must not be null.
    */
   public SelectionTool(EditorGameView editorView, EditorController editorController) {
     this.editorView = Objects.requireNonNull(editorView, "EditorGameView cannot be null.");
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
     LOG.info("SelectionTool created.");
   }
 
@@ -43,8 +44,7 @@ public class SelectionTool implements ObjectInteractionTool {
     UUID id = editorController.getObjectIDAt(worldX, worldY);
     if (id != null) {
       editorController.notifyObjectSelected(id);
-    }
-    else {
+    } else {
       editorController.notifyObjectDeselected();
     }
   }
