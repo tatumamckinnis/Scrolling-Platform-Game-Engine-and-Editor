@@ -10,6 +10,5 @@ public class MoveRightOutcome implements Outcome {
     public void execute(GameObject gameObject) {
         double dx = gameObject.getDoubleParams().getOrDefault("MoveRightAmount", 4.0);
         gameObject.setXPosition((int) (gameObject.getXPosition() + dx));
-        System.out.println(gameObject.getType() + gameObject.getXPosition());
     }
 }

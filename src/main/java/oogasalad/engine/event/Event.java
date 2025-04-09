@@ -25,7 +25,8 @@ public class Event {
     public enum EventType {
         INPUT,
         PHYSICS,
-        COLLISION
+        COLLISION,
+        END
     }
 
     /**

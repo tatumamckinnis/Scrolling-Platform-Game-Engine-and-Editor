@@ -7,6 +7,8 @@ import oogasalad.engine.model.object.ViewObject;
  * The {@code Camera} interface defines behavior for updating the view of the game world.
  * Implementations of this interface can modify the visual representation of the game world, such as
  * panning or zooming, typically to follow a specific object.
+ *
+ * @author Alana Zinkin
  */
 public interface Camera {
 

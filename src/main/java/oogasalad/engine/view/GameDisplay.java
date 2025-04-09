@@ -52,6 +52,7 @@ public class GameDisplay extends Display {
     myGameControlPanel.render();
     myLevelView.render();
     myNewGameComponents.render();
+    myHUD.render();
   }
 
   /**

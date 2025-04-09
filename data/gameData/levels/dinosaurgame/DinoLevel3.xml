@@ -23,7 +23,9 @@ interact with each other -->
     <layer name="entities" width="500" height="500" z="1">
       <data>
         <object id="12" coordinates="(300,300)(500,300)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+        <object id="13" coordinates="(200,300)" uid="e112d04d-3047-4e30-9e20-2e601a19aae8"/>
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
@@ -35,7 +37,7 @@ interact with each other -->
     <objectGroup name="entities">
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
-      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22,24,25">
+      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22,24,25,27">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
           <variables>
@@ -44,6 +46,12 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26">
+        <properties>
+          <data name = "velocity.x" value = "5"/>
+          <data name = "velocity.y" value = "0"/>
+        </properties>
+      </object>
+      <object spriteName="Bird" type="enemy" id="13" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26">
         <properties>
           <data name = "velocity.x" value = "5"/>
           <data name = "velocity.y" value = "0"/>
@@ -108,6 +116,14 @@ interact with each other -->
           <condition list="TRUE"/>
         </conditions>
         <outcomes list="PATROL"/>
+      </event>
+    </event>
+    <event>
+      <event type="end" id="27">
+        <conditions>
+          <condition list="COLLIDED_WITH_ENEMY"/>
+        </conditions>
+        <outcomes list="LOSE_GAME"/>
       </event>
     </event>
   </events>
