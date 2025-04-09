@@ -17,6 +17,8 @@ import org.apache.logging.log4j.Logger;
  * Abstract class for managing event data (Conditions, Outcomes) associated with EditorObjects.
  * Subclasses determine which specific event data container (e.g., InputData, CollisionData) is
  * used.
+ *
+ * @author Jacob You
  */
 public abstract class EditorEventDataManager {
 
@@ -142,9 +144,9 @@ public abstract class EditorEventDataManager {
    * Adds a outcome of the specified type to the event identified by the event ID for the given
    * EditorObject.
    *
-   * @param objectId  the UUID of the EditorObject
-   * @param eventId   the UUID of the event to which the condition is to be added
-   * @param outcome   the OutcomeType to add
+   * @param objectId the UUID of the EditorObject
+   * @param eventId  the UUID of the event to which the condition is to be added
+   * @param outcome  the OutcomeType to add
    */
   public void addEventOutcome(UUID objectId, String eventId, OutcomeType outcome) {
     EditorEvent event = getEvent(objectId, eventId);
@@ -161,9 +163,9 @@ public abstract class EditorEventDataManager {
    * Removes the outcome of the specified type from the event identified by the event ID for the
    * given EditorObject.
    *
-   * @param objectId  the UUID of the EditorObject
-   * @param eventId   the UUID of the event from which the condition is to be removed
-   * @param outcome   the OutcomeType to remove
+   * @param objectId the UUID of the EditorObject
+   * @param eventId  the UUID of the event from which the condition is to be removed
+   * @param outcome  the OutcomeType to remove
    */
   public void removeEventOutcome(UUID objectId, String eventId, OutcomeType outcome) {
     EditorEvent event = getEvent(objectId, eventId);
@@ -222,6 +224,7 @@ public abstract class EditorEventDataManager {
 
   /**
    * Gets the map of all events for the object.
+   *
    * @param objectId The UUID of the object to get the events of
    * @return The mapping of String to {@link EditorEvent}
    */
@@ -233,8 +236,9 @@ public abstract class EditorEventDataManager {
 
   /**
    * Gets the list of conditions for a specific event.
+   *
    * @param objectId the UUID of the object to get the event conditions of
-   * @param eventId the ID of the event to get the conditions of
+   * @param eventId  the ID of the event to get the conditions of
    * @return The list of {@link ConditionType} of the event
    */
   public List<ConditionType> getEventConditions(UUID objectId, String eventId) {
@@ -244,8 +248,9 @@ public abstract class EditorEventDataManager {
 
   /**
    * Gets the list of outcomes for a specific event.
+   *
    * @param objectId the UUID of the object to get the event conditions of
-   * @param eventId the ID of the event to get the outcomes of
+   * @param eventId  the ID of the event to get the outcomes of
    * @return The list of {@link OutcomeType} of the event
    */
   public List<OutcomeType> getEventOutcomes(UUID objectId, String eventId) {

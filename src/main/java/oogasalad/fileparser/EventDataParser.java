@@ -9,12 +9,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- *
- *
- *
  * @author Billy McCune
  */
 public class EventDataParser {
+
   List<EventData> events;
 
   public List<EventData> getLevelEvents(Element root) {
@@ -40,7 +38,7 @@ public class EventDataParser {
     Map<String, String> parameters = parseParameters(
         (Element) eventElement.getElementsByTagName("parameters").item(0));
 
-    return new EventData( type, id, conditions, outcomes, parameters);
+    return new EventData(type, id, conditions, outcomes, parameters);
   }
 
   private List<List<String>> parseEventConditions(Element conditionsElement) {

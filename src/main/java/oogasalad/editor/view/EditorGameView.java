@@ -68,7 +68,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final List<UUID> displayedObjectIds = new ArrayList<>();
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
-  private boolean drawHitboxes = false;
+  private boolean drawHitboxes = true;
 
   /**
    * Creates a new editor game view.

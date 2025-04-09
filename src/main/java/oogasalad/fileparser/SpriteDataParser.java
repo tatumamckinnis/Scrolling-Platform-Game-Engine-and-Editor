@@ -1,24 +1,26 @@
 package oogasalad.fileparser;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteData;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Properties;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Parses a sprite XML file and builds a SpriteData object.
- *
- * The file is located using: user directory + graphics data path + game + group + type + sprite file.
- *
+ * <p>
+ * The file is located using: user directory + graphics data path + game + group + type + sprite
+ * file.
+ * <p>
  * Example XML file:
  * <pre>
  * &lt;spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101"&gt;
@@ -47,8 +49,6 @@ import java.util.Properties;
 public class SpriteDataParser {
 
 
-
-
   // Base path to the graphics data.
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
@@ -57,7 +57,7 @@ public class SpriteDataParser {
   // Constructor that loads the properties file and sets the graphics data path.
   public SpriteDataParser() {
     this.pathToGraphicsData = loadDataPaths()[0];
-    this.pathToSpriteData =  loadDataPaths()[1];
+    this.pathToSpriteData = loadDataPaths()[1];
   }
 
   /**
@@ -67,7 +67,8 @@ public class SpriteDataParser {
    */
   private String[] loadDataPaths() {
     Properties properties = new Properties();
-    try (InputStream input = getClass().getClassLoader().getResourceAsStream("oogasalad/file/fileStructure.properties")) {
+    try (InputStream input = getClass().getClassLoader()
+        .getResourceAsStream("oogasalad/file/fileStructure.properties")) {
       properties.load(input);
     } catch (IOException e) {
       e.printStackTrace();
@@ -76,8 +77,10 @@ public class SpriteDataParser {
     }
     // Combine with the user directory if the property is relative.
     String[] paths = new String[properties.size()];
-    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.game.data");
-    paths[0] = System.getProperty("user.dir") + File.separator +properties.getProperty("path.to.graphics.data");
+    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty(
+        "path.to.game.data");
+    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty(
+        "path.to.graphics.data");
     return paths;
   }
 
@@ -134,7 +137,8 @@ public class SpriteDataParser {
       if (targetSprite.getAttribute("height") != "") {
         baseHeight = Integer.parseInt(targetSprite.getAttribute("height"));
       }
-      FrameData baseImage = new FrameData(spriteName, baseX, baseY, baseWidth, baseHeight, spriteSheetFile);
+      FrameData baseImage = new FrameData(spriteName, baseX, baseY, baseWidth, baseHeight,
+          spriteSheetFile);
 
       // Parse frames from the <frames> element.
       List<FrameData> frames = new ArrayList<>();

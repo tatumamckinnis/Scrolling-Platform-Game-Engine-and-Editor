@@ -1,10 +1,10 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.ResourceBundle;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import java.io.FileNotFoundException;
-import javafx.scene.image.ImageView;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.fileparser.records.FrameData;
 
@@ -18,11 +18,11 @@ public class ObjectImage {
   private static final ResourceBundle OBJECT_IMAGE_RESOURCES = ResourceBundle.getBundle(
       ObjectImage.class.getPackageName() + "." + "ObjectImage");
 
-  private ViewObjectToImageConverter converter;
+  private final ViewObjectToImageConverter converter;
   private Rectangle hitBox;
-  private ImageView imageView;
-  private int spriteDx;
-  private int spriteDy;
+  private final ImageView imageView;
+  private final int spriteDx;
+  private final int spriteDy;
   private final String UUID;
 
   /**

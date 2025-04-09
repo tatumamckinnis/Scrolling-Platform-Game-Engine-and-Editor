@@ -14,16 +14,15 @@ import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.view.DefaultView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,20 +32,19 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
       DefaultGameManager.class.getPackageName() + "." + "GameManager");
-  private Timeline myGameLoop;
+  private final Timeline myGameLoop;
   private List<GameObject> myGameObjects;
-  private GameControllerAPI myGameController;
-  private LevelAPI myLevelAPI;
+  private final GameControllerAPI myGameController;
+  private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
-
   private String currentLevel;
 
 
   public DefaultGameManager()
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myGameController = new DefaultGameController(this);
+    myGameController = new DefaultGameController(this, this);
     myLevelAPI = new DefaultLevel(myGameController);
     initializeMyView();
   }
@@ -65,7 +63,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
 
   @Override
-  public void restartGame() throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+  public void restartGame()
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     if (!(currentLevel == null)) {
       myLevelAPI.selectGame(currentLevel);
       playGame();
@@ -97,16 +96,27 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    */
   @Override
   public void displayGameObjects() throws RenderingException, FileNotFoundException {
-    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(),
+        myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+  }
+
+  /**
+   * @see GameManagerAPI#endGame()
+   */
+  @Override
+  public void endGame() {
+    pauseGame();
+    LOG.debug("ENDING GAME");
+    //myView.renderEndGameScreen(text, gameObject);
   }
 
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
     // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
-    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(),
+        myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
-
 
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();
@@ -124,7 +134,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     Timeline gameLoop = new Timeline();
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
-            GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
+        GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
     double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {

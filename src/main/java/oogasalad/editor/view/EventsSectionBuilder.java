@@ -38,10 +38,11 @@ public class EventsSectionBuilder {
   /**
    * Constructs an {@code EventsSectionBuilder} with the necessary dependencies.
    *
-   * @param uiBundle              The resource bundle containing UI labels and messages.
-   * @param addEventHandler       The consumer to handle adding a new event. Accepts the event ID.
-   * @param removeEventHandler    The runnable to handle removing the selected event.
-   * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the new selection.
+   * @param uiBundle               The resource bundle containing UI labels and messages.
+   * @param addEventHandler        The consumer to handle adding a new event. Accepts the event ID.
+   * @param removeEventHandler     The runnable to handle removing the selected event.
+   * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the
+   *                               new selection.
    * @throws NullPointerException if any of the provided arguments are {@code null}.
    */
   public EventsSectionBuilder(ResourceBundle uiBundle,
@@ -128,6 +129,7 @@ public class EventsSectionBuilder {
         addEventHandler.accept(eventId.trim());
       } else {
         LOG.warn("Attempted to add empty event ID.");
+        // Consider showing error via factory's showErrorAlert if needed
       }
     });
     addButton.setId("addEventButton");
@@ -172,7 +174,8 @@ public class EventsSectionBuilder {
    * @param handler   The event handler to be executed when the button is clicked.
    * @return A styled {@code Button}.
    */
-  private Button createButton(String bundleKey, javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
+  private Button createButton(String bundleKey,
+      javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
     Button button = new Button(uiBundle.getString(bundleKey));
     button.setOnAction(handler);
     button.getStyleClass().add("action-button");

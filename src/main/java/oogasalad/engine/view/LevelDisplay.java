@@ -2,10 +2,9 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import oogasalad.engine.model.object.ViewObject;
-import oogasalad.exceptions.RenderingException;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
+import oogasalad.exceptions.RenderingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +20,7 @@ public class LevelDisplay extends Display {
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private static final Logger LOG = LogManager.getLogger();
-  private ViewObjectToImageConverter myConverter;
+  private final ViewObjectToImageConverter myConverter;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
@@ -55,7 +54,8 @@ public class LevelDisplay extends Display {
 
   /**
    * Shifts the camera view focused on this level view.
-   * @param myCamera a camera instance which the node should shift relative to.
+   *
+   * @param myCamera             a camera instance which the node should shift relative to.
    * @param cameraObjectToFollow a central ViewObject to follow.
    */
   @Override

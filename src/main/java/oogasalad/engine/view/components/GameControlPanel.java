@@ -6,9 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
-import oogasalad.engine.view.ViewAPI;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 
@@ -18,9 +16,10 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
  * @author Aksel Bell
  */
 public class GameControlPanel extends Display {
-  private List<Button> buttons;
-  private String homeButtonID = "levelHomeButton";
-  private ViewState viewState;
+
+  private final List<Button> buttons;
+  private final String homeButtonID = "levelHomeButton";
+  private final ViewState viewState;
   // TODO make it read from a property file the type of button, the image of the button
 
   /**
@@ -33,8 +32,7 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * @see Display#render()
-   * Adds all buttons a container.
+   * @see Display#render() Adds all buttons a container.
    */
   @Override
   public void render() {

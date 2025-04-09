@@ -1,9 +1,7 @@
 package oogasalad.engine.controller.api;
 
-import oogasalad.engine.model.object.ViewObject;
-
 import java.util.List;
-
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -21,6 +19,7 @@ public interface GameControllerAPI {
 
   /**
    * returns view object data using id
+   *
    * @param uuid string version of uuid
    * @return view object model data
    */

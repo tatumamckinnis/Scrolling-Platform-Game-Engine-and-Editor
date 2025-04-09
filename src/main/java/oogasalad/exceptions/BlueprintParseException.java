@@ -1,6 +1,7 @@
 package oogasalad.exceptions;
 
-public class BlueprintParseException extends Exception{
+public class BlueprintParseException extends Exception {
+
   public BlueprintParseException(String message) {
     super(message);
   }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
-import oogasalad.engine.model.object.DefaultGameObject;
+import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
@@ -44,15 +44,14 @@ class DefaultEngineFileTest {
 
     List<GameObject> expectedObjects = new ArrayList<>();
     SpriteData expectedSpriteData1 = new SpriteData("Mario", new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new ArrayList<>(), new ArrayList<>());
-    expectedObjects.add(new DefaultGameObject(new UUID(4, 1), 1, "Player", 1, 1, 5,  10, 0, "Mario", "Player", expectedSpriteData1, new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new HashMap<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>(), new HitBoxData("default", 1, 1, 2, 4)));
+    expectedObjects.add(new Entity(new UUID(4, 1),  "Player", 1, 1, 5,  10, 0, "Mario", "Player", expectedSpriteData1, new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd")), new HashMap<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>(), new HitBoxData("default", 1, 1, 2, 4)));
 
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
     List<GameObject> myActualObjects = new ArrayList<>(actualObjects.values());
 
-    assertEquals(expectedObjects.getFirst().getBlueprintID(), myActualObjects.getFirst().getBlueprintID());
-    assertEquals(expectedObjects.getFirst().getGroup(), myActualObjects.getFirst().getGroup());
-    assertEquals(expectedObjects.getFirst().getSpriteData(), myActualObjects.getFirst().getSpriteData());
-    assertEquals(expectedObjects.getFirst().getUuid(), myActualObjects.getFirst().getUuid());
+    assertEquals(expectedObjects.getFirst().getUUID(), myActualObjects.getFirst().getUUID());
+    assertEquals(expectedObjects.getFirst().getXPosition(), myActualObjects.getFirst().getXPosition());
+    assertEquals(expectedObjects.getFirst().getDoubleParams(), myActualObjects.getFirst().getDoubleParams());
     assertEquals(expectedObjects.getFirst().getType(), myActualObjects.getFirst().getType());
   }
 }

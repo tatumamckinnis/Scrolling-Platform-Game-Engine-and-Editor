@@ -7,12 +7,15 @@ import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
 public class DestroyObjectOutcome implements Outcome {
-    private GameExecutor gameExecutor;
-    public DestroyObjectOutcome(GameExecutor gameExecutor) {
-        this.gameExecutor = gameExecutor;
-    }
-    @Override
-    public void execute(GameObject obj) {
-        gameExecutor.destroyGameObject(obj);
-    }
+
+  private final GameExecutor gameExecutor;
+
+  public DestroyObjectOutcome(GameExecutor gameExecutor) {
+    this.gameExecutor = gameExecutor;
+  }
+
+  @Override
+  public void execute(GameObject obj) {
+    gameExecutor.destroyGameObject(obj);
+  }
 }
