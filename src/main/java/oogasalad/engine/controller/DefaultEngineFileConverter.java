@@ -7,12 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.event.Event;
-import oogasalad.engine.model.object.DefaultGameObject;
+import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.HitBox;
+import oogasalad.engine.model.object.Player;
+import oogasalad.engine.model.object.Sprite;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
@@ -43,6 +47,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
    */
   @Override
   public void saveLevelStatus() throws IOException, DataFormatException {
+    // TODO: will be implemented soon...
   }
 
   /**
@@ -70,7 +75,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     Map<String, GameObject> gameObjectMap = new HashMap<>();
     for (GameObjectData gameObjectData : gameObjects) {
       GameObject newObject = makeGameObject(gameObjectData, bluePrintMap);
-      gameObjectMap.put(newObject.getUuid(), newObject);
+      gameObjectMap.put(newObject.getUUID(), newObject);
     }
     return gameObjectMap;
   }
@@ -81,29 +86,43 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
     Map<String, AnimationData> animationMap = makeAnimationMap(blueprintData);
+    Map<String, Double> parametersMap = makeParametersMap(blueprintData);
 
-    GameObject gameObject = new DefaultGameObject(gameObjectData.uniqueId(),
-        gameObjectData.blueprintId(),
-        blueprintData.type(),
-        gameObjectData.x(),
-        gameObjectData.y(),
-        blueprintData.hitBoxData().hitBoxWidth(),
-        blueprintData.hitBoxData().hitBowHeight(),
-        gameObjectData.layer(),
-        blueprintData.gameName(),
-        blueprintData.group(),
-        blueprintData.spriteData(),
-        blueprintData.spriteData().baseImage(),
-        frameMap,
-        animationMap,
-        blueprintData.objectProperties(),
-        new ArrayList<>(),
-        blueprintData.hitBoxData()
-    );
+    GameObject newGameObject;
 
-    List<Event> events = EventConverter.convertEventData(gameObjectData, gameObject, bluePrintMap);
-    gameObject.setEvents(events);
-    return gameObject;
+    UUID uniqueId = gameObjectData.uniqueId();
+    String type = blueprintData.type();
+    int layer = gameObjectData.layer();
+    int xVelocity = 0;
+    int yVelocity = 0;
+    HitBox hitBox = new HitBox(gameObjectData.x(), gameObjectData.y(), blueprintData.hitBoxData().hitBoxWidth(),
+        blueprintData.hitBoxData().hitBowHeight());
+    Sprite sprite = new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap, blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy());
+    List<Event> emptyEvents = new ArrayList<>();
+    //TODO make map based on player data
+    Map<String, Double> displayedStats = new HashMap<>();
+    Map<String, String> properties = blueprintData.objectProperties();
+
+    if (blueprintData.type().equals("Player")) {
+      newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+          emptyEvents, displayedStats, properties, new HashMap<>());
+    }
+    else {
+      newGameObject = new Entity(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+          emptyEvents, properties, parametersMap);
+    }
+
+    List<Event> events = EventConverter.convertEventData(gameObjectData, newGameObject, bluePrintMap);
+    newGameObject.setEvents(events);
+    return newGameObject;
+  }
+
+  private static Map<String, Double> makeParametersMap(BlueprintData blueprintData) {
+    Map<String, Double> parameters = new HashMap<>();
+    for (String key: blueprintData.objectProperties().keySet()) {
+      parameters.put(key, Double.parseDouble(blueprintData.objectProperties().get(key)));
+    }
+    return parameters;
   }
 
   private static Map<String, FrameData> makeFrameMap(BlueprintData blueprintData) {

@@ -62,7 +62,6 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
       // TODO: To disable locking to grid, disable this line.
       worldX = (Math.floor(worldX / cellSize) * cellSize);
       worldY = (Math.floor(worldY / cellSize) * cellSize);
-      System.out.println(worldX + " " + worldY);
 
       editorController.requestObjectPlacement(objectGroup, objectNamePrefix, (int) worldX, (int) worldY,
           cellSize);

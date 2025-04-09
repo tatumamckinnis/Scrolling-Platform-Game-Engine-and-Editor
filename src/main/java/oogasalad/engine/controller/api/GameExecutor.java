@@ -1,13 +1,14 @@
-/**
- * Interface that outcomes use to update game state
- *
- * @author Gage Garcia
- */
+
 package oogasalad.engine.controller.api;
 
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.mapObject;
 
+/**
+ * Interface that outcomes use to update game state
+ *
+ * @author Gage Garcia
+ */
 public interface GameExecutor {
 
   /**
@@ -31,4 +32,9 @@ public interface GameExecutor {
    * @return the game object model
    */
   GameObject getGameObjectByUUID(String id);
+
+  /**
+   * Ends the game using game manager methods
+   */
+  void endGame();
 }

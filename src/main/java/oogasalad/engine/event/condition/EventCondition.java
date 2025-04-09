@@ -1,13 +1,13 @@
+
+
+package oogasalad.engine.event.condition;
+
 /**
  * Condition Object defining enums for valid conditions to check for ConditionChecker controller
  * will have logic for checking condition
  *
  * @author Gage Garcia
  */
-
-package oogasalad.engine.event.condition;
-
-
 public record EventCondition(EventCondition.ConditionType conditionType) {
 
   /**
@@ -20,6 +20,8 @@ public record EventCondition(EventCondition.ConditionType conditionType) {
     COLLIDED_WITH_PLAYER,
     COLLIDED_WITH_PLATFORM,
     UP_ARROW_PRESSED,
+    RIGHT_ARROW_PRESSED,
+    LEFT_ARROW_PRESSED,
     W_KEY_PRESSED,
     A_KEY_PRESSED,
     S_KEY_PRESSED,

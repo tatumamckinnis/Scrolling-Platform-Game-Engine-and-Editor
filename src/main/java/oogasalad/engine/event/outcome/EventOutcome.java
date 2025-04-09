@@ -1,10 +1,10 @@
+package oogasalad.engine.event.outcome;
+
 /**
  * Defines valid event outcomes and associated parameters
  *
  * @author Gage Garcia
  */
-package oogasalad.engine.event.outcome;
-
 public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
 
   /**

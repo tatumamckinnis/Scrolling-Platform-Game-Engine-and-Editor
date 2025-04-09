@@ -1,8 +1,3 @@
-/**
- * Evaluates EventCondition enums given their associated parameters
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event;
 
 import java.util.HashMap;
@@ -16,10 +11,21 @@ import oogasalad.engine.event.condition.InputCondition;
 import oogasalad.engine.event.condition.TrueCondition;
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * Evaluates EventCondition enums given their associated parameters
+ *
+ * @author Gage Garcia
+ */
 public class ConditionChecker {
 
   private final Map<EventCondition.ConditionType, Condition> conditionMap;
 
+  /**
+   * requires an input provider and a collision handler
+   *
+   * @param inputProvider    interface providing access to input
+   * @param collisionHandler interface providing access to collisions
+   */
   public ConditionChecker(InputProvider inputProvider, CollisionHandler collisionHandler) {
     this.conditionMap = new HashMap<>();
     conditionMap.put(EventCondition.ConditionType.SPACE_KEY_PRESSED,
@@ -42,6 +48,10 @@ public class ConditionChecker {
         new CollisionCondition(collisionHandler, "player"));
     conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
         new CollisionCondition(collisionHandler, "platforms"));
+    conditionMap.put(EventCondition.ConditionType.RIGHT_ARROW_PRESSED,
+        new InputCondition(inputProvider, KeyCode.RIGHT));
+    conditionMap.put(EventCondition.ConditionType.LEFT_ARROW_PRESSED,
+        new InputCondition(inputProvider, KeyCode.LEFT));
 
   }
 

@@ -1,6 +1,3 @@
-/**
- * Game manager api implementation
- */
 package oogasalad.engine.controller;
 
 import java.io.FileNotFoundException;
@@ -26,7 +23,9 @@ import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * Game manager api implementation
+ */
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -41,11 +40,14 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private String currentLevel;
 
-
+  /**
+   * default constructor for the game manager
+   * @throws ViewInitializationException if the view cannot render
+   */
   public DefaultGameManager()
       throws ViewInitializationException {
     myGameLoop = initGameLoop();
-    myGameController = new DefaultGameController(this);
+    myGameController = new DefaultGameController(this, this);
     myLevelAPI = new DefaultLevel(myGameController);
     initializeMyView();
   }
@@ -81,7 +83,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myLevelAPI.selectGame(filePath);
   }
 
-
   @Override
   public List<String> listLevels() {
     return myLevelAPI.listLevels();
@@ -101,6 +102,15 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
         myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
 
+  /**
+   * @see GameManagerAPI#endGame() (String, GameObject)
+   */
+  @Override
+  public void endGame() {
+    pauseGame();
+    //myView.renderEndGameScreen(text, gameObject);
+  }
+
   private void step() throws RenderingException, InputException, FileNotFoundException {
     updateInputList();
     myGameController.updateGameState();
@@ -108,7 +118,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myView.renderGameObjects(myGameController.getImmutableObjects(),
         myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
   }
-
 
   private void updateInputList() throws InputException {
     currentKeysPressed = myView.getCurrentInputs();

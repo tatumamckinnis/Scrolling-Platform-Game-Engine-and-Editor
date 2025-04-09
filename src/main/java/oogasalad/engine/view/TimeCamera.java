@@ -9,6 +9,8 @@ import oogasalad.engine.model.object.ViewObject;
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
  * follows a specific {@link ViewObject} in the game world. It adjusts the position of the entire
  * game world to keep the object centered on screen.
+ *
+ * @author Alana Zinkin
  */
 public class TimeCamera implements Camera {
 

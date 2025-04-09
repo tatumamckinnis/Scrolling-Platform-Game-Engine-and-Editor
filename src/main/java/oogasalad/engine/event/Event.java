@@ -1,11 +1,3 @@
-/**
- * Core Event class for engine gameplay Has predefined Condition variables that need to be fulfilled
- * to execute list of Events Associated with a gameObject GameObject stores
- * DynamicVariableCollection of parameters representing data for condition checker and outcome
- * execution
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.event;
 
 import java.util.List;
@@ -14,6 +6,14 @@ import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
+/**
+ * Core Event class for engine gameplay Has predefined Condition variables that need to be fulfilled
+ * to execute list of Events Associated with a gameObject GameObject stores
+ * DynamicVariableCollection of parameters representing data for condition checker and outcome
+ * execution
+ *
+ * @author Gage Garcia
+ */
 public class Event {
 
   private final GameObject gameObject;
@@ -21,12 +21,16 @@ public class Event {
   private final List<EventOutcome> outcomes;
   private final EventType eventType;
   //stored within game object
-  private final Map<String, String> params;
+  private final Map<String, Double> doubleParams;
 
+  /**
+   * defines valid event types
+   */
   public enum EventType {
     INPUT,
     PHYSICS,
-    COLLISION
+    COLLISION,
+    END
   }
 
   /**
@@ -41,7 +45,7 @@ public class Event {
     this.gameObject = gameObject;
     this.conditions = conditions;
     this.outcomes = outcomes;
-    this.params = gameObject.getParams();
+    this.doubleParams = gameObject.getDoubleParams();
     this.eventType = eventType;
   }
 
@@ -65,7 +69,6 @@ public class Event {
   public EventType getEventType() {
     return eventType;
   }
-
 
   /**
    * @return this Event's gameObject

@@ -12,6 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -202,23 +203,23 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up input based event handlers for using arrow keys to pan the grid.
+   * Sets up input based event handlers for using WASD keys to pan the grid.
    */
   private void setupPanning() {
     // TODO: this really needs to be broken up into smaller pieces
     this.setFocusTraversable(true);
     this.setOnKeyPressed(event -> {
       switch (event.getCode()) {
-        case LEFT:
+        case A:
           panVelocityX = -PAN_SPEED;
           break;
-        case RIGHT:
+        case D:
           panVelocityX = PAN_SPEED;
           break;
-        case UP:
+        case W:
           panVelocityY = -PAN_SPEED;
           break;
-        case DOWN:
+        case S:
           panVelocityY = PAN_SPEED;
           break;
         default:
@@ -228,12 +229,12 @@ public class EditorGameView extends Pane implements EditorViewListener {
     });
     this.setOnKeyReleased(event -> {
       switch (event.getCode()) {
-        case LEFT:
-        case RIGHT:
+        case A:
+        case D:
           panVelocityX = 0;
           break;
-        case UP:
-        case DOWN:
+        case W:
+        case S:
           panVelocityY = 0;
           break;
         default:
@@ -354,6 +355,42 @@ public class EditorGameView extends Pane implements EditorViewListener {
     LOG.trace("Finished redrawing {} objects.", idsToDraw.size());
   }
 
+  private void redrawSprites(UUID id) {
+    EditorObject object = editorController.getEditorObject(id);
+    if (object == null || object.getSpriteData() == null) {
+      LOG.warn("Object ID {} or its SpriteData not found during redraw, cannot draw.", id);
+      return;
+    }
+    SpriteData spriteData = object.getSpriteData();
+    double x = spriteData.getX();
+    double y = spriteData.getY();
+    Image image = objectImages.get(id);
+
+    if (image != null && !image.isError() && image.getProgress() >= 1.0) {
+      objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
+    } else {
+      drawPlaceholder(objectGraphicsContext, object, x, y);
+    }
+
+    if (id.equals(selectedObjectId)) {
+      drawSelectionIndicator(objectGraphicsContext, x, y);
+    }
+  }
+
+  private void redrawHitboxes(UUID id) {
+    EditorObject object = editorController.getEditorObject(id);
+    if (object == null || object.getHitboxData() == null) {
+      LOG.warn("Object ID {} or its HitboxData not found during redraw, cannot draw.", id);
+      return;
+    }
+    int hitboxX = object.getHitboxData().getX();
+    int hitboxY = object.getHitboxData().getY();
+    int hitboxWidth = object.getHitboxData().getWidth();
+    int hitboxHeight = object.getHitboxData().getHeight();
+
+    objectGraphicsContext.setFill(HITBOX_COLOR);
+    objectGraphicsContext.fillRect(hitboxX, hitboxY, hitboxWidth, hitboxHeight); // TODO: Other shapes other than rect
+  }
 
   /**
    * Draws a placeholder rectangle with the object's group type displayed inside. Used when the
@@ -479,60 +516,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
     }
   }
 
-  /**
-   * Redraws the sprite associated with the specified object ID on the canvas.
-   * <p>
-   * If the object or its sprite data is missing, a warning is logged and nothing is drawn. If the
-   * corresponding image is available and fully loaded, it is drawn at the object's sprite
-   * coordinates. Otherwise, a placeholder is drawn. If the object is currently selected, a visual
-   * selection indicator is also rendered.
-   *
-   * @param id the unique identifier of the object whose sprite should be redrawn
-   */
-  private void redrawSprites(UUID id) {
-    EditorObject object = editorController.getEditorObject(id);
-    if (object == null || object.getSpriteData() == null) {
-      LOG.warn("Object ID {} or its SpriteData not found during redraw, cannot draw.", id);
-      return;
-    }
-    SpriteData spriteData = object.getSpriteData();
-    double x = spriteData.getX();
-    double y = spriteData.getY();
-    Image image = objectImages.get(id);
-
-    if (image != null && !image.isError() && image.getProgress() >= 1.0) {
-      objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
-    } else {
-      drawPlaceholder(objectGraphicsContext, object, x, y);
-    }
-
-    if (id.equals(selectedObjectId)) {
-      drawSelectionIndicator(objectGraphicsContext, x, y);
-    }
-  }
-
-  /**
-   * Redraws the hitbox of the object associated with the specified ID.
-   * <p>
-   * If the object or its hitbox data is missing, a warning is logged and no hitbox is drawn.
-   * Otherwise, the hitbox is rendered as a filled rectangle using a predefined color.
-   *
-   * @param id the unique identifier of the object whose hitbox should be redrawn
-   */
-  private void redrawHitboxes(UUID id) {
-    EditorObject object = editorController.getEditorObject(id);
-    if (object == null || object.getHitboxData() == null) {
-      LOG.warn("Object ID {} or its HitboxData not found during redraw, cannot draw.", id);
-      return;
-    }
-    int hitboxX = object.getHitboxData().getX();
-    int hitboxY = object.getHitboxData().getY();
-    int hitboxWidth = object.getHitboxData().getWidth();
-    int hitboxHeight = object.getHitboxData().getHeight();
-
-    objectGraphicsContext.setFill(HITBOX_COLOR);
-    objectGraphicsContext.fillRect(hitboxX, hitboxY, hitboxWidth, hitboxHeight);
-  }
 
   /**
    * Handles the notification that a new object has been added to the model. Adds the object's ID to

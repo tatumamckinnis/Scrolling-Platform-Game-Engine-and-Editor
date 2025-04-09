@@ -1,7 +1,4 @@
-/**
- * Interface between engine model and view Handles Timeline actions(play/pause), and changing level
- * state
- */
+
 package oogasalad.engine.controller.api;
 
 import java.io.FileNotFoundException;
@@ -9,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.RenderingException;
 
 /**
@@ -42,6 +40,11 @@ public interface GameManagerAPI {
    */
   void selectGame(String filePath)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+
+  /**
+   * Pauses the timeline and displays a splashscreen when the user either wins or loses
+   */
+  void endGame();
 
   /**
    * Lists all available levels for user to select
