@@ -1,5 +1,8 @@
 package oogasalad.engine.model.object;
 
+import java.util.ResourceBundle;
+import oogasalad.Main;
+
 /**
  * Represents a rectangular hitbox used for collision detection and positioning in the game world.
  *
@@ -10,6 +13,9 @@ package oogasalad.engine.model.object;
  * @author Alana Zinkin
  */
 public class HitBox {
+
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
 
   private int x;
   private int y;
@@ -24,11 +30,17 @@ public class HitBox {
    * @param width  the width of the hitbox
    * @param height the height of the hitbox
    */
-  public HitBox(int x, int y, int width, int height) {
+  public HitBox(int x, int y, int width, int height) throws IllegalArgumentException {
     this.x = x;
     this.y = y;
-    this.width = width;
-    this.height = height;
+    if (width > 0 && height > 0) {
+      this.width = width;
+      this.height = height;
+    }
+    else {
+      throw new IllegalArgumentException(EXCEPTIONS.getString("InvalidWidthAndHeight"));
+    }
+
   }
 
   /**
