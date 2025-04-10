@@ -1,8 +1,19 @@
 
 package oogasalad.engine.controller.api;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.mapObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 
 /**
  * Interface that outcomes use to update game state
@@ -37,4 +48,10 @@ public interface GameExecutor {
    * Ends the game using game manager methods
    */
   void endGame();
+
+  /**
+   * Restarts using current level
+   */
+  void restartLevel()
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException;
 }

@@ -1,11 +1,22 @@
 package oogasalad.engine.event;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 
 /**
  * Event handling class that implements event EventHandler interface
@@ -28,7 +39,8 @@ public class DefaultEventHandler implements EventHandler {
     conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
   }
 
-  public void handleEvent(Event event) {
+  public void handleEvent(Event event)
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     GameObject gameObject = event.getGameObject();
     boolean validEvent = true;
     List<List<EventCondition>> conditionGroups = event.getConditions();

@@ -3,11 +3,14 @@
  */
 package oogasalad.engine.controller;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameExecutor;
@@ -22,6 +25,14 @@ import oogasalad.engine.event.EventHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.model.object.mapObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -76,6 +87,12 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
+  public void restartLevel()
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
+    myGameManager.restartGame();
+  }
+
+  @Override
   public GameObject getGameObjectByUUID(String id) {
 
     return myGameObjectMap.getOrDefault(id, null);
@@ -98,7 +115,8 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
 
   @Override
-  public void updateGameState() {
+  public void updateGameState()
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     collisionHandler.updateCollisions();
     List<GameObject> objectsCopy = new ArrayList<>(myGameObjects);
     for (GameObject gameObject : objectsCopy) {

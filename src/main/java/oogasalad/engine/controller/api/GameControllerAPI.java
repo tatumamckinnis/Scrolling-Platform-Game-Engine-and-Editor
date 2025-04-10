@@ -1,7 +1,18 @@
 package oogasalad.engine.controller.api;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -31,7 +42,8 @@ public interface GameControllerAPI {
    * (input, physics, collision, etc.) 2) Resolving any post-update tasks (e.g. removing destroyed
    * objects) 3) Tracking which objects have changed for rendering
    */
-  void updateGameState();
+  void updateGameState()
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException;
 
   /**
    * Loads a new level or scene, potentially calling file loaders to retrieve data and

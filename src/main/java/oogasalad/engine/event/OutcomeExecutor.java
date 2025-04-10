@@ -1,7 +1,10 @@
 package oogasalad.engine.event;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.event.outcome.DestroyObjectOutcome;
 import oogasalad.engine.event.outcome.EventOutcome;
@@ -13,7 +16,16 @@ import oogasalad.engine.event.outcome.MoveRightOutcome;
 import oogasalad.engine.event.outcome.Outcome;
 import oogasalad.engine.event.outcome.PatrolOutcome;
 import oogasalad.engine.event.outcome.PlatformPassThroughOutcome;
+import oogasalad.engine.event.outcome.RestartLevelOutcome;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 
 /**
  * Updates game state to reflect event outcome
@@ -45,6 +57,8 @@ public class OutcomeExecutor {
         new PlatformPassThroughOutcome(collisionHandler));
     outcomeMap.put(EventOutcome.OutcomeType.MOVE_LEFT,
         new MoveLeftOutcome());
+    outcomeMap.put(EventOutcome.OutcomeType.RESTART_LEVEL,
+        new RestartLevelOutcome(gameExecutor));
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
@@ -55,7 +69,8 @@ public class OutcomeExecutor {
    * @param outcomeType
    * @param gameObject
    */
-  public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject) {
+  public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject)
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     Outcome outcome = outcomeMap.get(outcomeType);
     outcome.execute(gameObject);
   }

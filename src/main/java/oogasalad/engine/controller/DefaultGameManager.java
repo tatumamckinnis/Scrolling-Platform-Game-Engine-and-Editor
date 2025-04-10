@@ -119,7 +119,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     //myView.renderEndGameScreen(text, gameObject);
   }
 
-  private void step() throws RenderingException, InputException, FileNotFoundException {
+  private void step()
+      throws RenderingException, InputException, IOException, LayerParseException, EventParseException, BlueprintParseException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     updateInputList();
     myGameController.updateGameState();
     // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
@@ -148,7 +149,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {
         step();
-      } catch (RenderingException | InputException | FileNotFoundException ex) {
+      } catch (RenderingException | InputException | IOException | LayerParseException |
+               EventParseException | BlueprintParseException | InvocationTargetException |
+               NoSuchMethodException | IllegalAccessException | DataFormatException |
+               LevelDataParseException | PropertyParsingException | SpriteParseException |
+               HitBoxParseException | GameObjectParseException | ClassNotFoundException |
+               InstantiationException ex) {
         throw new RuntimeException(ex);
       }
     }));

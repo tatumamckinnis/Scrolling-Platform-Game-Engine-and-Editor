@@ -23,6 +23,7 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     PATROL,
     DESTROY_OBJECT,
     PLATFORM_PASS_THROUGH_BEHAVIOR,
+    RESTART_LEVEL
   }
 
   /**
