@@ -64,15 +64,14 @@ class TimeCameraTest {
         708,
         0,
         87,
-        94,
-        new File("/Users/alanazinkin/Desktop/CS308/oogasalad_team03/data/gameData/gameObjects/dinosaurgame/dinosaurgame-sprites.xml")
+        94
     );
 
     Map<String, FrameData> frameMap = Map.of("DinoRun1", currentFrame);
     Map<String, AnimationData> animationMap = new HashMap<>();
 
     // Construct Sprite object with offset (dx/dy) = 0
-    Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0);
+    Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0, new File("DinoRun1.png"));
 
     // Construct HitBox for the object
     HitBox hitBox = new HitBox(100, 100, 87, 94); // x, y, width, height
