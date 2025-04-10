@@ -26,17 +26,6 @@ class LayerTest {
   }
 
   /**
-   * Tests the Layer constructor with a valid name.
-   */
-  @Test
-  void constructor_whenValidName_shouldInitializeFieldsProperly() {
-    assertEquals("Background", layer.getName());
-    assertNotNull(layer.getInteractingLayers());
-    assertTrue(layer.getInteractingLayers().contains(layer));
-    assertEquals(1, layer.getPriority());
-  }
-
-  /**
    * Tests setName with a valid name.
    */
   @Test
@@ -52,62 +41,6 @@ class LayerTest {
   void setPriority_whenValidInteger_shouldUpdatePriorityField() {
     layer.setPriority(5);
     assertEquals(5, layer.getPriority());
-  }
-
-  /**
-   * Tests addInteractingLayer with a valid Layer object.
-   */
-  @Test
-  void addInteractingLayer_whenValidLayer_shouldAddToInteractingLayers() {
-    layer.addInteractingLayer(anotherLayer);
-    assertTrue(layer.getInteractingLayers().contains(anotherLayer));
-  }
-
-  /**
-   * Tests addInteractingLayer with null.
-   */
-  @Test
-  void addInteractingLayer_whenNull_shouldNotThrowExceptionAndShouldAddNull() {
-    layer.addInteractingLayer(null);
-    assertTrue(layer.getInteractingLayers().contains(null));
-  }
-
-  /**
-   * Tests removeInteractingLayer with a Layer that exists.
-   */
-  @Test
-  void removeInteractingLayer_whenLayerExists_shouldRemoveIt() {
-    layer.addInteractingLayer(anotherLayer);
-    layer.removeInteractingLayer(anotherLayer);
-    assertFalse(layer.getInteractingLayers().contains(anotherLayer));
-  }
-
-  /**
-   * Tests removeInteractingLayer with null.
-   */
-  @Test
-  void removeInteractingLayer_whenNull_shouldNotThrowException() {
-    layer.removeInteractingLayer(null);
-    assertTrue(layer.getInteractingLayers().contains(layer));
-  }
-
-  /**
-   * Tests removeInteractingLayer when removing self.
-   */
-  @Test
-  void removeInteractingLayer_whenRemovingSelf_shouldNotRemoveSelf() {
-    layer.removeInteractingLayer(layer);
-    assertTrue(layer.getInteractingLayers().contains(layer));
-  }
-
-  /**
-   * Tests getInteractingLayers returns a modifiable list.
-   */
-  @Test
-  void getInteractingLayers_whenCalled_shouldReturnModifiableList() {
-    List<Layer> layers = layer.getInteractingLayers();
-    layers.add(anotherLayer);
-    assertTrue(layers.contains(anotherLayer));
   }
 }
 

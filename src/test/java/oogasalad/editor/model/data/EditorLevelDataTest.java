@@ -83,6 +83,7 @@ class EditorLevelDataTest {
    */
   @Test
   void addLayer_whenCalled_shouldInsertLayerByPriority() {
+
     Layer midLayer = new Layer("midLayer", 5);
     Layer highLayer = new Layer("highLayer", 10);
     Layer lowLayer = new Layer("lowLayer", -1);

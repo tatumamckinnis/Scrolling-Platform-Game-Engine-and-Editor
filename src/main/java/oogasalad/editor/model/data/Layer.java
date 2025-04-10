@@ -13,7 +13,6 @@ import java.util.List;
 public class Layer {
 
   private String name;
-  private List<Layer> interactingLayers;
   private int priority; // Higher priority -> Rendered on top of other layers
 
   /**
@@ -25,8 +24,6 @@ public class Layer {
    */
   public Layer(String name, int priority) {
     this.name = name;
-    this.interactingLayers = new ArrayList<>();
-    interactingLayers.add(this);
     this.priority = priority;
   }
 
@@ -46,35 +43,6 @@ public class Layer {
    */
   public void setName(String name) {
     this.name = name;
-  }
-
-  /**
-   * Retrieves the list of layers that interact with this layer.
-   *
-   * @return a list of interacting layers
-   */
-  public List<Layer> getInteractingLayers() {
-    return interactingLayers;
-  }
-
-  /**
-   * Adds a layer to the list of interacting layers.
-   *
-   * @param layer the layer to add
-   */
-  public void addInteractingLayer(Layer layer) {
-    this.interactingLayers.add(layer);
-  }
-
-  /**
-   * Removes a layer from the list of interacting layers. The current layer cannot be removed.
-   *
-   * @param layer the layer to remove
-   */
-  public void removeInteractingLayer(Layer layer) {
-    if (layer != this) { // Prevent removing self
-      this.interactingLayers.remove(layer); // Should not error even if layer does not exist
-    }
   }
 
   /**
