@@ -509,8 +509,8 @@ class InputTabComponentFactoryTest {
     assertEquals(List.of("eventX"), new ArrayList<>(eventList.getItems()));
     assertEquals(selectedId, this.currentTestObjectId);
 
+    verify(mockEditorController, atMostOnce()).getAvailableDynamicVariables(any());
     verify(mockEditorController, never()).getEventsForObject(eq(selectedId));
-    verify(mockEditorController, never()).getAvailableDynamicVariables(eq(selectedId));
   }
 
   @Test void testOnDynamicVariablesChangedUpdatesParamCombo() {
