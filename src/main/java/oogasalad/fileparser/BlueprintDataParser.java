@@ -14,6 +14,7 @@ import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
+import oogasalad.fileparser.records.SpriteRequest;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -177,8 +178,8 @@ public class BlueprintDataParser {
 
     SpriteData spriteData = null;
     if (gameName != null && !gameName.isEmpty()) {
-      spriteData = mySpriteDataParser.getSpriteData(gameName, groupName, type, spriteName,
-          spriteFile);
+      SpriteRequest request = new SpriteRequest(gameName, groupName, type, spriteName, spriteFile);
+      spriteData = mySpriteDataParser.getSpriteData(request);
     }
 
     HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);

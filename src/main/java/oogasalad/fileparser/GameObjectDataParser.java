@@ -10,21 +10,29 @@ import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 
 /**
+ * Responsible for parsing an XML element representing game objects into a list of
+ * {@link GameObjectData} records.
+ * <p>
+ * This parser extracts blueprint IDs, coordinates, and UUIDs for each game object instance
+ * described in the XML element. It is used to reconstruct level objects from structured XML data.
+ * </p>
+ *
  * @author Billy McCune
  */
 public class GameObjectDataParser {
 
   /**
-   * Parses a game object XML element and creates a list of GameObjectData objects.
-   *
-   *
+   * Parses a game object XML element and creates a list of {@link GameObjectData} records.
    * <p>
-   *
+   * The method reads the blueprint ID, a list of UUIDs, and a coordinate string of the form
+   * {@code "(x1,y1),(x2,y2),..."}. Each UUID is paired with one coordinate set to form a
+   * {@code GameObjectData} entry.
    * </p>
+   *
    * @param gameObjectElement the XML element representing the game object
-   * @param z                 the z-index for the game object
-   * @return a list of GameObjectData objects created from the element
-   * @throws GameObjectParseException if there is an issue with the game object data
+   * @param z                 the z-index layer of the game object
+   * @return a list of {@link GameObjectData} objects created from the element
+   * @throws GameObjectParseException if the input data is malformed or parsing fails
    */
   public List<GameObjectData> getGameObjectData(Element gameObjectElement, int z)
       throws GameObjectParseException {

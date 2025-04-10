@@ -15,14 +15,30 @@ import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteData;
+import oogasalad.fileparser.records.SpriteRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Parses a sprite XML file and builds a SpriteData object. The file is located using: user
- * directory + graphics data path + game + group + type + sprite file.
+ * Parses XML sprite files into structured {@link SpriteData} records containing base frame data,
+ * frame sequences, and animation sequences.
+ *
+ * <p>
+ * This parser reads sprite data using information provided via a {@link SpriteRequest}, locates the
+ * appropriate XML file based on configured file paths, and extracts relevant sprite information
+ * including base images, frame lists, and animation timelines.
+ * </p>
+ *
+ * <p>
+ * File paths are configured via a {@code fileStructure.properties} file that specifies the
+ * locations of sprite and graphics data directories.
+ * </p>
+ *
+ * <p>
+ * This class is typically used as part of the level loading or game asset initialization process.
+ * </p>
  *
  * @author Billy McCune
  */
@@ -31,7 +47,7 @@ public class SpriteDataParser {
   // Base path to the graphics data and sprite data.
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
-  private final static String nameAttribute = "name";
+  private static final String nameAttribute = "name";
 
   /**
    * Constructs a new {@code SpriteDataParser} by reading the properties file and loading the
@@ -106,36 +122,37 @@ public class SpriteDataParser {
    * sprite, frame, and animation information from it.
    * </p>
    *
-   * @param gameName   the name of the game.
-   * @param group      the group folder name.
-   * @param type       the type folder name.
-   * @param spriteName the name of the sprite to locate.
-   * @param spriteFile the XML file name containing the sprite information.
+   * @param request a {@link SpriteRequest} object containing all required sprite parameters.
    * @return a {@link SpriteData} object representing the parsed sprite data.
    * @throws SpriteParseException if an error occurs during parsing or if the specified sprite is
    *                              not found.
    */
-  public SpriteData getSpriteData(String gameName, String group, String type,
-      String spriteName, String spriteFile) throws SpriteParseException {
+  public SpriteData getSpriteData(SpriteRequest request) throws SpriteParseException {
+    String filePath = buildFilePath(
+        request.gameName(),
+        request.group(),
+        request.type(),
+        request.spriteFile()
+    );
 
-    String filePath = buildFilePath(gameName, group, type, spriteFile);
     Document doc = loadDocument(filePath);
     Element spriteFileElement = doc.getDocumentElement();
 
-    File spriteSheetFile = getSpriteSheetFile(spriteFileElement, gameName);
+    File spriteSheetFile = getSpriteSheetFile(spriteFileElement, request.gameName());
 
-    Element targetSprite = getTargetSprite(spriteFileElement, spriteName);
+    Element targetSprite = getTargetSprite(spriteFileElement, request.spriteName());
     if (targetSprite == null) {
       throw new SpriteParseException(
-          "Sprite with name " + spriteName + " not found in file " + filePath);
+          "Sprite with name " + request.spriteName() + " not found in file " + filePath);
     }
 
-    FrameData baseImage = parseBaseImage(targetSprite, spriteName);
+    FrameData baseImage = parseBaseImage(targetSprite, request.spriteName());
     List<FrameData> frames = parseFrames(targetSprite);
     List<AnimationData> animations = parseAnimations(targetSprite);
 
-    return new SpriteData(spriteName, spriteSheetFile, baseImage, frames, animations);
+    return new SpriteData(request.spriteName(), spriteSheetFile, baseImage, frames, animations);
   }
+
 
   /**
    * Builds the file path to the sprite XML file.
@@ -184,7 +201,7 @@ public class SpriteDataParser {
   }
 
   /**
-   * Searches for and returns the <sprite> element with the given spriteName.
+   * Searches for and returns the <code>&lt;sprite&gt;</code> element with the given spriteName.
    *
    * @param spriteFileElement the root element of the sprite file.
    * @param spriteName        the name of the sprite.
@@ -225,7 +242,7 @@ public class SpriteDataParser {
   }
 
   /**
-   * Parses all frame elements within the <frames> element.
+   * Parses all frame elements within the <code>&lt;frames&gt;</code>element.
    *
    * @param targetSprite the sprite element containing the frames.
    * @return a list of FrameData records.
@@ -245,7 +262,7 @@ public class SpriteDataParser {
   }
 
   /**
-   * Parses a <frame> element and returns a FrameData record.
+   * Parses a <code>&lt;frames&gt;</code> element and returns a FrameData record.
    *
    * @param frameElement the frame element from the XML.
    * @return a FrameData record containing the frame's attributes.
@@ -260,7 +277,7 @@ public class SpriteDataParser {
   }
 
   /**
-   * Parses all animation elements within the <animations> element.
+   * Parses all animation elements within the <code>&lt;animations&gt;</code> element.
    *
    * @param targetSprite the sprite element containing the animations.
    * @return a list of AnimationData records.
@@ -280,7 +297,7 @@ public class SpriteDataParser {
   }
 
   /**
-   * Parses an <animation> element and returns an AnimationData record.
+   * Parses an <code>&lt;animation&gt;</code> element and returns an AnimationData record.
    *
    * @param animationElement the animation element from the XML.
    * @return an AnimationData record containing the animation's attributes.
