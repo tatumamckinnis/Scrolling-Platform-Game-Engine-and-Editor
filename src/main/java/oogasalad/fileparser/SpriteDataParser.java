@@ -23,7 +23,8 @@ import org.xml.sax.SAXException;
 /**
  * Parses a sprite XML file and builds a SpriteData object.
  * <p>
- * The file is located using: user directory + graphics data path + game + group + type + sprite file.
+ * The file is located using: user directory + graphics data path + game + group + type + sprite
+ * file.
  * </p>
  * <p>
  * Example XML file:
@@ -60,46 +61,68 @@ public class SpriteDataParser {
    * Constructs a new {@code SpriteDataParser} by reading the properties file and loading the
    * graphics and game data file paths.
    *
-   * @throws SpriteParseException if an error occurs while loading the properties file or required properties are missing.
+   * @throws SpriteParseException if an error occurs while loading the properties file or required
+   *                              properties are missing.
    */
   public SpriteDataParser() throws SpriteParseException {
     Map<String, String> dataPaths = loadDataPaths();
-    this.pathToGraphicsData = dataPaths.get("graphicsDataPath");
-    this.pathToSpriteData = dataPaths.get("spriteDataPath");
+    this.pathToGraphicsData =
+        System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
+            "graphicsDataPath");
+    ;
+    this.pathToSpriteData =
+        System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
+            "spriteDataPath");
+    ;
   }
 
   /**
    * Loads required data paths from the properties file into a map.
    *
-   * @return a map containing the keys "graphicsDataPath" and "spriteDataPath" mapped to their corresponding values.
-   * @throws SpriteParseException if the properties file is not found, or required properties are missing.
+   * @return a map containing the keys "graphicsDataPath" and "spriteDataPath" mapped to their
+   * corresponding values.
+   * @throws SpriteParseException if the properties file is not found, or required properties are
+   *                              missing.
    */
   private Map<String, String> loadDataPaths() throws SpriteParseException {
     Properties properties = new Properties();
+    Map<String, String> fileStructureProperties = new HashMap<>();
     try (InputStream input = getClass().getClassLoader()
         .getResourceAsStream("oogasalad/file/fileStructure.properties")) {
       if (input == null) {
-        throw new SpriteParseException("Properties file 'fileStructure.properties' not found in classpath.");
+        throw new SpriteParseException(
+            "Properties file 'fileStructure.properties' not found in classpath.");
       }
       properties.load(input);
+      for (String key : properties.stringPropertyNames()) {
+        fileStructureProperties.put(key, properties.getProperty(key));
+      }
     } catch (IOException e) {
       throw new SpriteParseException("Error reading properties file: " + e.getMessage(), e);
     }
 
-    String userDir = System.getProperty("user.dir");
-    String graphicsProp = properties.getProperty("path.to.graphics.data");
-    String gameProp = properties.getProperty("path.to.game.data");
-
-    if (graphicsProp == null || graphicsProp.trim().isEmpty() ||
-        gameProp == null || gameProp.trim().isEmpty()) {
-      throw new SpriteParseException("Missing required properties for graphics or game data paths.");
-    }
-
-    Map<String, String> pathsMap = new HashMap<>();
-    pathsMap.put("graphicsDataPath", userDir + File.separator + graphicsProp);
-    pathsMap.put("spriteDataPath", userDir + File.separator + gameProp);
-    return pathsMap;
+    return fileStructureProperties;
   }
+
+  /**
+   * Retrieves a required property from the specified properties map and ensures it is present and
+   * non-empty.
+   *
+   * @param properties the map containing properties loaded from the file.
+   * @param key        the key whose corresponding property value is required.
+   * @return the non-null, trimmed property value associated with the given key.
+   * @throws SpriteParseException if the property for the given key is missing or its value is
+   *                              empty.
+   */
+  private String getRequiredProperty(Map<String, String> properties, String key)
+      throws SpriteParseException {
+    String value = properties.get(key);
+    if (value == null || value.trim().isEmpty()) {
+      throw new SpriteParseException("Required property '" + key + "' is missing or empty.");
+    }
+    return value.trim();
+  }
+
 
   /**
    * Retrieves a {@link SpriteData} record from an XML sprite file.
@@ -173,7 +196,7 @@ public class SpriteDataParser {
     }
   }
 
-    /**
+  /**
    * Retrieves the sprite sheet file from the spriteFile element's imagePath attribute.
    *
    * @param spriteFileElement the root element of the sprite file.
