@@ -6,11 +6,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
@@ -19,13 +26,7 @@ import oogasalad.editor.view.resources.EditorResourceLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Factory for the "Input" tab UI. Coordinates section builders and handles communication with the
- * controller and UI updates based on model changes. Implements {@link EditorViewListener} to react
- * to changes in the editor model.
- *
- * @author Tatum McKinnis
- */
+
 public class InputTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(InputTabComponentFactory.class);
@@ -157,6 +158,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   private void handleEventSelectionChange(String selectedEvent) {
     this.currentEventId = selectedEvent;
     LOG.debug("Internal state: Event selection changed to: {}", currentEventId);
+
     refreshConditionsList();
     refreshOutcomesList();
   }
@@ -176,6 +178,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     }
     try {
       editorController.addEvent(currentObjectId, eventId);
+
       eventIdField.clear();
       LOG.info("Delegated add event '{}' for object {}", eventId, currentObjectId);
     } catch (Exception e) {
@@ -198,6 +201,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     }
     try {
       editorController.removeEvent(currentObjectId, selectedEvent);
+
       LOG.info("Delegated remove event '{}' for object {}", selectedEvent, currentObjectId);
     } catch (Exception e) {
       LOG.error("Error delegating remove event: {}", e.getMessage(), e);
@@ -220,6 +224,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     }
     try {
       editorController.addCondition(currentObjectId, currentEventId, conditionType);
+
       LOG.info("Delegated add condition '{}' to event '{}'", conditionType, currentEventId);
     } catch (Exception e) {
       LOG.error("Error delegating add condition: {}", e.getMessage(), e);
@@ -232,16 +237,34 @@ public class InputTabComponentFactory implements EditorViewListener {
    * Delegates the action to the {@link EditorController}. Shows an error if no object, event, or
    * condition is selected, or if the controller reports an error.
    *
-   * @param conditionType The type of condition to remove.
+   * @param conditionType The type of condition derived from the selected item in the list view.
    */
   private void handleRemoveCondition(ConditionType conditionType) {
     LOG.debug("Remove Condition action triggered for type: {}", conditionType);
-    if (currentObjectId == null || currentEventId == null) {
+
+    String selectedConditionStr = conditionsListView.getSelectionModel().getSelectedItem();
+    if (currentObjectId == null || currentEventId == null || selectedConditionStr == null) {
       showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object, event, and condition must be selected.");
       return;
     }
+
+    if (!conditionType.name().equals(selectedConditionStr)) {
+      LOG.warn(
+          "Mismatch between remove handler condition type ({}) and list selection ({}). Using list selection.",
+          conditionType.name(), selectedConditionStr);
+
+      try {
+        conditionType = ConditionType.valueOf(selectedConditionStr);
+      } catch (IllegalArgumentException ex) {
+        LOG.error("Could not parse selected condition for removal: {}", selectedConditionStr, ex);
+        showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to identify condition for removal.");
+        return;
+      }
+    }
+
     try {
       editorController.removeCondition(currentObjectId, currentEventId, conditionType);
+
       LOG.info("Delegated remove condition '{}' from event '{}'", conditionType, currentEventId);
     } catch (Exception e) {
       LOG.error("Error delegating remove condition: {}", e.getMessage(), e);
@@ -265,6 +288,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     }
     try {
       editorController.addOutcome(currentObjectId, currentEventId, outcomeType, parameter);
+
       LOG.info("Delegated add outcome '{}' (param: '{}') to event '{}'", outcomeType, parameter,
           currentEventId);
     } catch (Exception e) {
@@ -278,17 +302,32 @@ public class InputTabComponentFactory implements EditorViewListener {
    * the action to the {@link EditorController}. Shows an error if no object, event, or outcome is
    * selected, or if the controller reports an error.
    *
-   * @param outcomeType The type of outcome to remove.
+   * @param outcomeType The type of outcome derived from the selected item in the list view.
    */
   private void handleRemoveOutcome(OutcomeType outcomeType) {
     LOG.debug("Remove Outcome action triggered for type: {}", outcomeType);
-    if (currentObjectId == null || currentEventId == null) {
+
+    String selectedOutcomeStr = outcomesListView.getSelectionModel().getSelectedItem();
+    if (currentObjectId == null || currentEventId == null || selectedOutcomeStr == null) {
       showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object, event, and outcome must be selected.");
       return;
     }
+
+    String typeString = selectedOutcomeStr.split(" \\(")[0];
     try {
-      editorController.removeOutcome(currentObjectId, currentEventId, outcomeType);
-      LOG.info("Delegated remove outcome '{}' from event '{}'", outcomeType, currentEventId);
+      OutcomeType actualTypeToRemove = OutcomeType.valueOf(typeString);
+      if (outcomeType != actualTypeToRemove) {
+        LOG.warn(
+            "Mismatch between remove handler outcome type ({}) and list selection ({} derived from {}). Using list selection.",
+            outcomeType.name(), actualTypeToRemove.name(), selectedOutcomeStr);
+      }
+
+      editorController.removeOutcome(currentObjectId, currentEventId, actualTypeToRemove);
+
+      LOG.info("Delegated remove outcome '{}' from event '{}'", actualTypeToRemove, currentEventId);
+    } catch (IllegalArgumentException ex) {
+      LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStr, ex);
+      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to identify outcome for removal.");
     } catch (Exception e) {
       LOG.error("Error delegating remove outcome: {}", e.getMessage(), e);
       showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to remove outcome: " + e.getMessage());
@@ -322,6 +361,7 @@ public class InputTabComponentFactory implements EditorViewListener {
         return;
       }
       editorController.addDynamicVariable(dynamicVar);
+
       LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
     } catch (Exception e) {
       LOG.error("Error delegating add dynamic variable: {}", e.getMessage(), e);
@@ -350,37 +390,69 @@ public class InputTabComponentFactory implements EditorViewListener {
    */
   private void refreshAllListsForObject() {
     runOnFxThread(() -> {
+      LOG.debug("Refreshing all lists for object: {}", currentObjectId);
       refreshEventsListInternal();
       updateParameterComboBoxInternal();
+
+      if (currentEventId == null) {
+        refreshConditionsListInternal();
+        refreshOutcomesListInternal();
+      }
     });
   }
 
   /**
-   * Internal method to refresh the events list view. Clears all lists first, then fetches events
-   * for the `currentObjectId` from the controller and populates the `eventListView`. Must be called
-   * on the FX thread.
+   * Internal method to refresh the events list view. Clears event list, fetches events for the
+   * `currentObjectId` from the controller and populates the `eventListView`. Attempts to re-select
+   * the previous event. Must be called on the FX thread.
    */
   private void refreshEventsListInternal() {
-    clearListsInternal(true, true, true);
-    this.currentEventId = null;
+
+    String previouslySelectedEvent = currentEventId;
+    LOG.trace("Refreshing event list. Previously selected: {}", previouslySelectedEvent);
+
+    clearListsInternal(true, false, false);
 
     if (currentObjectId != null) {
       try {
         Map<String, ?> events = editorController.getEventsForObject(currentObjectId);
         if (eventListView != null && events != null && !events.isEmpty()) {
-          eventListView.getItems().addAll(events.keySet());
+
+          List<String> sortedEventIds = events.keySet().stream().sorted()
+              .collect(Collectors.toList());
+          eventListView.getItems().addAll(sortedEventIds);
           LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId,
               events.size());
+
+          if (previouslySelectedEvent != null && sortedEventIds.contains(previouslySelectedEvent)) {
+            LOG.trace("Attempting to re-select event: {}", previouslySelectedEvent);
+
+            eventListView.getSelectionModel().select(previouslySelectedEvent);
+
+            LOG.debug("Re-selected event: {}", previouslySelectedEvent);
+          } else {
+            LOG.trace("Previous event '{}' not found or null after refresh. Clearing sub-lists.",
+                previouslySelectedEvent);
+            this.currentEventId = null;
+            clearListsInternal(false, true, true);
+          }
+
         } else {
-          LOG.debug("No events found for object {}.", currentObjectId);
+          LOG.debug("No events found for object {}. Clearing sub-lists.", currentObjectId);
+          this.currentEventId = null;
+          clearListsInternal(false, true, true);
         }
       } catch (Exception e) {
         LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
             e.getMessage(), e);
         showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load events: " + e.getMessage());
+        this.currentEventId = null;
+        clearListsInternal(false, true, true);
       }
     } else {
-      LOG.debug("Events list cleared (no object selected).");
+      LOG.debug("Events list cleared (no object selected). Clearing sub-lists.");
+      this.currentEventId = null;
+      clearListsInternal(false, true, true);
     }
   }
 
@@ -401,11 +473,14 @@ public class InputTabComponentFactory implements EditorViewListener {
     clearListsInternal(false, true, false);
 
     if (currentObjectId != null && currentEventId != null) {
+      LOG.trace("Refreshing conditions for event: {}", currentEventId);
       try {
         List<ConditionType> conditions = editorController.getConditionsForEvent(currentObjectId,
             currentEventId);
         if (conditionsListView != null && conditions != null) {
-          conditions.forEach(condition -> conditionsListView.getItems().add(condition.toString()));
+
+          conditions.stream().map(ConditionType::name).sorted()
+              .forEach(conditionsListView.getItems()::add);
           LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
               conditions.size());
         } else {
@@ -439,26 +514,31 @@ public class InputTabComponentFactory implements EditorViewListener {
     clearListsInternal(false, false, true);
 
     if (currentObjectId != null && currentEventId != null) {
+      LOG.trace("Refreshing outcomes for event: {}", currentEventId);
       try {
         List<OutcomeType> outcomes = editorController.getOutcomesForEvent(currentObjectId,
             currentEventId);
         if (outcomesListView != null && outcomes != null) {
-          outcomes.forEach(outcome -> {
+
+          List<String> displayStrings = outcomes.stream().map(outcome -> {
             String parameter = null;
             try {
+
               parameter = editorController.getOutcomeParameter(currentObjectId, currentEventId,
                   outcome);
             } catch (Exception paramEx) {
               LOG.warn("Could not retrieve parameter for outcome {} on event {}: {}", outcome,
                   currentEventId, paramEx.getMessage());
             }
-            String displayString = (parameter != null && !parameter.isEmpty())
-                ? String.format("%s (%s)", outcome.toString(), parameter)
-                : outcome.toString();
-            outcomesListView.getItems().add(displayString);
-          });
+
+            return (parameter != null && !parameter.trim().isEmpty())
+                ? String.format("%s (%s)", outcome.name(), parameter.trim())
+                : outcome.name();
+          }).sorted().toList();
+
+          outcomesListView.getItems().addAll(displayStrings);
           LOG.debug("Refreshed outcomes list for event '{}': {} outcomes.", currentEventId,
-              outcomes.size());
+              displayStrings.size());
         } else {
           LOG.debug("No outcomes found for event '{}'.", currentEventId);
         }
@@ -487,20 +567,21 @@ public class InputTabComponentFactory implements EditorViewListener {
    * box provided by the {@link OutcomesSectionBuilder}. Must be called on the FX thread.
    */
   private void updateParameterComboBoxInternal() {
-    if (outcomesSectionBuilder == null) {
+    if (outcomesSectionBuilder == null || parameterComboBox == null) {
       return;
     }
 
     try {
       List<DynamicVariable> variables = editorController.getAvailableDynamicVariables(
           currentObjectId);
+
       outcomesSectionBuilder.updateParameterComboBox(variables);
+      LOG.debug("Updated parameter combo box based on available variables.");
     } catch (Exception e) {
       LOG.error("Controller failed to get available dynamic variables: {}", e.getMessage(), e);
       showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load parameters: " + e.getMessage());
-      if (outcomesSectionBuilder != null) {
-        outcomesSectionBuilder.updateParameterComboBox(null);
-      }
+
+      outcomesSectionBuilder.updateParameterComboBox(null);
     }
   }
 
@@ -515,17 +596,24 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Internal method to clear the items from the specified list views and potentially clear the
-   * event ID field and reset the `currentEventId`. Must be called on the FX thread.
+   * event ID field. Must be called on the FX thread.
    *
-   * @param clearEvents     If true, clears the event list view and event ID field, and resets
-   *                        `currentEventId`.
+   * @param clearEvents     If true, clears the event list view and event ID field.
    * @param clearConditions If true, clears the conditions list view.
    * @param clearOutcomes   If true, clears the outcomes list view.
    */
   private void clearListsInternal(boolean clearEvents, boolean clearConditions,
       boolean clearOutcomes) {
-    if (clearEvents && eventListView != null) {
-      eventListView.getItems().clear();
+
+    if (clearEvents) {
+      if (eventListView != null) {
+        eventListView.getItems().clear();
+      }
+      if (eventIdField != null) {
+        eventIdField.clear();
+      }
+
+
     }
     if (clearConditions && conditionsListView != null) {
       conditionsListView.getItems().clear();
@@ -533,12 +621,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     if (clearOutcomes && outcomesListView != null) {
       outcomesListView.getItems().clear();
     }
-    if (clearEvents && eventIdField != null) {
-      eventIdField.clear();
-    }
-    if (clearEvents) {
-      this.currentEventId = null;
-    }
+
     LOG.trace("Cleared lists - Events: {}, Conditions: {}, Outcomes: {}", clearEvents,
         clearConditions, clearOutcomes);
   }
@@ -558,10 +641,14 @@ public class InputTabComponentFactory implements EditorViewListener {
       alert.setHeaderText(null);
       alert.setContentText(contentText);
       try {
-        alert.getDialogPane().getStylesheets()
-            .add(Objects.requireNonNull(getClass().getResource(CSS_PATH)).toExternalForm());
+
+        String cssUrl = Objects.requireNonNull(getClass().getResource(CSS_PATH)).toExternalForm();
+        alert.getDialogPane().getStylesheets().add(cssUrl);
+        LOG.trace("Applied CSS {} to error alert.", CSS_PATH);
+      } catch (NullPointerException e) {
+        LOG.warn("Could not find CSS file at path: {}", CSS_PATH);
       } catch (Exception e) {
-        LOG.warn("Could not apply CSS to error alert: {}", e.getMessage());
+        LOG.warn("Could not apply CSS {} to error alert: {}", CSS_PATH, e.getMessage());
       }
       alert.showAndWait();
     });
@@ -569,45 +656,66 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Handles notification that an object was added to the model. Currently, only logs the event.
+   * Handles notification that an object was added to the model. Refreshes the parameter list in
+   * case global parameters are affected.
    *
    * @param objectId The UUID of the added object.
    */
   @Override
   public void onObjectAdded(UUID objectId) {
     LOG.trace("InputTab received: onObjectAdded {}", objectId);
+
+    runOnFxThread(this::updateParameterComboBoxInternal);
   }
 
   /**
    * Handles notification that an object was removed from the model. If the removed object is the
-   * currently selected object, it clears the Input tab's display by simulating a selection change
-   * to null.
+   * currently selected object, it clears the Input tab's display. Ensures execution on the FX
+   * thread.
    *
    * @param objectId The UUID of the removed object.
    */
   @Override
   public void onObjectRemoved(UUID objectId) {
-    LOG.trace("InputTab received: onObjectRemoved {}", objectId);
-    if (Objects.equals(this.currentObjectId, objectId)) {
-      LOG.debug("Selected object {} was removed. Clearing input tab.", objectId);
-      onSelectionChanged(null);
-    }
+    runOnFxThread(() -> {
+      LOG.trace("InputTab received: onObjectRemoved {}", objectId);
+      if (Objects.equals(this.currentObjectId, objectId)) {
+        LOG.debug("Selected object {} was removed. Clearing input tab.", objectId);
+        this.currentObjectId = null;
+        this.currentEventId = null;
+        clearListsInternal(true, true, true);
+        updateParameterComboBoxInternal();
+      } else {
+
+        updateParameterComboBoxInternal();
+      }
+    });
   }
 
   /**
    * Handles notification that an object's data has been updated in the model. If the updated object
-   * is the currently selected object, it refreshes all lists in the Input tab to reflect the
-   * changes.
+   * is the currently selected object, refreshes the event list and related UI elements. Ensures
+   * execution on the FX thread.
    *
    * @param objectId The UUID of the updated object.
    */
   @Override
   public void onObjectUpdated(UUID objectId) {
-    LOG.trace("InputTab received: onObjectUpdated {}", objectId);
-    if (Objects.equals(this.currentObjectId, objectId)) {
-      LOG.debug("Refreshing InputTab because selected object {} was updated.", objectId);
-      refreshAllListsForObject();
-    }
+    runOnFxThread(() -> {
+      LOG.trace("InputTab received: onObjectUpdated {}", objectId);
+      if (Objects.equals(this.currentObjectId, objectId)) {
+        LOG.debug("Refreshing InputTab because selected object {} was updated.", objectId);
+
+        refreshEventsListInternal();
+
+        updateParameterComboBoxInternal();
+
+
+      } else {
+
+        updateParameterComboBoxInternal();
+      }
+    });
   }
 
   /**
@@ -623,6 +731,8 @@ public class InputTabComponentFactory implements EditorViewListener {
       LOG.debug("InputTab received: onSelectionChanged {}", selectedObjectId);
       if (!Objects.equals(this.currentObjectId, selectedObjectId)) {
         this.currentObjectId = selectedObjectId;
+        this.currentEventId = null;
+
         refreshAllListsForObject();
       }
     });
@@ -630,13 +740,16 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Handles notification that the list of available dynamic variables has changed. Refreshes the
-   * parameter combo box in the Outcomes section. Ensures execution on the FX thread.
+   * parameter combo box in the Outcomes section and the outcomes list (as parameters are displayed
+   * there). Ensures execution on the FX thread.
    */
   @Override
   public void onDynamicVariablesChanged() {
     runOnFxThread(() -> {
       LOG.debug("InputTab received: onDynamicVariablesChanged");
       updateParameterComboBoxInternal();
+
+      refreshOutcomesListInternal();
     });
   }
 
@@ -649,6 +762,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   @Override
   public void onErrorOccurred(String errorMessage) {
     LOG.warn("InputTab received: onErrorOccurred: {}", errorMessage);
+
     showErrorAlert(KEY_ERROR_API_FAILURE, errorMessage);
   }
 }

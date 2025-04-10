@@ -1,5 +1,7 @@
 package oogasalad.engine.model.object;
 
+import java.io.File;
+import java.util.Map;
 import oogasalad.fileparser.records.FrameData;
 
 /**
@@ -12,8 +14,10 @@ import oogasalad.fileparser.records.FrameData;
  *
  * <p>This class acts as a safe abstraction layer between the engine's model and the UI,
  * ensuring encapsulation and clean separation of concerns.
+ *
+ * @author Alana Zinkin
  */
-public class ViewObject implements ImmutableGameObject {
+public class ViewObject implements ImmutableGameObject, ImmutablePlayer {
 
   private final GameObject gameObject;
 
@@ -33,7 +37,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public String getUuid() {
-    return gameObject.getUuid();
+    return gameObject.getUUID();
   }
 
   /**
@@ -43,7 +47,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public int getX() {
-    return gameObject.getX();
+    return gameObject.getXPosition();
   }
 
   /**
@@ -53,7 +57,7 @@ public class ViewObject implements ImmutableGameObject {
    */
   @Override
   public int getY() {
-    return gameObject.getY();
+    return gameObject.getYPosition();
   }
 
   /**
@@ -105,5 +109,16 @@ public class ViewObject implements ImmutableGameObject {
   public int getSpriteDy() {
     return gameObject.getSpriteDy();
   }
+
+  @Override
+  public File getSpriteFile() {
+    return gameObject.getSpriteFile();
+  }
+
+  @Override
+  public Map<String, Double> getDisplayedStats() {
+    return ((Player) gameObject).getDisplayedStats();
+  }
+
 }
 

@@ -226,6 +226,12 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  @Override
+  public void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
+      double worldY, int cellSize) {
+
+  }
+
 
   /**
    * Processes a request to remove an object by its ID. If the object is successfully removed,

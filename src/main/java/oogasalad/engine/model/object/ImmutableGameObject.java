@@ -1,5 +1,6 @@
 package oogasalad.engine.model.object;
 
+import java.io.File;
 import oogasalad.fileparser.records.FrameData;
 
 /**
@@ -68,4 +69,6 @@ public interface ImmutableGameObject {
    * @return sprite y-offset in pixels
    */
   int getSpriteDy();
+
+  File getSpriteFile();
 }

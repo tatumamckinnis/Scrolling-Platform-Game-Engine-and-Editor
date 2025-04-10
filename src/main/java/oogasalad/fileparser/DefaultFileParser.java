@@ -1,40 +1,71 @@
 package oogasalad.fileparser;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import oogasalad.engine.event.Event;
+import javax.xml.parsers.ParserConfigurationException;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.LevelData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import oogasalad.fileparser.records.LevelData;
+import org.xml.sax.SAXException;
 
-public class DefaultFileParser implements FileParserAPI {
+/**
+ * Provides a default implementation of the {@code FileParserAPI} interface.
+ * <p>
+ * This class is responsible for parsing level configuration files, which are in XML format. It
+ * leverages various helper parsers:
+ * <ul>
+ *   <li>{@link LayerDataParser} to extract game object and layer information,</li>
+ *   <li>{@link BlueprintDataParser} to extract blueprint data, and</li>
+ *   <li>{@link EventDataParser} to extract event-related information.</li>
+ * </ul>
+ * The parsed data is then bundled into a {@link LevelData} record.
+ * </p>
+ *
+ * @author Billy McCune
+ * @see FileParserApi
+ * @see LevelData
+ */
+public class DefaultFileParser implements FileParserApi {
 
   private LayerDataParser layerDataParser;
   private BlueprintDataParser myGameObjectParser;
   private EventDataParser myEventDataParser;
-  // Map structure: <Game Name, <Level Directory, List of Level Files>>
-  private Map<String, Map<String, List<File>>> mapOfGameLevels;
 
-  public DefaultFileParser(){
-    // Initialize parsers. These could be injected as dependencies if preferred.
+  /**
+   * Constructs a new {@code DefaultFileParser} and initializes the helper parsers.
+   * <p>
+   * The constructor instantiates the required helper parsers:
+   * <ul>
+   *   <li>{@link LayerDataParser} for parsing layer and game object data,</li>
+   *   <li>{@link BlueprintDataParser} for parsing blueprint data, and</li>
+   *   <li>{@link EventDataParser} for parsing level event data.</li>
+   * </ul>
+   * </p>
+   */
+  public DefaultFileParser() {
     layerDataParser = new LayerDataParser();
     myGameObjectParser = new BlueprintDataParser();
     myEventDataParser = new EventDataParser();
-    myEventDataParser = new EventDataParser();
-    // Assume the map is populated via some Levels API:
-    // mapOfGameLevels = LevelsAPI.getMapOfLevels();
   }
 
   /**
    * Parses the level XML file and returns a LevelData record.
-   *
+   * <p>
    * Steps:
    * <ul>
    *   <li>Checks if the levels map contains the given filePath key.</li>
@@ -47,14 +78,43 @@ public class DefaultFileParser implements FileParserAPI {
    *
    * @param filePath the key representing the game or level directory
    * @return a LevelData record representing the parsed level
+   * @throws SAXException                 if there is an issue with the xml document parsing
+   * @throws IOException                  if there is an issue with the xml document parsing
+   * @throws ParserConfigurationException if there is an issue with the xml document parsing
    */
-  public LevelData parseLevelFile(String filePath) {
-    // Ensure the map has an entry for the provided filePath.
-
-    // Remove the .xml extension to derive the level name.
-
-    // Find the corresponding File from the map.
+  public LevelData parseLevelFile(String filePath)
+      throws BlueprintParseException, SpriteParseException, LevelDataParseException, HitBoxParseException, GameObjectParseException, PropertyParsingException, EventParseException, LayerParseException {
     File levelFile = new File(filePath);
+
+    String levelName = levelFile.getName();
+
+    try {
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(levelFile);
+      doc.getDocumentElement().normalize();
+
+      Element root = doc.getDocumentElement();
+      int minX = Integer.parseInt(root.getAttribute("minX"));
+      int minY = Integer.parseInt(root.getAttribute("minY"));
+      int maxX = Integer.parseInt(root.getAttribute("maxX"));
+      int maxY = Integer.parseInt(root.getAttribute("maxY"));
+
+      List<EventData> eventList = myEventDataParser.getLevelEvents(root);
+
+      Map<Integer, BlueprintData> blueprintData = myGameObjectParser.getBlueprintData(root,
+          eventList);
+
+      List<GameObjectData> gameObjectDataList = layerDataParser.getGameObjectDataList(
+          root);
+
+      return new LevelData(levelName, minX, minY, maxX, maxY, blueprintData, gameObjectDataList);
+    } catch (SAXException | IOException | ParserConfigurationException e) {
+      throw new LevelDataParseException(e.getMessage(), e);
+    }
+  }
+}
+
 //    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
 //    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
 //      for (File file : entry.getValue()) {
@@ -67,28 +127,6 @@ public class DefaultFileParser implements FileParserAPI {
 //    if (levelFile == null) {
 //      throw new RuntimeException("Level file " + levelFile.getName() + " not found for game " + filePath);
 //    }
-
-    String levelName = levelFile.getName();
-
-    try {
-      // Parse the XML file.
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder builder = factory.newDocumentBuilder();
-      Document doc = builder.parse(levelFile);
-      doc.getDocumentElement().normalize();
-
-      // Assume the root element is <map>.
-      Element root = doc.getDocumentElement();
-      int levelWidth = Integer.parseInt(root.getAttribute("width"));
-      int levelHeight = Integer.parseInt(root.getAttribute("height"));
-
-      List<EventData> eventList = myEventDataParser.getLevelEvents(root);
-      // Use the BlueprintDataParser to extract blueprint data.
-      // Assume getBlueprintData returns a Map<Integer, BlueprintData>.
-      Map<Integer,BlueprintData> blueprintData = myGameObjectParser.getBlueprintData(root,eventList);
-      // Locate the layers element (assumed to be named "layers").
-      // Use the LayerDataParser to extract game objects, organized by layer.
-      Map<Integer, List<GameObjectData>> gameObjectsByLayer = layerDataParser.getGameObjectDataMap(root);
 
 //      System.out.println(eventList.size());
 //      System.out.println(blueprintData.size());
@@ -103,12 +141,5 @@ public class DefaultFileParser implements FileParserAPI {
 //        }
 //      }
 
-      // Construct and return the LevelData record.
-      return new LevelData(levelName, levelWidth,levelHeight, blueprintData, gameObjectsByLayer);
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException("Error parsing level file ", e);
-    }
-  }
-}
+// Construct and return the LevelData record.
 

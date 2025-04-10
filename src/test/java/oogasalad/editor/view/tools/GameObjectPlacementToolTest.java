@@ -1,3 +1,4 @@
+// oogasalad_team03/src/test/java/oogasalad/editor/view/tools/GameObjectPlacementToolTest.java
 package oogasalad.editor.view.tools;
 
 import oogasalad.editor.controller.EditorController;
@@ -70,18 +71,17 @@ class GameObjectPlacementToolTest {
   }
 
   /**
-   * Tests that the placeObjectAt method calls the editor controller with the correct parameters
+   * Tests that the interactObjectAt method calls the editor controller with the correct parameters
    * based on the provided grid coordinates and the cell size from the game view.
    */
   @Test
-  void testPlaceObjectAtCallsControllerWithCorrectParameters() {
-    int testGridX = 5;
-    int testGridY = 10;
+  void testinteractObjectAtCallsControllerWithCorrectParameters() {
+    int testGridX = 5; // Example grid X coordinate
+    int testGridY = 10; // Example grid Y coordinate
     int expectedWorldX = testGridX * TEST_CELL_SIZE;
     int expectedWorldY = testGridY * TEST_CELL_SIZE;
-    int expectedCellSize = TEST_CELL_SIZE;
 
-    placementTool.placeObjectAt(testGridX, testGridY);
+    placementTool.interactObjectAt(expectedWorldX, expectedWorldY); // Pass WORLD coordinates
 
     verify(mockEditorController, times(1)).requestObjectPlacement(
         objectGroupCaptor.capture(),
@@ -93,39 +93,23 @@ class GameObjectPlacementToolTest {
 
     assertEquals(TEST_OBJECT_GROUP, objectGroupCaptor.getValue(), "Object group should match");
     assertEquals(TEST_NAME_PREFIX, namePrefixCaptor.getValue(), "Name prefix should match");
-    assertEquals(expectedWorldX, xCaptor.getValue(), "Calculated World X coordinate should match");
-    assertEquals(expectedWorldY, yCaptor.getValue(), "Calculated World Y coordinate should match");
-    assertEquals(expectedCellSize, sizeCaptor.getValue(), "Cell size should match");
+    // Expecting snapped world coordinates
+    assertEquals(expectedWorldX, xCaptor.getValue(), "World X coordinate should match");
+    assertEquals(expectedWorldY, yCaptor.getValue(), "World Y coordinate should match");
+    assertEquals(TEST_CELL_SIZE, sizeCaptor.getValue(), "Cell size should match");
   }
 
   /**
-   * Tests the placeObjectAt method with zero grid coordinates to ensure the world coordinates are also zero.
+   * Tests the interactObjectAt method with negative grid coordinates to ensure the world coordinates are calculated correctly.
    */
   @Test
-  void testPlaceObjectAtZeroCoordinates() {
-    int testGridX = 0;
-    int testGridY = 0;
-    int expectedWorldX = 0;
-    int expectedWorldY = 0;
-
-    placementTool.placeObjectAt(testGridX, testGridY);
-
-    verify(mockEditorController).requestObjectPlacement(
-        anyString(), anyString(), eq(expectedWorldX), eq(expectedWorldY), eq(TEST_CELL_SIZE)
-    );
-  }
-
-  /**
-   * Tests the placeObjectAt method with negative grid coordinates to ensure the world coordinates are calculated correctly.
-   */
-  @Test
-  void testPlaceObjectAtNegativeCoordinates() {
+  void testinteractObjectAtNegativeCoordinates() {
     int testGridX = -2;
     int testGridY = -3;
-    int expectedWorldX = testGridX * TEST_CELL_SIZE;
-    int expectedWorldY = testGridY * TEST_CELL_SIZE;
+    int expectedWorldX = testGridX * TEST_CELL_SIZE; // -64
+    int expectedWorldY = testGridY * TEST_CELL_SIZE; // -96
 
-    placementTool.placeObjectAt(testGridX, testGridY);
+    placementTool.interactObjectAt(expectedWorldX, expectedWorldY); // Pass WORLD coordinates
 
     verify(mockEditorController).requestObjectPlacement(
         anyString(), anyString(), eq(expectedWorldX), eq(expectedWorldY), eq(TEST_CELL_SIZE)
@@ -133,39 +117,41 @@ class GameObjectPlacementToolTest {
   }
 
   /**
-   * Tests the behavior of placeObjectAt when the game view returns a zero cell size.
+   * Tests the behavior of interactObjectAt when the game view returns a zero cell size.
    * In this case, the controller should not be called.
    */
   @Test
-  void testPlaceObjectAtWithZeroCellSize() {
+  void testinteractObjectAtWithZeroCellSize() {
     when(mockGameView.getCellSize()).thenReturn(0);
-    int testGridX = 5;
-    int testGridY = 10;
+    int testWorldX = 5 * TEST_CELL_SIZE;
+    int testWorldY = 10 * TEST_CELL_SIZE;
 
+    // Recreate tool after changing mock behavior
     placementTool = new GameObjectPlacementTool(
         mockGameView, mockEditorController, TEST_OBJECT_GROUP, TEST_NAME_PREFIX
     );
 
-    placementTool.placeObjectAt(testGridX, testGridY);
+    placementTool.interactObjectAt(testWorldX, testWorldY);
 
     verify(mockEditorController, never()).requestObjectPlacement(any(), any(), anyInt(), anyInt(), anyInt());
   }
 
   /**
-   * Tests the behavior of placeObjectAt when the game view returns a negative cell size.
+   * Tests the behavior of interactObjectAt when the game view returns a negative cell size.
    * In this case, the controller should not be called.
    */
   @Test
-  void testPlaceObjectAtWithNegativeCellSize() {
+  void testinteractObjectAtWithNegativeCellSize() {
     when(mockGameView.getCellSize()).thenReturn(-10);
-    int testGridX = 5;
-    int testGridY = 10;
+    int testWorldX = 5 * TEST_CELL_SIZE;
+    int testWorldY = 10 * TEST_CELL_SIZE;
 
+    // Recreate tool after changing mock behavior
     placementTool = new GameObjectPlacementTool(
         mockGameView, mockEditorController, TEST_OBJECT_GROUP, TEST_NAME_PREFIX
     );
 
-    placementTool.placeObjectAt(testGridX, testGridY);
+    placementTool.interactObjectAt(testWorldX, testWorldY);
 
     verify(mockEditorController, never()).requestObjectPlacement(any(), any(), anyInt(), anyInt(), anyInt());
   }

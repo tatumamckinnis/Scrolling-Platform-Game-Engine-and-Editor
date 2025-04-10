@@ -1,15 +1,16 @@
 package oogasalad.engine.view.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import oogasalad.engine.model.object.ViewObject;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
 
@@ -20,7 +21,7 @@ import oogasalad.fileparser.records.FrameData;
  */
 public class ViewObjectToImageConverter {
 
-  private Map<String, ObjectImage> UUIDToImageMap;
+  private final Map<String, ObjectImage> UUIDToImageMap;
 
   /**
    * Constructs a new {@code ViewObjectToImageConverter} with an empty UUID-to-image map.
@@ -45,16 +46,7 @@ public class ViewObjectToImageConverter {
       if (UUIDToImageMap.containsKey(object.getUuid())) {
         UUIDToImageMap.get(object.getUuid()).updateImageLocation(object.getX(), object.getY());
       } else {
-        ObjectImage newViewObject = new ObjectImage(
-            object.getUuid(),
-            object.getCurrentFrame(),
-            object.getX(),
-            object.getY(),
-            object.getHitBoxWidth(),
-            object.getHitBoxHeight(),
-            object.getSpriteDx(),
-            object.getSpriteDy()
-        );
+        ObjectImage newViewObject = new ObjectImage(object);
         images.add(newViewObject);
         UUIDToImageMap.put(object.getUuid(), newViewObject);
       }
@@ -66,19 +58,19 @@ public class ViewObjectToImageConverter {
    * Converts a single {@link FrameData} object to an {@link ImageView} configured with a viewport
    * to show only the relevant sprite portion.
    *
-   * @param frameData the frame data defining the sprite image and its viewport
+   * @param viewObject object to display
    * @return an {@code ImageView} representing the frame
    * @throws FileNotFoundException if the sprite file cannot be loaded
    */
-  public ImageView convertFrameToView(FrameData frameData) throws FileNotFoundException {
-    Image sprite = new Image(new FileInputStream(frameData.spriteFile()));
+  public ImageView convertFrameToView(ViewObject viewObject) throws FileNotFoundException {
+    Image sprite = new Image(new FileInputStream(viewObject.getSpriteFile()));
     ImageView imageView = new ImageView(sprite);
 
     Rectangle2D viewport = new Rectangle2D(
-        frameData.x(),
-        frameData.y(),
-        frameData.width(),
-        frameData.height()
+        viewObject.getCurrentFrame().x(),
+        viewObject.getCurrentFrame().y(),
+        viewObject.getCurrentFrame().width(),
+        viewObject.getCurrentFrame().height()
     );
 
     imageView.setViewport(viewport);

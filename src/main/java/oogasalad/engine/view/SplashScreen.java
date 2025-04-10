@@ -12,7 +12,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +22,7 @@ import org.apache.logging.log4j.Logger;
  * @author Luke Nam, Aksel Bell
  */
 public class SplashScreen extends Display {
+
   private static final Logger LOG = LogManager.getLogger();
   private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
@@ -108,7 +108,8 @@ public class SplashScreen extends Display {
       scaleSplashLogo(splashLogo);
       splashLogo.setImage(splashImage);
     } catch (NullPointerException e) {
-      throw new NullPointerException(String.format("OOGASalad splash filepath not found: %s", e.getMessage()));
+      throw new NullPointerException(
+          String.format("OOGASalad splash filepath not found: %s", e.getMessage()));
     }
     return splashLogo;
   }
@@ -119,7 +120,8 @@ public class SplashScreen extends Display {
    */
   private void scaleSplashLogo(ImageView splashLogo) {
     int splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.logo.width"));
-    int splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.logo.height"));
+    int splashHeight = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.logo.height"));
     splashLogo.setFitWidth(splashWidth);
     splashLogo.setFitHeight(splashHeight);
     splashLogo.setPickOnBounds(true);
@@ -164,8 +166,10 @@ public class SplashScreen extends Display {
     String[] buttonIDs = getSplashButtonIDs();
     String[] buttonStyles = getSplashButtonStyles();
 
-    double buttonWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.button.width"));
-    double buttonHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.button.height"));
+    double buttonWidth = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.button.width"));
+    double buttonHeight = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.button.height"));
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
@@ -174,7 +178,8 @@ public class SplashScreen extends Display {
       splashBox.getChildren().add(currButton);
     }
 
-    int buttonSpacing = Integer.parseInt(splashComponentProperties.getProperty("splash.button.spacing"));
+    int buttonSpacing = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
   }
@@ -191,7 +196,7 @@ public class SplashScreen extends Display {
   private void setButtonAction(String buttonID, Button currButton) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     currButton.setOnAction(event -> {
-        factory.getAction(buttonID).run();
+      factory.getAction(buttonID).run();
     });
   }
 

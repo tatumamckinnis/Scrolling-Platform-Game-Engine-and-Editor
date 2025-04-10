@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
-
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
-import oogasalad.engine.view.ViewAPI;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;

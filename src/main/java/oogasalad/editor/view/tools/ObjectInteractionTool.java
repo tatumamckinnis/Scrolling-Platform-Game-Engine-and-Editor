@@ -11,5 +11,7 @@ public interface ObjectInteractionTool {
    * @param gridX X-coordinate on the grid
    * @param gridY Y-coordinate on the grid
    */
+  void interactObjectAt(double gridX, double gridY);
+
   void interactObjectAt(int gridX, int gridY);
 }

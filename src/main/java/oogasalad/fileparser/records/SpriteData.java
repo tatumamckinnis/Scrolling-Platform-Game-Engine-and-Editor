@@ -1,10 +1,11 @@
 package oogasalad.fileparser.records;
 
+import java.io.File;
 import java.util.List;
 
 /**
- * Represents a single sprite within a sprite sheet, including its name, position,
- * dimensions, base image, animation frames, and animation sequences.
+ * Represents a single sprite within a sprite sheet, including its name, position, dimensions, base
+ * image, animation frames, and animation sequences.
  *
  * <p>This record is used by {@code SpriteSheetData} and is essential for both
  * rendering the sprite and supporting animations in the game engine or editor.
@@ -25,7 +26,10 @@ import java.util.List;
  */
 public record SpriteData(
     String name,
+    File spriteFile,
     FrameData baseImage,
     List<FrameData> frames,
     List<AnimationData> animations
-) {}
+) {
+
+}

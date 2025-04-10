@@ -1,3 +1,4 @@
+// oogasalad_team03/src/test/java/oogasalad/editor/view/OutcomesSectionBuilderTest.java
 package oogasalad.editor.view;
 
 import java.io.IOException;
@@ -70,12 +71,12 @@ class OutcomesSectionBuilderTest {
     outcomeListView = builder.getOutcomesListView();
     parameterComboBox = builder.getParameterComboBox();
     outcomeTypeComboBox = lookup("#outcomeTypeComboBox");
-    createParamButton = lookupButtonWithText("+");
+    createParamButton = lookupButtonWithText("+"); // Assumes "+" is the text for the create param button
 
     assertNotNull(outcomeListView, "Failed to get outcomeListView via getter");
     assertNotNull(parameterComboBox, "Failed to get parameterComboBox via getter");
     assertNotNull(outcomeTypeComboBox, "Failed to lookup #outcomeTypeComboBox (Ensure ID is set in source code)");
-    assertNotNull(createParamButton, "Failed to lookup createParamButton by text");
+    assertNotNull(createParamButton, "Failed to lookup createParamButton by text '+'");
   }
 
   @org.junit.jupiter.api.AfterEach
@@ -91,17 +92,23 @@ class OutcomesSectionBuilderTest {
     }
     T node = (T) rootNode.lookup(query);
     if (node == null) {
+      waitForFxEvents(); // Try waiting
+      node = (T) rootNode.lookup(query);
+    }
+    if (node == null) {
+      // Fallback: Deep search
       node = (T) rootNode.lookupAll(query).stream().findFirst().orElse(null);
-      if (node == null){
-        throw new RuntimeException("Node not found with query: " + query);
-      }
+    }
+    if (node == null){
+      throw new RuntimeException("Node not found with query: " + query);
     }
     return node;
   }
 
   private Button lookupButtonWithText(String text) {
-    return lookupNode(button -> button instanceof Button && ((Button) button).getText().equals(text));
+    return lookupNode(button -> button instanceof Button && text.equals(((Button) button).getText()));
   }
+
   private <T extends javafx.scene.Node> T lookupNode(java.util.function.Predicate<T> filter) {
     if (rootNode == null) {
       throw new IllegalStateException("Builder did not return a Node or start method failed.");
@@ -109,12 +116,10 @@ class OutcomesSectionBuilderTest {
     return (T) rootNode.lookupAll("*").stream()
         .filter(node -> {
           try {
-            if (node != null && filter.test((T) node)) {
-              return true;
-            }
-            return false;
+            // Need to check node != null and handle potential ClassCastException
+            return node != null && filter.test((T) node);
           } catch (ClassCastException e) {
-            return false;
+            return false; // Node is not of type T
           }
         })
         .findFirst()
@@ -198,9 +203,10 @@ class OutcomesSectionBuilderTest {
     Platform.runLater(() -> outcomeListView.getItems().add(itemText));
     waitForFxEvents();
 
-    robot.clickOn(outcomeListView);
-    robot.clickOn(itemText);
+    robot.clickOn(outcomeListView); // Click list view first
     waitForFxEvents();
+    robot.clickOn(itemText); // Then click the item
+    waitForFxEvents(); // Ensure selection is processed
 
     robot.clickOn(lookupButtonWithText(uiBundle.getString(REMOVE_BUTTON_KEY)));
     waitForFxEvents();
@@ -218,8 +224,9 @@ class OutcomesSectionBuilderTest {
     Platform.runLater(() -> outcomeListView.getItems().add(itemText));
     waitForFxEvents();
 
-    robot.clickOn(outcomeListView);
-    robot.clickOn(itemText);
+    robot.clickOn(outcomeListView); // Click list view first
+    waitForFxEvents();
+    robot.clickOn(itemText); // Then click the item
     waitForFxEvents();
 
     robot.clickOn(lookupButtonWithText(uiBundle.getString(REMOVE_BUTTON_KEY)));

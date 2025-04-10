@@ -8,12 +8,12 @@ package oogasalad.exceptions;
  *
  * @author Alana Zinkin
  */
-public class ObjectNotSupportedException extends RuntimeException {
+public class ObjectNotSupportedException extends Exception {
 
   /**
    * Constructs a new ObjectNotSupportedException with a specified detail message.
    *
-   * @param message the detail message explaining the reason for the exception
+   * @param message the detail message explaining the reason for the exception.
    */
   public ObjectNotSupportedException(String message) {
     super(message);

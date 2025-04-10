@@ -3,6 +3,7 @@ package oogasalad.editor.view.tools;
 import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.view.EditorGameView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +39,7 @@ public class SelectionTool implements ObjectInteractionTool {
    * @param worldY Y-coordinate of the grid cell.
    */
   @Override
-  public void interactObjectAt(int worldX, int worldY) {
+  public void interactObjectAt(double worldX, double worldY) {
     LOG.debug("Attempting to select at grid coordinates ({}, {})", worldX, worldY);
     UUID id = editorController.getObjectIDAt(worldX, worldY);
     if (id != null) {
@@ -46,5 +47,10 @@ public class SelectionTool implements ObjectInteractionTool {
     } else {
       editorController.notifyObjectDeselected();
     }
+  }
+
+  @Override
+  public void interactObjectAt(int gridX, int gridY) {
+
   }
 }

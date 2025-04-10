@@ -1,10 +1,11 @@
 package oogasalad.engine.view;
 
+import java.io.FileNotFoundException;
 import java.util.ResourceBundle;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import java.io.FileNotFoundException;
-import javafx.scene.image.ImageView;
+import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.fileparser.records.FrameData;
 
@@ -18,37 +19,30 @@ public class ObjectImage {
   private static final ResourceBundle OBJECT_IMAGE_RESOURCES = ResourceBundle.getBundle(
       ObjectImage.class.getPackageName() + "." + "ObjectImage");
 
-  private ViewObjectToImageConverter converter;
+  private final ViewObjectToImageConverter converter;
   private Rectangle hitBox;
-  private ImageView imageView;
-  private int spriteDx;
-  private int spriteDy;
+  private final ImageView imageView;
+  private final int spriteDx;
+  private final int spriteDy;
   private final String UUID;
 
   /**
    * Constructs an {@code ObjectImage} with the given parameters.
    *
-   * @param UUID         the unique identifier for this object
-   * @param Frame        the {@link FrameData} representing the current visual frame of the object
-   * @param x            the initial X-coordinate of the object
-   * @param y            the initial Y-coordinate of the object
-   * @param hitBoxWidth  the width of the hitbox
-   * @param hitBoxHeight the height of the hitbox
-   * @param spriteDx     the X-offset of the image relative to the hitbox
-   * @param spriteDy     the Y-offset of the image relative to the hitbox
+   * @param viewObject object that is converted to an image
    * @throws FileNotFoundException if the frame data image file cannot be found
    */
-  public ObjectImage(String UUID, FrameData Frame, int x, int y, int hitBoxWidth, int hitBoxHeight,
-      int spriteDx, int spriteDy)
+  public ObjectImage(ViewObject viewObject)
       throws FileNotFoundException {
-    this.UUID = UUID;
+    this.UUID = viewObject.getUuid();
     converter = new ViewObjectToImageConverter();
-    this.imageView = converter.convertFrameToView(Frame);
-    imageView.setX(x + spriteDx);
-    imageView.setY(y + spriteDy);
-    this.spriteDx = spriteDx;
-    this.spriteDy = spriteDy;
-    displayHitBox(x, y, hitBoxWidth, hitBoxHeight);
+    this.imageView = converter.convertFrameToView(viewObject);
+    imageView.setX(viewObject.getX() + viewObject.getSpriteDx());
+    imageView.setY(viewObject.getY() + viewObject.getSpriteDy());
+    this.spriteDx = viewObject.getSpriteDy();
+    this.spriteDy = viewObject.getSpriteDy();
+    displayHitBox(viewObject.getX(), viewObject.getY(), viewObject.getHitBoxWidth(),
+        viewObject.getHitBoxHeight());
   }
 
   /**

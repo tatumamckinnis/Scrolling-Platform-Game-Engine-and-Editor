@@ -3,17 +3,17 @@ package oogasalad.engine.view.components;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
 public class NewGameComponents extends Display {
+
   // contains a game over object if it is game ober
   // contains a play again
   // contains a high score object
-  private ViewState viewState;
-  private Text highScore;
-  private Button play;
+  private final ViewState viewState;
+  private final Text highScore;
+  private final Button play;
 
   public NewGameComponents(ViewState viewState) {
     this.viewState = viewState;

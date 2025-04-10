@@ -10,6 +10,8 @@ import oogasalad.editor.model.data.event_enum.OutcomeType;
 /**
  * Represents an event associated with an editor object, encapsulating its conditions, outcomes, and
  * corresponding parameter mappings.
+ *
+ * @author Jacob You
  */
 public class EditorEvent {
 
