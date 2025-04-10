@@ -45,8 +45,8 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
    * Handles the logic for initiating object placement when the grid is clicked. Calculates position
    * and calls the EditorController to handle the actual creation.
    *
-   * @param worldX X-coordinate on the grid.
-   * @param worldY Y-coordinate on the grid.
+   * @param gridX X-coordinate on the grid.
+   * @param gridY Y-coordinate on the grid.
    */
   @Override
   public void interactObjectAt(double gridX, double gridY) {
@@ -58,22 +58,14 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
         return;
       }
 
-      double worldX = gridX * cellSize;
-      double worldY = gridY * cellSize;
-
-      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, worldX, worldY,
+      editorController.requestObjectPlacement(objectGroup, objectNamePrefix, gridX, gridY,
           cellSize);
       LOG.debug("Delegated object placement request to controller for type '{}' at world ({}, {})",
-          objectGroup, worldX, worldY);
+          objectGroup, gridX, gridY);
 
     } catch (Exception e) {
       LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
           gridX, gridY, e.getMessage(), e);
     }
-  }
-
-  @Override
-  public void interactObjectAt(int gridX, int gridY) {
-
   }
 }

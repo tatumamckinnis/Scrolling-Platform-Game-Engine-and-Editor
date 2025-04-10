@@ -48,9 +48,4 @@ public class SelectionTool implements ObjectInteractionTool {
       editorController.notifyObjectDeselected();
     }
   }
-
-  @Override
-  public void interactObjectAt(int gridX, int gridY) {
-
-  }
 }

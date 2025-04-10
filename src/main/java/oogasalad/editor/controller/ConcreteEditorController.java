@@ -88,7 +88,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifyObjectAdded(UUID objectId) {
     LOG.debug("Notifying listeners: Object added {}", objectId);
     for (EditorViewListener listener : viewListeners) {
-        listener.onObjectAdded(objectId);
+      listener.onObjectAdded(objectId);
     }
   }
 
@@ -100,7 +100,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifyObjectRemoved(UUID objectId) {
     LOG.debug("Notifying listeners: Object removed {}", objectId);
     for (EditorViewListener listener : viewListeners) {
-        listener.onObjectRemoved(objectId);
+      listener.onObjectRemoved(objectId);
     }
   }
 
@@ -113,7 +113,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifyObjectUpdated(UUID objectId) {
     LOG.debug("Notifying listeners: Object updated {}", objectId);
     for (EditorViewListener listener : viewListeners) {
-        listener.onObjectUpdated(objectId);
+      listener.onObjectUpdated(objectId);
     }
   }
 
@@ -125,7 +125,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifySelectionChanged(UUID selectedObjectId) {
     LOG.debug("Notifying listeners: Selection changed {}", selectedObjectId);
     for (EditorViewListener listener : viewListeners) {
-        listener.onSelectionChanged(selectedObjectId);
+      listener.onSelectionChanged(selectedObjectId);
     }
   }
 
@@ -135,7 +135,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifyDynamicVariablesChanged() {
     LOG.debug("Notifying listeners: Dynamic variables changed");
     for (EditorViewListener listener : viewListeners) {
-        listener.onDynamicVariablesChanged();
+      listener.onDynamicVariablesChanged();
     }
   }
 
@@ -147,7 +147,7 @@ public class ConcreteEditorController implements EditorController {
   private void notifyErrorOccurred(String errorMessage) {
     LOG.debug("Notifying listeners: Error occurred - {}", errorMessage);
     for (EditorViewListener listener : viewListeners) {
-        listener.onErrorOccurred(errorMessage);
+      listener.onErrorOccurred(errorMessage);
     }
   }
 
@@ -164,38 +164,32 @@ public class ConcreteEditorController implements EditorController {
    * @param cellSize         the size of a grid cell used to compute object placement and sizing.
    */
   @Override
-  public void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX,
-      int worldY, int cellSize) {
+  public void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
+      double worldY, int cellSize) {
     LOG.info("Processing object placement request: Group='{}', Prefix='{}', Pos=({},{})",
         objectGroup, objectNamePrefix, worldX, worldY);
     UUID newObjectId = null;
-      newObjectId = editorDataAPI.createEditorObject();
-      String objectName = String.format("%s%d_%d", objectNamePrefix, worldX / cellSize,
-          worldY / cellSize);
+    newObjectId = editorDataAPI.createEditorObject();
+    int floorWorldX = (int) Math.floor(worldX);
+    int floorWorldY = (int) Math.floor(worldY);
+    String objectName = String.format("%s%d_%d", objectNamePrefix, floorWorldX, floorWorldY);
 
-      editorDataAPI.getIdentityDataAPI().setName(newObjectId, objectName);
-      editorDataAPI.getIdentityDataAPI().setGroup(newObjectId, objectGroup);
-      editorDataAPI.getSpriteDataAPI().setX(newObjectId, worldX);
-      editorDataAPI.getSpriteDataAPI().setY(newObjectId, worldY);
-      editorDataAPI.getHitboxDataAPI().setX(newObjectId, worldX);
-      editorDataAPI.getHitboxDataAPI().setY(newObjectId, worldY);
-      editorDataAPI.getHitboxDataAPI().setWidth(newObjectId, cellSize);
-      editorDataAPI.getHitboxDataAPI().setHeight(newObjectId, cellSize);
-      editorDataAPI.getHitboxDataAPI()
-          .setShape(newObjectId, "RECTANGLE"); // TODO: Make shape configurable?
+    editorDataAPI.getIdentityDataAPI().setName(newObjectId, objectName);
+    editorDataAPI.getIdentityDataAPI().setGroup(newObjectId, objectGroup);
+    editorDataAPI.getSpriteDataAPI().setX(newObjectId, floorWorldX);
+    editorDataAPI.getSpriteDataAPI().setY(newObjectId, floorWorldY);
+    editorDataAPI.getHitboxDataAPI().setX(newObjectId, floorWorldX);
+    editorDataAPI.getHitboxDataAPI().setY(newObjectId, floorWorldY);
+    editorDataAPI.getHitboxDataAPI().setWidth(newObjectId, cellSize);
+    editorDataAPI.getHitboxDataAPI().setHeight(newObjectId, cellSize);
+    editorDataAPI.getHitboxDataAPI()
+        .setShape(newObjectId, "RECTANGLE"); // TODO: Make shape configurable?
 
-      LOG.debug("Object {} data set via EditorDataAPI.", newObjectId);
+    LOG.debug("Object {} data set via EditorDataAPI.", newObjectId);
 
-      notifyObjectAdded(newObjectId);
-      notifyObjectSelected(newObjectId);
+    notifyObjectAdded(newObjectId);
+    notifyObjectSelected(newObjectId);
   }
-
-  @Override
-  public void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
-      double worldY, int cellSize) {
-
-  }
-
 
   /**
    * Processes a request to remove an object by its ID. If the object is successfully removed,
@@ -209,20 +203,20 @@ public class ConcreteEditorController implements EditorController {
   public void requestObjectRemoval(UUID objectId) {
     Objects.requireNonNull(objectId, "Object ID cannot be null for removal request");
     LOG.info("Processing object removal request: ID={}", objectId);
-      boolean removed = editorDataAPI.removeEditorObject(objectId);
+    boolean removed = editorDataAPI.removeEditorObject(objectId);
 
-      if (removed) {
-        LOG.debug("Successfully processed removal for object {}", objectId);
-        notifyObjectRemoved(objectId);
+    if (removed) {
+      LOG.debug("Successfully processed removal for object {}", objectId);
+      notifyObjectRemoved(objectId);
 
-        if (objectId.equals(currentSelectedObjectId)) {
-          notifyObjectSelected(null);
-        }
-      } else {
-        LOG.warn("Removal request processed but object {} was not found or not removed by backend.",
-            objectId);
-        notifyErrorOccurred("Object with ID " + objectId + " could not be removed (not found).");
+      if (objectId.equals(currentSelectedObjectId)) {
+        notifyObjectSelected(null);
       }
+    } else {
+      LOG.warn("Removal request processed but object {} was not found or not removed by backend.",
+          objectId);
+      notifyErrorOccurred("Object with ID " + objectId + " could not be removed (not found).");
+    }
   }
 
   /**
@@ -238,17 +232,17 @@ public class ConcreteEditorController implements EditorController {
     UUID objectId = updatedObject.getId(); // Use the getId() method from EditorObject
     Objects.requireNonNull(objectId, "Object ID cannot be null for update request");
     LOG.info("Processing object update request: ID={}", objectId);
-      boolean updated = editorDataAPI.updateEditorObject(updatedObject);
+    boolean updated = editorDataAPI.updateEditorObject(updatedObject);
 
-      if (updated) {
-        LOG.debug("Successfully processed update for object {}", objectId);
-        notifyObjectUpdated(objectId);
-      } else {
-        LOG.warn("Update request processed but object {} was not found or not updated by backend.",
-            objectId);
-        notifyErrorOccurred("Object with ID " + objectId + " could not be updated (not found).");
-      }
+    if (updated) {
+      LOG.debug("Successfully processed update for object {}", objectId);
+      notifyObjectUpdated(objectId);
+    } else {
+      LOG.warn("Update request processed but object {} was not found or not updated by backend.",
+          objectId);
+      notifyErrorOccurred("Object with ID " + objectId + " could not be updated (not found).");
     }
+  }
 
   /**
    * Notifies listeners that a specific object has been selected. If the selected object is
@@ -315,8 +309,8 @@ public class ConcreteEditorController implements EditorController {
     Objects.requireNonNull(objectId, "Object ID cannot be null for removeEvent");
     Objects.requireNonNull(eventId, "Event ID cannot be null for removeEvent");
     LOG.debug("Controller removing event '{}' from object {}", eventId, objectId);
-      editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
-      notifyObjectUpdated(objectId);
+    editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
+    notifyObjectUpdated(objectId);
   }
 
   /**
@@ -334,8 +328,8 @@ public class ConcreteEditorController implements EditorController {
     Objects.requireNonNull(condition, "ConditionType cannot be null for addCondition");
     LOG.debug("Controller adding condition '{}' to event '{}' on object {}", condition, eventId,
         objectId);
-      editorDataAPI.getInputDataAPI().addEventCondition(objectId, eventId, condition);
-      notifyObjectUpdated(objectId);
+    editorDataAPI.getInputDataAPI().addEventCondition(objectId, eventId, condition);
+    notifyObjectUpdated(objectId);
   }
 
   /**
@@ -353,8 +347,8 @@ public class ConcreteEditorController implements EditorController {
     Objects.requireNonNull(condition, "ConditionType cannot be null for removeCondition");
     LOG.debug("Controller removing condition '{}' from event '{}' on object {}", condition, eventId,
         objectId);
-      editorDataAPI.getInputDataAPI().removeEventCondition(objectId, eventId, condition);
-      notifyObjectUpdated(objectId);
+    editorDataAPI.getInputDataAPI().removeEventCondition(objectId, eventId, condition);
+    notifyObjectUpdated(objectId);
   }
 
 
@@ -373,12 +367,12 @@ public class ConcreteEditorController implements EditorController {
     Objects.requireNonNull(outcome, "OutcomeType cannot be null for addOutcome");
     LOG.debug("Controller adding outcome '{}' (Param: '{}') to event '{}' on object {}", outcome,
         parameter, eventId, objectId);
-      editorDataAPI.getInputDataAPI().addEventOutcome(objectId, eventId, outcome);
-      String paramToSet =
-          (parameter != null && !parameter.trim().isEmpty()) ? parameter.trim() : null;
-      editorDataAPI.getInputDataAPI()
-          .setEventOutcomeParameter(objectId, eventId, outcome, paramToSet);
-      notifyObjectUpdated(objectId);
+    editorDataAPI.getInputDataAPI().addEventOutcome(objectId, eventId, outcome);
+    String paramToSet =
+        (parameter != null && !parameter.trim().isEmpty()) ? parameter.trim() : null;
+    editorDataAPI.getInputDataAPI()
+        .setEventOutcomeParameter(objectId, eventId, outcome, paramToSet);
+    notifyObjectUpdated(objectId);
   }
 
   /**
@@ -396,8 +390,8 @@ public class ConcreteEditorController implements EditorController {
     Objects.requireNonNull(outcome, "OutcomeType cannot be null for removeOutcome");
     LOG.debug("Controller removing outcome '{}' from event '{}' on object {}", outcome, eventId,
         objectId);
-      editorDataAPI.getInputDataAPI().removeEventOutcome(objectId, eventId, outcome);
-      notifyObjectUpdated(objectId);
+    editorDataAPI.getInputDataAPI().removeEventOutcome(objectId, eventId, outcome);
+    notifyObjectUpdated(objectId);
   }
 
   /**
@@ -440,8 +434,8 @@ public class ConcreteEditorController implements EditorController {
       LOG.trace("getEditorObject called with null ID.");
       return null;
     }
-      EditorObject obj = editorDataAPI.getEditorObject(objectId);
-      return obj;
+    EditorObject obj = editorDataAPI.getEditorObject(objectId);
+    return obj;
   }
 
 
@@ -458,8 +452,8 @@ public class ConcreteEditorController implements EditorController {
     if (objectId == null) {
       return Collections.emptyMap();
     }
-      Map<String, EditorEvent> events = editorDataAPI.getInputDataAPI().getEvents(objectId);
-      return (events != null) ? events : Collections.emptyMap();
+    Map<String, EditorEvent> events = editorDataAPI.getInputDataAPI().getEvents(objectId);
+    return (events != null) ? events : Collections.emptyMap();
   }
 
   /**
@@ -477,9 +471,9 @@ public class ConcreteEditorController implements EditorController {
     if (objectId == null || eventId == null) {
       return Collections.emptyList();
     }
-      List<ConditionType> conditions = editorDataAPI.getInputDataAPI()
-          .getEventConditions(objectId, eventId);
-      return (conditions != null) ? conditions : Collections.emptyList();
+    List<ConditionType> conditions = editorDataAPI.getInputDataAPI()
+        .getEventConditions(objectId, eventId);
+    return (conditions != null) ? conditions : Collections.emptyList();
   }
 
   /**
@@ -496,9 +490,9 @@ public class ConcreteEditorController implements EditorController {
     if (objectId == null || eventId == null) {
       return Collections.emptyList();
     }
-      List<OutcomeType> outcomes = editorDataAPI.getInputDataAPI()
-          .getEventOutcomes(objectId, eventId);
-      return (outcomes != null) ? outcomes : Collections.emptyList();
+    List<OutcomeType> outcomes = editorDataAPI.getInputDataAPI()
+        .getEventOutcomes(objectId, eventId);
+    return (outcomes != null) ? outcomes : Collections.emptyList();
   }
 
   /**
@@ -516,7 +510,7 @@ public class ConcreteEditorController implements EditorController {
     if (objectId == null || eventId == null || outcome == null) {
       return null;
     }
-      return editorDataAPI.getInputDataAPI().getEventOutcomeParameter(objectId, eventId, outcome);
+    return editorDataAPI.getInputDataAPI().getEventOutcomeParameter(objectId, eventId, outcome);
   }
 
   /**
@@ -528,19 +522,19 @@ public class ConcreteEditorController implements EditorController {
    */
   @Override
   public List<DynamicVariable> getAvailableDynamicVariables(UUID objectId) {
-      DynamicVariableContainer container = editorDataAPI.getDynamicVariableContainer();
-      if (container != null) {
-        Collection<DynamicVariable> varsCollection = container.getAllVariables();
-        if (varsCollection != null) {
-          return new ArrayList<>(varsCollection);
-        } else {
-          LOG.error("container.getAllVariables() returned null unexpectedly!");
-          return Collections.emptyList();
-        }
+    DynamicVariableContainer container = editorDataAPI.getDynamicVariableContainer();
+    if (container != null) {
+      Collection<DynamicVariable> varsCollection = container.getAllVariables();
+      if (varsCollection != null) {
+        return new ArrayList<>(varsCollection);
       } else {
-        LOG.warn("DynamicVariableContainer is null in EditorDataAPI.");
+        LOG.error("container.getAllVariables() returned null unexpectedly!");
         return Collections.emptyList();
       }
+    } else {
+      LOG.warn("DynamicVariableContainer is null in EditorDataAPI.");
+      return Collections.emptyList();
+    }
   }
 
   /**

@@ -74,7 +74,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private double zoomScale;
   private ObjectInteractionTool currentTool;
   private UUID selectedObjectId;
-  private final boolean drawHitboxes = true;
+  private boolean drawHitboxes = true;
+  private boolean snapToGrid = true;
 
   /**
    * Creates a new editor game view.
@@ -287,6 +288,12 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double worldX = (screenX + cornerCameraX) / zoomScale;
     double worldY = (screenY + cornerCameraY) / zoomScale;
 
+    if (snapToGrid) {
+      worldX = ((int) Math.floor(worldX / cellSize)) * cellSize;
+      worldY = ((int) Math.floor(worldY / cellSize)) * cellSize;
+      System.out.println(worldX + " " + worldY);
+    }
+
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,
         worldY);
 
@@ -303,7 +310,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
    */
   public void updateCurrentTool(ObjectInteractionTool tool) {
     this.currentTool = tool;
-    //TODO: deselect all other tools
     LOG.info("Current placement tool set to: {}",
         (tool != null) ? tool.getClass().getSimpleName() : "None");
   }
