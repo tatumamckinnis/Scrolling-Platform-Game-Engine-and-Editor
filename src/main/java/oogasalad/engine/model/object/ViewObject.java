@@ -116,6 +116,11 @@ public class ViewObject implements ImmutableGameObject, ImmutablePlayer {
   }
 
   @Override
+  public int getZ(){
+    return gameObject.getLayer();
+  }
+
+  @Override
   public Map<String, Double> getDisplayedStats() {
     return ((Player) gameObject).getDisplayedStats();
   }

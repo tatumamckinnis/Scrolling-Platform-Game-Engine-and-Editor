@@ -44,7 +44,7 @@ public class GameObjectDataParser {
       String coordinates = gameObjectElement.getAttribute("coordinates");
       List<GameObjectData> gameObjectDataList = new ArrayList<>();
 
-      Pattern pattern = Pattern.compile("\\((\\d+),(\\d+)\\)");
+      Pattern pattern = Pattern.compile("\\((-?\\d+),(-?\\d+)\\)");
       Matcher matcher = pattern.matcher(coordinates);
 
       int index = 0;

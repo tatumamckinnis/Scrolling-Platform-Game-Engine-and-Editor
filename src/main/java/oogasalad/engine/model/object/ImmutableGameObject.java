@@ -35,6 +35,8 @@ public interface ImmutableGameObject {
    */
   int getY();
 
+  int getZ();
+
   /**
    * Returns the current frame data used for rendering the object.
    *
@@ -71,4 +73,6 @@ public interface ImmutableGameObject {
   int getSpriteDy();
 
   File getSpriteFile();
+
+
 }

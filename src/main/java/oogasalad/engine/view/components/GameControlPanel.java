@@ -42,6 +42,7 @@ public class GameControlPanel extends Display {
     }
     buttons = new ArrayList<>();
     this.viewState = viewState;
+    this.setViewOrder(-1);
     createHomeButton();
   }
 
@@ -80,6 +81,7 @@ public class GameControlPanel extends Display {
     });
 
     homeButton.setFocusTraversable(false);
+    homeButton.setViewOrder(-1);
     buttons.add(homeButton);
   }
 }

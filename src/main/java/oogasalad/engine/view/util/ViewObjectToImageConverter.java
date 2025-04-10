@@ -76,7 +76,7 @@ public class ViewObjectToImageConverter {
     imageView.setViewport(viewport);
     imageView.setFitWidth(viewport.getWidth());
     imageView.setFitHeight(viewport.getHeight());
-
+    imageView.setViewOrder(viewObject.getZ());
     return imageView;
   }
 }

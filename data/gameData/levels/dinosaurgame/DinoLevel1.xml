@@ -5,10 +5,12 @@ layer => the layer
 -->
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
-<map minX="0" minY="0" maxX="4000" maxY="500">
+<map minX="-500" minY="-700" maxX="4000" maxY="500">
   <layers>
-    <layer name="backGround" width="500" height="500" z="0">
+    <layer name="backGround" width="500" height="500" z="10">
       <data>
+        <object id="60" coordinates="(-500,-700),(140,-700), (780,-700), (1420,-700), (2060,-700), (2700,-700), (3340,-700), (3980,-700), (4620,-700), (5260,-700)" uid="129acc3a-3dc4-49c9-861e-a86cfc67c605, 6fd71b4d-f513-4109-982d-63c229489ac7, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, f0410215-1c3b-4626-a24f-4d8fd707955e, 15fbb26d-974b-45c3-b1c6-376865be355a, 8757d18e-661e-4802-b8a4-c46b157d0bb6, cf209a9d-d4cc-4a23-9038-8a59f02a2990, f8ef7eb1-9485-4742-a20f-1fa8292a3804, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, dbd01b4f-393e-4de9-989b-11318d72247a" />
+        <object id="60" coordinates="(-500,324),(140,324), (780,324), (1420,324), (2060,324), (2700,324), (3340,324), (3980,324), (4620,324), (5260,324)" uid="66991927-aa5b-4787-ae13-4a0950d14090, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, d2134bc5-8682-4589-a2ef-8c750860b8b3, c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, ff01ac6b-8c52-444d-ae78-bc46e6432a90, a692f84b-b271-468c-8bae-7535604be673, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 646d4366-1aae-41b0-9c57-0c6840c2f049" />
       </data>
     </layer>
     <layer name="foreground" width="4000" height="500" z="1">
@@ -74,6 +76,11 @@ interact with each other -->
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
     </objectGroup>
     <objectGroup name="backgrounds">
+    </objectGroup>
+  </game>
+  <game name="doodlejump">
+    <objectGroup name="backgrounds">
+      <object type="" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"/>
     </objectGroup>
   </game>
   <events>

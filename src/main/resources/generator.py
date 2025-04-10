@@ -1,13 +1,10 @@
 import random
 import uuid
 
-def generate_object_node(start_x=100, start_y=300, number_of_objects=10):
+def generate_object_node(start_x=-500, start_y=324, number_of_objects=10):
   """
-          <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
-  Generates an XML object node with multiple objects.
-
-  <object id="12" coordinates="(300,300)(500,300)"
-          uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+  1024-700
+              <object id="60" coordinates="(0,0),(640,0)," uid="28ed2c24-3ba2-4776-866a-0f8292785502"/>
   Each object is represented by two coordinate pairs: a starting coordinate
   and an ending coordinate (where the ending coordinate is start_x + offset,
   with offset randomly selected between 200 and 300). Each object is also
@@ -33,6 +30,7 @@ def generate_object_node(start_x=100, start_y=300, number_of_objects=10):
   for _ in range(number_of_objects):
     # Random offset between 200 and 300 pixels.
     offset = random.randint(200, 300)
+    offset = 640
     start_coord = f"({current_x},{start_y})"
     end_coord = f"({current_x + offset},{start_y})"
     # Append both coordinate pairs for this object.
@@ -47,7 +45,7 @@ def generate_object_node(start_x=100, start_y=300, number_of_objects=10):
   uuid_str = ", ".join(uuid_parts)
 
   # Construct the XML node.
-  xml_node = f'<object id="12" coordinates="{coordinates_str}" uid="{uuid_str}" />'
+  xml_node = f'<object id="60" coordinates="{coordinates_str}" uid="{uuid_str}" />'
   return xml_node
 
 if __name__ == "__main__":
