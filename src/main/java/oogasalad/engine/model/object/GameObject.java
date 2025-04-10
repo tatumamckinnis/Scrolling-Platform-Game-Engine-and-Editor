@@ -1,5 +1,6 @@
 package oogasalad.engine.model.object;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -242,6 +243,13 @@ public abstract class GameObject {
    */
   public boolean isGrounded() {
     return isGrounded;
+  }
+
+  /**
+   * @return File for the sprite
+   */
+  public File getSpriteFile() {
+    return spriteInfo.getSpriteFile();
   }
 }
 

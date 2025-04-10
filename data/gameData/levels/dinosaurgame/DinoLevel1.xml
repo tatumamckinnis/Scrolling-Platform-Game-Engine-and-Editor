@@ -37,7 +37,8 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22" velocityX="0" velocityY="0">
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22"
+        velocityX="0" velocityY="0">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
           <stringProperties>
@@ -109,34 +110,34 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-      <event type="physics" id="21">
-        <conditions>
-          <conditionSet>
-            <condition name="TRUE">
-            </condition>
-          </conditionSet>
-        </conditions>
-        <outcomes>
-          <outcome name="MOVE_RIGHT">
-            <doubleParameters/>
-          </outcome>
-        </outcomes>
-      </event>
-      <event type="physics" id="22">
-        <conditions>
-          <conditionSet>
-            <condition name="TRUE">
-            </condition>
-          </conditionSet>
-        </conditions>
-        <outcomes>
-          <outcome name="APPLY_GRAVITY">
-            <doubleParameters>
-              <parameter name="ApplyGravityAmount" value="0.1"/>
-            </doubleParameters>
-          </outcome>
-        </outcomes>
-      </event>
+    <event type="physics" id="21">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters/>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="physics" id="22">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
     <event type="physics" id="23">
       <conditions>
         <conditionSet>

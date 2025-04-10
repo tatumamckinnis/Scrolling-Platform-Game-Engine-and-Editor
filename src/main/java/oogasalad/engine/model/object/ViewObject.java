@@ -1,5 +1,6 @@
 package oogasalad.engine.model.object;
 
+import java.io.File;
 import java.util.Map;
 import oogasalad.fileparser.records.FrameData;
 
@@ -108,8 +109,14 @@ public class ViewObject implements ImmutableGameObject, ImmutablePlayer {
   }
 
   @Override
+  public File getSpriteFile() {
+    return gameObject.getSpriteFile();
+  }
+
+  @Override
   public Map<String, Double> getDisplayedStats() {
     return ((Player) gameObject).getDisplayedStats();
   }
+
 }
 

@@ -52,12 +52,12 @@ class DefaultEngineFileTest {
     List<GameObject> expectedObjects = new ArrayList<>();
 
     // Setup sprite and hitbox
-    FrameData marioFrame = new FrameData("Mario Paused", 1, 1, 2, 4, new File("dd"));
+    FrameData marioFrame = new FrameData("Mario Paused", 1, 1, 2, 4);
     Map<String, FrameData> frameMap = new HashMap<>();
     frameMap.put("Mario Paused", marioFrame);
     Map<String, AnimationData> animationMap = new HashMap<>();
 
-    Sprite expectedSprite = new Sprite(frameMap, marioFrame, animationMap, 0, 0);
+    Sprite expectedSprite = new Sprite(frameMap, marioFrame, animationMap, 0, 0, new File("dd"));
     HitBox expectedHitBox = new HitBox(10, 0, 2, 4); // x, y, width, height
 
     // Setup entity

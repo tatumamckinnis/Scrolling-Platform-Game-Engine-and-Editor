@@ -21,14 +21,13 @@ class EventConverterTest {
 
   @BeforeEach
   void setUp() {
-    SpriteData spriteData1 = new SpriteData("player.png",
-        new FrameData("moving", 1, 1, 10, 20, new File("hello.png")), new ArrayList<>(),
-        new ArrayList<>());
+    SpriteData spriteData1 = new SpriteData("player.png", new File("src/test/resources/sprites/sprite1.png"),
+        new FrameData("moving", 1, 1, 10, 20), new ArrayList<>(), new ArrayList<>());
     List<EventData> eventDataList1 = new ArrayList<>();
     //EventData eventData1 = new EventData("input", 20, );
     //EventData eventData2 = new EventData();
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
-    BlueprintData blueprintData1 = new BlueprintData(1, "Mario", "Player", "Player", spriteData1, hitBoxData1, eventDataList1, new HashMap<>());
+    BlueprintData blueprintData1 = new BlueprintData(1, 0,0,"Mario", "Player", "Player", spriteData1, hitBoxData1, eventDataList1, new HashMap<>(), new HashMap<>(), new ArrayList<>());
     GameObjectData gameObject1 = new GameObjectData(
         1,
         new UUID(4, 1),

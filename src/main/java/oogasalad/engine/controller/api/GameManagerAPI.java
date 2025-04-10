@@ -7,7 +7,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.SpriteParseException;
 
 /**
  * API responsible for managing the game loop, including playing, pausing, and selecting a game
@@ -32,14 +40,14 @@ public interface GameManagerAPI {
    * model data.
    */
   void restartGame()
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 
   /**
    * Loads a new level or game scene, possibly by calling into file loaders, parsing game data, and
    * updating the current model.
    */
   void selectGame(String filePath)
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 
   /**
    * Pauses the timeline and displays a splashscreen when the user either wins or loses

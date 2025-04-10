@@ -17,7 +17,15 @@ import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.engine.view.GameDisplay;
 import oogasalad.engine.view.ViewState;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
 import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -159,19 +167,11 @@ public class ButtonActionFactory {
       if (selectedFile != null) {
         try {
           viewState.getGameManager().selectGame(selectedFile.getAbsolutePath());
-        } catch (DataFormatException e) {
-          throw new RuntimeException(e);
-        } catch (IOException e) {
-          throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-          throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-          throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-          throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-          throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (DataFormatException | IOException | ClassNotFoundException |
+                 InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException | LayerParseException | LevelDataParseException |
+                 PropertyParsingException | SpriteParseException | EventParseException |
+                 HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
           throw new RuntimeException(e);
         }
       }
