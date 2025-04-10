@@ -1,7 +1,7 @@
 import random
 import uuid
 
-def generate_object_node(start_x=300, start_y=300, number_of_objects=5):
+def generate_object_node(start_x=100, start_y=300, number_of_objects=10):
   """
           <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
   Generates an XML object node with multiple objects.
@@ -36,7 +36,6 @@ def generate_object_node(start_x=300, start_y=300, number_of_objects=5):
     start_coord = f"({current_x},{start_y})"
     end_coord = f"({current_x + offset},{start_y})"
     # Append both coordinate pairs for this object.
-    coordinate_parts.append(start_coord)
     coordinate_parts.append(end_coord)
     # Generate a new UUID for this object.
     uuid_parts.append(str(uuid.uuid4()))
