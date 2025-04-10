@@ -25,7 +25,7 @@ public class GameObjectDataParser {
   public List<GameObjectData> getGameObjectData(Element gameObjectElement, int z)
       throws GameObjectParseException {
     try {
-      int blueprintID = Integer.parseInt(gameObjectElement.getAttribute("id"));
+      int blueprintId = Integer.parseInt(gameObjectElement.getAttribute("id"));
 
       String uidAttr = gameObjectElement.getAttribute("uid");
       String[] uidArray = uidAttr.split(",");
@@ -42,7 +42,7 @@ public class GameObjectDataParser {
 
         if (index < uidArray.length) {
           UUID uuid = UUID.fromString(uidArray[index].trim());
-          gameObjectDataList.add(new GameObjectData(blueprintID, uuid, x, y, z));
+          gameObjectDataList.add(new GameObjectData(blueprintId, uuid, x, y, z));
         } else {
           break;
         }
@@ -52,7 +52,7 @@ public class GameObjectDataParser {
       return gameObjectDataList;
 
     } catch (NumberFormatException e) {
-      throw new GameObjectParseException(e.getMessage(),e);
+      throw new GameObjectParseException(e.getMessage(), e);
     }
   }
 }
