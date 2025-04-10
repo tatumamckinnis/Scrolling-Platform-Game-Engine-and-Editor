@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.PropertyParsingException;
@@ -38,6 +39,7 @@ import org.w3c.dom.NodeList;
  */
 public class EventDataParser {
 
+  private static final Logger LOG = Logger.getLogger(EventDataParser.class.getName());
   // A single instance of the PropertyParser to handle our property parsing.
   private final PropertyParser myPropertyParser = new PropertyParser();
 
@@ -87,8 +89,7 @@ public class EventDataParser {
   private List<List<ConditionData>> parseConditions(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
       List<List<ConditionData>> conditions = new ArrayList<>();
-      Element conditionsElement = getFirstElementByTagName(eventElement, "conditions");
-      NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
+    NodeList conditionSetNodes = eventElement.getElementsByTagName("conditionSet");
       for (int i = 0; i < conditionSetNodes.getLength(); i++) {
         Element conditionSetElement = (Element) conditionSetNodes.item(i);
         List<ConditionData> conditionList = new ArrayList<>();
