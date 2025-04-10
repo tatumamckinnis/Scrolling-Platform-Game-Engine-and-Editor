@@ -5,7 +5,7 @@ layer => the layer
 -->
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
-<map minX="0" minY="0" maxX="500" maxY="500">
+<map minX="0" minY="0" maxX="3000" maxY="500">
   <layers>
     <layer name="backGround" width="500" height="500" z="0">
       <data>
@@ -14,17 +14,17 @@ interact with each other -->
     <layer name="foreground" width="500" height="500" z="1">
       <data>
         <object id="1" coordinates="(0,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
-        <object id="2" coordinates="(100,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
-        <object id="3" coordinates="(200,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
-        <object id="4" coordinates="(300,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
-        <object id="5" coordinates="(400,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
+        <object id="2" coordinates="(480,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
+        <object id="3" coordinates="(960,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
+        <object id="4" coordinates="(1440,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
+        <object id="5" coordinates="(1920,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
       </data>
     </layer>
     <layer name="entities" width="500" height="500" z="1">
       <data>
-        <object id="12" coordinates="(300,300)(500,300)"
-          uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+        <object id="12" coordinates="(300,300), (576,300), (576,300), (780,300), (780,300), (1058,300), (1058,300), (1355,300), (1355,300), (1625,300)" uid="42963949-53a1-45e6-b666-cc3a753e0423, d66c900f-50b8-4735-a018-301b5f24bd5a, 1396dde1-a095-408a-97ef-515cb0d7f563, 5e8b4345-e29c-4dd6-9fd2-2ce5207cebc9, 32689162-ab88-4d58-81a4-30678dad450c" />
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+        <object id="14" coordinates="(400,400), (616,400), (616,400), (891,400), (891,400), (1097,400), (1097,400), (1298,400), (1298,400), (1546,400)" uid="dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
@@ -56,6 +56,9 @@ interact with each other -->
           <doubleProperties>
           </doubleProperties>
         </properties>
+      </object>
+      <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0">
       </object>
     </objectGroup>
     <objectGroup name="blocks">

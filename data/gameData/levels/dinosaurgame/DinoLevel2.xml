@@ -18,6 +18,7 @@
         <object id="12" coordinates="(300,300)(500,300)"
           uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+        <object id="14" coordinates="(400,400)" uid="9acfd3a5-e048-4b46-8f88-4484b8bae267" />
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
@@ -41,6 +42,9 @@
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
         hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0">
       </object>
+      <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0">
+        </object>
     </objectGroup>
 
     <objectGroup name="blocks">

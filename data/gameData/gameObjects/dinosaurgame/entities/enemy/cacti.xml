@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--Format:
+  name  => name of the sprite
+  x  => sprite x pos in texture
+  y  => sprite y pos in texture
+  width  => sprite width
+  height  => sprite height
+
+  -->
+<spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
+  <sprite name="LargeCactus1" x="1062" y="0" width="48" height="95"/>
+  <sprite name="LargeCactus2" x="1180" y="0" width="99" height="95"/>
+  <sprite name="LargeCactus3" x="1298" y="0" width="102" height="95"/>
+  <sprite name="SmallCactus1" x="1416" y="0" width="40" height="71"/>
+  <sprite name="SmallCactus2" x="1534" y="0" width="68" height="71"/>
+  <sprite name="SmallCactus3" x="1652" y="0" width="105" height="71"/>
+</spriteFile>
