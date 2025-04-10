@@ -30,7 +30,7 @@ public class HitBox {
    * @param width  the width of the hitbox
    * @param height the height of the hitbox
    */
-  public HitBox(int x, int y, int width, int height) throws IllegalArgumentException {
+  public HitBox(int x, int y, int width, int height) {
     this.x = x;
     this.y = y;
     if (width > 0 && height > 0) {
@@ -40,7 +40,6 @@ public class HitBox {
     else {
       throw new IllegalArgumentException(EXCEPTIONS.getString("InvalidWidthAndHeight"));
     }
-
   }
 
   /**
