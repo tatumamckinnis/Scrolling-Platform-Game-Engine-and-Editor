@@ -90,11 +90,7 @@ public class PropertyParser {
   private <T> Map<String, T> parseProperties(Element parentNode, String propertiesTag,
       String childTag,
       Function<String, T> converter, String errorPrefix) throws PropertyParsingException {
-    System.out.println(propertiesTag);
-    System.out.println(childTag);
-    System.out.println("parent Node: "+ parentNode);
     Element propertiesElement = getPropertiesElement(parentNode, propertiesTag);
-    System.out.println(propertiesElement);
     if (propertiesElement == null) {
       return new HashMap<>();
     }
@@ -112,7 +108,6 @@ public class PropertyParser {
   private Element getPropertiesElement(Element parentNode, String propertiesTag)
       throws PropertyParsingException {
     NodeList propertyList = parentNode.getElementsByTagName(propertiesTag);
-    System.out.println("propertyList: " + propertyList.getLength());
     if (propertyList.getLength() > 0) {
       Node node = propertyList.item(0);
       if (!(node instanceof Element)) {
@@ -182,7 +177,6 @@ public class PropertyParser {
       if (value == null || value.isEmpty()) {
         value = dataElement.getTextContent().trim();
       }
-      System.out.println("value:"+value);
       T convertedValue = converter.apply(value);
       properties.put(name, convertedValue);
     } catch (IllegalArgumentException e) {

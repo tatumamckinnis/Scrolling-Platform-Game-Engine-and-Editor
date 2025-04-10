@@ -98,7 +98,6 @@ public class EventDataParser {
       }
       conditions.add(conditionList);
     }
-    System.out.println(conditions);
     return conditions;
   }
 
@@ -133,10 +132,8 @@ public class EventDataParser {
   private ConditionData parseCondition(Element conditionElement)
       throws PropertyParsingException {
     String name = conditionElement.getAttribute("name");
-    System.out.println(name);
     Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
     Map<String, String> stringProperties = extractStringProperties(conditionElement);
-    System.out.println("double properties:" + doubleProperties);
     return new ConditionData(name, stringProperties, doubleProperties);
   }
 
@@ -167,7 +164,6 @@ public class EventDataParser {
       throws PropertyParsingException {
     Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
     if (doubleParams != null) {
-      System.out.println("It's parsing a doubleParameters");
       return myPropertyParser.parseDoubleProperties(element, "doubleParameters",
           "parameter");
     }

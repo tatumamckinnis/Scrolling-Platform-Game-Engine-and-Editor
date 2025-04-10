@@ -62,7 +62,6 @@ public class PropertyParserTest {
     Element root = getRoot(xml);
 
     Map<String, String> result = parser.parseStringProperties(root, "stringProperties", "data");
-    System.out.println(result);
     assertEquals(2, result.size());
     assertEquals("enemy", result.get("type"));
     assertEquals("red", result.get("color"));
