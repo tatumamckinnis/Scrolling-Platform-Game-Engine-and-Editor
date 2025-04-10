@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
@@ -59,7 +62,7 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
-      throws BlueprintParseException, SpriteParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
     myEventDataList = eventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
@@ -99,7 +102,7 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   private List<BlueprintData> parseByGame(Element gameNode)
-      throws BlueprintParseException, SpriteParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
     for (int i = 0; i < objectGroupNodes.getLength(); i++) {
@@ -122,7 +125,7 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
-      throws BlueprintParseException, SpriteParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
@@ -154,7 +157,7 @@ public class BlueprintDataParser {
    *                                 the correct format.
    */
   private BlueprintData parseGameObjectData(Element gameObjectNode)
-      throws BlueprintParseException, SpriteParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
     try {
       mySpriteDataParser = new SpriteDataParser();
 
@@ -230,13 +233,23 @@ public class BlueprintDataParser {
     }
     return null;
   }
-
-  private List<String> getDisplayedProperties(Element gameObjectNode) {
-    if (gameObjectNode.getElementsByTagName("displayedProperties").item(0) != null) {
-        Element displayedProperties = (Element) gameObjectNode.getElementsByTagName("displayedProperties").item(0);
+  /**
+   * Retrieves the displayed propeties for the {@link BlueprintData}
+   *
+   * @param gameObjectNode the xml node with the displayed properties child node
+   * @return the List<String> of displayed properties and if there is none just returns an empty list
+   */
+  private List<String> getDisplayedProperties(Element gameObjectNode) throws BlueprintParseException{
+    try {
+      if (gameObjectNode.getElementsByTagName("displayedProperties").item(0) != null) {
+        Element displayedProperties = (Element) gameObjectNode.getElementsByTagName(
+            "displayedProperties").item(0);
         return List.of(
             displayedProperties.getAttribute("propertyList").split(","));
+      }
+      return new ArrayList<>();
+    } catch (NullPointerException e) {
+      throw new BlueprintParseException("error.displayedProperties");
     }
-    return new ArrayList<>();
   }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.OutcomeData;
@@ -47,14 +48,19 @@ public class EventDataParser {
    * @return a list of {@link EventData} objects parsed from the XML.
    * @throws BlueprintParseException if there is any issue parsing the property data.
    */
-  public List<EventData> getLevelEvents(Element root) throws BlueprintParseException, EventParseException {
-    NodeList eventNodes = root.getElementsByTagName("event");
-    List<EventData> events = new ArrayList<>();
-    for (int i = 0; i < eventNodes.getLength(); i++) {
-      Element eventElement = (Element) eventNodes.item(i);
-      events.add(parseEventNode(eventElement));
+  public List<EventData> getLevelEvents(Element root)
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
+    try {
+      NodeList eventNodes = root.getElementsByTagName("event");
+      List<EventData> events = new ArrayList<>();
+      for (int i = 0; i < eventNodes.getLength(); i++) {
+        Element eventElement = (Element) eventNodes.item(i);
+        events.add(parseEventNode(eventElement));
+      }
+      return events;
+    } catch (NullPointerException e) {
+      throw new EventParseException(e.getMessage());
     }
-    return events;
   }
 
   /**
@@ -64,15 +70,19 @@ public class EventDataParser {
    * @return the {@link EventData} record containing the parsed event data.
    * @throws BlueprintParseException if property parsing fails.
    */
-  private EventData parseEventNode(Element eventElement) throws BlueprintParseException, EventParseException {
-    String type = eventElement.getAttribute("type");
-    String id = eventElement.getAttribute("id");
+  private EventData parseEventNode(Element eventElement)
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
+    try {
+      String type = eventElement.getAttribute("type");
+      String id = eventElement.getAttribute("id");
 
-    // Parse conditions and outcomes using explicit loops.
-    List<List<ConditionData>> conditions = parseConditions(eventElement);
-    List<OutcomeData> outcomes = parseOutcomes(eventElement);
+      List<List<ConditionData>> conditions = parseConditions(eventElement);
+      List<OutcomeData> outcomes = parseOutcomes(eventElement);
 
-    return new EventData(type, id, conditions, outcomes);
+      return new EventData(type, id, conditions, outcomes);
+    } catch (NullPointerException e) {
+      throw new EventParseException(e.getMessage());
+    }
   }
 
   /**
@@ -110,7 +120,8 @@ public class EventDataParser {
    * @return a list of {@link OutcomeData} records.
    * @throws BlueprintParseException if outcome parsing fails.
    */
-  private List<OutcomeData> parseOutcomes(Element eventElement) throws BlueprintParseException, EventParseException {
+  private List<OutcomeData> parseOutcomes(Element eventElement)
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
     try {
       List<OutcomeData> outcomes = new ArrayList<>();
       Element outcomesElement = getFirstElementByTagName(eventElement, "outcomes");
@@ -134,11 +145,15 @@ public class EventDataParser {
    * @return the parsed {@link ConditionData} record.
    * @throws BlueprintParseException if property parsing fails.
    */
-  private ConditionData parseCondition(Element conditionElement) throws BlueprintParseException {
+  private ConditionData parseCondition(Element conditionElement) throws BlueprintParseException, EventParseException {
+    try{
     String name = conditionElement.getAttribute("name");
     Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
     Map<String, String> stringProperties = extractStringProperties(conditionElement);
     return new ConditionData(name, stringProperties, doubleProperties);
+  } catch (NullPointerException | PropertyParsingException e){
+      throw new EventParseException(e.getMessage());
+    }
   }
 
   /**
@@ -148,15 +163,18 @@ public class EventDataParser {
    * @return the parsed {@link OutcomeData} record.
    * @throws BlueprintParseException if property parsing fails.
    */
-  private OutcomeData parseOutcome(Element outcomeElement) throws BlueprintParseException {
+  private OutcomeData parseOutcome(Element outcomeElement)
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
     // In the new XML, outcome uses the "type" attribute to denote its action.
-    String outcomeName = outcomeElement.getAttribute("type");
-    if (outcomeName == null || outcomeName.isEmpty()) {
+    try {
+      String outcomeName = outcomeElement.getAttribute("type");
       outcomeName = outcomeElement.getAttribute("name");
+      Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
+      Map<String, String> stringProperties = extractStringProperties(outcomeElement);
+      return new OutcomeData(outcomeName, stringProperties, doubleProperties);
+    } catch (NullPointerException e){
+      throw new EventParseException(e.getMessage());
     }
-    Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
-    Map<String, String> stringProperties = extractStringProperties(outcomeElement);
-    return new OutcomeData(outcomeName, stringProperties, doubleProperties);
   }
 
   /**
@@ -164,14 +182,21 @@ public class EventDataParser {
    *
    * @param element the element from which to extract double properties.
    * @return a map of double properties; an empty map if none are found.
-   * @throws BlueprintParseException if property parsing fails.
+   * @throws PropertyParsingException if property parsing fails.
+   * @throws BlueprintParseException if element
    */
-  private Map<String, Double> extractDoubleProperties(Element element) throws BlueprintParseException {
-    Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
-    if (doubleParams != null) {
-      return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters", "parameter");
+  private Map<String, Double> extractDoubleProperties(Element element)
+      throws BlueprintParseException, PropertyParsingException {
+    try {
+      Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
+      if (doubleParams != null) {
+        return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters",
+            "parameter");
+      }
+      return new HashMap<>();
+    } catch (NullPointerException e) {
+      throw new BlueprintParseException(e.getMessage());
     }
-    return new HashMap<>();
   }
 
   /**
@@ -179,9 +204,10 @@ public class EventDataParser {
    *
    * @param element the element from which to extract string properties.
    * @return a map of string properties; an empty map if none are found.
-   * @throws BlueprintParseException if property parsing fails.
+   * @throws PropertyParsingException if property parsing fails.
    */
-  private Map<String, String> extractStringProperties(Element element) throws BlueprintParseException, EventParseException{
+  private Map<String, String> extractStringProperties(Element element)
+      throws PropertyParsingException {
     Element stringParams = getFirstElementByTagName(element, "stringParameters");
     if (stringParams != null) {
       return myPropertyParser.parseStringProperties(stringParams, "stringParameters", "parameter");
@@ -196,8 +222,8 @@ public class EventDataParser {
    * @param tagName the tag name to search for.
    * @return the first matching child element, or null if not found.
    */
-  private Element getFirstElementByTagName(Element parent, String tagName) {
-    NodeList nodeList = parent.getElementsByTagName(tagName);
-    return (nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
+  private Element getFirstElementByTagName(Element parent, String tagName){
+      NodeList nodeList = parent.getElementsByTagName(tagName);
+      return (nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
   }
 }

@@ -8,6 +8,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
@@ -44,9 +49,12 @@ public class DefaultFileParser implements FileParserAPI {
    *
    * @param filePath the key representing the game or level directory
    * @return a LevelData record representing the parsed level
+   * @throws SAXException if there is an issue with the xml document parsing
+   * @throws IOException if there is an issue with the xml document parsing
+   * @throws ParserConfigurationException if there is an issue with the xml document parsing
    */
   public LevelData parseLevelFile(String filePath)
-      throws BlueprintParseException, SpriteParseException {
+      throws BlueprintParseException, SpriteParseException, LevelDataParseException, HitBoxParseException, GameObjectParseException, PropertyParsingException, EventParseException {
     File levelFile = new File(filePath);
 
     String levelName = levelFile.getName();
@@ -72,12 +80,8 @@ public class DefaultFileParser implements FileParserAPI {
           root);
 
       return new LevelData(levelName, minX, minY, maxX, maxY, blueprintData, gameObjectDataList);
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (SAXException e) {
-      throw new RuntimeException(e);
+    } catch (SAXException | IOException  | ParserConfigurationException e) {
+      throw new LevelDataParseException(e.getMessage());
     }
   }
 }

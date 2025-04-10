@@ -3,6 +3,7 @@ package oogasalad.fileparser;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import oogasalad.exceptions.PropertyParsingException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -41,10 +42,10 @@ public class PropertyParser {
    * @param ObjectNode the XML element containing the <code>&lt;doubleProperties&gt;</code> node.
    * @param childTag          the tag name of the child elements holding property data.
    * @return a map with property names and their corresponding double values.
-   * @throws BlueprintParseException if the node is not found or if a value cannot be parsed as a double.
+   * @throws PropertyParsingException if the node is not found or if a value cannot be parsed as a double.
    */
   public Map<String, Double> parseDoubleProperties(Element ObjectNode,  String propertiesTag, String childTag)
-      throws BlueprintParseException {
+      throws PropertyParsingException {
     return parseProperties(ObjectNode, propertiesTag, childTag, Double::parseDouble,
         "error.invalid.doubleValue");
   }
@@ -57,10 +58,10 @@ public class PropertyParser {
    * @param ObjectNode the XML element containing the <code>&lt;stringProperties&gt;</code> node.
    * @param childTag          the tag name of the child elements holding property data.
    * @return a map with property names and their corresponding string values.
-   * @throws BlueprintParseException if the node is not in the expected format.
+   * @throws PropertyParsingException if the node is not in the expected format.
    */
   public Map<String, String> parseStringProperties(Element ObjectNode, String propertiesTag, String childTag)
-      throws BlueprintParseException {
+      throws PropertyParsingException {
     return parseProperties(ObjectNode, propertiesTag, childTag, s -> s,
         "error.stringProperties.conversion");
   }
@@ -78,16 +79,15 @@ public class PropertyParser {
    *                          to the desired type.
    * @param errorPrefix       error message prefix if conversion fails.
    * @return a map of property names to their converted values.
-   * @throws BlueprintParseException if the node is not found or if a conversion fails.
+   * @throws PropertyParsingException if the node is not found or if a conversion fails.
    */
   private <T> Map<String, T> parseProperties(Element ParentNode, String propertiesTag, String childTag,
-      Function<String, T> converter, String errorPrefix) throws BlueprintParseException {
-
-    Element propertiesElement = getPropertiesElement(ParentNode, propertiesTag);
-    if (propertiesElement == null) {
-      return new HashMap<>();
-    }
-    return processDataNodes(propertiesElement, childTag, converter, errorPrefix);
+      Function<String, T> converter, String errorPrefix) throws PropertyParsingException {
+      Element propertiesElement = getPropertiesElement(ParentNode, propertiesTag);
+      if (propertiesElement == null) {
+        return new HashMap<>();
+      }
+      return processDataNodes(propertiesElement, childTag, converter, errorPrefix);
   }
 
   /**
@@ -96,15 +96,15 @@ public class PropertyParser {
    * @param ParentNode the element that contains the properties node.
    * @param propertiesTag     the tag name of the properties node.
    * @return the properties element if present; {@code null} otherwise.
-   * @throws BlueprintParseException if the node is found but is not an element.
+   * @throws PropertyParsingException if the node is found but is not an element.
    */
   private Element getPropertiesElement(Element ParentNode, String propertiesTag)
-      throws BlueprintParseException {
+      throws PropertyParsingException {
     NodeList propertyList = ParentNode.getElementsByTagName(propertiesTag);
     if (propertyList.getLength() > 0) {
       Node node = propertyList.item(0);
       if (!(node instanceof Element)) {
-        throw new BlueprintParseException("error." + propertiesTag + ".notElement");
+        throw new PropertyParsingException("error." + propertiesTag + ".notElement");
       }
       return (Element) node;
     }
@@ -121,10 +121,10 @@ public class PropertyParser {
    * @param converter         a {@link Function} to convert property values from {@code String} to the desired type.
    * @param errorPrefix       error message prefix if conversion fails.
    * @return a map of property names to converted values.
-   * @throws BlueprintParseException if any child node is not in the expected format.
+   * @throws PropertyParsingException if any child node is not in the expected format.
    */
   private <T> Map<String, T> processDataNodes(Element propertiesElement, String childTag,
-      Function<String, T> converter, String errorPrefix) throws BlueprintParseException {
+      Function<String, T> converter, String errorPrefix) throws PropertyParsingException {
     Map<String, T> properties = new HashMap<>();
     NodeList dataNodes = propertiesElement.getChildNodes();
     for (int i = 0; i < dataNodes.getLength(); i++) {
@@ -133,7 +133,7 @@ public class PropertyParser {
         continue;
       }
       if (!(dataNode instanceof Element)) {
-        throw new BlueprintParseException("error.data.notElement");
+        throw new PropertyParsingException("error.data.notElement");
       }
       Element dataElement = (Element) dataNode;
       if (!childTag.equals(dataElement.getTagName())) {
@@ -157,23 +157,21 @@ public class PropertyParser {
    * @param converter   a {@link Function} to convert the property value from {@code String}
    *                    to the desired type.
    * @param errorPrefix error message prefix if conversion fails.
-   * @throws BlueprintParseException if the conversion fails.
+   * @throws PropertyParsingException if the conversion fails.
    */
   private <T> void processDataElement(Element dataElement, Map<String, T> properties,
-      Function<String, T> converter, String errorPrefix) throws BlueprintParseException {
-    String name = dataElement.getAttribute("name");
-    // Try reading the "value" attribute; if missing or empty, fall back to the element's text content.
-    String value = dataElement.getAttribute("value");
-    if (value == null || value.isEmpty()) {
-      value = dataElement.getTextContent().trim();
-    }
-    if (name != null && !name.isEmpty()) {
-      try {
+      Function<String, T> converter, String errorPrefix) throws PropertyParsingException {
+    try {
+      String name = dataElement.getAttribute("name");
+      // Try reading the "value" attribute; if missing or empty, fall back to the element's text content.
+      String value = dataElement.getAttribute("value");
+      if (value == null || value.isEmpty()) {
+        value = dataElement.getTextContent().trim();
         T convertedValue = converter.apply(value);
         properties.put(name, convertedValue);
-      } catch (Exception e) {
-        throw new BlueprintParseException(errorPrefix + " for " + name);
       }
+    } catch (IllegalArgumentException | NullPointerException e) {
+      throw new PropertyParsingException("error." + errorPrefix + ".illegalValue");
     }
   }
 

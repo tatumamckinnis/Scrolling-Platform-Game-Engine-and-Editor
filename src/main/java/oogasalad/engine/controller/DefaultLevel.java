@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.logging.Logger;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserAPI;
 import oogasalad.fileparser.records.LevelData;
@@ -41,7 +48,8 @@ public class DefaultLevel implements LevelAPI {
    * @param filePath String level name of the game(requires .xml)
    */
   @Override
-  public void selectGame(String filePath) {
+  public void selectGame(String filePath)
+      throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     LOG.info(LEVEL_FILE_PATH);
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
