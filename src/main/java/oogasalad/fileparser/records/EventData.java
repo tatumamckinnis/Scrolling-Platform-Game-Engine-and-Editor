@@ -1,7 +1,6 @@
 package oogasalad.fileparser.records;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents the event data parsed from an input source.

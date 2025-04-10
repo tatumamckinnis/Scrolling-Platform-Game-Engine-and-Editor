@@ -22,4 +22,15 @@ public class GameObjectParseException extends Exception {
     super(message);
   }
 
+
+  /**
+   * Constructs a new {@code GameObjectParseException} with a descriptive message.
+   *
+   * @param message the detail message explaining the cause of the exception.
+   * @param cause the cause of the message.
+   */
+  public GameObjectParseException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
 }

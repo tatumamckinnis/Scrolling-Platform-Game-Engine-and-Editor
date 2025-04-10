@@ -16,4 +16,16 @@ public class HitBoxParseException extends Exception {
   public HitBoxParseException(String message) {
     super(message);
   }
+
+
+  /**
+   * creates a new HitBoxParseException - an exception when there is an error in processing hit box
+   * data.
+   *
+   * @param message the message to display to the user.
+   * @param cause   the cause of the exception.
+   */
+  public HitBoxParseException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }
