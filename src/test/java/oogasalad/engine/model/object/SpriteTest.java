@@ -33,18 +33,18 @@ class SpriteTest {
   }
 
   @Test
-  void getSpriteDxReturnsCorrectOffset() {
+  void getSpriteDx_Basic_ReturnsCorrectOffset() {
     assertEquals(10, sprite.getSpriteDx());
   }
 
   @Test
-  void getSpriteDyReturnsCorrectOffset() {
+  void getSpriteDy_Basic_ReturnsCorrectOffset() {
     assertEquals(-5, sprite.getSpriteDy());
   }
 
 
   @Test
-  void getFrameMapReturnsCorrectSizeAndContents() {
+  void getFrameMap_Basic_ReturnsCorrectSizeAndContents() {
     Map<String, FrameData> returnedMap = sprite.getFrameMap();
     assertEquals(2, returnedMap.size());
     assertTrue(returnedMap.containsKey("idle"));
@@ -52,7 +52,7 @@ class SpriteTest {
   }
 
   @Test
-  void getSpriteThrowsIfFrameIdNotFound() {
+  void getSprite_Basic_ThrowsIfFrameIdNotFound() {
     assertThrows(NoSuchElementException.class, () -> {
       sprite.getSprite("jump");
     });
@@ -60,7 +60,7 @@ class SpriteTest {
   }
 
   @Test
-  void getSpriteFileReturnsCorrectFile() {
+  void getSprite_Basic_FileReturnsCorrectFile() {
     assertEquals(spriteFile, sprite.getSpriteFile());
   }
 }
