@@ -16,7 +16,9 @@ public record BlueprintData(
     SpriteData spriteData,
     HitBoxData hitBoxData,
     List<EventData> eventDataList,
-    Map<String,String> stringProperties,
-    Map<String,Double> doubleProperties,
+    Map<String, String> stringProperties,
+    Map<String, Double> doubleProperties,
     List<String> displayedProperties
-) {}
+) {
+
+}

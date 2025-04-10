@@ -8,6 +8,8 @@ package oogasalad.exceptions;
  *
  * <p>This exception helps distinguish object-level parsing errors from more general I/O or
  * blueprint issues.
+ *
+ * @author Billy McCune
  */
 public class GameObjectParseException extends Exception {
 
@@ -20,13 +22,4 @@ public class GameObjectParseException extends Exception {
     super(message);
   }
 
-  /**
-   * Constructs a new {@code GameObjectParseException} with a message and a root cause.
-   *
-   * @param message the detail message explaining the error
-   * @param cause   the original exception that caused this error
-   */
-  public GameObjectParseException(String message, Throwable cause) {
-    super(message, cause);
-  }
 }

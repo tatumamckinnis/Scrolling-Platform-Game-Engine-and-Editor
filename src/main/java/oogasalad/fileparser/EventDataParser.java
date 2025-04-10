@@ -16,8 +16,8 @@ import org.w3c.dom.NodeList;
 /**
  * Parses event-related data from an XML document into a list of {@link EventData} records.
  * <p>
- * This parser extracts events found in the XML and creates {@code EventData} objects by
- * processing the event’s type, id, conditions, outcomes, and parameters.
+ * This parser extracts events found in the XML and creates {@code EventData} objects by processing
+ * the event’s type, id, conditions, outcomes, and parameters.
  * </p>
  * <p>
  * Each event node is expected to have nested <code>conditions</code> with one or more
@@ -26,7 +26,7 @@ import org.w3c.dom.NodeList;
  * use dedicated <code>doubleParameters</code> and <code>stringParameters</code> sections to specify
  * their parameter data.
  * </p>
- *
+ * <p>
  * Example usage:
  * <pre>
  *   Element root = ...; // obtain your XML root element
@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  *   List&lt;EventData&gt; events = parser.getLevelEvents(root);
  * </pre>
  *
- * @author Billy
+ * @author Billy McCune
  */
 public class EventDataParser {
 
@@ -92,23 +92,24 @@ public class EventDataParser {
    * @return a list of condition lists, each list representing a condition set.
    * @throws BlueprintParseException if condition parsing fails.
    */
-  private List<List<ConditionData>> parseConditions(Element eventElement) throws BlueprintParseException, EventParseException{
+  private List<List<ConditionData>> parseConditions(Element eventElement)
+      throws BlueprintParseException, EventParseException {
     try {
       List<List<ConditionData>> conditions = new ArrayList<>();
       Element conditionsElement = getFirstElementByTagName(eventElement, "conditions");
-        NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
-        for (int i = 0; i < conditionSetNodes.getLength(); i++) {
-          Element conditionSetElement = (Element) conditionSetNodes.item(i);
-          List<ConditionData> conditionList = new ArrayList<>();
-          NodeList conditionNodes = conditionSetElement.getElementsByTagName("condition");
-          for (int j = 0; j < conditionNodes.getLength(); j++) {
-            Element conditionElement = (Element) conditionNodes.item(j);
-            conditionList.add(parseCondition(conditionElement));
-          }
-          conditions.add(conditionList);
+      NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
+      for (int i = 0; i < conditionSetNodes.getLength(); i++) {
+        Element conditionSetElement = (Element) conditionSetNodes.item(i);
+        List<ConditionData> conditionList = new ArrayList<>();
+        NodeList conditionNodes = conditionSetElement.getElementsByTagName("condition");
+        for (int j = 0; j < conditionNodes.getLength(); j++) {
+          Element conditionElement = (Element) conditionNodes.item(j);
+          conditionList.add(parseCondition(conditionElement));
         }
+        conditions.add(conditionList);
+      }
       return conditions;
-    } catch (NullPointerException e){
+    } catch (NullPointerException e) {
       throw new EventParseException(e.getMessage());
     }
   }
@@ -133,7 +134,7 @@ public class EventDataParser {
         }
       }
       return outcomes;
-    } catch (NullPointerException e){
+    } catch (NullPointerException e) {
       throw new EventParseException(e.getMessage());
     }
   }
@@ -145,13 +146,14 @@ public class EventDataParser {
    * @return the parsed {@link ConditionData} record.
    * @throws BlueprintParseException if property parsing fails.
    */
-  private ConditionData parseCondition(Element conditionElement) throws BlueprintParseException, EventParseException {
-    try{
-    String name = conditionElement.getAttribute("name");
-    Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
-    Map<String, String> stringProperties = extractStringProperties(conditionElement);
-    return new ConditionData(name, stringProperties, doubleProperties);
-  } catch (NullPointerException | PropertyParsingException e){
+  private ConditionData parseCondition(Element conditionElement)
+      throws BlueprintParseException, EventParseException {
+    try {
+      String name = conditionElement.getAttribute("name");
+      Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
+      Map<String, String> stringProperties = extractStringProperties(conditionElement);
+      return new ConditionData(name, stringProperties, doubleProperties);
+    } catch (NullPointerException | PropertyParsingException e) {
       throw new EventParseException(e.getMessage());
     }
   }
@@ -172,7 +174,7 @@ public class EventDataParser {
       Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
       Map<String, String> stringProperties = extractStringProperties(outcomeElement);
       return new OutcomeData(outcomeName, stringProperties, doubleProperties);
-    } catch (NullPointerException e){
+    } catch (NullPointerException e) {
       throw new EventParseException(e.getMessage());
     }
   }
@@ -183,7 +185,7 @@ public class EventDataParser {
    * @param element the element from which to extract double properties.
    * @return a map of double properties; an empty map if none are found.
    * @throws PropertyParsingException if property parsing fails.
-   * @throws BlueprintParseException if element
+   * @throws BlueprintParseException  if element
    */
   private Map<String, Double> extractDoubleProperties(Element element)
       throws BlueprintParseException, PropertyParsingException {
@@ -222,8 +224,8 @@ public class EventDataParser {
    * @param tagName the tag name to search for.
    * @return the first matching child element, or null if not found.
    */
-  private Element getFirstElementByTagName(Element parent, String tagName){
-      NodeList nodeList = parent.getElementsByTagName(tagName);
-      return (nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
+  private Element getFirstElementByTagName(Element parent, String tagName) {
+    NodeList nodeList = parent.getElementsByTagName(tagName);
+    return (nodeList.getLength() > 0) ? (Element) nodeList.item(0) : null;
   }
 }

@@ -3,6 +3,7 @@ package oogasalad.fileparser;
 import java.util.ArrayList;
 import java.util.List;
 import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.LayerParseException;
 import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,7 +47,8 @@ public class LayerDataParser {
    * @param root the XML {@link Element} that contains the layer definitions.
    * @return a List of game objects with their z coordinates by layer
    */
-  public List<GameObjectData> getGameObjectDataList(Element root) throws GameObjectParseException {
+  public List<GameObjectData> getGameObjectDataList(Element root)
+      throws GameObjectParseException, LayerParseException {
     Element layersElement = (Element) root.getElementsByTagName("layers").item(0);
     List<GameObjectData> gameObjects = new ArrayList<>();
     myGameObjectDataParser = new GameObjectDataParser();
@@ -59,7 +61,7 @@ public class LayerDataParser {
       gameObjects.addAll(readLayerData(layerElement, z));
     }
     return gameObjects;
-    }
+  }
 
   /**
    * Reads and extracts {@link GameObjectData} objects from a given layer element.
@@ -71,20 +73,25 @@ public class LayerDataParser {
    * </p>
    *
    * @param layerElement the XML {@link Element} representing a single layer.
-   * @param z the z-index of the layer, used to assign the appropriate layering to the game objects.
+   * @param z            the z-index of the layer, used to assign the appropriate layering to the
+   *                     game objects.
    * @return a {@link List} of {@link GameObjectData} objects parsed from the layer element.
    */
   private List<GameObjectData> readLayerData(Element layerElement, int z)
-      throws GameObjectParseException {
-    List<GameObjectData> gameObjects = new ArrayList<>();
-    Element dataNode = (Element) layerElement.getElementsByTagName("data").item(0);
-    NodeList gameObjectNodes = dataNode.getElementsByTagName("object");
-    for (int i = 0; i < gameObjectNodes.getLength(); i++) {
-      if (gameObjectNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-        Element gameObjectElement = (Element) gameObjectNodes.item(i);
-        gameObjects.addAll(myGameObjectDataParser.getGameObjectData(gameObjectElement, z));
+      throws GameObjectParseException, LayerParseException {
+    try {
+      List<GameObjectData> gameObjects = new ArrayList<>();
+      Element dataNode = (Element) layerElement.getElementsByTagName("data").item(0);
+      NodeList gameObjectNodes = dataNode.getElementsByTagName("object");
+      for (int i = 0; i < gameObjectNodes.getLength(); i++) {
+        if (gameObjectNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+          Element gameObjectElement = (Element) gameObjectNodes.item(i);
+          gameObjects.addAll(myGameObjectDataParser.getGameObjectData(gameObjectElement, z));
+        }
       }
+      return gameObjects;
+    } catch (NullPointerException e) {
+      throw new LayerParseException(e.getMessage());
     }
-    return gameObjects;
   }
 }

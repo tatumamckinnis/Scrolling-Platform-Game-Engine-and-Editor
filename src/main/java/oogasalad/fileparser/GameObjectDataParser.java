@@ -10,7 +10,6 @@ import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 
 /**
- *
  * @author Billy McCune
  */
 public class GameObjectDataParser {

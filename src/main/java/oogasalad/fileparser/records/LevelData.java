@@ -2,8 +2,8 @@ package oogasalad.fileparser.records;
 
 import java.util.List;
 import java.util.Map;
+
 /**
- *
  * @author Billy McCune
  */
 public record LevelData(
@@ -12,6 +12,8 @@ public record LevelData(
     int minY,
     int maxX,
     int maxY,
-    Map<Integer,BlueprintData> gameBluePrintData,
+    Map<Integer, BlueprintData> gameBluePrintData,
     List<GameObjectData> gameObjects
-) {}
+) {
+
+}

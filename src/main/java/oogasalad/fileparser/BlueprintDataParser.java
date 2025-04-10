@@ -177,8 +177,10 @@ public class BlueprintDataParser {
       HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
       List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
 
-      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,"doubleProperties","property");
-      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,"stringProperties" ,"property");
+      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,
+          "doubleProperties", "property");
+      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,
+          "stringProperties", "property");
       List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
 
       return new BlueprintData(
@@ -233,13 +235,16 @@ public class BlueprintDataParser {
     }
     return null;
   }
+
   /**
    * Retrieves the displayed propeties for the {@link BlueprintData}
    *
    * @param gameObjectNode the xml node with the displayed properties child node
-   * @return the List<String> of displayed properties and if there is none just returns an empty list
+   * @return the List<String> of displayed properties and if there is none just returns an empty
+   * list
    */
-  private List<String> getDisplayedProperties(Element gameObjectNode) throws BlueprintParseException{
+  private List<String> getDisplayedProperties(Element gameObjectNode)
+      throws BlueprintParseException {
     try {
       if (gameObjectNode.getElementsByTagName("displayedProperties").item(0) != null) {
         Element displayedProperties = (Element) gameObjectNode.getElementsByTagName(

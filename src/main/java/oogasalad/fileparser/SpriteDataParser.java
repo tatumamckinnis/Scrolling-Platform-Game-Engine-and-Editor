@@ -44,7 +44,7 @@ import oogasalad.exceptions.SpriteParseException;
  * &lt;/spriteFile&gt;
  * </pre>
  *
- * @author ...
+ * @author Billy McCune
  */
 public class SpriteDataParser {
 
@@ -52,8 +52,17 @@ public class SpriteDataParser {
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
 
-  // Constructor that loads the properties file and sets the paths.
-  public SpriteDataParser() {
+  /**
+   * Constructs a new {@code SpriteDataParser} by loading a properties file
+   * that defines the paths for the graphics data and sprite data.
+   * <p>
+   * The properties file is expected to be found at
+   * {@code oogasalad/file/fileStructure.properties} in the classpath.
+   * </p>
+   *
+   * @throws SpriteParseException if an error occurs while loading the properties file
+   */
+  public SpriteDataParser() throws SpriteParseException {
     String[] paths = loadDataPaths();
     if (paths.length < 2) {
       // Handle error appropriately; here we default to empty paths.
@@ -67,18 +76,21 @@ public class SpriteDataParser {
 
   /**
    * Loads the required data paths from the properties file.
+   * <p>
+   * It retrieves the paths for the graphics data and the game (sprite) data,
+   * prepending the user directory to each path.
+   * </p>
    *
    * @return an array where index 0 is the graphics data path and index 1 is the sprite data path.
+   * @throws SpriteParseException if an error occurs while reading the properties file.
    */
-  private String[] loadDataPaths() {
+  private String[] loadDataPaths() throws SpriteParseException {
     Properties properties = new Properties();
     try (InputStream input = getClass().getClassLoader()
         .getResourceAsStream("oogasalad/file/fileStructure.properties")) {
       properties.load(input);
     } catch (IOException e) {
-      e.printStackTrace();
-      // Return an empty array if loading fails.
-      return new String[0];
+      throw new SpriteParseException(e.getMessage());
     }
     String[] paths = new String[2];
     paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.graphics.data");
@@ -87,33 +99,34 @@ public class SpriteDataParser {
   }
 
   /**
-   * Retrieves a SpriteData record from an XML sprite file.
+   * Retrieves a {@link SpriteData} record from an XML sprite file.
+   * <p>
+   * Builds the file path for the sprite XML file, loads and parses the document,
+   * and extracts the sprite, frame, and animation information from it.
+   * </p>
    *
    * @param gameName   the name of the game.
    * @param group      the group folder name.
    * @param type       the type folder name.
    * @param spriteName the name of the sprite to locate.
-   * @param spriteFile the XML file containing the sprite information.
-   * @return a SpriteData object.
-   * @throws SpriteParseException if parsing fails.
+   * @param spriteFile the XML file name containing the sprite information.
+   * @return a {@link SpriteData} object representing the parsed sprite data.
+   * @throws SpriteParseException if an error occurs during parsing or if the specified sprite is not found.
    */
   public SpriteData getSpriteData(String gameName, String group, String type,
       String spriteName, String spriteFile) throws SpriteParseException {
-    // Build the file path.
+
     String filePath = buildFilePath(gameName, group, type, spriteFile);
     Document doc = loadDocument(filePath);
     Element spriteFileElement = doc.getDocumentElement();
 
-    // Retrieve the sprite sheet file.
     File spriteSheetFile = getSpriteSheetFile(spriteFileElement, gameName);
 
-    // Locate the target sprite in the XML.
     Element targetSprite = getTargetSprite(spriteFileElement, spriteName);
     if (targetSprite == null) {
       throw new SpriteParseException("Sprite with name " + spriteName + " not found in file " + filePath);
     }
 
-    // Parse base image data, frames, and animations.
     FrameData baseImage = parseBaseImage(targetSprite, spriteName);
     List<FrameData> frames = parseFrames(targetSprite, spriteSheetFile);
     List<AnimationData> animations = parseAnimations(targetSprite);
@@ -128,7 +141,7 @@ public class SpriteDataParser {
    * @param group      the group folder name.
    * @param type       the type folder name.
    * @param spriteFile the sprite file name.
-   * @return the full file path as a String.
+   * @return the full file path as a {@code String}.
    */
   private String buildFilePath(String gameName, String group, String type, String spriteFile) {
     return pathToSpriteData + File.separator + gameName + File.separator + group

@@ -8,6 +8,7 @@ import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
 import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
@@ -25,7 +26,7 @@ public interface LevelAPI {
    * @throws IOException         if a file cannot be retrieved
    */
   void selectGame(String filePath)
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException;
 
   /**
    * Lists all available levels to play
