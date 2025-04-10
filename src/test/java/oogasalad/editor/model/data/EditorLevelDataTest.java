@@ -29,7 +29,7 @@ class EditorLevelDataTest {
     assertNotNull(levelData.getGroups());
     assertTrue(levelData.getGroups().isEmpty());
     assertNotNull(levelData.getLayers());
-    assertEquals(2, levelData.getLayers().size());
+    assertEquals(1, levelData.getLayers().size());
     assertEquals("New Layer", levelData.getLayers().get(0).getName());
     assertEquals(0, levelData.getLayers().get(0).getPriority());
   }
@@ -83,6 +83,7 @@ class EditorLevelDataTest {
    */
   @Test
   void addLayer_whenCalled_shouldInsertLayerByPriority() {
+
     Layer midLayer = new Layer("midLayer", 5);
     Layer highLayer = new Layer("highLayer", 10);
     Layer lowLayer = new Layer("lowLayer", -1);

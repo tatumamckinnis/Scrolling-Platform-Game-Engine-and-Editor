@@ -48,7 +48,7 @@ public class EditorLevelData {
     myGroups = new ArrayList<>();
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
-    myLayers.add(getFirstLayer());
+    getFirstLayer(); // Instantiates the first layer if it does not exist.
     myLayerDataMap.put(getFirstLayer(), new ArrayList<>());
     myObjectDataMap = new HashMap<>();
   }
