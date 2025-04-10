@@ -291,7 +291,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
     if (snapToGrid) {
       worldX = ((int) Math.floor(worldX / cellSize)) * cellSize;
       worldY = ((int) Math.floor(worldY / cellSize)) * cellSize;
-      System.out.println(worldX + " " + worldY);
+      LOG.info("{} {}", worldX, worldY);
     }
 
     LOG.debug("Click at screen=({},{}) => world=({},{})", screenX, screenY, worldX,

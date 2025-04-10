@@ -31,6 +31,11 @@ public class SplashScreen extends Display {
   private int splashHeight;
   private ViewState viewState;
 
+  /**
+   * Constructor for making a new opening splash screen
+   *
+   * @param viewState the state of the view
+   */
   public SplashScreen(ViewState viewState) {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
@@ -39,7 +44,8 @@ public class SplashScreen extends Display {
       LOG.warn("Unable to load splash screen properties");
     }
     String splashStylesheetFilepath = splashComponentProperties.getProperty("splash.stylesheet");
-    splashStylesheet = Objects.requireNonNull(getClass().getResource(splashStylesheetFilepath)).toExternalForm();
+    splashStylesheet = Objects.requireNonNull(getClass().getResource(splashStylesheetFilepath))
+        .toExternalForm();
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
     this.viewState = viewState;
@@ -50,10 +56,20 @@ public class SplashScreen extends Display {
     initializeSplashScreen();
   }
 
+  /**
+   * Returns the width of the splash effect.
+   *
+   * @return the splash width
+   */
   public int getSplashWidth() {
     return splashWidth;
   }
 
+  /**
+   * Returns the height of the splash effect.
+   *
+   * @return the splash height
+   */
   public int getSplashHeight() {
     return splashHeight;
   }
@@ -69,12 +85,14 @@ public class SplashScreen extends Display {
 
   /**
    * Creates the left pane in the splash scene that contains the splash scene logo
+   *
    * @param splashHeight height of the left pane
    * @return pane containing the logo
    */
   private StackPane createLogoPane(int splashHeight) {
     StackPane logoPane = new StackPane();
-    int logoPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
+    int logoPaneWidth = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
     logoPane.getStyleClass().add("logo-pane");
     logoPane.getChildren().add(createSplashBackground());
@@ -84,12 +102,14 @@ public class SplashScreen extends Display {
 
   /**
    * Creates the right pane containing the button box for the splash scene
+   *
    * @param splashHeight height of the left pane
    * @return pane containing the button box
    */
   private StackPane createOptionsPane(int splashHeight) {
     StackPane optionsPane = new StackPane();
-    int optionsPaneWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.rightPane.width"));
+    int optionsPaneWidth = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.rightPane.width"));
     optionsPane.setPrefSize(optionsPaneWidth, splashHeight);
     optionsPane.getStyleClass().add("options-pane");
     optionsPane.getChildren().add(createSplashButtonBox());
@@ -98,6 +118,7 @@ public class SplashScreen extends Display {
 
   /**
    * Creates an image containing the splash logo for the splash scene
+   *
    * @return application logo
    */
   private ImageView createSplashLogo() {
@@ -116,6 +137,7 @@ public class SplashScreen extends Display {
 
   /**
    * Scales the splash logo given the configuration's image width and height.
+   *
    * @param splashLogo the logo we are expected to scale
    */
   private void scaleSplashLogo(ImageView splashLogo) {
@@ -131,6 +153,7 @@ public class SplashScreen extends Display {
 
   /**
    * TODO: Refactor createSplashLogo and createSplashBackground for reusable code (DRY)
+   *
    * @return splash background image
    */
   private ImageView createSplashBackground() {
@@ -141,13 +164,15 @@ public class SplashScreen extends Display {
       splashBackground.setImage(splashImage);
       scaleSplashBackground(splashBackground);
     } catch (NullPointerException e) {
-      throw new NullPointerException(String.format("OOGASalad splash background filepath not found: %s", e.getMessage()));
+      throw new NullPointerException(
+          String.format("OOGASalad splash background filepath not found: %s", e.getMessage()));
     }
     return splashBackground;
   }
 
   private void scaleSplashBackground(ImageView splashLogo) {
-    int backgroundWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.leftPane.width"));
+    int backgroundWidth = Integer.parseInt(
+        splashComponentProperties.getProperty("splash.leftPane.width"));
     int backgroundHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
     splashLogo.setFitWidth(backgroundWidth);
     splashLogo.setFitHeight(backgroundHeight);
@@ -158,6 +183,7 @@ public class SplashScreen extends Display {
 
   /**
    * Create a box containing all the buttons for the splash scene
+   *
    * @return VBox of splash scene buttons
    */
   private VBox createSplashButtonBox() {
@@ -186,7 +212,8 @@ public class SplashScreen extends Display {
 
   private void setButtonStyle(Button currButton, String buttonID, String buttonStyle) {
     currButton.setId(buttonID);
-    String defaultButtonStyle = splashComponentProperties.getProperty("splash.button.default.style");
+    String defaultButtonStyle = splashComponentProperties.getProperty(
+        "splash.button.default.style");
     currButton.getStyleClass().add(defaultButtonStyle);
     currButton.getStyleClass().add(buttonStyle);
     currButton.setWrapText(true);
@@ -202,8 +229,9 @@ public class SplashScreen extends Display {
 
   /**
    * Align a splash box for centering and spacing
+   *
    * @param splashBox box for buttons to the game engine, editor, and so on
-   * @param spacing pixel integer spacing between buttons
+   * @param spacing   pixel integer spacing between buttons
    */
   private void alignSplashButtonBox(VBox splashBox, double spacing) {
     splashBox.setAlignment(Pos.CENTER);
@@ -213,6 +241,7 @@ public class SplashScreen extends Display {
 
   /**
    * Provides button texts for the splash scene, like "Select Game Type"
+   *
    * @return array of strings for button strings
    */
   private String[] getSplashButtonTexts() {
@@ -225,25 +254,27 @@ public class SplashScreen extends Display {
 
   /**
    * Provides button IDs for the splash scene to allow for TestFX end-to-end tests
+   *
    * @return array of strings for button IDs
    */
   private String[] getSplashButtonIDs() {
     return new String[]{splashComponentProperties.getProperty("splash.button.gameType.id"),
-            splashComponentProperties.getProperty("splash.button.startEngine.id"),
-            splashComponentProperties.getProperty("splash.button.startEditor.id"),
-            splashComponentProperties.getProperty("splash.button.help.id")
+        splashComponentProperties.getProperty("splash.button.startEngine.id"),
+        splashComponentProperties.getProperty("splash.button.startEditor.id"),
+        splashComponentProperties.getProperty("splash.button.help.id")
     };
   }
 
   /**
    * Provides button styles for the splash scene to allow for custom CSS styling
+   *
    * @return array of strings for button styles
    */
   private String[] getSplashButtonStyles() {
     return new String[]{splashComponentProperties.getProperty("splash.button.gameType.style"),
-            splashComponentProperties.getProperty("splash.button.startEngine.style"),
-            splashComponentProperties.getProperty("splash.button.startEditor.style"),
-            splashComponentProperties.getProperty("splash.button.help.style")
+        splashComponentProperties.getProperty("splash.button.startEngine.style"),
+        splashComponentProperties.getProperty("splash.button.startEditor.style"),
+        splashComponentProperties.getProperty("splash.button.help.style")
     };
   }
 }

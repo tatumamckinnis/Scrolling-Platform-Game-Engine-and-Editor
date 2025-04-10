@@ -35,6 +35,9 @@ public interface EditorController {
    */
   EditorDataAPI getEditorDataAPI();
 
+  /**
+   * notifies if the object has been deselected
+   */
   void notifyObjectDeselected();
 
   /**
