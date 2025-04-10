@@ -6,8 +6,10 @@ import java.util.Map;
 /**
  * Represents the level data parsed from an input source.
  * <p>
- * This record encapsulates the basic properties of a level such as its name and boundary coordinates,
- * and includes a mapping of blueprint data (keyed by blueprint ID) as well as a list of game objects
+ * This record encapsulates the basic properties of a level
+ * such as its name and boundary coordinates,
+ * and includes a mapping of blueprint data
+ * (keyed by blueprint ID) as well as a list of game objects
  * present within the level.
  * </p>
  *

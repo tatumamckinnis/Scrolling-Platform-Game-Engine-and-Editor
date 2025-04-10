@@ -38,8 +38,6 @@ import org.w3c.dom.NodeList;
  * @author Billy McCune
  */
 public class EventDataParser {
-
-  private static final Logger LOG = Logger.getLogger(EventDataParser.class.getName());
   // A single instance of the PropertyParser to handle our property parsing.
   private final PropertyParser myPropertyParser = new PropertyParser();
 

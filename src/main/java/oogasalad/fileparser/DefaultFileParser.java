@@ -69,7 +69,8 @@ public class DefaultFileParser implements FileParserApi {
    * Steps:
    * <ul>
    *   <li>Checks if the levels map contains the given filePath key.</li>
-   *   <li>Extracts the level name from the file name (removes the ".xml" extension).</li>
+   *   <li>Extracts the level name from the
+   *   file name (removes the ".xml" extension).</li>
    *   <li>Locates the actual File corresponding to the level.</li>
    *   <li>Parses the XML, retrieves the root element (<code>&lt;map&gt;</code>), and then uses helper
    *       parsers to obtain blueprint and layer/game object data.</li>
@@ -83,7 +84,9 @@ public class DefaultFileParser implements FileParserApi {
    * @throws ParserConfigurationException if there is an issue with the xml document parsing
    */
   public LevelData parseLevelFile(String filePath)
-      throws BlueprintParseException, SpriteParseException, LevelDataParseException, HitBoxParseException, GameObjectParseException, PropertyParsingException, EventParseException, LayerParseException {
+      throws BlueprintParseException, SpriteParseException,
+      LevelDataParseException, HitBoxParseException, GameObjectParseException,
+      PropertyParsingException, EventParseException {
     File levelFile = new File(filePath);
 
     String levelName = levelFile.getName();
