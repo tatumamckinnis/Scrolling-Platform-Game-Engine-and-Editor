@@ -48,11 +48,9 @@ public class SpriteDataParser {
     this.pathToGraphicsData =
         System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
             "path.to.graphics.data");
-    ;
     this.pathToSpriteData =
         System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
             "path.to.game.data");
-    ;
   }
 
   /**
@@ -135,7 +133,7 @@ public class SpriteDataParser {
     }
 
     FrameData baseImage = parseBaseImage(targetSprite, spriteName);
-    List<FrameData> frames = parseFrames(targetSprite, spriteSheetFile);
+    List<FrameData> frames = parseFrames(targetSprite);
     List<AnimationData> animations = parseAnimations(targetSprite);
 
     return new SpriteData(spriteName, spriteSheetFile, baseImage, frames, animations);
@@ -171,7 +169,7 @@ public class SpriteDataParser {
       doc.getDocumentElement().normalize();
       return doc;
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      throw new SpriteParseException(e.getMessage());
+      throw new SpriteParseException(e.getMessage(),e);
     }
   }
 
@@ -232,10 +230,9 @@ public class SpriteDataParser {
    * Parses all frame elements within the <frames> element.
    *
    * @param targetSprite    the sprite element containing the frames.
-   * @param spriteSheetFile the sprite sheet image file.
    * @return a list of FrameData records.
    */
-  private List<FrameData> parseFrames(Element targetSprite, File spriteSheetFile) {
+  private List<FrameData> parseFrames(Element targetSprite) {
     List<FrameData> frames = new ArrayList<>();
     NodeList framesNodes = targetSprite.getElementsByTagName("frames");
     if (framesNodes.getLength() > 0) {
@@ -243,7 +240,7 @@ public class SpriteDataParser {
       NodeList frameNodes = framesElement.getElementsByTagName("frame");
       for (int i = 0; i < frameNodes.getLength(); i++) {
         Element frameElement = (Element) frameNodes.item(i);
-        frames.add(parseFrameData(frameElement, spriteSheetFile));
+        frames.add(parseFrameData(frameElement));
       }
     }
     return frames;
@@ -253,10 +250,9 @@ public class SpriteDataParser {
    * Parses a <frame> element and returns a FrameData record.
    *
    * @param frameElement    the frame element from the XML.
-   * @param spriteSheetFile the sprite sheet image file.
    * @return a FrameData record containing the frame's attributes.
    */
-  private FrameData parseFrameData(Element frameElement, File spriteSheetFile) {
+  private FrameData parseFrameData(Element frameElement) {
     String name = frameElement.getAttribute("name");
     int x = Integer.parseInt(frameElement.getAttribute("x"));
     int y = Integer.parseInt(frameElement.getAttribute("y"));

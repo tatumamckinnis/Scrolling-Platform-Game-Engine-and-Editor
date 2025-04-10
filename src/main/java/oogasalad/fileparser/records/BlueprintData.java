@@ -7,8 +7,10 @@ import java.util.Map;
  * Represents the blueprint data used to initialize game objects.
  * <p>
  * This record encapsulates various properties of a blueprint including its identifier,
- * velocity, game-related categorizations (game name, group, and type), associated sprite and hitbox data,
- * events, and other custom string and double properties as well as the properties to be displayed.
+ * velocity, game-related categorizations
+ * (game name, group, and type), associated sprite and hitbox data,
+ * events, and other custom string and
+ * double properties as well as the properties to be displayed.
  * </p>
  *
  * @param blueprintId        the unique identifier for the blueprint.
