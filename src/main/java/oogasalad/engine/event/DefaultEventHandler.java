@@ -39,6 +39,11 @@ public class DefaultEventHandler implements EventHandler {
     conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
   }
 
+  /**
+   * Processes the event object
+   *
+   * @param event event model to handle
+   */
   public void handleEvent(Event event)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     GameObject gameObject = event.getGameObject();
