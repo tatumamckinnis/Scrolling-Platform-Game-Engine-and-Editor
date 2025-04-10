@@ -30,10 +30,10 @@ public class LevelDisplay extends Display {
   }
 
   /**
-   * @see Display#render()
+   * @see Display#initialRender()
    */
   @Override
-  public void render() {
+  public void initialRender() {
     LOG.info("Rendering level...");
   }
 

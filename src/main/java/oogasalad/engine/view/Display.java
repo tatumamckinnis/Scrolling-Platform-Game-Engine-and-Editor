@@ -18,7 +18,7 @@ public abstract class Display extends Group {
    * This method should be implemented by subclasses to render the display. It is used to show the
    * content, layout, or other visual elements.
    */
-  public abstract void render();
+  public abstract void initialRender();
 
   /**
    * Allows a Display to render game objects onto the screen. Default implementation does nothing.

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import oogasalad.engine.event.condition.Condition;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.FrameData;

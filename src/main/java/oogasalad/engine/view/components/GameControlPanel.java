@@ -47,11 +47,11 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * @see Display#render()
+   * @see Display#initialRender()
    * Adds all buttons a container.
    */
   @Override
-  public void render() {
+  public void initialRender() {
     HBox buttonContainer = new HBox();
     buttonContainer.getChildren().addAll(buttons);
     int containerSpacing = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.spacing"));

@@ -76,6 +76,9 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  /**
+   * @return the editor data API object
+   */
   public EditorDataAPI getEditorDataAPI() {
     return editorDataAPI;
   }

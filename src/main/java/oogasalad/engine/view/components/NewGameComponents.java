@@ -26,7 +26,7 @@ public class NewGameComponents extends Display {
   }
 
   @Override
-  public void render() {
+  public void initialRender() {
     VBox buttonContainer = new VBox();
     buttonContainer.getChildren().addAll(highScore, play);
     buttonContainer.setSpacing(20);

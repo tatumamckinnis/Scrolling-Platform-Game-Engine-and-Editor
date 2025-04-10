@@ -89,7 +89,7 @@ public class ButtonActionFactory {
         Stage currentStage = viewState.getStage();
 
         GameDisplay game = new GameDisplay(viewState);
-        game.render();
+        game.initialRender();
         viewState.setDisplay(game);
 
         currentStage.setWidth(1000); // TODO set this to the game size

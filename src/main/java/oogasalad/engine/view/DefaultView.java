@@ -58,7 +58,7 @@ public class DefaultView implements ViewAPI {
     ViewState currentState = new ViewState(currentStage, gameManager, this);
     SplashScreen splashScreen = new SplashScreen(currentState);
 
-    splashScreen.render();
+    splashScreen.initialRender();
     int width = splashScreen.getSplashWidth();
     int height = splashScreen.getSplashHeight();
     currentDisplay = splashScreen;

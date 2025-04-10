@@ -26,7 +26,9 @@ import oogasalad.editor.view.resources.EditorResourceLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * Input tab component factory makes different input boxes
+ */
 public class InputTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(InputTabComponentFactory.class);

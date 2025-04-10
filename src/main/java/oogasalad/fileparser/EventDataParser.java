@@ -127,10 +127,10 @@ public class EventDataParser {
    *
    * @param conditionElement the XML {@link Element} representing a condition.
    * @return the parsed {@link ConditionData} record.
-   * @throws BlueprintParseException if property parsing fails.
+   * @throws PropertyParsingException if property parsing fails.
    */
   private ConditionData parseCondition(Element conditionElement)
-      throws BlueprintParseException, EventParseException, PropertyParsingException {
+      throws PropertyParsingException {
     String name = conditionElement.getAttribute("name");
     Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
     Map<String, String> stringProperties = extractStringProperties(conditionElement);
@@ -142,10 +142,10 @@ public class EventDataParser {
    *
    * @param outcomeElement the XML {@link Element} representing an outcome.
    * @return the parsed {@link OutcomeData} record.
-   * @throws BlueprintParseException if property parsing fails.
+   * @throws PropertyParsingException if property parsing fails.
    */
   private OutcomeData parseOutcome(Element outcomeElement)
-      throws BlueprintParseException, EventParseException, PropertyParsingException {
+      throws PropertyParsingException {
     String outcomeName = outcomeElement.getAttribute("name");
     Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
     Map<String, String> stringProperties = extractStringProperties(outcomeElement);
@@ -164,7 +164,7 @@ public class EventDataParser {
       throws PropertyParsingException {
     Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
     if (doubleParams != null) {
-      return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters",
+      return myPropertyParser.parseDoubleProperties(element, "doubleParameters",
           "parameter");
     }
     return new HashMap<>();
@@ -181,7 +181,7 @@ public class EventDataParser {
       throws PropertyParsingException {
     Element stringParams = getFirstElementByTagName(element, "stringParameters");
     if (stringParams != null) {
-      return myPropertyParser.parseStringProperties(stringParams, "stringParameters", "parameter");
+      return myPropertyParser.parseStringProperties(element, "stringParameters", "parameter");
     }
     return new HashMap<>();
   }

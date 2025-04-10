@@ -174,9 +174,9 @@ public class PropertyParser {
       String value = dataElement.getAttribute("value");
       if (value == null || value.isEmpty()) {
         value = dataElement.getTextContent().trim();
-        T convertedValue = converter.apply(value);
-        properties.put(name, convertedValue);
       }
+      T convertedValue = converter.apply(value);
+      properties.put(name, convertedValue);
     } catch (IllegalArgumentException e) {
       throw new PropertyParsingException("error." + errorPrefix + ".illegalValue", e);
     }

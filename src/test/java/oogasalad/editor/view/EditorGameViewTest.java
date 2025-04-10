@@ -89,7 +89,7 @@ class EditorGameViewTest {
     robot.clickOn(gameView);
     waitForFxEvents();
 
-    verify(mockTool).interactObjectAt(anyInt(), anyInt());
+    verify(mockTool).interactObjectAt(anyDouble(), anyDouble());
     verify(mockController, never()).notifyObjectSelected(any());
   }
 

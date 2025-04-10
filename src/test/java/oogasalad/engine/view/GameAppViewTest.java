@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.zip.DataFormatException;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
@@ -65,7 +62,7 @@ public class GameAppViewTest extends ApplicationTest {
     public void initialize() throws ViewInitializationException {
       SplashScreen splashScreen = new SplashScreen(new ViewState());
 
-      splashScreen.render();
+      splashScreen.initialRender();
       int width = splashScreen.getSplashWidth();
       int height = splashScreen.getSplashHeight();
       setCurrentDisplay(splashScreen);
