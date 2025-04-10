@@ -6,8 +6,11 @@ package oogasalad.exceptions;
  * @author Billy McCune
  */
 public class SpriteParseException extends Exception {
+
   /**
-   * creates a new SpriteParseException - an exception when there is an error in processing user sprites
+   * creates a new SpriteParseException - an exception when there is an error in processing user
+   * sprites
+   *
    * @param message the message to display to the user
    */
   public SpriteParseException(String message) {

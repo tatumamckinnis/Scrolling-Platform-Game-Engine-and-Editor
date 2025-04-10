@@ -37,10 +37,10 @@ import org.xml.sax.SAXException;
  * </p>
  *
  * @author Billy McCune
- * @see FileParserAPI
+ * @see FileParserApi
  * @see LevelData
  */
-public class DefaultFileParser implements FileParserAPI {
+public class DefaultFileParser implements FileParserApi {
 
   private LayerDataParser layerDataParser;
   private BlueprintDataParser myGameObjectParser;

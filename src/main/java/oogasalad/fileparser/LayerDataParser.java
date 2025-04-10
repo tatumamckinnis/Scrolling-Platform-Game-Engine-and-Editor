@@ -48,7 +48,7 @@ public class LayerDataParser {
    * @return a List of game objects with their z coordinates by layer
    */
   public List<GameObjectData> getGameObjectDataList(Element root)
-      throws GameObjectParseException, LayerParseException {
+      throws GameObjectParseException {
     Element layersElement = (Element) root.getElementsByTagName("layers").item(0);
     List<GameObjectData> gameObjects = new ArrayList<>();
     myGameObjectDataParser = new GameObjectDataParser();
@@ -78,20 +78,16 @@ public class LayerDataParser {
    * @return a {@link List} of {@link GameObjectData} objects parsed from the layer element.
    */
   private List<GameObjectData> readLayerData(Element layerElement, int z)
-      throws GameObjectParseException, LayerParseException {
-    try {
-      List<GameObjectData> gameObjects = new ArrayList<>();
-      Element dataNode = (Element) layerElement.getElementsByTagName("data").item(0);
-      NodeList gameObjectNodes = dataNode.getElementsByTagName("object");
-      for (int i = 0; i < gameObjectNodes.getLength(); i++) {
-        if (gameObjectNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-          Element gameObjectElement = (Element) gameObjectNodes.item(i);
-          gameObjects.addAll(myGameObjectDataParser.getGameObjectData(gameObjectElement, z));
-        }
+      throws GameObjectParseException {
+    List<GameObjectData> gameObjects = new ArrayList<>();
+    Element dataNode = (Element) layerElement.getElementsByTagName("data").item(0);
+    NodeList gameObjectNodes = dataNode.getElementsByTagName("object");
+    for (int i = 0; i < gameObjectNodes.getLength(); i++) {
+      if (gameObjectNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+        Element gameObjectElement = (Element) gameObjectNodes.item(i);
+        gameObjects.addAll(myGameObjectDataParser.getGameObjectData(gameObjectElement, z));
       }
-      return gameObjects;
-    } catch (NullPointerException e) {
-      throw new LayerParseException(e.getMessage());
     }
+    return gameObjects;
   }
 }

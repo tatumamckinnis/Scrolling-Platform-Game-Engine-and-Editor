@@ -15,20 +15,20 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
-import oogasalad.fileparser.FileParserAPI;
+import oogasalad.fileparser.FileParserApi;
 import oogasalad.fileparser.records.LevelData;
 
 /**
  * Default implementation of the {@link LevelAPI}.
  *
  * <p>This class is responsible for selecting and loading a specific level from a given game,
- * category, and level name. It uses a {@link FileParserAPI} to parse the level file and delegates
+ * category, and level name. It uses a {@link FileParserApi} to parse the level file and delegates
  * to the {@link GameControllerAPI} to update the engine with the parsed data.
  */
 public class DefaultLevel implements LevelAPI {
 
   private Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
-  private final FileParserAPI myFileParser;
+  private final FileParserApi myFileParser;
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
       System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";

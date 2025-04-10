@@ -8,8 +8,10 @@ package oogasalad.exceptions;
 public class EventParseException extends Exception {
 
   /**
-   * creates a new EventParseException - an exception when there is an error in processing event data
-   * @param message the message to display to the user
+   * creates a new EventParseException - an exception when there is an error in processing event
+   * data.
+   *
+   * @param message the message to display to the user.
    */
   public EventParseException(String message) {
     super(message);

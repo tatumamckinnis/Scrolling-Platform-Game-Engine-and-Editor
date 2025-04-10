@@ -1,14 +1,16 @@
 package oogasalad.exceptions;
 
 /**
- * Exception thrown when an error occurs during the parsing of level data
+ * Exception thrown when an error occurs during the parsing of level data.
  * @author Billy McCune
  */
 public class LevelDataParseException extends Exception {
 
   /**
-   * creates a new LevelDataParseException - an exception when there is an error in processing level data
-   * @param message the message to display to the user
+   * creates a new LevelDataParseException - an exception when there is an error in processing level data.
+   *
+   *
+   * @param message the message to display to the user.
    */
   public LevelDataParseException(String message) {
     super(message);

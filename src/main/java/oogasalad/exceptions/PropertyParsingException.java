@@ -1,7 +1,7 @@
 package oogasalad.exceptions;
 
 /**
- * Property Parsing Exception used when processing property/parameter data
+ * Property Parsing Exception used when processing property/parameter data.
  *
  *
  * @author Billy McCune
@@ -9,8 +9,9 @@ package oogasalad.exceptions;
 public class PropertyParsingException extends Exception {
 
   /**
-   * creates a new PropertyParsingException - an exception when there is an error in processing property data
-   * @param message the message to display to the user
+   * creates a new PropertyParsingException - an exception when there is an error in processing property data.
+   *
+   * @param message the message to display to the user.
    *
    */
   public PropertyParsingException(String message) {

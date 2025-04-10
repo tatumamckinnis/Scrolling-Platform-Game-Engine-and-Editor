@@ -27,7 +27,7 @@ import oogasalad.fileparser.records.LevelData;
  * @see EventParseException
  * @see LayerParseException
  */
-public interface FileParserAPI {
+public interface FileParserApi {
 
   /**
    * Parses the specified level file and returns its level data.

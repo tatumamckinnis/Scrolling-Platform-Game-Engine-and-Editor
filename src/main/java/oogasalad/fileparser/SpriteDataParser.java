@@ -8,19 +8,22 @@ import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import oogasalad.exceptions.SpriteParseException;
+import org.xml.sax.SAXException;
 
 /**
  * Parses a sprite XML file and builds a SpriteData object.
  * <p>
- * The file is located using: user directory + graphics data path + game + group + type + sprite file.
- * <p>
+ * The file is located using: user directory + graphics data path + game + group + type + sprite
+ * file.
+ * </p>
  * Example XML file:
  * <pre>
  * &lt;spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101"&gt;
@@ -53,11 +56,11 @@ public class SpriteDataParser {
   private final String pathToSpriteData;
 
   /**
-   * Constructs a new {@code SpriteDataParser} by loading a properties file
-   * that defines the paths for the graphics data and sprite data.
+   * Constructs a new {@code SpriteDataParser} by loading a properties file that defines the paths
+   * for the graphics data and sprite data.
    * <p>
-   * The properties file is expected to be found at
-   * {@code oogasalad/file/fileStructure.properties} in the classpath.
+   * The properties file is expected to be found at {@code oogasalad/file/fileStructure.properties}
+   * in the classpath.
    * </p>
    *
    * @throws SpriteParseException if an error occurs while loading the properties file
@@ -77,8 +80,8 @@ public class SpriteDataParser {
   /**
    * Loads the required data paths from the properties file.
    * <p>
-   * It retrieves the paths for the graphics data and the game (sprite) data,
-   * prepending the user directory to each path.
+   * It retrieves the paths for the graphics data and the game (sprite) data, prepending the user
+   * directory to each path.
    * </p>
    *
    * @return an array where index 0 is the graphics data path and index 1 is the sprite data path.
@@ -93,16 +96,18 @@ public class SpriteDataParser {
       throw new SpriteParseException(e.getMessage());
     }
     String[] paths = new String[2];
-    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.graphics.data");
-    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty("path.to.game.data");
+    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty(
+        "path.to.graphics.data");
+    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty(
+        "path.to.game.data");
     return paths;
   }
 
   /**
    * Retrieves a {@link SpriteData} record from an XML sprite file.
    * <p>
-   * Builds the file path for the sprite XML file, loads and parses the document,
-   * and extracts the sprite, frame, and animation information from it.
+   * Builds the file path for the sprite XML file, loads and parses the document, and extracts the
+   * sprite, frame, and animation information from it.
    * </p>
    *
    * @param gameName   the name of the game.
@@ -111,7 +116,8 @@ public class SpriteDataParser {
    * @param spriteName the name of the sprite to locate.
    * @param spriteFile the XML file name containing the sprite information.
    * @return a {@link SpriteData} object representing the parsed sprite data.
-   * @throws SpriteParseException if an error occurs during parsing or if the specified sprite is not found.
+   * @throws SpriteParseException if an error occurs during parsing or if the specified sprite is
+   *                              not found.
    */
   public SpriteData getSpriteData(String gameName, String group, String type,
       String spriteName, String spriteFile) throws SpriteParseException {
@@ -124,7 +130,8 @@ public class SpriteDataParser {
 
     Element targetSprite = getTargetSprite(spriteFileElement, spriteName);
     if (targetSprite == null) {
-      throw new SpriteParseException("Sprite with name " + spriteName + " not found in file " + filePath);
+      throw new SpriteParseException(
+          "Sprite with name " + spriteName + " not found in file " + filePath);
     }
 
     FrameData baseImage = parseBaseImage(targetSprite, spriteName);
@@ -163,12 +170,12 @@ public class SpriteDataParser {
       Document doc = builder.parse(xmlFile);
       doc.getDocumentElement().normalize();
       return doc;
-    } catch (Exception e) {
-      throw new SpriteParseException("Error loading document from file " + filePath + ": " + e.getMessage());
+    } catch (ParserConfigurationException | IOException | SAXException e) {
+      throw new SpriteParseException(e.getMessage());
     }
   }
 
-  /**
+    /**
    * Retrieves the sprite sheet file from the spriteFile element's imagePath attribute.
    *
    * @param spriteFileElement the root element of the sprite file.

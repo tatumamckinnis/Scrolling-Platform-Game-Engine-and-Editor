@@ -13,7 +13,8 @@ import java.util.List;
  * <ul>
  *   <li>{@code name} uniquely identifies the animation (e.g., "walk", "jump").</li>
  *   <li>{@code frameLen} represents the duration of each frame in ticks.</li>
- *   <li>{@code frameNames} refers to valid {@code FrameData.name} values defined in the sprite.</li>
+ *   <li>{@code frameNames} refers to valid
+ *   {@code FrameData.name} values defined in the sprite.</li>
  * </ul>
  *
  * <p>Used during sprite animation playback and when exporting animation data to the engine.

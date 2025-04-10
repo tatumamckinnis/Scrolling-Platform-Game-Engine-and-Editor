@@ -50,7 +50,6 @@ public class EventDataParser {
    */
   public List<EventData> getLevelEvents(Element root)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-    try {
       NodeList eventNodes = root.getElementsByTagName("event");
       List<EventData> events = new ArrayList<>();
       for (int i = 0; i < eventNodes.getLength(); i++) {
@@ -58,9 +57,6 @@ public class EventDataParser {
         events.add(parseEventNode(eventElement));
       }
       return events;
-    } catch (NullPointerException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -72,7 +68,6 @@ public class EventDataParser {
    */
   private EventData parseEventNode(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-    try {
       String type = eventElement.getAttribute("type");
       String id = eventElement.getAttribute("id");
 
@@ -80,9 +75,6 @@ public class EventDataParser {
       List<OutcomeData> outcomes = parseOutcomes(eventElement);
 
       return new EventData(type, id, conditions, outcomes);
-    } catch (NullPointerException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -93,8 +85,7 @@ public class EventDataParser {
    * @throws BlueprintParseException if condition parsing fails.
    */
   private List<List<ConditionData>> parseConditions(Element eventElement)
-      throws BlueprintParseException, EventParseException {
-    try {
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
       List<List<ConditionData>> conditions = new ArrayList<>();
       Element conditionsElement = getFirstElementByTagName(eventElement, "conditions");
       NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
@@ -109,9 +100,6 @@ public class EventDataParser {
         conditions.add(conditionList);
       }
       return conditions;
-    } catch (NullPointerException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -123,7 +111,6 @@ public class EventDataParser {
    */
   private List<OutcomeData> parseOutcomes(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-    try {
       List<OutcomeData> outcomes = new ArrayList<>();
       Element outcomesElement = getFirstElementByTagName(eventElement, "outcomes");
       if (outcomesElement != null) {
@@ -134,9 +121,6 @@ public class EventDataParser {
         }
       }
       return outcomes;
-    } catch (NullPointerException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -147,15 +131,11 @@ public class EventDataParser {
    * @throws BlueprintParseException if property parsing fails.
    */
   private ConditionData parseCondition(Element conditionElement)
-      throws BlueprintParseException, EventParseException {
-    try {
+      throws BlueprintParseException, EventParseException, PropertyParsingException {
       String name = conditionElement.getAttribute("name");
       Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
       Map<String, String> stringProperties = extractStringProperties(conditionElement);
       return new ConditionData(name, stringProperties, doubleProperties);
-    } catch (NullPointerException | PropertyParsingException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -167,16 +147,10 @@ public class EventDataParser {
    */
   private OutcomeData parseOutcome(Element outcomeElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-    // In the new XML, outcome uses the "type" attribute to denote its action.
-    try {
-      String outcomeName = outcomeElement.getAttribute("type");
-      outcomeName = outcomeElement.getAttribute("name");
+      String outcomeName = outcomeElement.getAttribute("name");
       Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
       Map<String, String> stringProperties = extractStringProperties(outcomeElement);
       return new OutcomeData(outcomeName, stringProperties, doubleProperties);
-    } catch (NullPointerException e) {
-      throw new EventParseException(e.getMessage());
-    }
   }
 
   /**
@@ -188,17 +162,13 @@ public class EventDataParser {
    * @throws BlueprintParseException  if element
    */
   private Map<String, Double> extractDoubleProperties(Element element)
-      throws BlueprintParseException, PropertyParsingException {
-    try {
+      throws PropertyParsingException {
       Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
       if (doubleParams != null) {
         return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters",
             "parameter");
       }
       return new HashMap<>();
-    } catch (NullPointerException e) {
-      throw new BlueprintParseException(e.getMessage());
-    }
   }
 
   /**

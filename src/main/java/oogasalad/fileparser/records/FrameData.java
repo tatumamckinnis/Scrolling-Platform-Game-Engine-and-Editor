@@ -9,7 +9,8 @@ package oogasalad.fileparser.records;
  * <p>This record assumes:
  * <ul>
  *   <li>{@code name} uniquely identifies the frame (e.g., \"DinoJump\", \"DinoDuck1\").</li>
- *   <li>{@code x}, {@code y}, {@code width}, and {@code height} define the region of the sprite sheet image this frame covers.</li>
+ *   <li>{@code x}, {@code y}, {@code width}, and {@code height}
+ *   define the region of the sprite sheet image this frame covers.</li>
  * </ul>
  *
  * <p>Used during sprite parsing and animation rendering.

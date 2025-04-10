@@ -37,6 +37,10 @@ import org.w3c.dom.NodeList;
  */
 public class BlueprintDataParser {
 
+  // Constants to avoid using literals directly in conditions.
+  private static final String DISPLAYED_PROPERTIES_TAG = "displayedProperties";
+  private static final String PROPERTY_LIST_ATTR = "propertyList";
+
   private String groupName = "";
   private String gameName = "";
   private SpriteDataParser mySpriteDataParser;
@@ -62,7 +66,8 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
-      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     myEventDataList = eventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
@@ -82,7 +87,7 @@ public class BlueprintDataParser {
    * Creates a map from a list of {@link BlueprintData} records using their blueprint IDs as keys.
    *
    * @param blueprintDataList the list of {@link BlueprintData} records.
-   * @return a {@link Map} where each key is a blueprint ID and the value is the corresponding
+   * @return a {@link Map} where each key is a blueprint Id and the value is the corresponding
    * {@link BlueprintData} record.
    */
   private Map<Integer, BlueprintData> createBlueprintDataMap(
@@ -102,7 +107,8 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   private List<BlueprintData> parseByGame(Element gameNode)
-      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
     for (int i = 0; i < objectGroupNodes.getLength(); i++) {
@@ -125,7 +131,8 @@ public class BlueprintDataParser {
    * @throws BlueprintParseException if any parsing error occurs.
    */
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
-      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
@@ -157,8 +164,8 @@ public class BlueprintDataParser {
    *                                 the correct format.
    */
   private BlueprintData parseGameObjectData(Element gameObjectNode)
-      throws BlueprintParseException, SpriteParseException, HitBoxParseException, PropertyParsingException, EventParseException {
-    try {
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException {
       mySpriteDataParser = new SpriteDataParser();
 
       int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
@@ -197,9 +204,6 @@ public class BlueprintDataParser {
           doubleProperties,
           displayedProperties
       );
-    } catch (NumberFormatException e) {
-      throw new BlueprintParseException("error.number.format");
-    }
   }
 
   /**
@@ -210,10 +214,10 @@ public class BlueprintDataParser {
    * @return the full list of {@link EventData} objects, or an empty list if none are specified.
    */
   private List<EventData> getmyEventDataList(Element gameObjectNode) {
-    String eventIDs = gameObjectNode.getAttribute("eventIDs");
+    String eventIds = gameObjectNode.getAttribute("eventIDs");
     List<EventData> eventDataList = new ArrayList<>();
-    if (eventIDs != null && !eventIDs.isEmpty()) {
-      String[] eventIdArray = eventIDs.split(",");
+    if (eventIds != null && !eventIds.isEmpty()) {
+      String[] eventIdArray = eventIds.split(",");
       for (String eventId : eventIdArray) {
         eventDataList.add(getEventByID(eventId));
       }
@@ -237,24 +241,22 @@ public class BlueprintDataParser {
   }
 
   /**
-   * Retrieves the displayed propeties for the {@link BlueprintData}
+   * Retrieves the displayed properties for the {@link BlueprintData}.
    *
-   * @param gameObjectNode the xml node with the displayed properties child node
-   * @return the List<String> of displayed properties and if there is none just returns an empty
-   * list
+   * @param gameObjectNode the XML node containing the displayed properties child element.
+   * @return a list of displayed property strings; if none exist, returns an empty list.
+   * @throws BlueprintParseException if the displayed properties element is malformed.
    */
   private List<String> getDisplayedProperties(Element gameObjectNode)
       throws BlueprintParseException {
-    try {
-      if (gameObjectNode.getElementsByTagName("displayedProperties").item(0) != null) {
-        Element displayedProperties = (Element) gameObjectNode.getElementsByTagName(
-            "displayedProperties").item(0);
-        return List.of(
-            displayedProperties.getAttribute("propertyList").split(","));
+    // Use explicit null checks rather than catching NullPointerException.
+    Node node = gameObjectNode.getElementsByTagName(DISPLAYED_PROPERTIES_TAG).item(0);
+    if (node != null && (node instanceof Element)) {
+      Element displayedProperties = (Element) node;
+      if (displayedProperties.hasAttribute(PROPERTY_LIST_ATTR)) {
+        return List.of(displayedProperties.getAttribute(PROPERTY_LIST_ATTR).split(","));
       }
-      return new ArrayList<>();
-    } catch (NullPointerException e) {
-      throw new BlueprintParseException("error.displayedProperties");
     }
+    return new ArrayList<>();
   }
 }
