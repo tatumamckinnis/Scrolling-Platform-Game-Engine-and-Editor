@@ -59,15 +59,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   @Override
   public Map<String, GameObject> loadFileToEngine(LevelData levelData) {
     Map<Integer, BlueprintData> bluePrintMap = levelData.gameBluePrintData();
-    return initGameObjectsMap(convertObjectMapToList(levelData), bluePrintMap);
-  }
-
-  private static List<GameObjectData> convertObjectMapToList(LevelData levelData) {
-    List<GameObjectData> gameObjectDataList = new ArrayList<>();
-    for (List<GameObjectData> gameObjects : levelData.gameObjectsByLayer().values()) {
-      gameObjectDataList.addAll(gameObjects);
-    }
-    return gameObjectDataList;
+    return initGameObjectsMap(levelData.gameObjects(), bluePrintMap);
   }
 
   private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects,
@@ -83,46 +75,46 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   private GameObject makeGameObject(GameObjectData gameObjectData,
       Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
-
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
     Map<String, AnimationData> animationMap = makeAnimationMap(blueprintData);
-    Map<String, Double> parametersMap = makeParametersMap(blueprintData);
 
     GameObject newGameObject;
-
     UUID uniqueId = gameObjectData.uniqueId();
     String type = blueprintData.type();
     int layer = gameObjectData.layer();
     int xVelocity = 0;
     int yVelocity = 0;
-    HitBox hitBox = new HitBox(gameObjectData.x(), gameObjectData.y(), blueprintData.hitBoxData().hitBoxWidth(),
-        blueprintData.hitBoxData().hitBowHeight());
-    Sprite sprite = new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap, blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy());
+    HitBox hitBox = new HitBox(gameObjectData.x(), gameObjectData.y(),
+        blueprintData.hitBoxData().hitBoxWidth(),
+        blueprintData.hitBoxData().hitBoxHeight());
+    Sprite sprite = new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap,
+        blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy());
     List<Event> emptyEvents = new ArrayList<>();
-    //TODO make map based on player data
-    Map<String, Double> displayedStats = new HashMap<>();
-    Map<String, String> properties = blueprintData.objectProperties();
+    Map<String, String> stringParams = blueprintData.stringProperties();
+    Map<String, Double> doubleParams = blueprintData.doubleProperties();
+    Map<String, Double> displayedStats = makeDisplayedStatsMap(blueprintData, doubleParams);
 
     if (blueprintData.type().equals("Player")) {
       newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
-          emptyEvents, displayedStats, properties, new HashMap<>());
-    }
-    else {
+          emptyEvents, displayedStats, stringParams, doubleParams);
+    } else {
       newGameObject = new Entity(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
-          emptyEvents, properties, parametersMap);
+          emptyEvents, stringParams, doubleParams);
     }
 
-    List<Event> events = EventConverter.convertEventData(gameObjectData, newGameObject, bluePrintMap);
+    List<Event> events = EventConverter.convertEventData(gameObjectData, newGameObject,
+        bluePrintMap);
     newGameObject.setEvents(events);
     return newGameObject;
   }
 
-  private static Map<String, Double> makeParametersMap(BlueprintData blueprintData) {
-    Map<String, Double> parameters = new HashMap<>();
-    for (String key: blueprintData.objectProperties().keySet()) {
-      parameters.put(key, Double.parseDouble(blueprintData.objectProperties().get(key)));
+  private static Map<String, Double> makeDisplayedStatsMap(BlueprintData blueprintData,
+      Map<String, Double> doubleParams) {
+    Map<String, Double> displayedStats = new HashMap<>();
+    for (String stat : blueprintData.displayedProperties()) {
+      displayedStats.put(stat, doubleParams.getOrDefault(stat, 0.0));
     }
-    return parameters;
+    return displayedStats;
   }
 
   private static Map<String, FrameData> makeFrameMap(BlueprintData blueprintData) {

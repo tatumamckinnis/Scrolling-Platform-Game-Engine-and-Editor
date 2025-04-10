@@ -1,11 +1,15 @@
 package oogasalad.engine.event.outcome;
 
+import java.util.Map;
+
 /**
  * Defines valid event outcomes and associated parameters
  *
  * @author Gage Garcia
  */
-public record EventOutcome(EventOutcome.OutcomeType outcomeType) {
+public record EventOutcome(EventOutcome.OutcomeType outcomeType,
+                           Map<String,String> stringProperties,
+                           Map<String,Double> doubleProperties) {
 
   /**
    * Defines valid outcome types

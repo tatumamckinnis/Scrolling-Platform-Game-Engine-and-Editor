@@ -24,6 +24,11 @@ public interface EditorController {
    */
   void requestObjectPlacement(String objectGroup, String objectNamePrefix, int worldX, int worldY,
       int cellSize);
+  /**
+   * Requests the placement of a new game object.
+   */
+  void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX, double worldY,
+      int cellSize);
 
   /**
    * Notifies the controller that an object has been selected in the view.
