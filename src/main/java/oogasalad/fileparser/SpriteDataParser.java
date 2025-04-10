@@ -68,11 +68,11 @@ public class SpriteDataParser {
     Map<String, String> dataPaths = loadDataPaths();
     this.pathToGraphicsData =
         System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
-            "graphicsDataPath");
+            "path.to.graphics.data");
     ;
     this.pathToSpriteData =
         System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
-            "spriteDataPath");
+            "path.to.game.data");
     ;
   }
 
