@@ -7,7 +7,8 @@ package oogasalad.exceptions;
  * and encountering issues such as missing fields, invalid types, or unrecognized tags.
  * </p>
  * <p>This exception helps distinguish object-level parsing errors from more general I/O or
- * blueprint issues. </p
+ * blueprint issues.
+ * </p>
  *
  * @author Billy McCune
  */
@@ -27,7 +28,7 @@ public class GameObjectParseException extends Exception {
    * Constructs a new {@code GameObjectParseException} with a descriptive message.
    *
    * @param message the detail message explaining the cause of the exception.
-   * @param cause the cause of the message.
+   * @param cause   the cause of the message.
    */
   public GameObjectParseException(String message, Throwable cause) {
     super(message, cause);

@@ -18,8 +18,9 @@ public class HitBoxDataParser {
   /**
    * Retrieves the hitbox data from the given XML element.
    * <p>
-   * This method reads the hitbox attributes including shape, width, height, and sprite offsets from the
-   * provided XML element and creates a corresponding {@link HitBoxData} object.
+   * This method reads the hitbox attributes including
+   * shape, width, height, and sprite offsets from
+   * the provided XML element and creates a corresponding {@link HitBoxData} object.
    * </p>
    *
    * @param objectNode the XML element that contains hitbox data.
@@ -35,7 +36,7 @@ public class HitBoxDataParser {
       int spriteDy = Integer.parseInt(objectNode.getAttribute("spriteDy"));
       return new HitBoxData(shape, hitBoxWidth, hitBoxHeight, spriteDx, spriteDy);
     } catch (NumberFormatException e) {
-      throw new HitBoxParseException(e.getMessage(),e);
+      throw new HitBoxParseException(e.getMessage(), e);
     }
   }
 }

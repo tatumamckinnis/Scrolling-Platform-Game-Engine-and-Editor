@@ -11,7 +11,6 @@ import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
 import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
@@ -117,32 +116,4 @@ public class DefaultFileParser implements FileParserApi {
     }
   }
 }
-
-//    Map<String, List<File>> levelDirectories = mapOfGameLevels.get(filePath);
-//    for (Entry<String, List<File>> entry : levelDirectories.entrySet()) {
-//      for (File file : entry.getValue()) {
-//          levelFile = file;
-//          break;
-//        }
-//      if (levelFile != null){
-//        break;}
-//    }
-//    if (levelFile == null) {
-//      throw new RuntimeException("Level file " + levelFile.getName() + " not found for game " + filePath);
-//    }
-
-//      System.out.println(eventList.size());
-//      System.out.println(blueprintData.size());
-//      System.out.println(gameObjectsByLayer.size());
-//      for(Integer i : blueprintData.keySet()){
-//        System.out.println(blueprintData.get(i));
-//      }
-//      for (Entry<Integer, List<GameObjectData>> entry : gameObjectsByLayer.entrySet()) {
-//        System.out.println(entry.getKey());
-//        for (GameObjectData gameObjectData : entry.getValue()) {
-//          System.out.println(gameObjectData);
-//        }
-//      }
-
-// Construct and return the LevelData record.
 

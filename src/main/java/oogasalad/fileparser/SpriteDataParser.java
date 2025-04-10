@@ -27,7 +27,6 @@ import org.xml.sax.SAXException;
  * file.
  * </p>
  *
- *
  * @author Billy McCune
  */
 public class SpriteDataParser {
@@ -35,6 +34,7 @@ public class SpriteDataParser {
   // Base path to the graphics data and sprite data.
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
+  private final String NAME_ATTRIBUTE = "name";
 
   /**
    * Constructs a new {@code SpriteDataParser} by reading the properties file and loading the
@@ -103,6 +103,7 @@ public class SpriteDataParser {
 
   /**
    * Retrieves a {@link SpriteData} record from an XML sprite file.
+   * 
    * <p>
    * Builds the file path for the sprite XML file, loads and parses the document, and extracts the
    * sprite, frame, and animation information from it.
@@ -169,7 +170,7 @@ public class SpriteDataParser {
       doc.getDocumentElement().normalize();
       return doc;
     } catch (ParserConfigurationException | IOException | SAXException e) {
-      throw new SpriteParseException(e.getMessage(),e);
+      throw new SpriteParseException(e.getMessage(), e);
     }
   }
 
@@ -196,7 +197,7 @@ public class SpriteDataParser {
     NodeList spriteNodes = spriteFileElement.getElementsByTagName("sprite");
     for (int i = 0; i < spriteNodes.getLength(); i++) {
       Element spriteElement = (Element) spriteNodes.item(i);
-      if (spriteName.equals(spriteElement.getAttribute("name"))) {
+      if (spriteName.equals(spriteElement.getAttribute(NAME_ATTRIBUTE))) {
         return spriteElement;
       }
     }
@@ -229,7 +230,7 @@ public class SpriteDataParser {
   /**
    * Parses all frame elements within the <frames> element.
    *
-   * @param targetSprite    the sprite element containing the frames.
+   * @param targetSprite the sprite element containing the frames.
    * @return a list of FrameData records.
    */
   private List<FrameData> parseFrames(Element targetSprite) {
@@ -249,11 +250,11 @@ public class SpriteDataParser {
   /**
    * Parses a <frame> element and returns a FrameData record.
    *
-   * @param frameElement    the frame element from the XML.
+   * @param frameElement the frame element from the XML.
    * @return a FrameData record containing the frame's attributes.
    */
   private FrameData parseFrameData(Element frameElement) {
-    String name = frameElement.getAttribute("name");
+    String name = frameElement.getAttribute(NAME_ATTRIBUTE);
     int x = Integer.parseInt(frameElement.getAttribute("x"));
     int y = Integer.parseInt(frameElement.getAttribute("y"));
     int width = Integer.parseInt(frameElement.getAttribute("width"));
@@ -288,7 +289,7 @@ public class SpriteDataParser {
    * @return an AnimationData record containing the animation's attributes.
    */
   private AnimationData parseAnimationData(Element animationElement) {
-    String name = animationElement.getAttribute("name");
+    String name = animationElement.getAttribute(NAME_ATTRIBUTE);
     double frameLen = Double.parseDouble(animationElement.getAttribute("frameLen"));
     String framesAttr = animationElement.getAttribute("frames");
     String[] frameNames = framesAttr.split(",");
