@@ -14,6 +14,8 @@ import oogasalad.fileparser.records.FrameData;
  *
  * <p>This class acts as a safe abstraction layer between the engine's model and the UI,
  * ensuring encapsulation and clean separation of concerns.
+ *
+ * @author Alana Zinkin
  */
 public class ViewObject implements ImmutableGameObject, ImmutablePlayer {
 

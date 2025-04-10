@@ -105,6 +105,9 @@ public class Sprite {
     throw new NoSuchElementException(EXCEPTIONS.getString("SpriteNotFound"));
   }
 
+  /**
+   * @return the necessary Sprite File
+   */
   public File getSpriteFile() {
     return spriteFile;
   }
