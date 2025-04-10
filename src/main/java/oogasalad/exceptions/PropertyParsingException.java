@@ -26,6 +26,5 @@ public class PropertyParsingException extends Exception {
    */
   public PropertyParsingException(String message, Throwable cause) {
     super(message, cause);
-    );
   }
 }
