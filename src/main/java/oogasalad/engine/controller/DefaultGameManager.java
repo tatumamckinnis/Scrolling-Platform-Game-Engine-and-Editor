@@ -17,8 +17,16 @@ import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.DefaultView;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
 import oogasalad.exceptions.InputException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,7 +75,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   @Override
   public void restartGame()
-      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     if (!(currentLevel == null)) {
       myLevelAPI.selectGame(currentLevel);
       playGame();
@@ -78,7 +86,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   @Override
   public void selectGame(String filePath)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
-      NoSuchMethodException, InstantiationException, IllegalAccessException {
+      NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     currentLevel = filePath;
     myLevelAPI.selectGame(filePath);
   }
