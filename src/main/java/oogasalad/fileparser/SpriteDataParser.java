@@ -21,11 +21,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Parses a sprite XML file and builds a SpriteData object.
- * <p>
- * The file is located using: user directory + graphics data path + game + group + type + sprite
- * file.
- * </p>
+ * Parses a sprite XML file and builds a SpriteData object. The file is located using: user
+ * directory + graphics data path + game + group + type + sprite file.
  *
  * @author Billy McCune
  */
@@ -34,7 +31,7 @@ public class SpriteDataParser {
   // Base path to the graphics data and sprite data.
   private final String pathToGraphicsData;
   private final String pathToSpriteData;
-  private final String NAME_ATTRIBUTE = "name";
+  private final static String nameAttribute = "name";
 
   /**
    * Constructs a new {@code SpriteDataParser} by reading the properties file and loading the
@@ -103,7 +100,7 @@ public class SpriteDataParser {
 
   /**
    * Retrieves a {@link SpriteData} record from an XML sprite file.
-   * 
+   *
    * <p>
    * Builds the file path for the sprite XML file, loads and parses the document, and extracts the
    * sprite, frame, and animation information from it.
@@ -197,7 +194,7 @@ public class SpriteDataParser {
     NodeList spriteNodes = spriteFileElement.getElementsByTagName("sprite");
     for (int i = 0; i < spriteNodes.getLength(); i++) {
       Element spriteElement = (Element) spriteNodes.item(i);
-      if (spriteName.equals(spriteElement.getAttribute(NAME_ATTRIBUTE))) {
+      if (spriteName.equals(spriteElement.getAttribute(nameAttribute))) {
         return spriteElement;
       }
     }
@@ -254,7 +251,7 @@ public class SpriteDataParser {
    * @return a FrameData record containing the frame's attributes.
    */
   private FrameData parseFrameData(Element frameElement) {
-    String name = frameElement.getAttribute(NAME_ATTRIBUTE);
+    String name = frameElement.getAttribute(nameAttribute);
     int x = Integer.parseInt(frameElement.getAttribute("x"));
     int y = Integer.parseInt(frameElement.getAttribute("y"));
     int width = Integer.parseInt(frameElement.getAttribute("width"));
@@ -289,7 +286,7 @@ public class SpriteDataParser {
    * @return an AnimationData record containing the animation's attributes.
    */
   private AnimationData parseAnimationData(Element animationElement) {
-    String name = animationElement.getAttribute(NAME_ATTRIBUTE);
+    String name = animationElement.getAttribute(nameAttribute);
     double frameLen = Double.parseDouble(animationElement.getAttribute("frameLen"));
     String framesAttr = animationElement.getAttribute("frames");
     String[] frameNames = framesAttr.split(",");

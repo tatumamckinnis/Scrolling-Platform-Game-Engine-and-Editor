@@ -71,7 +71,8 @@ public class DefaultFileParser implements FileParserApi {
    *   <li>Extracts the level name from the
    *   file name (removes the ".xml" extension).</li>
    *   <li>Locates the actual File corresponding to the level.</li>
-   *   <li>Parses the XML, retrieves the root element (<code>&lt;map&gt;</code>), and then uses helper
+   *   <li>Parses the XML,
+   *   retrieves the root element (<code>&lt;map&gt;</code>), and then uses helper
    *       parsers to obtain blueprint and layer/game object data.</li>
    *   <li>Constructs and returns a new LevelData record.</li>
    * </ul>

@@ -17,6 +17,10 @@ public class GameObjectDataParser {
   /**
    * Parses a game object XML element and creates a list of GameObjectData objects.
    *
+   *
+   * <p>
+   *
+   * </p>
    * @param gameObjectElement the XML element representing the game object
    * @param z                 the z-index for the game object
    * @return a list of GameObjectData objects created from the element
