@@ -28,6 +28,10 @@ public class DefaultEventHandler implements EventHandler {
     conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
   }
 
+  /**
+   * Processes the event object
+   * @param event event model to handle
+   */
   public void handleEvent(Event event) {
     GameObject gameObject = event.getGameObject();
     boolean validEvent = true;

@@ -70,5 +70,8 @@ public interface ImmutableGameObject {
    */
   int getSpriteDy();
 
+  /**
+   * @return file for the sprite sheet
+   */
   File getSpriteFile();
 }
