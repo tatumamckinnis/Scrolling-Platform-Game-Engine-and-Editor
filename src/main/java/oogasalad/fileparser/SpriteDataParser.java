@@ -26,30 +26,9 @@ import org.xml.sax.SAXException;
  * The file is located using: user directory + graphics data path + game + group + type + sprite
  * file.
  * </p>
- * <p>
- * Example XML file:
- * </p>
- * <pre>{@literal
- * <spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
- *   <sprite name="Dino" x="944" y="0" w="97" h="101">
- *     <frames>
- *       <frame name="DinoStart" x="944" y="0" width="97" height="101"/>
- *       <frame name="DinoDead" x="236" y="0" width="86" height="101"/>
- *       <frame name="DinoDuck1" x="354" y="0" width="118" height="60"/>
- *       <frame name="DinoDuck2" x="472" y="0" width="116" height="60"/>
- *       <frame name="DinoJump" x="590" y="0" width="88" height="94"/>
- *       <frame name="DinoRun1" x="708" y="0" width="87" height="94"/>
- *       <frame name="DinoRun2" x="826" y="0" width="88" height="94"/>
- *     </frames>
- *     <animations>
- *       <animation name="walk" frameLen="0.15" frames="DinoRun1,DinoRun2"/>
- *       <animation name="jump" frameLen="0.15" frames="DinoJump"/>
- *       <animation name="dead" frameLen="0.15" frames="DinoDead"/>
- *       <animation name="duck-walk" frameLen="0.15" frames="DinoDuck1,DinoDuck2"/>
- *     </animations>
- *   </sprite>
- * </spriteFile>
- * }</pre>
+ *
+ *
+ * @author Billy McCune
  */
 public class SpriteDataParser {
 

@@ -4,6 +4,8 @@ import oogasalad.engine.model.object.GameObject;
 
 /**
  * Condition that is always true
+ *
+ * @author Billy McCune
  */
 public class TrueCondition implements Condition {
 

@@ -6,6 +6,8 @@ import oogasalad.engine.model.object.GameObject;
 
 /**
  * Condition that is met based on if a certain input was pressed
+ *
+ * @author Billy McCune
  */
 public class InputCondition implements Condition {
 
