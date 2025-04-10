@@ -1,5 +1,6 @@
 package oogasalad.engine.model.object;
 
+import java.io.File;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
@@ -32,6 +33,7 @@ public class Sprite {
   private FrameData currentSprite;
   private Map<String, FrameData> frameMap;
   private Map<String, AnimationData> animations;
+  private File spriteFile;
 
   /**
    * Constructs a new {@code Sprite} with the provided frame data and rendering offsets.
@@ -43,12 +45,14 @@ public class Sprite {
    * @param spriteDy      the vertical offset of the sprite relative to the hitbox
    */
   public Sprite(Map<String, FrameData> frameMap, FrameData currentSprite,
-      Map<String, AnimationData> animations, int spriteDx, int spriteDy) {
+      Map<String, AnimationData> animations, int spriteDx, int spriteDy, File spriteFile) {
     this.spriteDx = spriteDx;
     this.spriteDy = spriteDy;
     this.frameMap = frameMap;
     this.currentSprite = currentSprite;
     this.animations = animations;
+    this.spriteFile = spriteFile;
+
   }
 
   /**
@@ -99,6 +103,10 @@ public class Sprite {
       return frameMap.get(id);
     }
     throw new NoSuchElementException(EXCEPTIONS.getString("SpriteNotFound"));
+  }
+
+  public File getSpriteFile() {
+    return spriteFile;
   }
 }
 

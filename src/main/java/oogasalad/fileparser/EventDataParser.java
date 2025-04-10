@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.PropertyParsingException;
@@ -38,6 +39,7 @@ import org.w3c.dom.NodeList;
  */
 public class EventDataParser {
 
+  private static final Logger LOG = Logger.getLogger(EventDataParser.class.getName());
   // A single instance of the PropertyParser to handle our property parsing.
   private final PropertyParser myPropertyParser = new PropertyParser();
 

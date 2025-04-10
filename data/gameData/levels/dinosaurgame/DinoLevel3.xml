@@ -5,7 +5,7 @@ layer => the layer
 -->
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
-<map width="500" height="500">
+<map minX="0" minY="0" maxX="500" maxY="500">
   <layers>
     <layer name="backGround" width="500" height="500" z="0">
       <data>

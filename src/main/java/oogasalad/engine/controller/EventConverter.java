@@ -3,6 +3,7 @@ package oogasalad.engine.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.event.condition.EventCondition;
 import oogasalad.engine.event.outcome.EventOutcome;
@@ -20,6 +21,8 @@ import oogasalad.fileparser.records.OutcomeData;
  * <p>This conversion includes parsing the event's conditions, outcomes, and type.
  */
 public class EventConverter {
+
+  private static Logger LOG = Logger.getLogger(EventConverter.class.getName());
 
   /**
    * Converts all event data associated with a {@link GameObjectData} instance into a list of
@@ -88,6 +91,7 @@ public class EventConverter {
   private static List<EventOutcome> makeEventOutcomes(EventData eventData) {
     List<EventOutcome> eventOutcomes = new ArrayList<>();
     for (OutcomeData outcome : eventData.outcomes()) {
+      LOG.info(outcome.name());
       EventOutcome newOutcome = new EventOutcome(EventOutcome.OutcomeType.valueOf(outcome.name()),
           outcome.stringProperties(), outcome.doubleProperties());
       eventOutcomes.add(newOutcome);
