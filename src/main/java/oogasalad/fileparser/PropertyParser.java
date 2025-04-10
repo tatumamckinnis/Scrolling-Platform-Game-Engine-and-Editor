@@ -138,7 +138,6 @@ public class PropertyParser {
     for (int i = 0; i < dataNodes.getLength(); i++) {
       Node dataNode = dataNodes.item(i);
       if (isIgnorableNode(dataNode)) {
-        System.out.println("Ignoring " + dataNode.getNodeName());
         continue;
       }
       if (!(dataNode instanceof Element)) {
@@ -146,7 +145,6 @@ public class PropertyParser {
       }
       Element dataElement = (Element) dataNode;
       if (!childTag.equals(dataElement.getTagName())) {
-        System.out.println("Ignoring " + dataNode.getNodeName());
         continue; // Only process child elements with the expected tag.
       }
       processDataElement(dataElement, properties, converter, errorPrefix);
