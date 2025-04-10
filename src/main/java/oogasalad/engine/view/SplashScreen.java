@@ -52,7 +52,7 @@ public class SplashScreen extends Display {
   }
 
   @Override
-  public void render() {
+  public void initialRender() {
     initializeSplashScreen();
   }
 

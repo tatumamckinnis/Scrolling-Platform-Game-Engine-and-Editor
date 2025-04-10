@@ -8,7 +8,7 @@ public class HUD extends Display {
 
 
   @Override
-  public void render() {
+  public void initialRender() {
     Text playerScore = new Text("Score: " + "1000");
   }
 
