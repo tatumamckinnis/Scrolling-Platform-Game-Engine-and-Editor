@@ -52,7 +52,7 @@ public class GameObjectDataParser {
       return gameObjectDataList;
 
     } catch (NumberFormatException e) {
-      throw new GameObjectParseException(e.getMessage());
+      throw new GameObjectParseException(e.getMessage(),e);
     }
   }
 }

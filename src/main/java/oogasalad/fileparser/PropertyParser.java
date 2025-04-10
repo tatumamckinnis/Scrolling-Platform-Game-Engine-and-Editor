@@ -28,8 +28,10 @@ import org.w3c.dom.NodeList;
  *   Map&lt;String, String&gt; stringProps = parser.parseStringProperties(blueprintElement);
  *
  *   // Using a custom child tag "property":
- *   Map&lt;String, Double&gt; doublePropsAlt = parser.parseDoubleProperties(blueprintElement, "property");
- *   Map&lt;String, String&gt; stringPropsAlt = parser.parseStringProperties(blueprintElement, "property");
+ *   Map&lt;String, Double&gt; doublePropsAlt =
+ *   parser.parseDoubleProperties(blueprintElement, "property");
+ *   Map&lt;String, String&gt; stringPropsAlt =
+ *   parser.parseStringProperties(blueprintElement, "property");
  * </pre>
  * </p>
  */
@@ -169,7 +171,6 @@ public class PropertyParser {
       Function<String, T> converter, String errorPrefix) throws PropertyParsingException {
     try {
       String name = dataElement.getAttribute("name");
-      // Try reading the "value" attribute; if missing or empty, fall back to the element's text content.
       String value = dataElement.getAttribute("value");
       if (value == null || value.isEmpty()) {
         value = dataElement.getTextContent().trim();
@@ -177,7 +178,7 @@ public class PropertyParser {
         properties.put(name, convertedValue);
       }
     } catch (IllegalArgumentException e) {
-      throw new PropertyParsingException("error." + errorPrefix + ".illegalValue");
+      throw new PropertyParsingException("error." + errorPrefix + ".illegalValue", e);
     }
   }
 

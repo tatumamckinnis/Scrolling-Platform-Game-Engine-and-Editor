@@ -110,7 +110,7 @@ public class DefaultFileParser implements FileParserApi {
 
       return new LevelData(levelName, minX, minY, maxX, maxY, blueprintData, gameObjectDataList);
     } catch (SAXException | IOException | ParserConfigurationException e) {
-      throw new LevelDataParseException(e.getMessage());
+      throw new LevelDataParseException(e.getMessage(), e);
     }
   }
 }

@@ -35,7 +35,7 @@ public class HitBoxDataParser {
       int spriteDy = Integer.parseInt(objectNode.getAttribute("spriteDy"));
       return new HitBoxData(shape, hitBoxWidth, hitBoxHeight, spriteDx, spriteDy);
     } catch (NumberFormatException e) {
-      throw new HitBoxParseException(e.getMessage());
+      throw new HitBoxParseException(e.getMessage(),e);
     }
   }
 }

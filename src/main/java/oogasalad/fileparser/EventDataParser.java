@@ -52,13 +52,13 @@ public class EventDataParser {
    */
   public List<EventData> getLevelEvents(Element root)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      NodeList eventNodes = root.getElementsByTagName("event");
-      List<EventData> events = new ArrayList<>();
-      for (int i = 0; i < eventNodes.getLength(); i++) {
-        Element eventElement = (Element) eventNodes.item(i);
-        events.add(parseEventNode(eventElement));
-      }
-      return events;
+    NodeList eventNodes = root.getElementsByTagName("event");
+    List<EventData> events = new ArrayList<>();
+    for (int i = 0; i < eventNodes.getLength(); i++) {
+      Element eventElement = (Element) eventNodes.item(i);
+      events.add(parseEventNode(eventElement));
+    }
+    return events;
   }
 
   /**
@@ -70,13 +70,13 @@ public class EventDataParser {
    */
   private EventData parseEventNode(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      String type = eventElement.getAttribute("type");
-      String id = eventElement.getAttribute("id");
+    String type = eventElement.getAttribute("type");
+    String id = eventElement.getAttribute("id");
 
-      List<List<ConditionData>> conditions = parseConditions(eventElement);
-      List<OutcomeData> outcomes = parseOutcomes(eventElement);
+    List<List<ConditionData>> conditions = parseConditions(eventElement);
+    List<OutcomeData> outcomes = parseOutcomes(eventElement);
 
-      return new EventData(type, id, conditions, outcomes);
+    return new EventData(type, id, conditions, outcomes);
   }
 
   /**
@@ -88,19 +88,20 @@ public class EventDataParser {
    */
   private List<List<ConditionData>> parseConditions(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      List<List<ConditionData>> conditions = new ArrayList<>();
-    NodeList conditionSetNodes = eventElement.getElementsByTagName("conditionSet");
-      for (int i = 0; i < conditionSetNodes.getLength(); i++) {
-        Element conditionSetElement = (Element) conditionSetNodes.item(i);
-        List<ConditionData> conditionList = new ArrayList<>();
-        NodeList conditionNodes = conditionSetElement.getElementsByTagName("condition");
-        for (int j = 0; j < conditionNodes.getLength(); j++) {
-          Element conditionElement = (Element) conditionNodes.item(j);
-          conditionList.add(parseCondition(conditionElement));
-        }
-        conditions.add(conditionList);
+    List<List<ConditionData>> conditions = new ArrayList<>();
+    Element conditionsElement = getFirstElementByTagName(eventElement, "conditions");
+    NodeList conditionSetNodes = conditionsElement.getElementsByTagName("conditionSet");
+    for (int i = 0; i < conditionSetNodes.getLength(); i++) {
+      Element conditionSetElement = (Element) conditionSetNodes.item(i);
+      List<ConditionData> conditionList = new ArrayList<>();
+      NodeList conditionNodes = conditionSetElement.getElementsByTagName("condition");
+      for (int j = 0; j < conditionNodes.getLength(); j++) {
+        Element conditionElement = (Element) conditionNodes.item(j);
+        conditionList.add(parseCondition(conditionElement));
       }
-      return conditions;
+      conditions.add(conditionList);
+    }
+    return conditions;
   }
 
   /**
@@ -112,16 +113,16 @@ public class EventDataParser {
    */
   private List<OutcomeData> parseOutcomes(Element eventElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      List<OutcomeData> outcomes = new ArrayList<>();
-      Element outcomesElement = getFirstElementByTagName(eventElement, "outcomes");
-      if (outcomesElement != null) {
-        NodeList outcomeNodes = outcomesElement.getElementsByTagName("outcome");
-        for (int i = 0; i < outcomeNodes.getLength(); i++) {
-          Element outcomeElement = (Element) outcomeNodes.item(i);
-          outcomes.add(parseOutcome(outcomeElement));
-        }
+    List<OutcomeData> outcomes = new ArrayList<>();
+    Element outcomesElement = getFirstElementByTagName(eventElement, "outcomes");
+    if (outcomesElement != null) {
+      NodeList outcomeNodes = outcomesElement.getElementsByTagName("outcome");
+      for (int i = 0; i < outcomeNodes.getLength(); i++) {
+        Element outcomeElement = (Element) outcomeNodes.item(i);
+        outcomes.add(parseOutcome(outcomeElement));
       }
-      return outcomes;
+    }
+    return outcomes;
   }
 
   /**
@@ -133,10 +134,10 @@ public class EventDataParser {
    */
   private ConditionData parseCondition(Element conditionElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      String name = conditionElement.getAttribute("name");
-      Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
-      Map<String, String> stringProperties = extractStringProperties(conditionElement);
-      return new ConditionData(name, stringProperties, doubleProperties);
+    String name = conditionElement.getAttribute("name");
+    Map<String, Double> doubleProperties = extractDoubleProperties(conditionElement);
+    Map<String, String> stringProperties = extractStringProperties(conditionElement);
+    return new ConditionData(name, stringProperties, doubleProperties);
   }
 
   /**
@@ -148,10 +149,10 @@ public class EventDataParser {
    */
   private OutcomeData parseOutcome(Element outcomeElement)
       throws BlueprintParseException, EventParseException, PropertyParsingException {
-      String outcomeName = outcomeElement.getAttribute("name");
-      Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
-      Map<String, String> stringProperties = extractStringProperties(outcomeElement);
-      return new OutcomeData(outcomeName, stringProperties, doubleProperties);
+    String outcomeName = outcomeElement.getAttribute("name");
+    Map<String, Double> doubleProperties = extractDoubleProperties(outcomeElement);
+    Map<String, String> stringProperties = extractStringProperties(outcomeElement);
+    return new OutcomeData(outcomeName, stringProperties, doubleProperties);
   }
 
   /**
@@ -164,12 +165,12 @@ public class EventDataParser {
    */
   private Map<String, Double> extractDoubleProperties(Element element)
       throws PropertyParsingException {
-      Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
-      if (doubleParams != null) {
-        return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters",
-            "parameter");
-      }
-      return new HashMap<>();
+    Element doubleParams = getFirstElementByTagName(element, "doubleParameters");
+    if (doubleParams != null) {
+      return myPropertyParser.parseDoubleProperties(doubleParams, "doubleParameters",
+          "parameter");
+    }
+    return new HashMap<>();
   }
 
   /**

@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,30 +26,30 @@ import org.xml.sax.SAXException;
  * The file is located using: user directory + graphics data path + game + group + type + sprite
  * file.
  * </p>
+ * <p>
  * Example XML file:
- * <pre>
- * &lt;spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101"&gt;
- *   &lt;sprite name="Dino" x="944" y="0" w="97" h="101"&gt;
- *     &lt;frames&gt;
- *       &lt;frame name="DinoStart" x="944" y="0" width="97" height="101"/&gt;
- *       &lt;frame name="DinoDead" x="236" y="0" width="86" height="101"/&gt;
- *       &lt;frame name="DinoDuck1" x="354" y="0" width="118" height="60"/&gt;
- *       &lt;frame name="DinoDuck2" x="472" y="0" width="116" height="60"/&gt;
- *       &lt;frame name="DinoJump" x="590" y="0" width="88" height="94"/&gt;
- *       &lt;frame name="DinoRun1" x="708" y="0" width="87" height="94"/&gt;
- *       &lt;frame name="DinoRun2" x="826" y="0" width="88" height="94"/&gt;
- *     &lt;/frames&gt;
- *     &lt;animations&gt;
- *        &lt;animation name="walk" frameLen="0.15" frames="DinoRun1,DinoRun2"/&gt;
- *        &lt;animation name="jump" frameLen="0.15" frames="DinoJump"/&gt;
- *        &lt;animation name="dead" frameLen="0.15" frames="DinoDead"/&gt;
- *        &lt;animation name="duck-walk" frameLen="0.15" frames="DinoDuck1,DinoDuck2"/&gt;
- *     &lt;/animations&gt;
- *   &lt;/sprite&gt;
- * &lt;/spriteFile&gt;
- * </pre>
- *
- * @author Billy McCune
+ * </p>
+ * <pre>{@literal
+ * <spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
+ *   <sprite name="Dino" x="944" y="0" w="97" h="101">
+ *     <frames>
+ *       <frame name="DinoStart" x="944" y="0" width="97" height="101"/>
+ *       <frame name="DinoDead" x="236" y="0" width="86" height="101"/>
+ *       <frame name="DinoDuck1" x="354" y="0" width="118" height="60"/>
+ *       <frame name="DinoDuck2" x="472" y="0" width="116" height="60"/>
+ *       <frame name="DinoJump" x="590" y="0" width="88" height="94"/>
+ *       <frame name="DinoRun1" x="708" y="0" width="87" height="94"/>
+ *       <frame name="DinoRun2" x="826" y="0" width="88" height="94"/>
+ *     </frames>
+ *     <animations>
+ *       <animation name="walk" frameLen="0.15" frames="DinoRun1,DinoRun2"/>
+ *       <animation name="jump" frameLen="0.15" frames="DinoJump"/>
+ *       <animation name="dead" frameLen="0.15" frames="DinoDead"/>
+ *       <animation name="duck-walk" frameLen="0.15" frames="DinoDuck1,DinoDuck2"/>
+ *     </animations>
+ *   </sprite>
+ * </spriteFile>
+ * }</pre>
  */
 public class SpriteDataParser {
 
@@ -56,52 +58,71 @@ public class SpriteDataParser {
   private final String pathToSpriteData;
 
   /**
-   * Constructs a new {@code SpriteDataParser} by loading a properties file that defines the paths
-   * for the graphics data and sprite data.
-   * <p>
-   * The properties file is expected to be found at {@code oogasalad/file/fileStructure.properties}
-   * in the classpath.
-   * </p>
+   * Constructs a new {@code SpriteDataParser} by reading the properties file and loading the
+   * graphics and game data file paths.
    *
-   * @throws SpriteParseException if an error occurs while loading the properties file
+   * @throws SpriteParseException if an error occurs while loading the properties file or required
+   *                              properties are missing.
    */
   public SpriteDataParser() throws SpriteParseException {
-    String[] paths = loadDataPaths();
-    if (paths.length < 2) {
-      // Handle error appropriately; here we default to empty paths.
-      this.pathToGraphicsData = "";
-      this.pathToSpriteData = "";
-    } else {
-      this.pathToGraphicsData = paths[0];
-      this.pathToSpriteData = paths[1];
-    }
+    Map<String, String> dataPaths = loadDataPaths();
+    this.pathToGraphicsData =
+        System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
+            "graphicsDataPath");
+    ;
+    this.pathToSpriteData =
+        System.getProperty("user.dir") + File.separator + getRequiredProperty(dataPaths,
+            "spriteDataPath");
+    ;
   }
 
   /**
-   * Loads the required data paths from the properties file.
-   * <p>
-   * It retrieves the paths for the graphics data and the game (sprite) data, prepending the user
-   * directory to each path.
-   * </p>
+   * Loads required data paths from the properties file into a map.
    *
-   * @return an array where index 0 is the graphics data path and index 1 is the sprite data path.
-   * @throws SpriteParseException if an error occurs while reading the properties file.
+   * @return a map containing the keys "graphicsDataPath" and "spriteDataPath" mapped to their
+   * corresponding values.
+   * @throws SpriteParseException if the properties file is not found, or required properties are
+   *                              missing.
    */
-  private String[] loadDataPaths() throws SpriteParseException {
+  private Map<String, String> loadDataPaths() throws SpriteParseException {
     Properties properties = new Properties();
+    Map<String, String> fileStructureProperties = new HashMap<>();
     try (InputStream input = getClass().getClassLoader()
         .getResourceAsStream("oogasalad/file/fileStructure.properties")) {
+      if (input == null) {
+        throw new SpriteParseException(
+            "Properties file 'fileStructure.properties' not found in classpath.");
+      }
       properties.load(input);
+      for (String key : properties.stringPropertyNames()) {
+        fileStructureProperties.put(key, properties.getProperty(key));
+      }
     } catch (IOException e) {
-      throw new SpriteParseException(e.getMessage());
+      throw new SpriteParseException("Error reading properties file: " + e.getMessage(), e);
     }
-    String[] paths = new String[2];
-    paths[0] = System.getProperty("user.dir") + File.separator + properties.getProperty(
-        "path.to.graphics.data");
-    paths[1] = System.getProperty("user.dir") + File.separator + properties.getProperty(
-        "path.to.game.data");
-    return paths;
+
+    return fileStructureProperties;
   }
+
+  /**
+   * Retrieves a required property from the specified properties map and ensures it is present and
+   * non-empty.
+   *
+   * @param properties the map containing properties loaded from the file.
+   * @param key        the key whose corresponding property value is required.
+   * @return the non-null, trimmed property value associated with the given key.
+   * @throws SpriteParseException if the property for the given key is missing or its value is
+   *                              empty.
+   */
+  private String getRequiredProperty(Map<String, String> properties, String key)
+      throws SpriteParseException {
+    String value = properties.get(key);
+    if (value == null || value.trim().isEmpty()) {
+      throw new SpriteParseException("Required property '" + key + "' is missing or empty.");
+    }
+    return value.trim();
+  }
+
 
   /**
    * Retrieves a {@link SpriteData} record from an XML sprite file.
@@ -175,7 +196,7 @@ public class SpriteDataParser {
     }
   }
 
-    /**
+  /**
    * Retrieves the sprite sheet file from the spriteFile element's imagePath attribute.
    *
    * @param spriteFileElement the root element of the sprite file.

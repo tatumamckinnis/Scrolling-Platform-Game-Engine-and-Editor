@@ -44,6 +44,8 @@ public interface FileParserApi {
    * @throws LayerParseException       if an error occurs while parsing layer data.
    */
   public LevelData parseLevelFile(String filePath)
-      throws BlueprintParseException, SpriteParseException, HitBoxParseException, GameObjectParseException, LevelDataParseException, PropertyParsingException, EventParseException, LayerParseException;
+      throws BlueprintParseException, SpriteParseException,
+      HitBoxParseException, GameObjectParseException, LevelDataParseException,
+      PropertyParsingException, EventParseException, LayerParseException;
 
 }

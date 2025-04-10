@@ -3,7 +3,6 @@ package oogasalad.fileparser;
 import java.util.ArrayList;
 import java.util.List;
 import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.LayerParseException;
 import oogasalad.fileparser.records.GameObjectData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
