@@ -37,7 +37,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25"
         velocityX="0" velocityY="0">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
@@ -150,6 +150,21 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="LOSE_GAME">
+          <doubleParameters>
+            <parameter name="placeholder" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="physics" id="25">
+      <conditions>
+        <conditionSet>
+          <condition name="S_KEY_PRESSED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RESTART_LEVEL">
           <doubleParameters>
             <parameter name="placeholder" value="0.1"/>
           </doubleParameters>
