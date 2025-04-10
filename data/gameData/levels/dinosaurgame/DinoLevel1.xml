@@ -37,7 +37,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23"
         velocityX="0" velocityY="0">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
@@ -49,7 +49,7 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
-        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0">
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0">
         <properties>
           <stringProperties>
           </stringProperties>
@@ -79,20 +79,6 @@ interact with each other -->
       <conditions>
         <conditionSet>
           <condition name="W_KEY_PRESSED">
-            <doubleParameters>
-              <parameter name="Sensitivity" value="0.5"/>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-        <conditionSet>
-          <condition name="UP_ARROW_PRESSED">
-            <doubleParameters>
-              <parameter name="Sensitivity" value="0.5"/>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-        <conditionSet>
-          <condition name="SPACE_KEY_PRESSED">
             <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
             </doubleParameters>
@@ -140,14 +126,30 @@ interact with each other -->
     <event type="physics" id="23">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_PLAYER">
-            <doubleParameters/>
+          <condition name="COLLIDED_WITH_PLATFORM">
           </condition>
         </conditionSet>
       </conditions>
       <outcomes>
-        <outcome name="DESTROY_OBJECT">
-          <doubleParameters/>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR">
+          <doubleParameters>
+            <parameter name="placeholder" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="physics" id="24">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_PLAYER">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME">
+          <doubleParameters>
+            <parameter name="placeholder" value="0.1"/>
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>
