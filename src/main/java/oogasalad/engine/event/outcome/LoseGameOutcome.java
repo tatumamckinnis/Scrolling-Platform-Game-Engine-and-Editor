@@ -12,6 +12,7 @@
  */
 package oogasalad.engine.event.outcome;
 
+import java.util.Map;
 import java.util.logging.Logger;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
@@ -44,7 +45,9 @@ public class LoseGameOutcome implements Outcome {
    * @param gameObject the game object that triggered the loss (e.g., the player)
    */
   @Override
-  public void execute(GameObject gameObject) {
+  public void execute(GameObject gameObject,
+      Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     executor.endGame();
     LOG.info("You lose the game");
   }

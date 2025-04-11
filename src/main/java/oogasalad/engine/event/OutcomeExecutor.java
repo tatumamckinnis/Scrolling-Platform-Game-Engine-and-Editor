@@ -66,13 +66,13 @@ public class OutcomeExecutor {
   /**
    * executes outcome using parameter map using game controller
    *
-   * @param outcomeType
+   * @param outcomeData
    * @param gameObject
    */
-  public void executeOutcome(EventOutcome.OutcomeType outcomeType, GameObject gameObject)
+  public void executeOutcome(EventOutcome outcomeData, GameObject gameObject)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
-    Outcome outcome = outcomeMap.get(outcomeType);
-    outcome.execute(gameObject);
+   Outcome outcome = outcomeMap.get(outcomeData.outcomeType());
+    outcome.execute(gameObject, outcomeData.stringProperties(), outcomeData.doubleProperties());
   }
 
 

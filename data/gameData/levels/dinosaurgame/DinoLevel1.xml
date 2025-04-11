@@ -123,6 +123,9 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10" />
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>

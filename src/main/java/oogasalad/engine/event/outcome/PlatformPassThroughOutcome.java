@@ -1,6 +1,7 @@
 package oogasalad.engine.event.outcome;
 
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
@@ -25,7 +26,9 @@ public class PlatformPassThroughOutcome implements Outcome {
   }
 
   @Override
-  public void execute(GameObject player) {
+  public void execute(GameObject player,
+      Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     this.player = player;
     //player.setGrounded(false); // Assume ungrounded until proven otherwise
 

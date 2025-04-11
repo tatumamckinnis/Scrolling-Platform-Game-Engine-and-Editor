@@ -1,5 +1,6 @@
 package oogasalad.engine.event.outcome;
 
+import java.util.Map;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
@@ -22,7 +23,9 @@ public class DestroyObjectOutcome implements Outcome {
   }
 
   @Override
-  public void execute(GameObject obj) {
+  public void execute(GameObject obj,
+      Map<String, String> stringProperties,
+      Map<String, Double> doubleParameters) {
     gameExecutor.destroyGameObject(obj);
   }
 }

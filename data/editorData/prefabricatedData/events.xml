@@ -12,12 +12,19 @@
     </outcomes>
   </event>
 
-  <event>
 
-
+  <event type="input" id="DINO_POWER_UP" description="A Power-up for the dino.">
+    <conditions>
+      <conditionSet>
+        <condition />
+      </conditionSet>
+    </conditions>
+    <outcomes>
+      <outcome/>
+    </outcomes>
   </event>
 
-    <event type="physics" id="Restart-Level">
+    <event type="physics" id="Restart-Level" description="Restart the level to the beginning.">
       <conditions>
         <conditionSet>
           <condition name="R_KEY_PRESSED">

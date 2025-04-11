@@ -1,5 +1,6 @@
 package oogasalad.engine.event.outcome;
 
+import java.util.Map;
 import oogasalad.engine.model.object.GameObject;
 
 /**
@@ -10,7 +11,9 @@ import oogasalad.engine.model.object.GameObject;
 public class JumpOutcome implements Outcome {
 
   @Override
-  public void execute(GameObject gameObject) {
+  public void execute(GameObject gameObject,
+      Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     double dy = gameObject.getDoubleParams().getOrDefault("JumpAmount", 60.0);
     if (gameObject.isGrounded()) {
       gameObject.setYVelocity(-dy);

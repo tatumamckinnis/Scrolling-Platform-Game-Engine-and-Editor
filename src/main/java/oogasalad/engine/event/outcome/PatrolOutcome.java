@@ -1,5 +1,6 @@
 package oogasalad.engine.event.outcome;
 
+import java.util.Map;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
 
@@ -22,7 +23,9 @@ public class PatrolOutcome implements Outcome {
   }
 
   @Override
-  public void execute(GameObject gameObject) {
+  public void execute(GameObject gameObject,
+      Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     double dx = gameObject.getDoubleParams().getOrDefault("MovementAmount", 4.0);
     if (gameObject.getXPosition() < 0) {
       gameObject.setXVelocity(dx);

@@ -1,6 +1,7 @@
 package oogasalad.engine.event.outcome;
 
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
@@ -23,7 +24,9 @@ public class GravityOutcome implements Outcome {
   }
 
   @Override
-  public void execute(GameObject gameObject) {
+  public void execute(GameObject gameObject,
+      Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     double dy = gameObject.getDoubleParams().getOrDefault("ApplyGravityAmount", 5.0);
     List<GameObject> collisions = collisionHandler.getCollisions(gameObject);
     if (collisions.isEmpty()) {
