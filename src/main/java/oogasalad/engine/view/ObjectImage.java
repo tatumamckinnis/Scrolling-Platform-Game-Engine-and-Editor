@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
-import oogasalad.fileparser.records.FrameData;
 
 /**
  * The {@code ObjectImage} class represents a visual object in the game world, composed of an
