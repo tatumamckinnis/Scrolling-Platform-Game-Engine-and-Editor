@@ -81,7 +81,7 @@ public class BlueprintDataParserTest {
 
     // Create a dummy sprite file for use by BlueprintDataParser.
     // In our blueprint XML we will use:
-    // gameName = "TestGame", group = "GroupA", shape = "player", spriteFile = "player.png"
+    // gameName = "TestGame", group = "GroupA", type = "player", spriteFile = "player.png"
     createDummySpriteFile();
   }
 
@@ -182,10 +182,16 @@ public class BlueprintDataParserTest {
             "velocityX='1.5' " +
             "velocityY='2.5' " +
             "rotation='45' " +
-            "shape='player' " +
+            "type='player' " +
             "spriteName='PlayerSprite' " +
             "spriteFile='player.png' " +
-            "eventIDs='E1,E2'>" +
+            "eventIDs='E1,E2' " +
+            // Added hitbox attributes:
+            "hitBoxShape='rectangle' " +
+            "hitBoxWidth='100' " +
+            "hitBoxHeight='200' " +
+            "spriteDx='5' " +
+            "spriteDy='5'>" +
             "<displayedProperties propertyList='prop1,prop2'/>" +
             "<doubleProperties></doubleProperties>" +
             "<stringProperties></stringProperties>" +
@@ -258,7 +264,7 @@ public class BlueprintDataParserTest {
             "velocityX='1.5' " +
             "velocityY='2.5' " +
             "rotation='45' " +
-            "shape='player' " +
+            "type='player' " +
             "spriteName='PlayerSprite' " +
             "spriteFile='player.png'>" +
             "<displayedProperties propertyList='prop1,prop2'/>" +

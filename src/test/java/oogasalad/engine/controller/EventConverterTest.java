@@ -28,7 +28,7 @@ class EventConverterTest {
     //EventData eventData1 = new EventData("input", 20, );
     //EventData eventData2 = new EventData();
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
-    BlueprintData blueprintData1 = new BlueprintData(1, 0,0,"Mario", "Player", "Player", spriteData1, hitBoxData1, eventDataList1, new HashMap<>(), new HashMap<>(), new ArrayList<>());
+    BlueprintData blueprintData1 = new BlueprintData(1, 0,0, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1, eventDataList1, new HashMap<>(), new HashMap<>(), new ArrayList<>());
     GameObjectData gameObject1 = new GameObjectData(
         1,
         new UUID(4, 1),

@@ -12,8 +12,10 @@ import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;
 import oogasalad.engine.model.object.Sprite;
+import oogasalad.fileparser.CameraDataParser;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.HitBoxData;
@@ -36,12 +38,14 @@ class DefaultEngineFileTest {
         new FrameData("Mario Paused", 1, 1, 2, 4), new ArrayList<>(),
         new ArrayList<>());
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
-    bluePrintMap.put(1, new BlueprintData(1, 1, 1, "Mario", "Player", "Player", spriteData1, hitBoxData1,
+    bluePrintMap.put(1, new BlueprintData(1, 1, 1, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1,
         new ArrayList<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>()));
     GameObjectData gameObject1 = new GameObjectData(1, new UUID(4, 1), 1, 1, 0);
     List<GameObjectData> gameObjects = new ArrayList<>();
     gameObjects.add(gameObject1);
-    levelData = new LevelData("Mario", 0, 500, 500, 0, bluePrintMap, gameObjects);
+    CameraData cameraData = new CameraData("tracker", new HashMap<>(), new HashMap<>());
+
+    levelData = new LevelData("Mario", 0, 500, 500, 0,cameraData, bluePrintMap, gameObjects);
   }
 
 

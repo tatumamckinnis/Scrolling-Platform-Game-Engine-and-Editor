@@ -1,6 +1,7 @@
-package oogasalad.fileparser.records;
+package oogasalad.editor.saver.api;
 
 import java.util.List;
+import oogasalad.fileparser.records.SpriteData;
 
 /**
  * Represents a sprite sheet which defines the image source and its associated sprites.

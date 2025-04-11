@@ -69,11 +69,11 @@ public class CameraDataParserTest {
    * Tests that parseCameraData correctly parses a valid cameraData XML and returns a CameraData record.
    *
    * <p>This test represents a "One" scenario where a single valid cameraData element is present.
-   * The XML includes a cameraData element with a shape attribute, nested double and string properties.
-   * The parser should return a CameraData record with the correct camera shape and property mappings.
+   * The XML includes a cameraData element with a type attribute, nested double and string properties.
+   * The parser should return a CameraData record with the correct camera type and property mappings.
    * The test verifies:
    * <ul>
-   *   <li>The camera shape is correctly parsed.</li>
+   *   <li>The camera type is correctly parsed.</li>
    *   <li>The string property "mode" is mapped to "default".</li>
    *   <li>The double property "fov" is mapped to 75.0.</li>
    * </ul>
@@ -85,7 +85,7 @@ public class CameraDataParserTest {
   public void parseCameraData_ValidXML_ReturnsCameraData() throws Exception {
     String xml =
         "<root>" +
-            "<cameraData shape='perspective'>" +
+            "<cameraData type='perspective'>" +
             "<doubleProperties>" +
             "<property name='fov'>75.0</property>" +
             "</doubleProperties>" +
@@ -99,8 +99,8 @@ public class CameraDataParserTest {
 
     CameraData cameraData = parser.parseCameraData(doc.getDocumentElement());
 
-    // Verify that the camera shape is parsed correctly.
-    assertEquals("perspective", cameraData.type(), "Camera shape should be 'perspective'");
+    // Verify that the camera type is parsed correctly.
+    assertEquals("perspective", cameraData.type(), "Camera type should be 'perspective'");
 
     // Verify that the string properties are parsed correctly.
     Map<String, String> stringProps = cameraData.stringProperties();
