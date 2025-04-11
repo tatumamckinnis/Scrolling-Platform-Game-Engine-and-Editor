@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -66,4 +67,10 @@ public interface GameManagerAPI {
    * @throws FileNotFoundException thrown if invalid level file.
    */
   void displayGameObjects() throws RenderingException, FileNotFoundException;
+
+  /**
+   * removes a game object image from the level view scene
+   * @param gameObject the game object to remove from the view
+   */
+  void removeGameObjectImage(ImmutableGameObject gameObject);
 }

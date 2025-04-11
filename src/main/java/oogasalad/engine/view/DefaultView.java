@@ -103,6 +103,15 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
+   * removes an object image from the level display scene
+   *
+   * @param gameObject the game object to remove
+   */
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    currentDisplay.removeGameObjectImage(gameObject);
+  }
+
+  /**
    * Set the current inputs.
    *
    * @param currentInputs an arraylist to point to.

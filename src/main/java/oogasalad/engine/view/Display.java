@@ -60,4 +60,12 @@ public abstract class Display extends Group {
   public boolean isCurrentlyVisible() {
     return this.isVisible();
   }
+
+  /**
+   * removes game object from the level view scene
+   * @param gameObject the game object that should be remoed
+   */
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    return ;
+  }
 }
