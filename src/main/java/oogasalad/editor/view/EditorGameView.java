@@ -174,32 +174,54 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up input based event handlers for zooming in and out of the current grid.
+   * Sets up zoom behavior by adding a scroll listener. Zooming is triggered when the user scrolls
+   * while holding the Control key.
    */
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
-        double delta = event.getDeltaY();
-
-        zoomScale = 1 / zoomScale;
-        if (delta < 0) {
-          zoomScale += ZOOM_SPEED;
-        } else {
-          zoomScale -= ZOOM_SPEED;
-        }
-        if (zoomScale < MIN_ZOOM) {
-          zoomScale = MIN_ZOOM;
-        }
-        zoomScale = 1 / zoomScale;
-
-        updateCameraCoordinates();
-
-        drawGrid();
-        redrawObjects();
-
+        handleZoomScroll(event.getDeltaY());
         event.consume();
       }
     });
+  }
+
+  /**
+   * Handles the logic for zooming in or out based on the scroll delta. Updates the zoom scale,
+   * camera position, grid, and redraws all objects.
+   *
+   * @param deltaY the amount of scroll (positive or negative)
+   */
+  private void handleZoomScroll(double deltaY) {
+    zoomScale = calculateNewZoomScale(deltaY, zoomScale);
+    updateCameraCoordinates();
+    drawGrid();
+    redrawObjects();
+  }
+
+  /**
+   * Calculates the new zoom scale based on the scroll delta and current zoom scale. Applies
+   * constraints to avoid zooming beyond set minimum or maximum limits.
+   *
+   * @param deltaY           the scroll delta indicating zoom direction
+   * @param currentZoomScale the current zoom scale before applying scroll
+   * @return the adjusted zoom scale after clamping within valid bounds
+   */
+  private double calculateNewZoomScale(double deltaY, double currentZoomScale) {
+    double inverseZoom = 1.0 / currentZoomScale;
+
+    if (deltaY < 0) {
+      inverseZoom += ZOOM_SPEED;
+    } else {
+      inverseZoom -= ZOOM_SPEED;
+    }
+
+    double maxInverseZoom = 1.0 / MIN_ZOOM;
+    double minInverseZoom = 1.0 / 20.0;
+
+    inverseZoom = Math.max(minInverseZoom, Math.min(inverseZoom, maxInverseZoom));
+
+    return 1.0 / inverseZoom;
   }
 
   /**
@@ -471,32 +493,53 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up listeners on the given image to handle load success and failure. Triggers redraws upon
-   * load completion or error detection.
+   * Sets up listeners for an image to handle loading progress and error events.
    *
    * @param image the image to monitor
-   * @param url   the URL the image was loaded from
+   * @param url   the URL the image is being loaded from
    */
   private void setupImageListeners(Image image, String url) {
-    image.errorProperty().addListener((obs, oldErr, newErr) -> {
-      if (newErr) {
-        LOG.error("Failed to load image from {}: {}", url,
-            image.getException() != null ? image.getException().getMessage() : "Unknown error");
+    image.errorProperty()
+        .addListener((obs, oldErr, newErr) -> handleImageError(image, url, newErr));
+    image.progressProperty().addListener(
+        (obs, oldProgress, newProgress) -> handleImageProgress(image, url, newProgress));
+  }
+
+  /**
+   * Handles the logic when an image loading error occurs. Logs the error and triggers a redraw to
+   * display a placeholder.
+   *
+   * @param image   the image that failed to load
+   * @param url     the source URL of the image
+   * @param isError whether an error occurred during loading
+   */
+  private void handleImageError(Image image, String url, boolean isError) {
+    if (isError) {
+      String errorMessage =
+          (image.getException() != null) ? image.getException().getMessage() : "Unknown error";
+      LOG.error("Failed to load image from {}: {}", url, errorMessage);
+      redrawObjects();
+    }
+  }
+
+  /**
+   * Handles image load progress updates. When loading completes, it checks for errors and triggers
+   * a redraw accordingly.
+   *
+   * @param image    the image being loaded
+   * @param url      the URL the image was loaded from
+   * @param progress the loading progress value
+   */
+  private void handleImageProgress(Image image, String url, Number progress) {
+    if (progress != null && progress.doubleValue() >= 1.0) {
+      if (!image.isError()) {
+        LOG.trace("Image loaded successfully: {}", url);
+        redrawObjects();
+      } else {
+        LOG.error("Error detected after image load completion signal for URL: {}", url);
         redrawObjects();
       }
-    });
-
-    image.progressProperty().addListener((obs, oldProgress, newProgress) -> {
-      if (newProgress != null && newProgress.doubleValue() >= 1.0) {
-        if (!image.isError()) {
-          LOG.trace("Image loaded successfully: {}", url);
-          redrawObjects();
-        } else {
-          LOG.error("Error detected after image load completion signal for URL: {}", url);
-          redrawObjects();
-        }
-      }
-    });
+    }
   }
 
 

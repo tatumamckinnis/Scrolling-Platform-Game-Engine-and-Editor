@@ -235,8 +235,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Loads the Identity + Hitbox data from the model for the currently selected object, and displays
-   * it in our fields. Ensures execution on the JavaFX Application thread.
+   * Refreshes all editable fields in the UI by fetching the latest data for the selected object. If
+   * no object is selected, clears all fields. Runs on the JavaFX application thread.
    */
   private void refreshFields() {
     Platform.runLater(() -> {
@@ -244,29 +244,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         clearFieldsInternal();
         return;
       }
-
       try {
-        String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
-            .getName(currentObjectId);
-        String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
-            .getGroup(currentObjectId);
-
-        nameField.setText(currentName == null ? "" : currentName);
-        groupField.setText(currentGroup == null ? "" : currentGroup);
-
-        int x = editorController.getEditorDataAPI().getHitboxDataAPI().getX(currentObjectId);
-        int y = editorController.getEditorDataAPI().getHitboxDataAPI().getY(currentObjectId);
-        int w = editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(currentObjectId);
-        int h = editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(currentObjectId);
-        String shape = editorController.getEditorDataAPI().getHitboxDataAPI()
-            .getShape(currentObjectId);
-
-        xField.setText(String.valueOf(x));
-        yField.setText(String.valueOf(y));
-        widthField.setText(String.valueOf(w));
-        heightField.setText(String.valueOf(h));
-        shapeField.setText(shape == null ? "" : shape);
-
+        populateIdentityFields();
+        populateHitboxFields();
       } catch (Exception e) {
         LOG.error("Error refreshing properties fields for object {}: {}", currentObjectId,
             e.getMessage(), e);
@@ -274,6 +254,37 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       }
     });
   }
+
+  /**
+   * Fetches and populates the identity fields (name and group) for the selected object.
+   */
+  private void populateIdentityFields() {
+    String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getName(currentObjectId);
+    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getGroup(currentObjectId);
+
+    nameField.setText(Objects.toString(currentName, ""));
+    groupField.setText(Objects.toString(currentGroup, ""));
+  }
+
+  /**
+   * Fetches and populates the hitbox fields (X, Y, Width, Height, Shape) for the selected object.
+   */
+  private void populateHitboxFields() {
+    int x = editorController.getEditorDataAPI().getHitboxDataAPI().getX(currentObjectId);
+    int y = editorController.getEditorDataAPI().getHitboxDataAPI().getY(currentObjectId);
+    int w = editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(currentObjectId);
+    int h = editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(currentObjectId);
+    String shape = editorController.getEditorDataAPI().getHitboxDataAPI().getShape(currentObjectId);
+
+    xField.setText(String.valueOf(x));
+    yField.setText(String.valueOf(y));
+    widthField.setText(String.valueOf(w));
+    heightField.setText(String.valueOf(h));
+    shapeField.setText(Objects.toString(shape, ""));
+  }
+
 
   /**
    * Clears all the property fields. Ensures execution on the JavaFX Application thread.

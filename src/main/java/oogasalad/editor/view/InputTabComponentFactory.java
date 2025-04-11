@@ -516,28 +516,14 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Fetches the list of conditions for the current object and event from the controller, and
-   * populates the conditions list view with sorted condition names. Clears the list if no
-   * conditions are found or if an error occurs.
+   * Fetches the list of conditions for the currently selected object and event. If fetching fails,
+   * logs the error, shows an alert, and clears the list view. On success, passes the conditions to
+   * be populated in the UI.
    */
   private void fetchAndPopulateConditions() {
+    List<ConditionType> conditions = null;
     try {
-      List<ConditionType> conditions = editorController.getConditionsForEvent(currentObjectId,
-          currentEventId);
-      if (conditionsListView != null) {
-        if (conditions != null && !conditions.isEmpty()) {
-          List<String> conditionNames = conditions.stream()
-              .map(ConditionType::name)
-              .sorted()
-              .collect(Collectors.toList());
-          conditionsListView.getItems().setAll(conditionNames);
-          LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
-              conditionNames.size());
-        } else {
-          conditionsListView.getItems().clear();
-          LOG.debug("No conditions found for event '{}'.", currentEventId);
-        }
-      }
+      conditions = editorController.getConditionsForEvent(currentObjectId, currentEventId);
     } catch (Exception e) {
       LOG.error("Controller failed to get conditions for event '{}': {}", currentEventId,
           e.getMessage(), e);
@@ -545,8 +531,38 @@ public class InputTabComponentFactory implements EditorViewListener {
       if (conditionsListView != null) {
         conditionsListView.getItems().clear();
       }
+      return;
+    }
+
+    populateConditionList(conditions);
+  }
+
+  /**
+   * Populates the condition list view with the given list of conditions. Sorts the condition names
+   * alphabetically and clears the list if empty or null.
+   *
+   * @param conditions the list of ConditionType values to display
+   */
+  private void populateConditionList(List<ConditionType> conditions) {
+    if (conditionsListView == null) {
+      LOG.warn("ConditionsListView is null, cannot populate.");
+      return;
+    }
+
+    if (conditions != null && !conditions.isEmpty()) {
+      List<String> conditionNames = conditions.stream()
+          .map(ConditionType::name)
+          .sorted()
+          .collect(Collectors.toList());
+      conditionsListView.getItems().setAll(conditionNames);
+      LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
+          conditionNames.size());
+    } else {
+      conditionsListView.getItems().clear();
+      LOG.debug("No conditions found or list was null for event '{}'.", currentEventId);
     }
   }
+
 
   /**
    * Refreshes the outcomes list based on the currently selected object and event. Ensures execution
@@ -557,8 +573,9 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the outcomes list for the currently selected object and event. Clears the list and
-   * repopulates it with formatted outcome strings.
+   * Refreshes the outcomes list for the currently selected object and event. Clears the list,
+   * fetches outcomes from the controller, and populates the list view. If fetching fails or no
+   * outcomes are found, the list is cleared and logged accordingly.
    */
   private void refreshOutcomesListInternal() {
     clearListsInternal(false, false, true);
@@ -567,19 +584,16 @@ public class InputTabComponentFactory implements EditorViewListener {
       LOG.trace("Outcomes list not refreshed (no object/event selected).");
       return;
     }
-
     LOG.trace("Refreshing outcomes for event: {}", currentEventId);
+
     List<OutcomeType> outcomes = fetchOutcomes();
 
-    if (outcomes == null) {
-      if (outcomesListView != null) {
-        outcomesListView.getItems().clear();
+    if (outcomes == null || outcomes.isEmpty()) {
+      if (outcomes == null) {
+        LOG.debug("Outcome fetch failed for event '{}'. List remains cleared.", currentEventId);
+      } else {
+        LOG.debug("No outcomes found for event '{}'. Clearing list.", currentEventId);
       }
-      return;
-    }
-
-    if (outcomes.isEmpty()) {
-      LOG.debug("No outcomes found for event '{}'.", currentEventId);
       if (outcomesListView != null) {
         outcomesListView.getItems().clear();
       }
@@ -589,6 +603,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     List<String> displayStrings = formatOutcomeDisplayStrings(outcomes);
     populateOutcomesList(displayStrings);
   }
+
 
   /**
    * Fetches the list of outcomes for the current object and event from the controller.
