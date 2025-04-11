@@ -7,8 +7,7 @@ import oogasalad.fileparser.records.FrameData;
  * An immutable interface for accessing read-only properties of a {@link GameObject}.
  *
  * <p>This interface defines the contract for game object representations that are safe to pass to
- * the view layer. Implementations like {@link ViewObject} provide access to essential rendering
- * information without exposing internal mutability.
+ * the view layer.
  *
  * <p>This promotes encapsulation and ensures that the view cannot alter the game state.
  */
@@ -19,23 +18,28 @@ public interface ImmutableGameObject {
    *
    * @return UUID as a string
    */
-  String getUuid();
+  String getUUID();
 
   /**
    * Returns the x-coordinate of the game object's hitbox.
    *
    * @return x-position in pixels
    */
-  int getX();
+  int getXPosition();
 
   /**
    * Returns the y-coordinate of the game object's hitbox.
    *
    * @return y-position in pixels
    */
-  int getY();
+  int getYPosition();
 
-  int getZ();
+  /**
+   * Returns the z-coordinate of the game object
+   *
+   * @return z-coordinate
+   */
+  int getLayer();
 
   /**
    * Returns the current frame data used for rendering the object.

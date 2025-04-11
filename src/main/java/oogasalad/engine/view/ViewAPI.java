@@ -3,7 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.input.KeyCode;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
@@ -36,7 +36,7 @@ public interface ViewAPI {
    * @throws RenderingException if there is an error during the rendering process, such as invalid
    *                            sprite resources, rendering context errors, or memory limitations
    */
-  void renderGameObjects(List<ViewObject> gameObjects, Camera camera)
+  void renderGameObjects(List<ImmutableGameObject> gameObjects, Camera camera)
       throws RenderingException, FileNotFoundException;
 
   /**

@@ -19,7 +19,7 @@ import oogasalad.fileparser.records.FrameData;
  *
  * @author Alana Zinkin
  */
-public abstract class GameObject {
+public abstract class GameObject implements ImmutableGameObject {
 
   private UUID uuid;
   private String type;
@@ -82,6 +82,7 @@ public abstract class GameObject {
   /**
    * @return the UUID of the object as a string
    */
+  @Override
   public String getUUID() {
     return uuid.toString();
   }
@@ -96,6 +97,7 @@ public abstract class GameObject {
   /**
    * @return the render layer this object belongs to
    */
+  @Override
   public int getLayer() {
     return layer;
   }
@@ -119,6 +121,7 @@ public abstract class GameObject {
   /**
    * @return x-coordinate of the hitbox
    */
+  @Override
   public int getXPosition() {
     return hitBox.getX();
   }
@@ -126,6 +129,7 @@ public abstract class GameObject {
   /**
    * @return y-coordinate of the hitbox
    */
+  @Override
   public int getYPosition() {
     return hitBox.getY();
   }
@@ -133,6 +137,7 @@ public abstract class GameObject {
   /**
    * @return width of the hitbox
    */
+  @Override
   public int getHitBoxWidth() {
     return hitBox.getWidth();
   }
@@ -140,6 +145,7 @@ public abstract class GameObject {
   /**
    * @return height of the hitbox
    */
+  @Override
   public int getHitBoxHeight() {
     return hitBox.getHeight();
   }
@@ -149,6 +155,7 @@ public abstract class GameObject {
   /**
    * @return x-offset of the sprite relative to the hitbox
    */
+  @Override
   public int getSpriteDx() {
     return spriteInfo.getSpriteDx();
   }
@@ -156,6 +163,7 @@ public abstract class GameObject {
   /**
    * @return y-offset of the sprite relative to the hitbox
    */
+  @Override
   public int getSpriteDy() {
     return spriteInfo.getSpriteDy();
   }
@@ -163,6 +171,7 @@ public abstract class GameObject {
   /**
    * @return the current frame of the sprite for rendering
    */
+  @Override
   public FrameData getCurrentFrame() {
     return spriteInfo.getCurrentSprite();
   }
@@ -248,6 +257,7 @@ public abstract class GameObject {
   /**
    * @return File for the sprite
    */
+  @Override
   public File getSpriteFile() {
     return spriteInfo.getSpriteFile();
   }

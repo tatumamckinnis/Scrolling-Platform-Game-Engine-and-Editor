@@ -2,7 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.exceptions.RenderingException;
@@ -44,7 +44,7 @@ public class LevelDisplay extends Display {
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<ViewObject> gameObjects)
+  public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     List<ObjectImage> sprites = myConverter.convertObjectsToImages(gameObjects);
     for (ObjectImage sprite : sprites) {
