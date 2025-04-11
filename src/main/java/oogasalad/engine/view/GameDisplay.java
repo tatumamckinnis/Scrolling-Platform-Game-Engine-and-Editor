@@ -64,4 +64,9 @@ public class GameDisplay extends Display {
   public void shiftNode(Camera myCamera) {
     myLevelView.shiftNode(myCamera);
   }
+
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    myLevelView.removeGameObjectImage(gameObject);
+  }
 }

@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
@@ -20,6 +23,9 @@ import oogasalad.fileparser.records.FrameData;
  * into an {@link ImageView}.
  */
 public class ViewObjectToImageConverter {
+
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackageName() + "." + "Exceptions");
 
   private final Map<String, ObjectImage> UUIDToImageMap;
 
@@ -76,5 +82,20 @@ public class ViewObjectToImageConverter {
     imageView.setFitHeight(viewport.getHeight());
     imageView.setViewOrder(viewObject.getLayer());
     return imageView;
+  }
+
+  /**
+   * retrieves the exact image object from the map
+   *
+   * @param gameObject the Immutable game object
+   * @return the Object Image that's present within the scene
+   * @throws NoSuchElementException if the game object is not found within the image map
+   */
+  public ObjectImage retrieveImageObject(ImmutableGameObject gameObject)
+      throws NoSuchElementException {
+    if (UUIDToImageMap.containsKey(gameObject.getUUID())) {
+      return UUIDToImageMap.get(gameObject.getUUID());
+    }
+    throw new NoSuchElementException(EXCEPTIONS.getString("NoImage"));
   }
 }
