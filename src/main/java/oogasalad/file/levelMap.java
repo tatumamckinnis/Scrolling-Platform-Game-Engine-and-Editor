@@ -25,7 +25,6 @@ public class levelMap {
     File levelsDir = new File(baseDirPath);
     if (!levelsDir.isDirectory()) {
       LOG.info("Provided path is not a valid directory: " + baseDirPath);
-      ;
       return new HashMap<>();
     }
     return getGameMap(levelsDir);

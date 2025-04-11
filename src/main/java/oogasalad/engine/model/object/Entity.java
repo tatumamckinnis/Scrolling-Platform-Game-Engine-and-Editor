@@ -6,11 +6,6 @@ import java.util.UUID;
 import oogasalad.engine.event.Event;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import oogasalad.engine.event.Event;
-
 /**
  * Represents a general-purpose entity within the game world.
  *
