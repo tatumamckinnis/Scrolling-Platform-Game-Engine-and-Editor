@@ -1,4 +1,4 @@
-package oogasalad.fileParsertests;
+package oogasalad.fileparser;
 /**
  * JUnit tests for configAPI.
  *

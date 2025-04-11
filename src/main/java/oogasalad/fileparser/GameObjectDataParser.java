@@ -60,6 +60,9 @@ public class GameObjectDataParser {
         }
         index++;
       }
+      if (gameObjectDataList.isEmpty() && !coordinates.trim().isEmpty()) {
+        throw new GameObjectParseException("Invalid coordinate format: " + coordinates);
+      }
 
       return gameObjectDataList;
 

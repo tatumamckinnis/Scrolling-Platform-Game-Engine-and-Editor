@@ -39,7 +39,7 @@ class DefaultEngineFileTest {
         new FrameData("Mario Paused", 1, 1, 2, 4), new ArrayList<>(),
         new ArrayList<>());
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
-    bluePrintMap.put(1, new BlueprintData(1, 1, 1, 1, "Mario", "Player", "Player", spriteData1, hitBoxData1,
+    bluePrintMap.put(1, new BlueprintData(1, 1, 1, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1,
         new ArrayList<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>()));
     UUID expectedUUID = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
     GameObjectData gameObject1 = new GameObjectData(1, expectedUUID, 1, 1, 0);

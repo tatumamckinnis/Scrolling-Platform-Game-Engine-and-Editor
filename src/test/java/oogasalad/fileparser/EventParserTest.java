@@ -1,4 +1,4 @@
-package oogasalad.fileParsertests;
+package oogasalad.fileparser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,10 +11,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import oogasalad.exceptions.BlueprintParseException;
-import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.fileparser.EventDataParser;
 import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.OutcomeData;

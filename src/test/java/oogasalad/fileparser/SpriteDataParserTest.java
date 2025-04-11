@@ -1,4 +1,4 @@
-package oogasalad.fileParsertests;
+package oogasalad.fileparser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import oogasalad.exceptions.SpriteParseException;
-import oogasalad.fileparser.SpriteDataParser;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteData;
@@ -27,7 +26,7 @@ import oogasalad.fileparser.records.SpriteRequest;
  * path.to.graphics.data=oogasalad_team03/data/graphicsData
  * </pre>
  * The sprite XML file is expected at:
- * <code>{user.dir}/oogasalad_team03/data/gameData/gameObjects/[gameName]/[group]/[type]/[spriteFile]</code>
+ * <code>{user.dir}/oogasalad_team03/data/gameData/gameObjects/[gameName]/[group]/[shape]/[spriteFile]</code>
  * and the sprite sheet image at:
  * <code>{user.dir}/oogasalad_team03/data/graphicsData/[gameName]/[spriteSheet file]</code>.
  * </p>
@@ -81,7 +80,7 @@ public class SpriteDataParserTest {
         .toFile();
     graphicsDir.mkdirs();
 
-    // For this test, we'll use a game called "TestGame" with group "group" and type "type".
+    // For this test, we'll use a game called "TestGame" with group "group" and shape "shape".
     String gameName = "TestGame";
     String group = "group";
     String type = "type";
@@ -89,7 +88,7 @@ public class SpriteDataParserTest {
 
     // Create the sprite XML file under gameDataDir.
     // Full expected path:
-    // {user.dir}/oogasalad_team03/data/gameData/gameObjects/TestGame/group/type/sprite.xml
+    // {user.dir}/oogasalad_team03/data/gameData/gameObjects/TestGame/group/shape/sprite.xml
     File spriteDir = new File(gameDataDir, gameName + File.separator + group + File.separator + type);
     spriteDir.mkdirs();
     File spriteFile = new File(spriteDir, spriteFileName);

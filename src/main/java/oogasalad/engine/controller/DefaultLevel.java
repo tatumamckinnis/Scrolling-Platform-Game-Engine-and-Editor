@@ -27,11 +27,10 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultLevel implements LevelAPI {
 
-  private Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
   private final FileParserApi myFileParser;
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
-      System.getProperty("user.dir") + "/oogasalad_team03/data/gameData/levels/";
+      System.getProperty("user.dir") + "/data/gameData/levels/";
 
   /**
    * Default level constructor
@@ -51,7 +50,6 @@ public class DefaultLevel implements LevelAPI {
   @Override
   public void selectGame(String filePath)
       throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException {
-    LOG.info(LEVEL_FILE_PATH);
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }
