@@ -1,6 +1,7 @@
 package oogasalad.engine.controller;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,8 @@ class DefaultEngineFileTest {
 
 
   @Test
-  void loadFileToEngine() {
+  void loadFileToEngine()
+      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     List<GameObject> expectedObjects = new ArrayList<>();
 
     // Setup sprite and hitbox
