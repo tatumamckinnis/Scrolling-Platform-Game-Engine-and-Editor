@@ -189,5 +189,34 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
+
+
+
+    <event type="input" id="dinoPowerUp" description="A Power-up for the dino.">
+      <conditions>
+        <conditionSet>
+          <condition name="P_KEY_PRESSED"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SWITCH_SPRITES">
+          <stringParameters>
+            <parameter name="bluePrintId" value=""/>
+            <parameter name="powerUpName" value="superDino"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="input" id="superMove" description="A faster movement for the dino.">
+      <conditions>
+        <conditionSet>
+          <condition name="HAS_POWER_UP">
+
+          </condition>
+        </conditionSet>
+      </conditions>
+
+    </event>
   </events>
 </map>
