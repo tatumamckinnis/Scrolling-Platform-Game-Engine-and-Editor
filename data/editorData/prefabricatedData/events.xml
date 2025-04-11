@@ -1,0 +1,30 @@
+<!--The id is a string in the data so we can make the id the name for the editor in the prefabs-->
+<events>
+
+  <event>
+    <conditions>
+      <conditionSet>
+        <condition/>
+      </conditionSet>
+    </conditions>
+    <outcomes>
+      <outcome/>
+    </outcomes>
+  </event>
+
+    <event type="physics" id="Restart-Level">
+      <conditions>
+        <conditionSet>
+          <condition name="R_KEY_PRESSED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RESTART_LEVEL">
+          <doubleParameters>
+            <parameter name="placeholder" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+</events>
