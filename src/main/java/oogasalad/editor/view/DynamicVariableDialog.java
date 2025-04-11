@@ -67,7 +67,8 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
           .add(Objects.requireNonNull(getClass().getResource(CSS_PATH)).toExternalForm());
       getDialogPane().getStyleClass().add("dynamic-variable-dialog");
     } catch (Exception e) {
-      LOG.warn("Could not load CSS for dynamic variable dialog: {}. Using default styles.", e.getMessage());
+      LOG.warn("Could not load CSS for dynamic variable dialog: {}. Using default styles.",
+          e.getMessage());
     }
 
     this.addButtonType = new ButtonType(uiBundle.getString(KEY_DIALOG_ADD_BUTTON),
@@ -82,7 +83,8 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
     valueField = (TextField) grid.lookup("#varValueField");
     descriptionField = (TextField) grid.lookup("#varDescField");
 
-    if (nameField == null || typeComboBox == null || valueField == null || descriptionField == null) {
+    if (nameField == null || typeComboBox == null || valueField == null
+        || descriptionField == null) {
       String errorMsg = "Could not find one or more input fields in the dialog grid. Check IDs.";
       LOG.error(errorMsg);
       showErrorAlert("Dialog Initialization Error", errorMsg);
@@ -109,7 +111,8 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
     nameField.setPromptText(uiBundle.getString(KEY_DIALOG_VAR_NAME));
     nameField.setPrefWidth(DIALOG_INPUT_WIDTH);
 
-    typeComboBox = new ComboBox<>(FXCollections.observableArrayList("int", "double", "boolean", "string"));
+    typeComboBox = new ComboBox<>(
+        FXCollections.observableArrayList("int", "double", "boolean", "string"));
     typeComboBox.setId("varTypeCombo");
     typeComboBox.setValue("double");
     typeComboBox.setPrefWidth(DIALOG_INPUT_WIDTH);
@@ -185,15 +188,17 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
   }
 
   /**
-   * Creates a {@link DynamicVariable} based on the input field values.
+   * Attempts to create a DynamicVariable from the current state of the input fields.
    *
-   * @return a new DynamicVariable instance
-   * @throws IllegalStateException if required fields are not initialized
-   * @throws IllegalArgumentException if required values are empty
-   * @throws NullPointerException if type selection is null
+   * @return The created DynamicVariable.
+   * @throws IllegalStateException    if any required input field reference is unexpectedly null.
+   * @throws IllegalArgumentException if variable creation fails due to invalid data format (empty
+   *                                  required fields).
+   * @throws NullPointerException     if typeComboBox.getValue() returns null.
    */
   private DynamicVariable createVariableFromInput() {
-    if (nameField == null || typeComboBox == null || valueField == null || descriptionField == null) {
+    if (nameField == null || typeComboBox == null || valueField == null
+        || descriptionField == null) {
       LOG.error("Dialog input fields reference is null during result conversion.");
       throw new IllegalStateException("Internal error: Dialog fields not properly initialized.");
     }
@@ -203,6 +208,22 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
     String value = valueField.getText().trim();
     String description = descriptionField.getText().trim();
 
+    validateVariableInputs(name, type, value);
+
+    return new DynamicVariable(name, type, value, description);
+  }
+
+  /**
+   * Validates the essential inputs for creating a DynamicVariable. Throws appropriate exceptions if
+   * validation fails.
+   *
+   * @param name  The variable name.
+   * @param type  The selected variable type.
+   * @param value The initial variable value.
+   * @throws IllegalArgumentException if name or value is empty.
+   * @throws NullPointerException     if type is null.
+   */
+  private void validateVariableInputs(String name, String type, String value) {
     if (name.isEmpty()) {
       throw new IllegalArgumentException("Variable name cannot be empty.");
     }
@@ -212,14 +233,12 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
     if (value.isEmpty()) {
       throw new IllegalArgumentException("Variable value cannot be empty.");
     }
-
-    return new DynamicVariable(name, type, value, description);
   }
 
   /**
    * Displays an error alert to the user.
    *
-   * @param title the title of the alert window
+   * @param title       the title of the alert window
    * @param contentText the main error message
    */
   private void showErrorAlert(String title, String contentText) {
