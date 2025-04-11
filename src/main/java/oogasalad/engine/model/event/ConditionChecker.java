@@ -1,14 +1,14 @@
-package oogasalad.engine.event;
+package oogasalad.engine.model.event;
 
 import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
-import oogasalad.engine.event.condition.CollisionCondition;
-import oogasalad.engine.event.condition.Condition;
-import oogasalad.engine.event.condition.EventCondition;
-import oogasalad.engine.event.condition.InputCondition;
-import oogasalad.engine.event.condition.TrueCondition;
+import oogasalad.engine.model.event.condition.CollisionCondition;
+import oogasalad.engine.model.event.condition.Condition;
+import oogasalad.engine.model.event.condition.EventCondition;
+import oogasalad.engine.model.event.condition.InputCondition;
+import oogasalad.engine.model.event.condition.TrueCondition;
 import oogasalad.engine.model.object.GameObject;
 
 /**

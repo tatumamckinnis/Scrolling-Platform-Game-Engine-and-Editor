@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
-import oogasalad.engine.event.Event;
+import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;

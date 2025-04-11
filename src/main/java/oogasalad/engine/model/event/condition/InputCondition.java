@@ -1,4 +1,4 @@
-package oogasalad.engine.event.condition;
+package oogasalad.engine.model.event.condition;
 
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
