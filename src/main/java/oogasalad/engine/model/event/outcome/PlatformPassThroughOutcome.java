@@ -1,8 +1,8 @@
-package oogasalad.engine.event.outcome;
+package oogasalad.engine.model.event.outcome;
 
 import java.util.List;
 import java.util.Map;
-import oogasalad.engine.event.CollisionHandler;
+import oogasalad.engine.model.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
 /**

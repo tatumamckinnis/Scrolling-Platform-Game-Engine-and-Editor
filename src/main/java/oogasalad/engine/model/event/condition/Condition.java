@@ -1,4 +1,4 @@
-package oogasalad.engine.event.condition;
+package oogasalad.engine.model.event.condition;
 
 import oogasalad.engine.model.object.GameObject;
 

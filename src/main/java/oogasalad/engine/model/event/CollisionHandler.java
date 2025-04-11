@@ -1,4 +1,4 @@
-package oogasalad.engine.event;
+package oogasalad.engine.model.event;
 
 import java.util.List;
 import oogasalad.engine.model.object.GameObject;

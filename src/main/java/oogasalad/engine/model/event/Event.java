@@ -1,9 +1,9 @@
-package oogasalad.engine.event;
+package oogasalad.engine.model.event;
 
 import java.util.List;
 import java.util.Map;
-import oogasalad.engine.event.condition.EventCondition;
-import oogasalad.engine.event.outcome.EventOutcome;
+import oogasalad.engine.model.event.condition.EventCondition;
+import oogasalad.engine.model.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 
 /**

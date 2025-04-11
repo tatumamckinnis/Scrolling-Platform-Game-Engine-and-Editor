@@ -1,6 +1,6 @@
 
 
-package oogasalad.engine.event.condition;
+package oogasalad.engine.model.event.condition;
 
 import java.util.Map;
 

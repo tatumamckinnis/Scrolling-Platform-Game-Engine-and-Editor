@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import oogasalad.engine.event.Event;
+import oogasalad.engine.model.event.Event;
 
 /**
  * The {@code Player} class represents a user-controlled or central game character within the game.
