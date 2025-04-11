@@ -1,7 +1,7 @@
 /**
  * Tests conditioner checking functionality
  */
-package oogasalad.engine.event;
+package oogasalad.engine.model.object.event;
 
 
 
