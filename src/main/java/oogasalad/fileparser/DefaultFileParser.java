@@ -15,6 +15,7 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
@@ -44,6 +45,7 @@ public class DefaultFileParser implements FileParserApi {
   private LayerDataParser layerDataParser;
   private BlueprintDataParser myGameObjectParser;
   private EventDataParser myEventDataParser;
+  private CameraDataParser myCameraDataParser;
 
   /**
    * Constructs a new {@code DefaultFileParser} and initializes the helper parsers.
@@ -60,6 +62,7 @@ public class DefaultFileParser implements FileParserApi {
     layerDataParser = new LayerDataParser();
     myGameObjectParser = new BlueprintDataParser();
     myEventDataParser = new EventDataParser();
+    myCameraDataParser = new CameraDataParser();
   }
 
   /**
@@ -73,7 +76,8 @@ public class DefaultFileParser implements FileParserApi {
    *   <li>Locates the actual File corresponding to the level.</li>
    *   <li>Parses the XML,
    *   retrieves the root element (<code>&lt;map&gt;</code>), and then uses helper
-   *       parsers to obtain blueprint and layer/game object data.</li>
+   *       parsers to obtain blueprint, layer/game object data,
+   *       and camera data.</li>
    *   <li>Constructs and returns a new LevelData record.</li>
    * </ul>
    *
@@ -111,7 +115,10 @@ public class DefaultFileParser implements FileParserApi {
       List<GameObjectData> gameObjectDataList = layerDataParser.getGameObjectDataList(
           root);
 
-      return new LevelData(levelName, minX, minY, maxX, maxY, blueprintData, gameObjectDataList);
+      CameraData cameraData = myCameraDataParser.parseCameraData(root);
+
+      return new LevelData(levelName, minX, minY, maxX, maxY, cameraData, blueprintData,
+          gameObjectDataList);
     } catch (SAXException | IOException | ParserConfigurationException e) {
       throw new LevelDataParseException(e.getMessage(), e);
     }

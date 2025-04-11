@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map minX="0" minY="0" maxX="500" maxY="500">
+  <cameraData type="tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
   <layers>
     <layer name="backGround" width="500" height="500" z="0">
       <data/>

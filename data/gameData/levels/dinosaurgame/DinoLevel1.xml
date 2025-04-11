@@ -6,6 +6,13 @@ layer => the layer
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
 <map minX="-500" minY="-700" maxX="4000" maxY="500">
+  <cameraData type="tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
   <layers>
     <layer name="backGround" width="500" height="500" z="10">
       <data>
