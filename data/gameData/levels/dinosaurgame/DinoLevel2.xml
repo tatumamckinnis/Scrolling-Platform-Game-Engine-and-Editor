@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map minX="0" minY="0" maxX="500" maxY="500">
+  <!-- the first letter of type must be capitalized -->
   <cameraData type="Tracker">
     <stringProperties>
       <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
@@ -37,7 +38,7 @@
     <objectGroup name="entities">
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
         hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="18,19,20,22,23"
-        velocityX="0" velocityY="0">
+        velocityX="0" velocityY="0" rotation="90">
         <properties>
         <stringProperties>
         </stringProperties>
@@ -47,24 +48,24 @@
         </properties>
       </object>
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
-        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0">
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0" rotation="90">
       </object>
       <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
-        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0">
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="23" velocityX="0" velocityY="0" rotation="90">
         </object>
     </objectGroup>
 
     <objectGroup name="blocks">
       <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
     </objectGroup>
     <objectGroup name="backgrounds"/>
   </game>
