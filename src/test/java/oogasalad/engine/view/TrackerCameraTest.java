@@ -10,10 +10,9 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import javafx.scene.Group;
 import oogasalad.engine.model.object.Entity;
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.Sprite;
-import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
@@ -21,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class TrackerCameraTest {
+
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
       LevelDisplay.class.getPackage().getName() + ".Level");
   private static final double EXPECTED_CAMERA_OFFSET_X = Double.parseDouble(
@@ -33,12 +33,14 @@ class TrackerCameraTest {
   void updateCamera_Basic_SceneIsTranslated() throws FileNotFoundException {
     TrackerCamera timeCamera = new TrackerCamera();
     Group gameWorld = new Group();
-    ViewObject objectToFollow = createTempViewObject();
+    ImmutableGameObject objectToFollow = createTempObject();
     timeCamera.setViewObjectToTrack(objectToFollow);
     timeCamera.updateCamera(gameWorld);
 
-    assertEquals(EXPECTED_CAMERA_OFFSET_X - objectToFollow.getX(), gameWorld.getTranslateX());
-    assertEquals(EXPECTED_CAMERA_OFFSET_Y - objectToFollow.getY(), gameWorld.getTranslateY());
+    assertEquals(EXPECTED_CAMERA_OFFSET_X - objectToFollow.getXPosition(),
+        gameWorld.getTranslateX());
+    assertEquals(EXPECTED_CAMERA_OFFSET_Y - objectToFollow.getYPosition(),
+        gameWorld.getTranslateY());
 
   }
 
@@ -52,11 +54,10 @@ class TrackerCameraTest {
   @Test
   void updateCamera_NullGroup_ThrowsException() throws NullPointerException {
     TrackerCamera timeCamera = new TrackerCamera();
-    ViewObject objectToFollow = createTempViewObject();
     assertThrows(NullPointerException.class, () -> timeCamera.updateCamera(null));
   }
 
-  private static ViewObject createTempViewObject() {
+  private static ImmutableGameObject createTempObject() {
     // Create FrameData and supporting sprite info
     FrameData currentFrame = new FrameData(
         "DinoRun1",
@@ -70,13 +71,18 @@ class TrackerCameraTest {
     Map<String, AnimationData> animationMap = new HashMap<>();
 
     // Construct Sprite object with offset (dx/dy) = 0
-    Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0, new File("DinoRun1.png"));
+    Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0,
+        new File("DinoRun1.png"));
 
     // Construct HitBox for the object
     HitBox hitBox = new HitBox(100, 100, 87, 94); // x, y, width, height
 
     // Create the Entity with required params
-    GameObject gameObjectToFollow = new Entity(
+    // events
+    // stringParams
+    // doubleParams
+
+    return new Entity(
         new UUID(4, 1),
         "Player",
         1,
@@ -88,8 +94,6 @@ class TrackerCameraTest {
         new HashMap<>(),   // stringParams
         new HashMap<>()    // doubleParams
     );
-
-    return new ViewObject(gameObjectToFollow);
   }
 
 }

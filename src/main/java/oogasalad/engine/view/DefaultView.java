@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.exceptions.InputException;
@@ -72,7 +72,7 @@ public class DefaultView implements ViewAPI {
    * @see DefaultView#renderGameObjects(List, Camera)
    */
   @Override
-  public void renderGameObjects(List<ViewObject> gameObjects, Camera camera)
+  public void renderGameObjects(List<ImmutableGameObject> gameObjects, Camera camera)
       throws RenderingException, FileNotFoundException {
     myCamera = camera;
     currentDisplay.renderGameObjects(gameObjects);
