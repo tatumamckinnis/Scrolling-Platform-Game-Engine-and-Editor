@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<spriteFile imagePath="doodlejump-map-default.png" width="640" height="1024">
+  <sprite name="base-background" x="0" y="0" width="640" height="1024"/>
+</spriteFile>
