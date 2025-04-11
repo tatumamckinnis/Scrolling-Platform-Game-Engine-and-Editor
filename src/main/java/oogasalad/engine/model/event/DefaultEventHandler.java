@@ -1,4 +1,4 @@
-package oogasalad.engine.event;
+package oogasalad.engine.model.event;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.InputProvider;
-import oogasalad.engine.event.condition.EventCondition;
-import oogasalad.engine.event.outcome.EventOutcome;
+import oogasalad.engine.model.event.condition.EventCondition;
+import oogasalad.engine.model.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;

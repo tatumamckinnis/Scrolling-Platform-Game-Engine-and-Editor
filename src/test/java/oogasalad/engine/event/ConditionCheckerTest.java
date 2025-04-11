@@ -8,10 +8,10 @@ package oogasalad.engine.event;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.GameControllerAPI;
-import oogasalad.engine.event.condition.EventCondition;
+import oogasalad.engine.model.event.ConditionChecker;
+import oogasalad.engine.model.event.DefaultCollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

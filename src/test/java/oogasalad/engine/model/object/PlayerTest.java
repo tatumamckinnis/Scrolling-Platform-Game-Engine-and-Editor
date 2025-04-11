@@ -1,6 +1,6 @@
 package oogasalad.engine.model.object;
 
-import oogasalad.engine.event.Event;
+import oogasalad.engine.model.event.Event;
 import oogasalad.fileparser.records.FrameData;
 
 import org.junit.jupiter.api.BeforeEach;

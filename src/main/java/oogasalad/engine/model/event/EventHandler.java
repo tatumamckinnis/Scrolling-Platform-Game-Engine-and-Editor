@@ -1,4 +1,4 @@
-package oogasalad.engine.event;
+package oogasalad.engine.model.event;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

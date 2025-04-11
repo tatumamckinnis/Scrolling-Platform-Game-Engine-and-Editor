@@ -1,4 +1,4 @@
-package oogasalad.engine.event.outcome;
+package oogasalad.engine.model.event.outcome;
 
 import java.util.Map;
 
