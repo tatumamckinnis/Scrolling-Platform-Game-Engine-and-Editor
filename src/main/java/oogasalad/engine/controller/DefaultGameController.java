@@ -145,6 +145,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   public void destroyGameObject(GameObject gameObject) {
     myGameObjects.remove(gameObject);
     myGameObjectMap.remove(gameObject.getUUID());
+    myGameManager.removeGameObjectImage(gameObject);
   }
 
   @Override
