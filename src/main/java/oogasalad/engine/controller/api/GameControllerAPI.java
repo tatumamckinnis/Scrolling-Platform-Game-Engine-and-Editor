@@ -50,10 +50,11 @@ public interface GameControllerAPI {
    * Loads a new level or scene, potentially calling file loaders to retrieve data and
    * re-initializing internal structures (objects, controllers, etc.).
    */
-  void setLevelData(LevelData data);
+  void setLevelData(LevelData data)
+      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
 
   /**
-   * @return the camera object
+   * @return the camera object which translates the game scene
    */
   Camera getCamera();
 

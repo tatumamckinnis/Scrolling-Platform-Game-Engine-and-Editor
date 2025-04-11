@@ -132,7 +132,8 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
-  public void setLevelData(LevelData data) {
+  public void setLevelData(LevelData data)
+      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myCamera = converter.loadCamera(data);
