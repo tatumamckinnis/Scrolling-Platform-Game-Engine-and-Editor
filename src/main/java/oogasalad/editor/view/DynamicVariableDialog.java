@@ -167,33 +167,16 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
   }
 
   /**
-   * Sets up the result converter for the dialog. This logic is executed when the user clicks the
-   * 'Add' (OK_DONE) button. It attempts to create a {@link DynamicVariable} from the input fields.
-   * If successful, the variable is returned. If input is invalid or creation fails, an error alert
-   * is shown, and null is returned (keeping the dialog open). If Cancel is clicked, null is
-   * returned.
+   * Sets up the result converter for the dialog to handle when the user presses OK. Attempts to
+   * create a DynamicVariable from the input; shows an error alert if input is invalid.
    */
   private void setupResultConverter() {
     setResultConverter(dialogButton -> {
       if (dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
         try {
-          if (nameField == null || typeComboBox == null || valueField == null
-              || descriptionField == null) {
-            LOG.error(
-                "Dialog input fields were not initialized correctly during result conversion.");
-            showErrorAlert("Internal Error", "Dialog fields not ready. Cannot create variable.");
-            return null;
-          }
-
-          return new DynamicVariable(
-              nameField.getText().trim(),
-              typeComboBox.getValue(),
-              valueField.getText().trim(),
-              descriptionField.getText().trim()
-          );
-        } catch (IllegalArgumentException | NullPointerException ex) {
-          LOG.warn("Invalid input provided or error creating dynamic variable: {}",
-              ex.getMessage());
+          return createVariableFromInput();
+        } catch (IllegalArgumentException | NullPointerException | IllegalStateException ex) {
+          LOG.warn("Invalid input or error creating dynamic variable: {}", ex.getMessage());
           showErrorAlert(uiBundle.getString(KEY_ERROR_INVALID_INPUT_TITLE), ex.getMessage());
           return null;
         }
@@ -201,6 +184,31 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
       return null;
     });
   }
+
+  /**
+   * Attempts to create a DynamicVariable from the current state of the input fields.
+   *
+   * @return the created DynamicVariable.
+   * @throws IllegalStateException    if any input field is unexpectedly null.
+   * @throws IllegalArgumentException if variable creation fails due to invalid data.
+   * @throws NullPointerException     if required input (like type) is missing.
+   */
+  private DynamicVariable createVariableFromInput()
+      throws IllegalStateException, IllegalArgumentException, NullPointerException {
+    if (nameField == null || typeComboBox == null || valueField == null
+        || descriptionField == null) {
+      LOG.error("Dialog input fields were not initialized correctly during result conversion.");
+      throw new IllegalStateException("Dialog fields not ready. Cannot create variable.");
+    }
+
+    return new DynamicVariable(
+        nameField.getText().trim(),
+        Objects.requireNonNull(typeComboBox.getValue(), "Variable type cannot be null."),
+        valueField.getText().trim(),
+        descriptionField.getText().trim()
+    );
+  }
+
 
   /**
    * Utility method to display an error alert dialog to the user within the context of this dialog.
