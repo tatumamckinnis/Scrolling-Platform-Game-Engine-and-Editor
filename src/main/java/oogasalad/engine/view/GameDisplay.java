@@ -3,6 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
 import oogasalad.engine.view.components.NewGameComponents;
@@ -60,7 +61,7 @@ public class GameDisplay extends Display {
    * Shifts the level view focus.
    */
   @Override
-  public void shiftNode(Camera myCamera, ViewObject cameraObjectToFollow) {
-    myLevelView.shiftNode(myCamera, cameraObjectToFollow);
+  public void shiftNode(Camera myCamera) {
+    myLevelView.shiftNode(myCamera);
   }
 }

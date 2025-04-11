@@ -3,6 +3,7 @@ package oogasalad.engine.view;
 import java.io.FileNotFoundException;
 import java.util.List;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.exceptions.RenderingException;
 import org.apache.logging.log4j.LogManager;
@@ -56,11 +57,10 @@ public class LevelDisplay extends Display {
    * Shifts the camera view focused on this level view.
    *
    * @param myCamera             a camera instance which the node should shift relative to.
-   * @param cameraObjectToFollow a central ViewObject to follow.
    */
   @Override
-  public void shiftNode(Camera myCamera, ViewObject cameraObjectToFollow) {
-    myCamera.updateCamera(this, cameraObjectToFollow);
+  public void shiftNode(Camera myCamera) {
+    myCamera.updateCamera(this);
   }
 
 }

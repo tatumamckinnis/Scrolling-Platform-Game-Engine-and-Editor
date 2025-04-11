@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.RenderingException;
 
 /**
@@ -34,9 +35,8 @@ public abstract class Display extends Group {
    * example, a splash screen should never be able to be translated but a levelView should.
    *
    * @param camera               a camera instance which the node should shift relative to.
-   * @param cameraObjectToFollow a central ViewObject to follow.
    */
-  public void shiftNode(Camera camera, ViewObject cameraObjectToFollow) {
+  public void shiftNode(Camera camera) {
   }
 
   /**

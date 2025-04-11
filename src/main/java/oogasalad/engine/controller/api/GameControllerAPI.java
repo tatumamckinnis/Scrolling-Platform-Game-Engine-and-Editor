@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -50,5 +51,10 @@ public interface GameControllerAPI {
    * re-initializing internal structures (objects, controllers, etc.).
    */
   void setLevelData(LevelData data);
+
+  /**
+   * @return the camera object
+   */
+  Camera getCamera();
 
 }

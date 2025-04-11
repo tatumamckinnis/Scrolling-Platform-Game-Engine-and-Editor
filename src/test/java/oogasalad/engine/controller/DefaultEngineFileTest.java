@@ -12,7 +12,7 @@ import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;
 import oogasalad.engine.model.object.Sprite;
-import oogasalad.fileparser.CameraDataParser;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.CameraData;
@@ -29,6 +29,7 @@ class DefaultEngineFileTest {
 
   LevelData levelData;
   EngineFileConverterAPI myEngineFile;
+  CameraData expectedCamera;
 
   @BeforeEach
   void setUp() {
@@ -40,12 +41,12 @@ class DefaultEngineFileTest {
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
     bluePrintMap.put(1, new BlueprintData(1, 1, 1, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1,
         new ArrayList<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>()));
-    GameObjectData gameObject1 = new GameObjectData(1, new UUID(4, 1), 1, 1, 0);
+    UUID expectedUUID = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
+    GameObjectData gameObject1 = new GameObjectData(1, expectedUUID, 1, 1, 0);
     List<GameObjectData> gameObjects = new ArrayList<>();
     gameObjects.add(gameObject1);
-    CameraData cameraData = new CameraData("tracker", new HashMap<>(), new HashMap<>());
-
-    levelData = new LevelData("Mario", 0, 500, 500, 0,cameraData, bluePrintMap, gameObjects);
+    expectedCamera = new CameraData("Tracker", Map.of("objectToTrack","e816f04c-3047-4e30-9e20-2e601a99dde8"), new HashMap<>());
+    levelData = new LevelData("Mario", 0, 500, 500, 0, expectedCamera, bluePrintMap, gameObjects);
   }
 
 
@@ -63,19 +64,21 @@ class DefaultEngineFileTest {
     HitBox expectedHitBox = new HitBox(1, 1, 2, 4); // x, y, width, height
 
     // Setup entity
-    UUID uuid = new UUID(4, 1);
+    UUID actualUUID = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
     Map<String, String> stringParams = new HashMap<>();
     Map<String, Double> doubleParams = new HashMap<>();
     List<Event> events = new ArrayList<>();
     expectedObjects.add(
-        new Entity(uuid, "Player", 1, 1.0, 1.0, expectedHitBox, expectedSprite, events,
+        new Entity(actualUUID, "Player", 1, 1.0, 1.0, expectedHitBox, expectedSprite, events,
             stringParams, doubleParams));
 
     // Call method under test
     Map<String, GameObject> actualObjects = myEngineFile.loadFileToEngine(levelData);
+    Camera actualCamera = myEngineFile.loadCamera(levelData);
     List<GameObject> myActualObjects = new ArrayList<>(actualObjects.values());
 
     // Assertions
+    assertEquals(expectedCamera.type() + "Camera", actualCamera.getClass().getSimpleName());
     assertEquals(expectedObjects.getFirst().getUUID(), myActualObjects.getFirst().getUUID());
     assertEquals(expectedObjects.getFirst().getXPosition(),
         myActualObjects.getFirst().getXPosition());
