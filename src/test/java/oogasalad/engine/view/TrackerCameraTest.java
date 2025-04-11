@@ -20,7 +20,7 @@ import oogasalad.fileparser.records.FrameData;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-class TimeCameraTest {
+class TrackerCameraTest {
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
       LevelDisplay.class.getPackage().getName() + ".Level");
   private static final double EXPECTED_CAMERA_OFFSET_X = Double.parseDouble(
@@ -34,6 +34,7 @@ class TimeCameraTest {
     TrackerCamera timeCamera = new TrackerCamera();
     Group gameWorld = new Group();
     ViewObject objectToFollow = createTempViewObject();
+    timeCamera.setViewObjectToTrack(objectToFollow);
     timeCamera.updateCamera(gameWorld);
 
     assertEquals(EXPECTED_CAMERA_OFFSET_X - objectToFollow.getX(), gameWorld.getTranslateX());
