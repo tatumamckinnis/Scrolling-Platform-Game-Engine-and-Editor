@@ -49,11 +49,11 @@ class EventConverterTest {
     conditionData1.add(new ConditionData("W_KEY_PRESSED", stringProperties, doubleProperties));
 
     List<OutcomeData> outcomeDataList = new ArrayList<>();
-    Map<String, String> stringProperties2 = new HashMap<>();
-    stringProperties2.put("jumpType", "Floaty");
-    Map<String, Double> doubleProperties2 = new HashMap<>();
-    doubleProperties2.put("JumpAmount", 20.0);
-    outcomeDataList.add(new OutcomeData("JUMP", stringProperties2, doubleProperties2));
+    Map<String, String> outcomeStringProperties2 = new HashMap<>();
+    outcomeStringProperties2.put("jumpType", "Floaty");
+    Map<String, Double> outcomeDoubleProperties2 = new HashMap<>();
+    outcomeDoubleProperties2.put("JumpAmount", 20.0);
+    outcomeDataList.add(new OutcomeData("JUMP", outcomeStringProperties2, outcomeDoubleProperties2));
 
     EventData eventData1 = new EventData("input", "1", conditionDataList, outcomeDataList);
     eventDataList.add(eventData1);
@@ -82,7 +82,8 @@ class EventConverterTest {
     expectedConditions.add(expectedConditionsList);
 
     List<EventOutcome> expectedOutcomes = new ArrayList<>();
-    expectedOutcomes.add(new EventOutcome(OutcomeType.JUMP, stringProperties2, doubleProperties2));
+    expectedOutcomes.add(new EventOutcome(OutcomeType.JUMP, outcomeStringProperties2,
+        outcomeDoubleProperties2));
     expectedEvents.add(new Event(expectedGameObject, expectedConditions, expectedOutcomes,
         EventType.PHYSICS));
     expectedGameObject.setEvents(expectedEvents);
