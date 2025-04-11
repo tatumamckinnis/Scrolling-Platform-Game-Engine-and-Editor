@@ -572,11 +572,6 @@ public class InputTabComponentFactory implements EditorViewListener {
     runOnFxThread(this::refreshOutcomesListInternal);
   }
 
-  /**
-   * Refreshes the outcomes list for the currently selected object and event. Clears the list,
-   * fetches outcomes from the controller, and populates the list view. If fetching fails or no
-   * outcomes are found, the list is cleared and logged accordingly.
-   */
   private void refreshOutcomesListInternal() {
     clearListsInternal(false, false, true);
 
@@ -588,15 +583,15 @@ public class InputTabComponentFactory implements EditorViewListener {
 
     List<OutcomeType> outcomes = fetchOutcomes();
 
-    if (outcomes == null || outcomes.isEmpty()) {
-      if (outcomes == null) {
-        LOG.debug("Outcome fetch failed for event '{}'. List remains cleared.", currentEventId);
-      } else {
-        LOG.debug("No outcomes found for event '{}'. Clearing list.", currentEventId);
-      }
-      if (outcomesListView != null) {
-        outcomesListView.getItems().clear();
-      }
+    if (outcomes == null) {
+      LOG.debug("Outcome fetch failed for event '{}'. List remains cleared.", currentEventId);
+      clearOutcomeListViewSafely();
+      return;
+    }
+
+    if (outcomes.isEmpty()) {
+      LOG.debug("No outcomes found for event '{}'. Clearing list.", currentEventId);
+      clearOutcomeListViewSafely();
       return;
     }
 
@@ -604,6 +599,14 @@ public class InputTabComponentFactory implements EditorViewListener {
     populateOutcomesList(displayStrings);
   }
 
+  /**
+   * Helper to safely clear the outcomes list view if it exists.
+   */
+  private void clearOutcomeListViewSafely() {
+    if (outcomesListView != null) {
+      outcomesListView.getItems().clear();
+    }
+  }
 
   /**
    * Fetches the list of outcomes for the current object and event from the controller.
