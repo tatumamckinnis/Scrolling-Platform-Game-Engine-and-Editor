@@ -1,6 +1,7 @@
 package oogasalad.engine.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
+import oogasalad.engine.controller.camerafactory.CameraFactory;
 import oogasalad.engine.event.Event;
 import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
@@ -43,8 +45,6 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackageName() + "." + "Exceptions");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
-  private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(
-      ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
 
 
   private Map<String, GameObject> gameObjectMap;
@@ -77,31 +77,21 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   @Override
   public Camera loadCamera(LevelData level) {
-    CameraData cameraData = level.cameraData();
-    if (cameraData.type().equals("Tracker")) {
-      return makeTrackerCamera(cameraData);
+    try {
+      CameraData cameraData = level.cameraData();
+      String cameraType = cameraData.type();
+
+      String factoryClassName = CameraFactory.class.getPackageName() + "." + cameraType + ENGINE_FILE_RESOURCES.getString("CameraFactory");
+      Class<?> factoryClass = Class.forName(factoryClassName);
+      CameraFactory factory = (CameraFactory) factoryClass.getDeclaredConstructor().newInstance();
+      return factory.create(cameraData, gameObjectMap);
+
+    } catch (Exception e) {
+      LOG.warning(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
+      return new AutoScrollingCamera();
     }
-    return new AutoScrollingCamera();
   }
 
-  private TrackerCamera makeTrackerCamera(CameraData cameraData) {
-    TrackerCamera camera = new TrackerCamera();
-    GameObject objectToTrack;
-    if (cameraData.stringProperties().containsKey("objectToTrack")) {
-        try {
-          objectToTrack = gameObjectMap.get(cameraData.stringProperties().get("objectToTrack"));
-          ViewObject viewObjectToTrack = DefaultGameController.convertToViewObject(objectToTrack);
-          camera.setViewObjectToTrack(viewObjectToTrack);
-          return camera;
-        }
-        catch (NullPointerException e) {
-          throw new NullPointerException(EXCEPTIONS.getString("CameraObjectNonexistent"));
-        }
-    }
-    else{
-      throw new NoSuchElementException(EXCEPTIONS.getString("CameraObjectNotSpecified"));
-    }
-  }
 
   private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects,
       Map<Integer, BlueprintData> bluePrintMap) {
