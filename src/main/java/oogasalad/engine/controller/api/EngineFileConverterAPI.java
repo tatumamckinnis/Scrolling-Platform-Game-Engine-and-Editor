@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -30,5 +31,12 @@ public interface EngineFileConverterAPI {
    * objects 3) Updating the current Engine state
    */
   Map<String, GameObject> loadFileToEngine(LevelData level);
+
+  /**
+   * Takes in LevelData record and converts the Camera data into a view camera based on the type
+   * of camera specified in the file
+   * @return a new Camera object
+   */
+  Camera loadCamera(LevelData level);
 
 }

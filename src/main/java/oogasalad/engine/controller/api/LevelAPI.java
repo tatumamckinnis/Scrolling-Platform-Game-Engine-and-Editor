@@ -21,7 +21,6 @@ public interface LevelAPI {
   /**
    * selects a new Game or Level
    *
-   * @param level level of the game
    * @throws DataFormatException if the filepath is not properly formatted
    * @throws IOException         if a file cannot be retrieved
    */

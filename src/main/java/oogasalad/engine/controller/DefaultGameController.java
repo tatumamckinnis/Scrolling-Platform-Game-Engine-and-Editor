@@ -25,6 +25,7 @@ import oogasalad.engine.event.EventHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ViewObject;
 import oogasalad.engine.model.object.mapObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -54,6 +55,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   private Map<String, GameObject> myGameObjectMap;
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
+  private Camera myCamera;
   private final GameManagerAPI myGameManager;
 
   /**
@@ -133,6 +135,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   public void setLevelData(LevelData data) {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
+    myCamera = converter.loadCamera(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
     myMapObject = new mapObject(data.minX(), data.minY(), data.maxX(), data.maxY());
   }
@@ -141,6 +144,21 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   public void destroyGameObject(GameObject gameObject) {
     myGameObjects.remove(gameObject);
     myGameObjectMap.remove(gameObject.getUUID());
+  }
+
+  @Override
+  public Camera getCamera() {
+    return myCamera;
+  }
+
+  /**
+   * Converts Game Objects to View Objects
+   *
+   * @param gameObject the game object to be converted to a view object
+   * @return a new View Object - an immutable game pbject specifically for the view
+   */
+  public static ViewObject convertToViewObject(GameObject gameObject) {
+    return new ViewObject(gameObject);
   }
 
   private List<ViewObject> makeGameObjectsImmutable() {
@@ -155,8 +173,5 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     return immutableObjects;
   }
 
-  private static ViewObject convertToViewObject(GameObject gameObject) {
-    return new ViewObject(gameObject);
-  }
 
 }

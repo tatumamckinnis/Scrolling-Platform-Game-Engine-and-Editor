@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
@@ -15,10 +14,9 @@ import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;
 import oogasalad.engine.model.object.Sprite;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
-import oogasalad.fileparser.records.HitBoxData;
-import oogasalad.fileparser.records.SpriteData;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -33,10 +31,10 @@ class TimeCameraTest {
 
   @Test
   void updateCamera_Basic_SceneIsTranslated() throws FileNotFoundException {
-    TimeCamera timeCamera = new TimeCamera();
+    TrackerCamera timeCamera = new TrackerCamera();
     Group gameWorld = new Group();
     ViewObject objectToFollow = createTempViewObject();
-    timeCamera.updateCamera(gameWorld, objectToFollow);
+    timeCamera.updateCamera(gameWorld);
 
     assertEquals(EXPECTED_CAMERA_OFFSET_X - objectToFollow.getX(), gameWorld.getTranslateX());
     assertEquals(EXPECTED_CAMERA_OFFSET_Y - objectToFollow.getY(), gameWorld.getTranslateY());
@@ -45,16 +43,16 @@ class TimeCameraTest {
 
   @Test
   void updateCamera_NullObject_ThrowsException() throws NoSuchElementException {
-    TimeCamera timeCamera = new TimeCamera();
+    TrackerCamera timeCamera = new TrackerCamera();
     Group gameWorld = new Group();
-    assertThrows(NoSuchElementException.class, () -> timeCamera.updateCamera(gameWorld, null));
+    assertThrows(NoSuchElementException.class, () -> timeCamera.updateCamera(gameWorld));
   }
 
   @Test
   void updateCamera_NullGroup_ThrowsException() throws NullPointerException {
-    TimeCamera timeCamera = new TimeCamera();
+    TrackerCamera timeCamera = new TrackerCamera();
     ViewObject objectToFollow = createTempViewObject();
-    assertThrows(NullPointerException.class, () -> timeCamera.updateCamera(null, objectToFollow));
+    assertThrows(NullPointerException.class, () -> timeCamera.updateCamera(null));
   }
 
   private static ViewObject createTempViewObject() {

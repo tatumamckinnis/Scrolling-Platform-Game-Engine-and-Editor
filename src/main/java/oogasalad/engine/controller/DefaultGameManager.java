@@ -106,8 +106,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    */
   @Override
   public void displayGameObjects() throws RenderingException, FileNotFoundException {
-    myView.renderGameObjects(myGameController.getImmutableObjects(),
-        myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
   }
 
   /**
@@ -123,9 +122,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       throws RenderingException, InputException, IOException, LayerParseException, EventParseException, BlueprintParseException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     updateInputList();
     myGameController.updateGameState();
-    // TODO: hardcoding view object UUID for now... Fix to make it pulled from XML file
-    myView.renderGameObjects(myGameController.getImmutableObjects(),
-        myGameController.getViewObjectByUUID("e816f04c-3047-4e30-9e20-2e601a99dde8"));
+    myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
   }
 
   private void updateInputList() throws InputException {

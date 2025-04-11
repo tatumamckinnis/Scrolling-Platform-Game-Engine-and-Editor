@@ -1,7 +1,6 @@
-package oogasalad.engine.view;
+package oogasalad.engine.view.camera;
 
 import javafx.scene.Group;
-import oogasalad.engine.model.object.ViewObject;
 
 /**
  * The {@code Camera} interface defines behavior for updating the view of the game world.
@@ -16,8 +15,7 @@ public interface Camera {
    * Updates the camera's view based on the provided game world and the object to follow.
    *
    * @param gameWorld      the root group representing the current game scene or world
-   * @param objectToFollow the {@link ViewObject} that the camera should track or center on
    */
-  void updateCamera(Group gameWorld, ViewObject objectToFollow);
+  void updateCamera(Group gameWorld);
 }
 
