@@ -2,6 +2,7 @@ package oogasalad.editor.view;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,8 +21,7 @@ import org.apache.logging.log4j.Logger;
 public class PropertiesTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(PropertiesTabComponentFactory.class);
-  private static final String KEY_ERROR_SELECTION_NEEDED = "errorSelectionNeeded";
-  private static final String KEY_ERROR_API_FAILURE = "errorApiFailureTitle";
+  private static final String NUMERIC_REGEX = "\\d*";
 
   private final EditorController editorController;
 
@@ -56,7 +56,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     contentBox.setPadding(new Insets(15));
     contentBox.setAlignment(Pos.TOP_LEFT);
 
-    contentBox.getStyleClass().add("input-section"); //TODO: Change this to its own section
+    contentBox.getStyleClass().add("input-section");
 
     VBox identitySection = buildIdentitySection();
     VBox hitboxSection = buildHitboxSection();
@@ -79,33 +79,36 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Label identityLabel = new Label("Identity");
     identityLabel.getStyleClass().add("section-header");
 
-    nameField = new TextField();
-    nameField.setPromptText("Name");
-    nameField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null) {
-        editorController.getEditorDataAPI().getIdentityDataAPI().setName(currentObjectId, newVal);
-      }
-    });
+    nameField = createIdentityTextField("Name",
+        (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI().setName(id, value));
+    groupField = createIdentityTextField("Group",
+        (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI()
+            .setGroup(id, value));
 
-    groupField = new TextField();
-    groupField.setPromptText("Group");
-    groupField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null) {
-        editorController.getEditorDataAPI().getIdentityDataAPI().setGroup(currentObjectId, newVal);
-      }
-    });
-
-    // Add labels, text fields:
-    box.getChildren().addAll(identityLabel,
-        new Label("Name"), nameField,
-        new Label("Group"), groupField
-    );
+    box.getChildren()
+        .addAll(identityLabel, new Label("Name"), nameField, new Label("Group"), groupField);
 
     return box;
   }
 
   /**
-   * Builds a VBox containing fields for Hitbox data: X, Y, Width, Height, Shape
+   * Factory method for creating identity text fields (Name, Group).
+   */
+  private TextField createIdentityTextField(String prompt, BiConsumer<UUID, String> setter) {
+    TextField textField = new TextField();
+    textField.setPromptText(prompt);
+    textField.textProperty().addListener((obs, oldVal, newVal) -> {
+      if (currentObjectId != null) {
+        setter.accept(currentObjectId, newVal);
+      }
+    });
+    return textField;
+  }
+
+
+  /**
+   * Builds a VBox containing fields for Hitbox data: X, Y, Width, Height, Shape using factory
+   * methods.
    */
   private VBox buildHitboxSection() {
     VBox box = new VBox(8);
@@ -114,71 +117,82 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Label hitboxLabel = new Label("Hitbox");
     hitboxLabel.getStyleClass().add("section-header");
 
-    // TODO: Implement a factory instead
-    xField = new TextField();
-    xField.setPromptText("X");
-    xField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI()
-            .setX(currentObjectId, parseSafeInt(newVal));
-      }
-    });
+    xField = createHitboxTextField("X",
+        (id, value) -> editorController.getEditorDataAPI().getHitboxDataAPI().setX(id, value));
+    yField = createHitboxTextField("Y",
+        (id, value) -> editorController.getEditorDataAPI().getHitboxDataAPI().setY(id, value));
+    widthField = createHitboxTextField("Width",
+        (id, value) -> editorController.getEditorDataAPI().getHitboxDataAPI().setWidth(id, value));
+    heightField = createHitboxTextField("Height",
+        (id, value) -> editorController.getEditorDataAPI().getHitboxDataAPI().setHeight(id, value));
+    shapeField = createHitboxShapeField();
 
-    yField = new TextField();
-    yField.setPromptText("Y");
-    yField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI()
-            .setY(currentObjectId, parseSafeInt(newVal));
-      }
-    });
-
-    widthField = new TextField();
-    widthField.setPromptText("Width");
-    widthField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI()
-            .setWidth(currentObjectId, parseSafeInt(newVal));
-      }
-    });
-
-    heightField = new TextField();
-    heightField.setPromptText("Height");
-    heightField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal.matches("\\d*")) {
-        editorController.getEditorDataAPI().getHitboxDataAPI()
-            .setHeight(currentObjectId, parseSafeInt(newVal));
-      }
-    });
-
-    shapeField = new TextField();
-    shapeField.setPromptText("Shape (e.g. RECTANGLE)");
-    shapeField.textProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null) {
-        editorController.getEditorDataAPI().getHitboxDataAPI().setShape(currentObjectId, newVal);
-      }
-    });
-
-    box.getChildren().addAll(hitboxLabel,
-        new Label("X"), xField,
-        new Label("Y"), yField,
-        new Label("Width"), widthField,
-        new Label("Height"), heightField,
-        new Label("Shape"), shapeField
-    );
+    box.getChildren()
+        .addAll(hitboxLabel, new Label("X"), xField, new Label("Y"), yField, new Label("Width"),
+            widthField, new Label("Height"), heightField, new Label("Shape"), shapeField);
 
     return box;
   }
 
+  /**
+   * Factory method to create a TextField for a numeric hitbox property (X, Y, Width, Height).
+   * Attaches a listener that parses the input as an integer and updates the model via the setter.
+   *
+   * @param promptText The prompt text for the TextField.
+   * @param setter     A BiConsumer accepting the UUID and the parsed integer value to update the
+   *                   model.
+   * @return The configured TextField.
+   */
+  private TextField createHitboxTextField(String promptText, BiConsumer<UUID, Integer> setter) {
+    TextField textField = new TextField();
+    textField.setPromptText(promptText);
+    textField.textProperty().addListener((obs, oldVal, newVal) -> {
+      if (currentObjectId != null && (newVal == null || newVal.matches(NUMERIC_REGEX))) {
+        int value = parseSafeInt(newVal);
+        setter.accept(currentObjectId, value);
+      }
+
+    });
+    return textField;
+  }
+
+  /**
+   * Creates the TextField for the hitbox shape property. Attaches a listener that updates the model
+   * with the string value.
+   *
+   * @return The configured TextField for the shape.
+   */
+  private TextField createHitboxShapeField() {
+    TextField textField = new TextField();
+    textField.setPromptText("Shape (e.g. RECTANGLE)");
+    textField.textProperty().addListener((obs, oldVal, newVal) -> {
+      if (currentObjectId != null) {
+        editorController.getEditorDataAPI().getHitboxDataAPI().setShape(currentObjectId, newVal);
+      }
+    });
+    return textField;
+  }
+
+  /**
+   * Safely parses a string into an integer. Returns 0 if parsing fails or the string is
+   * null/empty.
+   *
+   * @param s The string to parse.
+   * @return The parsed integer, or 0 on failure/empty input.
+   */
   private int parseSafeInt(String s) {
+    if (s == null || s.isEmpty()) {
+      return 0;
+    }
     try {
       return Integer.parseInt(s);
     } catch (NumberFormatException e) {
+      LOG.warn("Invalid integer format for hitbox property: {}", s);
       return 0;
     }
   }
 
-  // TODO: implement logging and stuff
+
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
     Platform.runLater(() -> {
@@ -192,7 +206,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   @Override
   public void onObjectUpdated(UUID objectId) {
     if (Objects.equals(this.currentObjectId, objectId)) {
-      refreshFields();
+      Platform.runLater(this::refreshFields);
     }
   }
 
@@ -200,73 +214,84 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   public void onObjectRemoved(UUID objectId) {
     if (Objects.equals(this.currentObjectId, objectId)) {
       this.currentObjectId = null;
-      clearFields();
+      Platform.runLater(this::clearFields); // Ensure UI update on FX thread
     }
   }
 
   @Override
   public void onObjectAdded(UUID objectId) {
-    LOG.trace("InputTab received: onObjectAdded {}", objectId);
+    LOG.trace("PropertiesTab received: onObjectAdded {}", objectId);
   }
 
   @Override
   public void onDynamicVariablesChanged() {
-    // TODO: implement dynamics
+    LOG.trace("PropertiesTab received: onDynamicVariablesChanged (no direct action needed)");
   }
 
   @Override
   public void onErrorOccurred(String errorMessage) {
-    LOG.warn("InputTab received: onErrorOccurred: {}", errorMessage);
+    LOG.warn("PropertiesTab received: onErrorOccurred: {}", errorMessage);
   }
 
 
   /**
    * Loads the Identity + Hitbox data from the model for the currently selected object, and displays
-   * it in our fields.
+   * it in our fields. Ensures execution on the JavaFX Application thread.
    */
   private void refreshFields() {
-    if (currentObjectId == null) {
-      clearFields();
-      return;
-    }
-
-    // Switch to the FX thread if we might not be on it
     Platform.runLater(() -> {
-      // Identity
-      String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
-          .getName(currentObjectId);
-      String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
-          .getGroup(currentObjectId);
+      if (currentObjectId == null) {
+        clearFieldsInternal();
+        return;
+      }
 
-      nameField.setText(currentName == null ? "" : currentName);
-      groupField.setText(currentGroup == null ? "" : currentGroup);
+      try {
+        String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
+            .getName(currentObjectId);
+        String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+            .getGroup(currentObjectId);
 
-      // Hitbox
-      int x = editorController.getEditorDataAPI().getHitboxDataAPI().getX(currentObjectId);
-      int y = editorController.getEditorDataAPI().getHitboxDataAPI().getY(currentObjectId);
-      int w = editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(currentObjectId);
-      int h = editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(currentObjectId);
-      String shape = editorController.getEditorDataAPI().getHitboxDataAPI()
-          .getShape(currentObjectId);
+        nameField.setText(currentName == null ? "" : currentName);
+        groupField.setText(currentGroup == null ? "" : currentGroup);
 
-      xField.setText(String.valueOf(x));
-      yField.setText(String.valueOf(y));
-      widthField.setText(String.valueOf(w));
-      heightField.setText(String.valueOf(h));
-      shapeField.setText(shape == null ? "" : shape);
+        int x = editorController.getEditorDataAPI().getHitboxDataAPI().getX(currentObjectId);
+        int y = editorController.getEditorDataAPI().getHitboxDataAPI().getY(currentObjectId);
+        int w = editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(currentObjectId);
+        int h = editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(currentObjectId);
+        String shape = editorController.getEditorDataAPI().getHitboxDataAPI()
+            .getShape(currentObjectId);
+
+        xField.setText(String.valueOf(x));
+        yField.setText(String.valueOf(y));
+        widthField.setText(String.valueOf(w));
+        heightField.setText(String.valueOf(h));
+        shapeField.setText(shape == null ? "" : shape);
+
+      } catch (Exception e) {
+        LOG.error("Error refreshing properties fields for object {}: {}", currentObjectId,
+            e.getMessage(), e);
+        clearFieldsInternal();
+      }
     });
   }
 
+  /**
+   * Clears all the property fields. Ensures execution on the JavaFX Application thread.
+   */
   private void clearFields() {
-    Platform.runLater(() -> {
-      nameField.setText("");
-      groupField.setText("");
-      xField.setText("");
-      yField.setText("");
-      widthField.setText("");
-      heightField.setText("");
-      shapeField.setText("");
-    });
+    Platform.runLater(this::clearFieldsInternal);
   }
 
+  /**
+   * Internal method to clear fields, called on the FX thread.
+   */
+  private void clearFieldsInternal() {
+    nameField.setText("");
+    groupField.setText("");
+    xField.setText("");
+    yField.setText("");
+    widthField.setText("");
+    heightField.setText("");
+    shapeField.setText("");
+  }
 }
