@@ -8,8 +8,8 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
-import oogasalad.editor.model.data.object.event.EditorEventData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,13 +37,13 @@ public abstract class EditorEventDataManager {
   }
 
   /**
-   * Creates and returns the specific {@link EditorEventData} container for the given
+   * Creates and returns the specific {@link AbstractEventMapData} container for the given
    * {@link EditorObject} if it is absent.
    *
    * @param object the EditorObject to create event data for
-   * @return the corresponding EditorEventData container
+   * @return the corresponding AbstractEventMapData container
    */
-  protected abstract EditorEventData createDataIfAbsent(EditorObject object);
+  protected abstract AbstractEventMapData createDataIfAbsent(EditorObject object);
 
   /**
    * Helper method to get the target EditorObject, handling null cases.
@@ -71,7 +71,7 @@ public abstract class EditorEventDataManager {
   protected EditorEvent getEvent(UUID objectId, String eventId) {
     Objects.requireNonNull(eventId, "Event ID cannot be null.");
     EditorObject object = getObject(objectId);
-    EditorEventData eventData = createDataIfAbsent(object);
+    AbstractEventMapData eventData = createDataIfAbsent(object);
     EditorEvent event = eventData.getEvent(eventId);
     if (event == null) {
       LOG.error("Event '{}' not found for object {}.", eventId, objectId);
@@ -88,7 +88,7 @@ public abstract class EditorEventDataManager {
    */
   public void addEvent(UUID objectId, String eventId) {
     EditorObject object = getObject(objectId);
-    EditorEventData eventData = createDataIfAbsent(object);
+    AbstractEventMapData eventData = createDataIfAbsent(object);
     eventData.addEvent(eventId, new EditorEvent());
     LOG.debug("Added event '{}' for object {}", eventId, objectId);
   }
@@ -101,7 +101,7 @@ public abstract class EditorEventDataManager {
    */
   public void removeEvent(UUID objectId, String eventId) {
     EditorObject object = getObject(objectId);
-    EditorEventData eventData = createDataIfAbsent(object);
+    AbstractEventMapData eventData = createDataIfAbsent(object);
     boolean removed = eventData.removeEvent(eventId);
     if (removed) {
       LOG.debug("Removed event '{}' for object {}", eventId, objectId);
@@ -230,7 +230,7 @@ public abstract class EditorEventDataManager {
    */
   public Map<String, EditorEvent> getEvents(UUID objectId) {
     EditorObject object = getObject(objectId);
-    EditorEventData eventData = createDataIfAbsent(object);
+    AbstractEventMapData eventData = createDataIfAbsent(object);
     return eventData.getEvents();
   }
 

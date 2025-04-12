@@ -150,7 +150,7 @@ public class EditorLevelData {
    */
   public boolean removeGroup(String group) {
     for (EditorObject object : myObjectDataMap.values()) {
-      if (group.equals(object.getIdentityData().getGroup())) {
+      if (group.equals(object.getIdentityData().getType())) {
         return false;
       }
     }
@@ -239,5 +239,15 @@ public class EditorLevelData {
    */
   public Map<UUID, EditorObject> getObjectDataMap() {
     return myObjectDataMap;
+  }
+
+  /**
+   * Retrieves a list of editor objects by the Layer.
+   *
+   * @return a {@link Map} where keys are the Layer object and values are a {@link List} of
+   * {@link EditorObject} instances
+   */
+  public Map<Layer, List<EditorObject>> getObjectLayerDataMap() {
+    return myLayerDataMap;
   }
 }

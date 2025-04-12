@@ -71,7 +71,8 @@ class EventConverterTest {
         uuid,
         100,
         200,
-        1
+        1,
+        ""
     );
 
     expectedGameObject = new Player(uuid, "Player", 1, 0, 0, hitbox, sprite, new ArrayList<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());

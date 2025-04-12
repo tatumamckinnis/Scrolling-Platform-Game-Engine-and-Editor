@@ -15,7 +15,7 @@ import oogasalad.editor.model.data.event_enum.OutcomeType;
  */
 public class EditorEvent {
 
-  private List<ConditionType> conditions;
+  private List<List<ConditionType>> conditions;
   private List<OutcomeType> outcomes;
   private Map<OutcomeType, String> outcomeParameters;
   private Map<ConditionType, String> conditionParameters;
@@ -23,10 +23,10 @@ public class EditorEvent {
   /**
    * Constructs an EditorEvent with the specified lists of conditions and outcomes.
    *
-   * @param conditions the list of conditions for this event
+   * @param conditions the list of lists of conditions for this event
    * @param outcomes   the list of outcomes for this event
    */
-  public EditorEvent(List<ConditionType> conditions, List<OutcomeType> outcomes) {
+  public EditorEvent(List<List<ConditionType>> conditions, List<OutcomeType> outcomes) {
     this.conditions = conditions;
     this.outcomes = outcomes;
     this.outcomeParameters = new HashMap<>();
@@ -95,7 +95,7 @@ public class EditorEvent {
    * @param condition the condition to add
    */
   public void addCondition(ConditionType condition) {
-    conditions.add(condition);
+    conditions.get(0).add(condition); // TODO: Enable getting conditions by index
   }
 
   /**
@@ -113,7 +113,7 @@ public class EditorEvent {
    * @param condition the condition to remove
    */
   public void removeCondition(ConditionType condition) {
-    conditions.remove(condition);
+    conditions.get(0).remove(condition); // TODO: Enable getting conditions by index
   }
 
   /**
@@ -131,7 +131,7 @@ public class EditorEvent {
    * @return a list of ConditionType instances
    */
   public List<ConditionType> getConditions() {
-    return conditions;
+    return conditions.get(0); // TODO: Enable getting conditions by index
   }
 
   /**

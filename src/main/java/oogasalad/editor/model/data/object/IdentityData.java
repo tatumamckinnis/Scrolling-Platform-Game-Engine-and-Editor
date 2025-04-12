@@ -5,7 +5,7 @@ import oogasalad.editor.model.data.Layer;
 
 /**
  * Represents the identity data for an editor object. This class holds primary identifying
- * information for an editor object, including a unique identifier, name, group, and the layer to
+ * information for an editor object, including a unique identifier, name, type, and the layer to
  * which the object belongs.
  *
  * @author Jacob You
@@ -14,21 +14,21 @@ public class IdentityData {
 
   private UUID id;
   private String name;
-  private String group;
+  private String type;
   private Layer layer;
 
   /**
-   * Constructs a new IdentityData instance with the specified id, name, group, and layer.
+   * Constructs a new IdentityData instance with the specified id, name, type, and layer.
    *
    * @param id    the unique identifier for the editor object
    * @param name  the name of the editor object
-   * @param group the group to which the editor object belongs
+   * @param type the type to which the editor object belongs
    * @param layer the layer associated with the editor object
    */
-  public IdentityData(UUID id, String name, String group, Layer layer) {
+  public IdentityData(UUID id, String name, String type, Layer layer) {
     this.id = id;
     this.name = name;
-    this.group = group;
+    this.type = type;
     this.layer = layer;
   }
 
@@ -51,12 +51,12 @@ public class IdentityData {
   }
 
   /**
-   * Returns the group of the editor object.
+   * Returns the type of the editor object.
    *
-   * @return the group of the editor object
+   * @return the type of the editor object
    */
-  public String getGroup() {
-    return group;
+  public String getType() {
+    return type;
   }
 
   /**
@@ -87,12 +87,12 @@ public class IdentityData {
   }
 
   /**
-   * Sets the group of the editor object.
+   * Sets the type of the editor object.
    *
-   * @param group the new group to set
+   * @param type the new type to set
    */
-  public void setGroup(String group) {
-    this.group = group;
+  public void setType(String type) {
+    this.type = type;
   }
 
   /**

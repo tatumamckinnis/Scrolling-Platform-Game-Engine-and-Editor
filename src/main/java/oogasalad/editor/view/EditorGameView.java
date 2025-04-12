@@ -401,8 +401,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     g.setTextAlign(TextAlignment.CENTER);
     String type = "?";
     if (object != null && object.getIdentityData() != null
-        && object.getIdentityData().getGroup() != null) {
-      type = object.getIdentityData().getGroup();
+        && object.getIdentityData().getType() != null) {
+      type = object.getIdentityData().getType();
     }
     g.fillText(type, x + cellSize / 2.0, y + cellSize / 2.0 + PLACEHOLDER_FONT_SIZE / 3.0);
   }

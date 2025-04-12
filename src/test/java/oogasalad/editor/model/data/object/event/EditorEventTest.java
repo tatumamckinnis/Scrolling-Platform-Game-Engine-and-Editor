@@ -30,7 +30,7 @@ class EditorEventTest {
   @Test
   void constructor_whenGivenConditionAndOutcomeLists_shouldInitializeFields() {
     EditorEvent event = new EditorEvent(
-        List.of(ConditionType.KEY_UP, ConditionType.KEY_LEFT),
+        List.of(List.of(ConditionType.KEY_UP, ConditionType.KEY_LEFT)),
         List.of(OutcomeType.MOVE, OutcomeType.JUMP)
     );
     assertTrue(event.getConditions().contains(ConditionType.KEY_UP));
@@ -129,7 +129,7 @@ class EditorEventTest {
   @Test
   void setConditionParameter_whenConditionExists_shouldUpdateParameter() {
     EditorEvent eventWithData = new EditorEvent(
-        List.of(ConditionType.KEY_LEFT),
+        List.of(List.of(ConditionType.KEY_LEFT)),
         List.of(OutcomeType.ADD_OBJECT)
     );
     eventWithData.setConditionParameter(ConditionType.KEY_LEFT, "KeyW");
