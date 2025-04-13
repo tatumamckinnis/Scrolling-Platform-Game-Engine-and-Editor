@@ -2,19 +2,20 @@ package oogasalad.editor.saver;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.OutcomeData;
 import oogasalad.fileparser.records.SpriteData;
 
 public class BlueprintBuilder {
@@ -29,9 +30,8 @@ public class BlueprintBuilder {
 
     SpriteData spriteData = toSpriteRecord(obj.getSpriteData());
     HitBoxData hitBoxData = toHitboxRecord(obj.getHitboxData(), obj.getSpriteData());
-    List<EventData> eventData = toEventRecord(obj.getEventData());
+    List<EventData> eventData = toEventRecord(obj);
 
-    // Add to the saver upon implementation in the editor.
     double vX = 0.0;
     double vY = 0.0;
     Map<String, String> stringProps = Map.of();
@@ -87,32 +87,78 @@ public class BlueprintBuilder {
     );
   }
 
-  private static List<EventData> toEventRecordList(EditorObject obj) {
-    List<EventData> allEvents = new ArrayList<>();
-    addEventsFromMap("Collision", obj.getCollisionData().getEvents(), allEvents);
-    addEventsFromMap("Input", obj.getInputData().getEvents(), allEvents);
-    addEventsFromMap("Physics", obj.getPhysicsData().getEvents(), allEvents);
-    addEventsFromMap("Custom", obj.getCustomEventData().getEvents(), allEvents);
-    return allEvents;
+  private static List<EventData> toEventRecord(EditorObject obj) {
+    List<EventData> all = new ArrayList<>();
+
+    addEvents("Collision", obj.getCollisionData().getEvents(), all);
+    addEvents("Input", obj.getInputData().getEvents(), all);
+    addEvents("Physics", obj.getPhysicsData().getEvents(), all);
+    addEvents("Custom", obj.getCustomEventData().getEvents(), all);
+
+    sortEventRecord(obj, all);
+
+    return all;
   }
 
-  private static Collection<EventData> addEventsFromMap(String type, Map<String, EditorEvent> events, List<EventData> allEvents) {
-    for (Map.Entry<String, EditorEvent> entry : events.entrySet()) {
-      String eventName = entry.getKey();
-      EditorEvent event = entry.getValue();
+  private static void sortEventRecord(EditorObject obj, List<EventData> all) {
+    List<String> order = obj.getEventData().getEvents();
+    Map<String,Integer> indexMap = new HashMap<>();
+    for (int i = 0; i < order.size(); i++) {
+      indexMap.put(order.get(i), i);
+    }
 
-      List<List<ConditionData>> conditionGroups = new ArrayList<>();
-      for (ConditionType conditionType : ConditionType.values()) {
-        parseConditions(conditionGroups, conditionType);
-      }
+    all.sort((a, b) -> {
+      int ia = indexMap.getOrDefault(a.eventId(), Integer.MAX_VALUE);
+      int ib = indexMap.getOrDefault(b.eventId(), Integer.MAX_VALUE);
+      return Integer.compare(ia, ib);
+    });
+  }
+
+  private static void addEvents(String type,
+      Map<String, EditorEvent> src,
+      List<EventData> dest) {
+
+    for (Map.Entry<String, EditorEvent> entry : src.entrySet()) {
+      String eventId = entry.getKey();
+      EditorEvent ev = entry.getValue();
+
+      List<List<ConditionData>> condGroups = getConditionLists(
+          ev);
+      List<OutcomeData> outList = getOutcomesLists(ev);
+
+      dest.add(new EventData(type, eventId, condGroups, outList));
     }
   }
 
-  private static void parseConditions(List<List<ConditionData>> conditionGroups, ConditionType conditionType) {
-    List<ConditionData> singleGroup = new ArrayList<>();
+  private static List<List<ConditionData>> getConditionLists(EditorEvent ev) {
+    List<List<ConditionData>> condGroups = new ArrayList<>();
 
-    Map<String, String> stringProps = Map.of();
-    Map<String, Double> doubleProps = Map.of();
+    List<List<ExecutorData>> edGroups = ev.getConditions();
+    for (List<ExecutorData> edGroup : edGroups) {
+      List<ConditionData> group = new ArrayList<>();
 
+      for (ExecutorData ex : edGroup) {
+        group.add(new ConditionData(
+            ex.getExecutorName(),
+            new HashMap<>(ex.getStringParams()),
+            new HashMap<>(ex.getDoubleParams())
+        ));
+      }
+      condGroups.add(group);
+    }
+    return condGroups;
+  }
+
+  private static List<OutcomeData> getOutcomesLists(EditorEvent ev) {
+    List<OutcomeData> outList = new ArrayList<>();
+
+    for (ExecutorData ex : ev.getOutcomes()) {
+      outList.add(new OutcomeData(
+          ex.getExecutorName(),
+          new HashMap<>(ex.getStringParams()),
+          new HashMap<>(ex.getDoubleParams())
+      ));
+    }
+    return outList;
   }
 }
