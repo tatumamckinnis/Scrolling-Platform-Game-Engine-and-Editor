@@ -24,7 +24,7 @@ import java.util.Objects;
  * @param stringProperties    a map of custom string properties for additional configuration.
  * @param doubleProperties    a map of custom double properties for additional configuration.
  * @param displayedProperties a list of property names that are intended to be displayed.
- * @author Billy McCune
+ * @author Billy McCune, Jacob You
  */
 public record BlueprintData(
     int blueprintId,
@@ -91,6 +91,16 @@ public record BlueprintData(
         stringProperties,
         doubleProperties,
         displayedProperties
+    );
+  }
+
+  public BlueprintData withId(int newId) {
+    return new BlueprintData(
+        newId,
+        velocityX, velocityY, rotation,
+        gameName, group, type,
+        spriteData, hitBoxData, eventDataList,
+        stringProperties, doubleProperties, displayedProperties
     );
   }
 }

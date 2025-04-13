@@ -9,26 +9,63 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Blue;
 
 public class EditorDataSaver {
 
   public static LevelData buildLevelData(EditorLevelData editorLevelData) {
-    Map<Integer, BlueprintData> blueprintIdToData = new HashMap<>();
-    Map<BlueprintData, Integer> keyToId = new HashMap<>();
+    Map<BlueprintData, Integer> blueprintToId = new HashMap<>();
     AtomicInteger nextId = new AtomicInteger();
     List<GameObjectData> gameObjects = new ArrayList<>();
 
     for (EditorObject obj : editorLevelData.getObjectDataMap().values()) {
-      parseObject(obj);
+      gameObjects.add(createGameObject(obj, blueprintToId, nextId));
     }
 
-    return null;
+    int[] bounds = editorLevelData.getBounds();
+
+    return new LevelData(
+        editorLevelData.getLevelName(),
+        bounds[0],
+        bounds[1],
+        bounds[2],
+        bounds[3],
+        new CameraData("camera", null, null),
+        flipMapping(blueprintToId),
+        gameObjects
+    );
   }
 
-  private static void parseObject(EditorObject object) {
+  private static GameObjectData createGameObject(EditorObject object,
+      Map<BlueprintData, Integer> blueprintToId, AtomicInteger nextId) {
+
     BlueprintData candidate = BlueprintBuilder.fromEditorObject(object);
+
+    Integer id = blueprintToId.get(candidate);
+    if (id == null) {
+      id = nextId.incrementAndGet();
+      BlueprintData finalBlueprint = candidate.withId(id);
+      blueprintToId.put(finalBlueprint, id);
+    }
+    Layer layer = object.getIdentityData().getLayer();
+
+    return new GameObjectData(
+        id,
+        object.getIdentityData().getId(),
+        object.getHitboxData().getX(),
+        object.getHitboxData().getY(),
+        layer.getPriority(),
+        layer.getName()
+    );
+  }
+
+  private static Map<Integer, BlueprintData> flipMapping(Map<BlueprintData, Integer> blueprintToId) {
+    Map<Integer, BlueprintData> flipped = new HashMap<>();
+    for (Map.Entry<BlueprintData, Integer> entry : blueprintToId.entrySet()) {
+      flipped.put(entry.getValue(), entry.getKey());
+    }
+    return flipped;
   }
 }
