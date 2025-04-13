@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.view.screen.SplashScreen;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.ViewInitializationException;

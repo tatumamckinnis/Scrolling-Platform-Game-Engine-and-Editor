@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.view.screen.SplashScreen;
 import oogasalad.exceptions.ViewInitializationException;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;

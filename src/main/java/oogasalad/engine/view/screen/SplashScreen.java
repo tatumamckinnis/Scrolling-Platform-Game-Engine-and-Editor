@@ -1,4 +1,4 @@
-package oogasalad.engine.view;
+package oogasalad.engine.view.screen;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import oogasalad.engine.view.Display;
+import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
