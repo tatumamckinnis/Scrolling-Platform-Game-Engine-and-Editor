@@ -46,6 +46,7 @@ public class LevelDisplay extends Display {
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
+  @Override
   public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     sprites = myConverter.convertObjectsToImages(gameObjects);

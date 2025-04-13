@@ -55,17 +55,8 @@ public abstract class Display extends Group {
   }
 
   /**
-   * This method checks if the display is currently visible.
-   */
-  public boolean isCurrentlyVisible() {
-    return this.isVisible();
-  }
-
-  /**
    * removes game object from the level view scene
-   * @param gameObject the game object that should be remoed
+   * @param gameObject the game object that should be removed
    */
-  public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    return ;
-  }
+  public abstract void removeGameObjectImage(ImmutableGameObject gameObject);
 }
