@@ -89,8 +89,23 @@
 ### Jacob You
 
 * Work done this Sprint
+  * Adding properties input tabs
+  * Adding zooming functionality to the camera
+  * Adding panning functionality to the camera
+  * Creating a selection tool and allowing deselection
+  * Refactoring Collision, Input, and Physics classes to stem from a superclass
+  * Implementing grid lock toggle
+  * Implementing dynamic hitboxes and hitbox visual toggle
+  * Wrote tests for most of the view backend
 * Plan for next Sprint?
+  * Implement save functionality from editor to the fileParser format
+  * Implement a sprites properties tab
+  * Implement software to automatically divide a sprite sheet into cells
+  * Implement software to save FrameData, AnimationData and base Sprites
+  * Refactor code to minimize pipeline issues
+  * Fix camera zooming incorrectly when panned.
 * Blockers/Issues in your way
+  * Need the fileParser save functionality to be implemented for full saving
 
 ## Project's current progress
 

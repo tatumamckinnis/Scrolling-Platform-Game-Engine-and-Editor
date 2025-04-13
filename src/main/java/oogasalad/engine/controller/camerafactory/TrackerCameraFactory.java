@@ -4,9 +4,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import oogasalad.Main;
-import oogasalad.engine.controller.DefaultGameController;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.fileparser.records.CameraData;
@@ -17,8 +16,8 @@ import oogasalad.fileparser.records.CameraData;
  *
  * <p>This factory expects the {@link CameraData} to include a string property with key
  * {@code "objectToTrack"} that refers to a {@link GameObject} in the game. The corresponding
- * {@link ViewObject} is set on the created {@link TrackerCamera} so that the camera can follow the
- * target during gameplay.</p>
+ * {@link ImmutableGameObject} is set on the created {@link TrackerCamera} so that the camera can
+ * follow the target during gameplay.</p>
  *
  * <p>If the required tracking object is not provided or cannot be found, the factory will
  * throw a runtime exception to signal invalid configuration.</p>
@@ -26,7 +25,7 @@ import oogasalad.fileparser.records.CameraData;
  * @see TrackerCamera
  * @see CameraData
  * @see GameObject
- * @see ViewObject
+ * @see ImmutableGameObject
  */
 public class TrackerCameraFactory implements CameraFactory {
 
@@ -38,7 +37,8 @@ public class TrackerCameraFactory implements CameraFactory {
    *
    * <p>It looks for the key {@code "objectToTrack"} in the {@link CameraData}'s string properties.
    * The corresponding {@link GameObject} must be present in the provided {@code gameObjectMap}. If
-   * found, the camera will track the converted {@link ViewObject} of that game object.</p>
+   * found, the camera will track the converted {@link ImmutableGameObject} of that game
+   * object.</p>
    *
    * @param cameraData    the data used to configure the camera
    * @param gameObjectMap the available game objects in the level, indexed by ID
@@ -58,8 +58,7 @@ public class TrackerCameraFactory implements CameraFactory {
 
     if (properties.containsKey("objectToTrack")) {
       try {
-        GameObject objectToTrack = gameObjectMap.get(properties.get("objectToTrack"));
-        ViewObject viewObjectToTrack = DefaultGameController.convertToViewObject(objectToTrack);
+        ImmutableGameObject viewObjectToTrack = gameObjectMap.get(properties.get("objectToTrack"));
         camera.setViewObjectToTrack(viewObjectToTrack);
         return camera;
       } catch (NullPointerException e) {

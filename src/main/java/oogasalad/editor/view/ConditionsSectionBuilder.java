@@ -68,11 +68,10 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Creates and lays out the UI components for the conditions section. This includes a header
-   * label, a ComboBox to select condition types, Add/Remove buttons, and a ListView to display the
-   * currently added conditions.
+   * Builds and returns the complete UI section for managing conditions, including header, combo
+   * box, list view, and control buttons.
    *
-   * @return A Node (specifically a VBox) containing all the UI elements for this section.
+   * @return the constructed Node representing the conditions UI.
    */
   public Node build() {
     VBox pane = new VBox(DEFAULT_SPACING);
@@ -80,40 +79,11 @@ public class ConditionsSectionBuilder {
     pane.setPadding(new Insets(DEFAULT_PADDING));
 
     Label header = createHeaderLabel(KEY_CONDITIONS_HEADER);
-    conditionComboBox = new ComboBox<>(FXCollections.observableArrayList(ConditionType.values()));
-    conditionComboBox.setId("conditionComboBox");
-    conditionComboBox.setPromptText(PROMPT_SELECT_CONDITION);
-    conditionComboBox.setMaxWidth(Double.MAX_VALUE);
+    setupConditionComboBox();
+    setupConditionsListView();
 
-    conditionsListView = createListView(LIST_VIEW_HEIGHT);
-    conditionsListView.setId("conditionsListView");
-
-    Button addButton = createButton(KEY_ADD_CONDITION_BUTTON, e -> {
-      ConditionType selected = conditionComboBox.getSelectionModel().getSelectedItem();
-      if (selected != null) {
-        addConditionHandler.accept(selected);
-      } else {
-        LOG.warn("Attempted to add null condition type.");
-      }
-    });
-    addButton.setId("addConditionButton");
-
-    Button removeButton = createButton(KEY_REMOVE_CONDITION_BUTTON, e -> {
-      String selectedStr = conditionsListView.getSelectionModel().getSelectedItem();
-      if (selectedStr != null) {
-        try {
-          ConditionType condition = ConditionType.valueOf(selectedStr);
-          removeConditionHandler.accept(condition);
-        } catch (IllegalArgumentException ex) {
-          LOG.error("Could not parse selected condition for removal: {}", selectedStr, ex);
-        }
-      } else {
-        LOG.warn("Attempted to remove null condition.");
-      }
-    });
-    removeButton.setId("removeConditionButton");
-    removeButton.getStyleClass().add("remove-button");
-
+    Button addButton = setupAddButton();
+    Button removeButton = setupRemoveButton();
     HBox buttonRow = createCenteredButtonBox(addButton, removeButton);
 
     pane.getChildren().addAll(header, conditionComboBox, conditionsListView, buttonRow);
@@ -121,6 +91,79 @@ public class ConditionsSectionBuilder {
     LOG.debug("Conditions section UI built.");
     return pane;
   }
+
+  /**
+   * Initializes the combo box used for selecting condition types.
+   */
+  private void setupConditionComboBox() {
+    conditionComboBox = new ComboBox<>(FXCollections.observableArrayList(ConditionType.values()));
+    conditionComboBox.setId("conditionComboBox");
+    conditionComboBox.setPromptText(PROMPT_SELECT_CONDITION);
+    conditionComboBox.setMaxWidth(Double.MAX_VALUE);
+  }
+
+  /**
+   * Initializes the list view that displays the currently added conditions.
+   */
+  private void setupConditionsListView() {
+    conditionsListView = createListView(LIST_VIEW_HEIGHT);
+    conditionsListView.setId("conditionsListView");
+  }
+
+  /**
+   * Creates and returns a button that triggers adding a selected condition.
+   *
+   * @return the configured "Add" button.
+   */
+  private Button setupAddButton() {
+    Button addButton = createButton(KEY_ADD_CONDITION_BUTTON, e -> handleAddAction());
+    addButton.setId("addConditionButton");
+    return addButton;
+  }
+
+  /**
+   * Handles the logic for adding the selected condition from the combo box using the provided
+   * handler.
+   */
+  private void handleAddAction() {
+    ConditionType selected = conditionComboBox.getSelectionModel().getSelectedItem();
+    if (selected != null) {
+      addConditionHandler.accept(selected);
+    } else {
+      LOG.warn("Attempted to add null condition type.");
+    }
+  }
+
+  /**
+   * Creates and returns a button that triggers the removal of a selected condition.
+   *
+   * @return the configured "Remove" button.
+   */
+  private Button setupRemoveButton() {
+    Button removeButton = createButton(KEY_REMOVE_CONDITION_BUTTON, e -> handleRemoveAction());
+    removeButton.setId("removeConditionButton");
+    removeButton.getStyleClass().add("remove-button");
+    return removeButton;
+  }
+
+  /**
+   * Handles the logic for removing the selected condition from the list view using the provided
+   * handler.
+   */
+  private void handleRemoveAction() {
+    String selectedStr = conditionsListView.getSelectionModel().getSelectedItem();
+    if (selectedStr != null) {
+      try {
+        ConditionType condition = ConditionType.valueOf(selectedStr);
+        removeConditionHandler.accept(condition);
+      } catch (IllegalArgumentException ex) {
+        LOG.error("Could not parse selected condition for removal: {}", selectedStr, ex);
+      }
+    } else {
+      LOG.warn("Attempted to remove null condition.");
+    }
+  }
+
 
   /**
    * Gets the ListView component used to display the conditions. This allows the parent component

@@ -2,7 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
@@ -40,7 +40,7 @@ public class GameDisplay extends Display {
    * @param gameObjects list of GameObjects to update or to add to the screen.
    * @throws RenderingException thrown if problem during rendering.
    */
-  public void renderGameObjects(List<ViewObject> gameObjects)
+  public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
   }
@@ -63,5 +63,10 @@ public class GameDisplay extends Display {
   @Override
   public void shiftNode(Camera myCamera) {
     myLevelView.shiftNode(myCamera);
+  }
+
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    myLevelView.removeGameObjectImage(gameObject);
   }
 }

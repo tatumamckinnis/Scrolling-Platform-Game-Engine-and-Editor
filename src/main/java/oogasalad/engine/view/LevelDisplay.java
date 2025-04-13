@@ -2,7 +2,7 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.exceptions.RenderingException;
@@ -22,6 +22,8 @@ public class LevelDisplay extends Display {
   // upon update will rerender any objects with the IDs specified
   private static final Logger LOG = LogManager.getLogger();
   private final ViewObjectToImageConverter myConverter;
+
+  private List<ObjectImage> sprites;
 
   /**
    * Default constructor for a level view. Sets the level to pause.
@@ -44,9 +46,9 @@ public class LevelDisplay extends Display {
    * @param gameObjects a list of gameObjects with objects to be updated visually
    * @throws RenderingException thrown if there is an error while rendering
    */
-  public void renderGameObjects(List<ViewObject> gameObjects)
+  public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
-    List<ObjectImage> sprites = myConverter.convertObjectsToImages(gameObjects);
+    sprites = myConverter.convertObjectsToImages(gameObjects);
     for (ObjectImage sprite : sprites) {
       this.getChildren().add(sprite.getImageView());
       this.getChildren().add(sprite.getHitBox());
@@ -56,11 +58,23 @@ public class LevelDisplay extends Display {
   /**
    * Shifts the camera view focused on this level view.
    *
-   * @param myCamera             a camera instance which the node should shift relative to.
+   * @param myCamera a camera instance which the node should shift relative to.
    */
   @Override
   public void shiftNode(Camera myCamera) {
     myCamera.updateCamera(this);
+  }
+
+  /**
+   * removes a game object image from the scene
+   *
+   * @param gameObject the Immutable game object to remove from the scene
+   */
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    ObjectImage imageToRemove = myConverter.retrieveImageObject(gameObject);
+    this.getChildren().remove(imageToRemove.getImageView());
+    this.getChildren().remove(imageToRemove.getHitBox());
   }
 
 }
