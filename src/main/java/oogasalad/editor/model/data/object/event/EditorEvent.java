@@ -1,9 +1,7 @@
 package oogasalad.editor.model.data.object.event;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 
@@ -15,131 +13,211 @@ import oogasalad.editor.model.data.event_enum.OutcomeType;
  */
 public class EditorEvent {
 
-  private List<List<ConditionType>> conditions;
-  private List<OutcomeType> outcomes;
-  private Map<OutcomeType, String> outcomeParameters;
-  private Map<ConditionType, String> conditionParameters;
+  private List<List<ExecutorData>> conditions;
+  private List<ExecutorData> outcomes;
 
   /**
    * Constructs an EditorEvent with the specified lists of conditions and outcomes.
    *
-   * @param conditions the list of lists of conditions for this event
+   * @param conditions the list of conditions for this event
    * @param outcomes   the list of outcomes for this event
    */
-  public EditorEvent(List<List<ConditionType>> conditions, List<OutcomeType> outcomes) {
+  public EditorEvent(List<List<ExecutorData>> conditions, List<ExecutorData> outcomes) {
     this.conditions = conditions;
     this.outcomes = outcomes;
-    this.outcomeParameters = new HashMap<>();
-    this.conditionParameters = new HashMap<>();
   }
 
   /**
    * Constructs an EditorEvent with empty lists for conditions and outcomes.
    */
   public EditorEvent() {
-    this.conditions = new ArrayList<>();
+    this.conditions = new ArrayList<>(new ArrayList<>());
     this.outcomes = new ArrayList<>();
-    this.outcomeParameters = new HashMap<>();
-    this.conditionParameters = new HashMap<>();
   }
 
   /**
    * Retrieves the parameter associated with the given outcome.
    *
-   * @param outcome the outcome for which to retrieve the parameter
-   * @return the parameter value, or null if no parameter exists
+   * @param index the index for which to retrieve the outcome data
+   * @return the {@link ExecutorData}, or null if no parameter exists
    */
-  public String getOutcomeParameter(OutcomeType outcome) {
-    return outcomeParameters.get(outcome);
-  }
-
-  /**
-   * Retrieves the parameter associated with the given condition.
-   *
-   * @param condition the condition for which to retrieve the parameter
-   * @return the parameter value, or null if no parameter exists
-   */
-  public String getConditionParameter(ConditionType condition) {
-    return conditionParameters.get(condition);
-  }
-
-  /**
-   * Sets the parameter associated with the specified outcome. This method updates the parameter
-   * value only if the outcome is present in the list of outcomes.
-   *
-   * @param outcome   the outcome for which the parameter should be set
-   * @param parameter the new parameter value
-   */
-  public void setOutcomeParameter(OutcomeType outcome, String parameter) {
-    if (outcomes.contains(outcome)) {
-      outcomeParameters.put(outcome, parameter);
+  public ExecutorData getOutcomeData(int index) {
+    if (index < outcomes.size()) {
+      return outcomes.get(index);
     }
   }
 
   /**
-   * Sets the parameter associated with the specified condition. The parameter is updated only if
-   * the condition already exists in the parameter mapping.
+   * Retrieves the executor associated with the given condition.
    *
-   * @param condition the condition for which the parameter should be set
-   * @param parameter the new parameter value
+   * @param groupIndex the index of the conditionGroup to get the condition from
+   * @param index      the index inside the conditionGroup for which to retrieve the condition data
+   * @return the {@link ExecutorData}, or null if no condition exists.
    */
-  public void setConditionParameter(ConditionType condition, String parameter) {
-    if (conditionParameters.containsKey(condition)) {
-      conditionParameters.put(condition, parameter);
+  public ExecutorData getConditionData(int groupIndex, int index) {
+    List<ExecutorData> conditionGroup = conditions.get(groupIndex);
+    if (conditionGroup != null) {
+      if (index < conditionGroup.size()) {
+        return conditionGroup.get(index);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Sets the string parameter associated with the given name to the specified value for the outcome
+   * at the specified index.
+   *
+   * @param index     the index in the outcome list for the specified outcome
+   * @param paramName the name of the parameter to change
+   * @param value     the value to change the parameter to
+   */
+  public void setOutcomeStringParameter(int index, String paramName, String value) {
+    ExecutorData outcome = getOutcomeData(index);
+    if (outcome != null) {
+      outcome.setStringParam(paramName, value);
     }
   }
 
   /**
-   * Adds a condition to the event.
+   * Sets the double parameter associated with the given name to the specified value for the outcome
+   * at the specified index.
    *
-   * @param condition the condition to add
+   * @param index     the index in the outcome list for the specified outcome
+   * @param paramName the name of the parameter to change
+   * @param value     the value to change the parameter to
    */
-  public void addCondition(ConditionType condition) {
-    conditions.get(0).add(condition); // TODO: Enable getting conditions by index
+  public void setOutcomeDoubleParameter(int index, String paramName, Double value) {
+    ExecutorData outcome = getOutcomeData(index);
+    if (outcome != null) {
+      outcome.setDoubleParam(paramName, value);
+    }
+  }
+
+  /**
+   * Sets the string parameter associated with the given name to the specified value for the
+   * condition at the specified index.
+   *
+   * @param index     the index in the outcome list for the specified condition
+   * @param paramName the name of the parameter to change
+   * @param value     the value to change the parameter to
+   */
+  public void setConditionStringParameter(int groupIndex, int index, String paramName,
+      String value) {
+    ExecutorData condition = getConditionData(groupIndex, index);
+    if (condition != null) {
+      condition.setStringParam(paramName, value);
+    }
+  }
+
+  /**
+   * Sets the double parameter associated with the given name to the specified value for the
+   * condition at the specified index.
+   *
+   * @param index     the index in the outcome list for the specified condition
+   * @param paramName the name of the parameter to change
+   * @param value     the value to change the parameter to
+   */
+  public void setConditionDoubleParameter(int groupIndex, int index, String paramName,
+      Double value) {
+    ExecutorData condition = getConditionData(groupIndex, index);
+    if (condition != null) {
+      condition.setDoubleParam(paramName, value);
+    }
+  }
+
+  /**
+   * Adds a condition of a specified type to the specified group.
+   *
+   * @param groupIndex    The index of the group to add the event to
+   * @param conditionType The name of the conditionType to add
+   */
+  public void addCondition(int groupIndex, String conditionType) {
+    List<ExecutorData> conditionGroup = conditions.get(groupIndex);
+    conditionGroup.add(new ExecutorData(conditionType, null,
+        null)); // TODO: Check if name exists, then autogenerate params
+  }
+
+  /**
+   * Adds a conditionGroup to the event.
+   */
+  public void addConditionGroup() {
+    conditions.add(new ArrayList<>());
   }
 
   /**
    * Adds an outcome to the event.
    *
-   * @param outcome the outcome to add
+   * @param outcomeType The name of the outcomeType to add
    */
-  public void addOutcome(OutcomeType outcome) {
-    outcomes.add(outcome);
+  public void addOutcome(String outcomeType) {
+    outcomes.add(new ExecutorData(outcomeType, null,
+        null)); // TODO: Check if name exists, then autogenerate params
   }
 
   /**
-   * Removes the specified condition from the event.
+   * Removes a specified condition from the specified group.
    *
-   * @param condition the condition to remove
+   * @param groupIndex The group to remove the condition from
+   * @param index The index of the condition inside the group to remove
    */
-  public void removeCondition(ConditionType condition) {
-    conditions.get(0).remove(condition); // TODO: Enable getting conditions by index
+  public void removeCondition(int groupIndex, int index) {
+    List<ExecutorData> conditionGroup = conditions.get(groupIndex);
+    if (conditionGroup != null) {
+      if (conditionGroup.size() > index) {
+        conditionGroup.remove(index);
+      }
+    }
   }
 
   /**
-   * Removes the specified outcome from the event.
+   * Removes the condition group at the specified index.
    *
-   * @param outcome the outcome to remove
+   * @param groupIndex the index of the condition group to remove
    */
-  public void removeOutcome(OutcomeType outcome) {
-    outcomes.remove(outcome);
+  public void removeConditionGroup(int groupIndex) {
+    if (conditions.size() > groupIndex) {
+      conditions.remove(groupIndex);
+    }
   }
 
   /**
-   * Returns the list of conditions for this event.
+   * Removes a specified outcome.
    *
-   * @return a list of ConditionType instances
+   * @param index The index of the outcome to remove
    */
-  public List<ConditionType> getConditions() {
-    return conditions.get(0); // TODO: Enable getting conditions by index
+  public void removeOutcome(int index) {
+    if (outcomes.size() > index) {
+      outcomes.remove(index);
+    }
+  }
+
+  /**
+   * Returns the list of conditions groups for this event.
+   *
+   * @return the list of lists of conditions for the event
+   */
+  public List<List<ExecutorData>> getConditions() {
+    return conditions;
+  }
+
+  /**
+   * Returns the list of conditions inside a condition group for this event.
+   *
+   * @return the list of conditions in the specified group
+   */
+  public List<ExecutorData> getConditionGroup(int groupIndex) {
+    if (conditions.size() > groupIndex) {
+      return conditions.get(groupIndex);
+    }
   }
 
   /**
    * Returns the list of outcomes for this event.
    *
-   * @return a list of OutcomeType instances
+   * @return the list of outcomes
    */
-  public List<OutcomeType> getOutcomes() {
+  public List<ExecutorData> getOutcomes() {
     return outcomes;
   }
 }

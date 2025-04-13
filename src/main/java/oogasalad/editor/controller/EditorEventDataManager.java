@@ -6,50 +6,53 @@ import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
-import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
+import oogasalad.editor.model.data.object.event.EditorEventData;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Abstract class for managing event data (Conditions, Outcomes) associated with EditorObjects.
- * Subclasses determine which specific event data container (e.g., InputData, CollisionData) is
- * used.
+ * Abstract class for managing event data (conditions, outcomes, and their parameters) associated
+ * with {@link EditorObject}s. Sub‑classes decide which concrete {@link EditorEventData} container
+ * (e.g. input, collision, timer, etc.) is used to hold the event data for an editor object.
  *
  * @author Jacob You
  */
 public abstract class EditorEventDataManager {
 
-  private static final Logger LOG = LogManager.getLogger(
-      EditorEventDataManager.class); // Add logger
+  private static final Logger LOG = LogManager.getLogger(EditorEventDataManager.class);
 
   private final EditorLevelData level;
 
   /**
-   * Constructs an EditorEventDataManager with the provided EditorLevelData.
+   * Constructs a manager for the supplied level.
    *
-   * @param level the EditorLevelData instance to be used for managing events
+   * @param level the level whose objects' events are being managed
    */
-  public EditorEventDataManager(EditorLevelData level) {
+  protected EditorEventDataManager(EditorLevelData level) {
     this.level = level;
   }
 
   /**
-   * Creates and returns the specific {@link AbstractEventMapData} container for the given
-   * {@link EditorObject} if it is absent.
+   * Creates (if necessary) and returns the concrete event‑data container for the given editor
+   * object.
+   * <p>
+   * Implemented by sub‑classes so that each manager knows where its events reside.
+   * </p>
    *
-   * @param object the EditorObject to create event data for
-   * @return the corresponding AbstractEventMapData container
+   * @param object the {@link EditorObject} for which to obtain the event data container
+   * @return the corresponding {@link EditorEventData}
    */
-  protected abstract AbstractEventMapData createDataIfAbsent(EditorObject object);
+  protected abstract EditorEventData createDataIfAbsent(EditorObject object);
 
   /**
-   * Helper method to get the target EditorObject, handling null cases.
+   * Retrieves the {@link EditorObject} corresponding to the supplied UUID.
    *
-   * @param objectId The UUID of the object to obtain
-   * @return the {@link EditorObject} with the UUID
+   * @param objectId the unique identifier of the editor object
+   * @return the corresponding {@link EditorObject}
+   * @throws NullPointerException     if the provided objectId is null
+   * @throws IllegalArgumentException if no object with the given ID is found
    */
   protected EditorObject getObject(UUID objectId) {
     Objects.requireNonNull(objectId, "Object ID cannot be null.");
@@ -62,17 +65,19 @@ public abstract class EditorEventDataManager {
   }
 
   /**
-   * Helper method to get the specific EditorEvent, handling null/missing cases.
+   * Retrieves the {@link EditorEvent} for the given object and event identifier.
    *
-   * @param objectId the object UUID to get the EditorEvent from
-   * @param eventId  the event UUID of the EditorEvent to get
-   * @return the {@link EditorEvent} of the eventId from the {@link EditorObject} of objectId
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event
+   * @return the corresponding {@link EditorEvent}
+   * @throws NullPointerException     if the provided eventId is null
+   * @throws IllegalArgumentException if no event with the specified ID is found for the object
    */
   protected EditorEvent getEvent(UUID objectId, String eventId) {
     Objects.requireNonNull(eventId, "Event ID cannot be null.");
     EditorObject object = getObject(objectId);
-    AbstractEventMapData eventData = createDataIfAbsent(object);
-    EditorEvent event = eventData.getEvent(eventId);
+    EditorEventData data = createDataIfAbsent(object);
+    EditorEvent event = data.getEvent(eventId);
     if (event == null) {
       LOG.error("Event '{}' not found for object {}.", eventId, objectId);
       throw new IllegalArgumentException("Event not found: " + eventId + " for object " + objectId);
@@ -81,180 +86,241 @@ public abstract class EditorEventDataManager {
   }
 
   /**
-   * Adds a new event with the specified event ID to the EditorObject identified by objectId.
+   * Adds a new event to the editor object identified by the given UUID.
    *
-   * @param objectId the UUID of the EditorObject
-   * @param eventId  the UUID for the event to be added
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier for the new event
    */
   public void addEvent(UUID objectId, String eventId) {
     EditorObject object = getObject(objectId);
-    AbstractEventMapData eventData = createDataIfAbsent(object);
-    eventData.addEvent(eventId, new EditorEvent());
+    createDataIfAbsent(object).addEvent(eventId, new EditorEvent());
     LOG.debug("Added event '{}' for object {}", eventId, objectId);
   }
 
   /**
-   * Removes the event identified by the specified event ID from the EditorObject.
+   * Removes an event identified by the given eventId from the editor object.
    *
-   * @param objectId the UUID of the EditorObject
-   * @param eventId  the UUID of the event to be removed
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to be removed
    */
   public void removeEvent(UUID objectId, String eventId) {
     EditorObject object = getObject(objectId);
-    AbstractEventMapData eventData = createDataIfAbsent(object);
-    boolean removed = eventData.removeEvent(eventId);
+    boolean removed = createDataIfAbsent(object).removeEvent(eventId);
     if (removed) {
       LOG.debug("Removed event '{}' for object {}", eventId, objectId);
     } else {
-      LOG.warn("Attempted to remove non-existent event '{}' for object {}", eventId, objectId);
+      LOG.warn("Attempted to remove non‑existent event '{}' for object {}", eventId, objectId);
     }
   }
 
   /**
-   * Adds a condition of the specified type to the event identified by the event ID for the given
-   * EditorObject.
+   * Retrieves a map of all events for the editor object.
    *
-   * @param objectId  the UUID of the EditorObject
-   * @param eventId   the UUID of the event to which the condition is to be added
-   * @param condition the ConditionType to add
+   * @param objectId the unique identifier of the editor object
+   * @return a map with event IDs as keys and corresponding {@link EditorEvent} objects as values
    */
-  public void addEventCondition(UUID objectId, String eventId, ConditionType condition) {
-    EditorEvent event = getEvent(objectId, eventId);
-    event.addCondition(condition);
-    LOG.debug("Added condition '{}' to event '{}' for object {}", condition, eventId, objectId);
+  public Map<String, EditorEvent> getEvents(UUID objectId) {
+    return createDataIfAbsent(getObject(objectId)).getEvents();
   }
 
   /**
-   * Removes the condition of the specified type from the event identified by the event ID for the
-   * given EditorObject.
+   * Adds an empty condition group to the specified event for the editor object.
    *
-   * @param objectId  the UUID of the EditorObject
-   * @param eventId   the UUID of the event from which the condition is to be removed
-   * @param condition the ConditionType to remove
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to update
    */
-  public void removeEventCondition(UUID objectId, String eventId, ConditionType condition) {
+  public void addConditionGroup(UUID objectId, String eventId) {
+    getEvent(objectId, eventId).addConditionGroup();
+    LOG.debug("Added empty condition group to event '{}' for object {}", eventId, objectId);
+  }
+
+  /**
+   * Adds a condition of the specified type to a particular group within an event.
+   *
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event to update
+   * @param groupIndex the index of the condition group
+   * @param type       the condition type to add (as a String)
+   */
+  public void addEventCondition(UUID objectId, String eventId, int groupIndex, String type) {
     EditorEvent event = getEvent(objectId, eventId);
-    event.removeCondition(condition);
-    // TODO: Instead of removing an entire condition, delete an index instead
-    LOG.debug("Attempted removal of condition '{}' from event '{}' for object {}", condition,
+    ensureGroupExists(event, groupIndex);
+    event.addCondition(groupIndex, type);
+    LOG.debug("Added condition '{}' in group '{}' to event '{}' for object {}", type, groupIndex,
         eventId, objectId);
   }
 
   /**
-   * Adds a outcome of the specified type to the event identified by the event ID for the given
-   * EditorObject.
+   * Removes a condition from a specified group within an event.
    *
-   * @param objectId the UUID of the EditorObject
-   * @param eventId  the UUID of the event to which the condition is to be added
-   * @param outcome  the OutcomeType to add
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event to update
+   * @param groupIndex the index of the condition group
+   * @param index      the index of the condition within the group to remove
    */
-  public void addEventOutcome(UUID objectId, String eventId, OutcomeType outcome) {
+  public void removeEventCondition(UUID objectId, String eventId, int groupIndex, int index) {
     EditorEvent event = getEvent(objectId, eventId);
-    event.addOutcome(outcome);
-    if (!event.getOutcomes().contains(outcome)) {
-      LOG.warn("Outcome '{}' might already exist in event '{}' for object {}", outcome, eventId,
-          objectId);
-    }
-    event.setOutcomeParameter(outcome, event.getOutcomeParameter(outcome));
-    LOG.debug("Added outcome '{}' to event '{}' for object {}", outcome, eventId, objectId);
+    event.removeCondition(groupIndex, index);
+    LOG.debug("Removed condition at [{},{}] from event '{}' for object {}", groupIndex, index,
+        eventId, objectId);
   }
 
   /**
-   * Removes the outcome of the specified type from the event identified by the event ID for the
-   * given EditorObject.
+   * Removes an entire condition group from an event.
    *
-   * @param objectId the UUID of the EditorObject
-   * @param eventId  the UUID of the event from which the condition is to be removed
-   * @param outcome  the OutcomeType to remove
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event to update
+   * @param groupIndex the index of the condition group to remove
    */
-  public void removeEventOutcome(UUID objectId, String eventId, OutcomeType outcome) {
+  public void removeConditionGroup(UUID objectId, String eventId, int groupIndex) {
     EditorEvent event = getEvent(objectId, eventId);
-    event.removeOutcome(outcome);
-    // TODO: Instead of removing an entire condition, delete an index instead
-    LOG.debug("Attempted removal of outcome '{}' from event '{}' for object {}", outcome, eventId,
+    event.removeConditionGroup(groupIndex);
+    LOG.debug("Removed condition group '{}' from event '{}' for object {}", groupIndex, eventId,
         objectId);
   }
 
-
   /**
-   * Sets the parameter associated with a specific outcome within an event.
+   * Sets a String parameter for a condition within an event.
    *
-   * @param objectId  The ID of the object containing the event.
-   * @param eventId   The ID of the event.
-   * @param outcome   The outcome whose parameter should be set.
-   * @param parameter The parameter value (String), can be null to clear.
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event containing the condition
+   * @param groupIndex the index of the condition group
+   * @param index      the index of the condition within the group
+   * @param paramName  the name of the parameter to set
+   * @param value      the String value to set for the parameter
    */
-  public void setEventOutcomeParameter(UUID objectId, String eventId, OutcomeType outcome,
-      String parameter) {
-    Objects.requireNonNull(outcome, "OutcomeType cannot be null.");
-    EditorEvent event = getEvent(objectId, eventId);
-    event.setOutcomeParameter(outcome, parameter);
-    LOG.debug("Set parameter for outcome '{}' in event '{}' for object {} to '{}'", outcome,
-        eventId, objectId, parameter);
+  public void setEventConditionStringParameter(UUID objectId, String eventId, int groupIndex,
+      int index,
+      String paramName, String value) {
+    getEvent(objectId, eventId).setConditionStringParameter(groupIndex, index, paramName, value);
+    LOG.trace("Set String param '{}'='{}' on condition [{},{}] of event '{}' for object {}",
+        paramName, value, groupIndex, index, eventId, objectId);
   }
 
+  /**
+   * Sets a Double parameter for a condition within an event.
+   *
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event containing the condition
+   * @param groupIndex the index of the condition group
+   * @param index      the index of the condition within the group
+   * @param paramName  the name of the parameter to set
+   * @param value      the Double value to set for the parameter
+   */
+  public void setEventConditionDoubleParameter(UUID objectId, String eventId, int groupIndex,
+      int index,
+      String paramName, Double value) {
+    getEvent(objectId, eventId).setConditionDoubleParameter(groupIndex, index, paramName, value);
+    LOG.trace("Set Double param '{}'={} on condition [{},{}] of event '{}' for object {}",
+        paramName, value, groupIndex, index, eventId, objectId);
+  }
 
   /**
-   * Gets the parameter associated with a specific outcome within an event.
+   * Retrieves all condition groups for a specified event of the editor object.
    *
-   * @param objectId The ID of the object containing the event.
-   * @param eventId  The ID of the event.
-   * @param outcome  The outcome whose parameter should be retrieved.
-   * @return The parameter value (String), or null if not set or not found.
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to query
+   * @return a list of condition groups, where each group is a list of {@link ExecutorData}
+   * representing conditions
    */
-  public String getEventOutcomeParameter(UUID objectId, String eventId, OutcomeType outcome) {
-    Objects.requireNonNull(outcome, "OutcomeType cannot be null.");
-    try {
-      EditorEvent event = getEvent(objectId, eventId); // Handles object/event not found
-      String parameter = event.getOutcomeParameter(outcome);
-      LOG.trace("Retrieved parameter for outcome '{}' in event '{}' for object {}: '{}'", outcome,
-          eventId, objectId, parameter);
-      return parameter;
-    } catch (IllegalArgumentException e) {
-      LOG.warn("Could not get parameter for outcome '{}', event '{}', object {}: {}", outcome,
-          eventId, objectId, e.getMessage());
-      return null;
-    } catch (Exception e) {
-      LOG.error("Error getting parameter for outcome '{}', event '{}', object {}: {}", outcome,
-          eventId, objectId, e.getMessage(), e);
-      return null;
+  public List<List<ExecutorData>> getEventConditions(UUID objectId, String eventId) {
+    return getEvent(objectId, eventId).getConditions();
+  }
+
+  /**
+   * Retrieves a specific condition group from an event.
+   *
+   * @param objectId   the unique identifier of the editor object
+   * @param eventId    the identifier of the event to query
+   * @param groupIndex the index of the condition group
+   * @return a list of {@link ExecutorData} representing the conditions in the specified group
+   */
+  public List<ExecutorData> getEventConditionGroup(UUID objectId, String eventId, int groupIndex) {
+    return getEvent(objectId, eventId).getConditionGroup(groupIndex);
+  }
+
+  /**
+   * Adds an outcome of a specified type to an event.
+   *
+   * @param objectId    the unique identifier of the editor object
+   * @param eventId     the identifier of the event to update
+   * @param outcomeType the type of outcome to add (as a String)
+   */
+  public void addEventOutcome(UUID objectId, String eventId, String outcomeType) {
+    getEvent(objectId, eventId).addOutcome(outcomeType);
+    LOG.debug("Added outcome '{}' to event '{}' for object {}", outcomeType, eventId, objectId);
+  }
+
+  /**
+   * Removes an outcome at the specified index from an event.
+   *
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to update
+   * @param index    the index of the outcome to remove
+   */
+  public void removeEventOutcome(UUID objectId, String eventId, int index) {
+    getEvent(objectId, eventId).removeOutcome(index);
+    LOG.debug("Removed outcome index '{}' from event '{}' for object {}", index, eventId, objectId);
+  }
+
+  /**
+   * Sets a String parameter for an outcome within an event.
+   *
+   * @param objectId  the unique identifier of the editor object
+   * @param eventId   the identifier of the event containing the outcome
+   * @param index     the index of the outcome to update
+   * @param paramName the name of the parameter to set
+   * @param value     the String value to set for the parameter
+   */
+  public void setEventOutcomeStringParameter(UUID objectId, String eventId, int index,
+      String paramName, String value) {
+    getEvent(objectId, eventId).setOutcomeStringParameter(index, paramName, value);
+    LOG.trace("Set String param '{}'='{}' on outcome[{}] of event '{}' for object {}", paramName,
+        value, index, eventId, objectId);
+  }
+
+  /**
+   * Sets a Double parameter for an outcome within an event.
+   *
+   * @param objectId  the unique identifier of the editor object
+   * @param eventId   the identifier of the event containing the outcome
+   * @param index     the index of the outcome to update
+   * @param paramName the name of the parameter to set
+   * @param value     the Double value to set for the parameter
+   */
+  public void setEventOutcomeDoubleParameter(UUID objectId, String eventId, int index,
+      String paramName, Double value) {
+    getEvent(objectId, eventId).setOutcomeDoubleParameter(index, paramName, value);
+    LOG.trace("Set Double param '{}'={} on outcome[{}] of event '{}' for object {}", paramName,
+        value, index, eventId, objectId);
+  }
+
+  /**
+   * Retrieves all outcomes for a specified event of the editor object.
+   *
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to query
+   * @return a list of {@link ExecutorData} representing the outcomes of the event
+   */
+  public List<ExecutorData> getEventOutcomes(UUID objectId, String eventId) {
+    return getEvent(objectId, eventId).getOutcomes();
+  }
+
+  /**
+   * Retrieves outcome data at the specified index from an event.
+   *
+   * @param objectId the unique identifier of the editor object
+   * @param eventId  the identifier of the event to query
+   * @param index    the index of the outcome to retrieve
+   * @return the {@link ExecutorData} for the specified outcome
+   */
+  public ExecutorData getEventOutcomeData(UUID objectId, String eventId, int index) {
+    return getEvent(objectId, eventId).getOutcomeData(index);
+  }
+
+  private void ensureGroupExists(EditorEvent event, int groupIndex) {
+    while (event.getConditions().size() <= groupIndex) {
+      event.addConditionGroup();
     }
-  }
-
-
-  /**
-   * Gets the map of all events for the object.
-   *
-   * @param objectId The UUID of the object to get the events of
-   * @return The mapping of String to {@link EditorEvent}
-   */
-  public Map<String, EditorEvent> getEvents(UUID objectId) {
-    EditorObject object = getObject(objectId);
-    AbstractEventMapData eventData = createDataIfAbsent(object);
-    return eventData.getEvents();
-  }
-
-  /**
-   * Gets the list of conditions for a specific event.
-   *
-   * @param objectId the UUID of the object to get the event conditions of
-   * @param eventId  the ID of the event to get the conditions of
-   * @return The list of {@link ConditionType} of the event
-   */
-  public List<ConditionType> getEventConditions(UUID objectId, String eventId) {
-    EditorEvent event = getEvent(objectId, eventId);
-    return event.getConditions();
-  }
-
-  /**
-   * Gets the list of outcomes for a specific event.
-   *
-   * @param objectId the UUID of the object to get the event conditions of
-   * @param eventId  the ID of the event to get the outcomes of
-   * @return The list of {@link OutcomeType} of the event
-   */
-  public List<OutcomeType> getEventOutcomes(UUID objectId, String eventId) {
-    EditorEvent event = getEvent(objectId, eventId);
-    return event.getOutcomes();
   }
 }

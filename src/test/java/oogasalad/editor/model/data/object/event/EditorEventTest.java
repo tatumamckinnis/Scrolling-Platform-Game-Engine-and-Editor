@@ -102,7 +102,7 @@ class EditorEventTest {
   void setOutcomeParameter_whenOutcomeExists_shouldSetParameter() {
     editorEvent.addOutcome(OutcomeType.MOVE);
     editorEvent.setOutcomeParameter(OutcomeType.MOVE, "100");
-    assertEquals("100", editorEvent.getOutcomeParameter(OutcomeType.MOVE));
+    assertEquals("100", editorEvent.getOutcomeData(OutcomeType.MOVE));
   }
 
   /**
@@ -111,7 +111,7 @@ class EditorEventTest {
   @Test
   void setOutcomeParameter_whenOutcomeNotExist_shouldNotChangeMap() {
     editorEvent.setOutcomeParameter(OutcomeType.JUMP, "50");
-    assertNull(editorEvent.getOutcomeParameter(OutcomeType.JUMP));
+    assertNull(editorEvent.getOutcomeData(OutcomeType.JUMP));
   }
 
   /**
@@ -120,7 +120,7 @@ class EditorEventTest {
   @Test
   void setConditionParameter_whenConditionNotInMap_shouldDoNothing() {
     editorEvent.setConditionParameter(ConditionType.KEY_LEFT, "KeyPress");
-    assertNull(editorEvent.getConditionParameter(ConditionType.KEY_LEFT));
+    assertNull(editorEvent.getConditionData(ConditionType.KEY_LEFT));
   }
 
   /**
@@ -133,7 +133,7 @@ class EditorEventTest {
         List.of(OutcomeType.ADD_OBJECT)
     );
     eventWithData.setConditionParameter(ConditionType.KEY_LEFT, "KeyW");
-    assertNull(eventWithData.getConditionParameter(ConditionType.KEY_LEFT));
+    assertNull(eventWithData.getConditionData(ConditionType.KEY_LEFT));
 
     // We must pre-populate the map if we want setConditionParameter to work
     // E.g., something like eventWithData.conditionParameters.put(ConditionType.KEY_LEFT, "temp");
@@ -146,7 +146,7 @@ class EditorEventTest {
    */
   @Test
   void getOutcomeParameter_whenNotSet_shouldReturnNull() {
-    assertNull(editorEvent.getOutcomeParameter(OutcomeType.ADD_OBJECT));
+    assertNull(editorEvent.getOutcomeData(OutcomeType.ADD_OBJECT));
   }
 
   /**
@@ -154,6 +154,6 @@ class EditorEventTest {
    */
   @Test
   void getConditionParameter_whenNotSet_shouldReturnNull() {
-    assertNull(editorEvent.getConditionParameter(ConditionType.KEY_DOWN));
+    assertNull(editorEvent.getConditionData(ConditionType.KEY_DOWN));
   }
 }
