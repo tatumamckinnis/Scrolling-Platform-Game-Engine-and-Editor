@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import oogasalad.Main;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
@@ -22,7 +25,10 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class GameControlPanel extends Display {
+
   private static final Logger LOG = LogManager.getLogger();
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
   private List<Button> buttons;
   private String homeButtonID = "levelHomeButton";
   private ViewState viewState;
@@ -47,28 +53,35 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * @see Display#initialRender()
-   * Adds all buttons a container.
+   * renders the Game Control Panel
    */
-  @Override
   public void initialRender() {
     HBox buttonContainer = new HBox();
     buttonContainer.getChildren().addAll(buttons);
-    int containerSpacing = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
-    int containerLayoutX = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
+    int containerSpacing = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
+    int containerLayoutX = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
     buttonContainer.setSpacing(containerSpacing);
     buttonContainer.setLayoutX(containerLayoutX);
 
     this.getChildren().add(buttonContainer);
   }
 
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+  }
+
   private void createHomeButton() {
     Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(
-            engineComponentProperties.getProperty("gameControlPanel.image.home"))));
+        engineComponentProperties.getProperty("gameControlPanel.image.home"))));
     ImageView imageView = new ImageView(image);
 
-    int homeFitWidth = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.width"));
-    int homeFitHeight = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.height"));
+    int homeFitWidth = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.image.home.width"));
+    int homeFitHeight = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.image.home.height"));
 
     imageView.setFitWidth(homeFitWidth);
     imageView.setFitHeight(homeFitHeight);
