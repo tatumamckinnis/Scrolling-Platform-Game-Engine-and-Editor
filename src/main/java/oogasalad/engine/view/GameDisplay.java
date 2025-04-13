@@ -46,9 +46,8 @@ public class GameDisplay extends Display {
   }
 
   /**
-   * @see Display#initialRender()
+   * renders the Game Display
    */
-  @Override
   public void initialRender() {
     this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView, myNewGameComponents);
     myGameControlPanel.initialRender();
