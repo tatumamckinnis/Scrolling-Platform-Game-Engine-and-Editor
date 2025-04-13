@@ -155,7 +155,7 @@ public abstract class EditorEventDataManager {
       LOG.warn("Outcome '{}' might already exist in event '{}' for object {}", outcome, eventId,
           objectId);
     }
-    event.setOutcomeParameter(outcome, event.getOutcomeParameter(outcome));
+    event.setOutcomeParameter(outcome, event.getOutcomeData(outcome));
     LOG.debug("Added outcome '{}' to event '{}' for object {}", outcome, eventId, objectId);
   }
 
@@ -206,7 +206,7 @@ public abstract class EditorEventDataManager {
     Objects.requireNonNull(outcome, "OutcomeType cannot be null.");
     try {
       EditorEvent event = getEvent(objectId, eventId); // Handles object/event not found
-      String parameter = event.getOutcomeParameter(outcome);
+      String parameter = event.getOutcomeData(outcome);
       LOG.trace("Retrieved parameter for outcome '{}' in event '{}' for object {}: '{}'", outcome,
           eventId, objectId, parameter);
       return parameter;
