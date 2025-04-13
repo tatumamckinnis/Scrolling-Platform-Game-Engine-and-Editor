@@ -12,7 +12,10 @@ import org.apache.logging.log4j.Logger;
 import java.util.Objects;
 
 /**
- * Builds the UI section for managing Events in the Input Tab.
+ * Builds the UI section for managing Events in the Input Tab. Handles displaying, adding, and
+ * removing events by their string identifiers.
+ *
+ * @author Tatum McKinnis
  */
 public class EventsSectionBuilder {
 
@@ -39,10 +42,12 @@ public class EventsSectionBuilder {
    * Constructs an {@code EventsSectionBuilder} with the necessary dependencies.
    *
    * @param uiBundle               The resource bundle containing UI labels and messages.
-   * @param addEventHandler        The consumer to handle adding a new event. Accepts the event ID.
-   * @param removeEventHandler     The runnable to handle removing the selected event.
+   * @param addEventHandler        The consumer to handle adding a new event. Accepts the event ID
+   *                               (String).
+   * @param removeEventHandler     The runnable to handle removing the selected event (relies on
+   *                               ListView selection).
    * @param selectionChangeHandler The consumer to handle changes in the selected event. Accepts the
-   *                               new selection.
+   *                               selected event ID (String).
    * @throws NullPointerException if any of the provided arguments are {@code null}.
    */
   public EventsSectionBuilder(ResourceBundle uiBundle,
@@ -56,9 +61,10 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Builds the complete UI section for managing events.
+   * Builds the complete UI section for managing events. Includes a header, an input row for new
+   * event IDs, a list view to display existing events, and buttons to add/remove events.
    *
-   * @return The root {@code Node} of the events section.
+   * @return The root {@code Node} of the events section UI.
    */
   public Node build() {
     VBox section = new VBox(DEFAULT_SPACING);
@@ -83,27 +89,30 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Retrieves the {@code ListView} used to display the list of events.
+   * Retrieves the {@code ListView} used to display the list of event IDs (Strings). This allows
+   * external components to populate or interact with the list.
    *
-   * @return The {@code ListView} for events.
+   * @return The {@code ListView<String>} for displaying event IDs.
    */
   public ListView<String> getEventListView() {
     return eventListView;
   }
 
   /**
-   * Retrieves the {@code TextField} used for entering new event IDs.
+   * Retrieves the {@code TextField} used for entering new event IDs. This allows external
+   * components to potentially interact with the input field.
    *
-   * @return The {@code TextField} for event IDs.
+   * @return The {@code TextField} for event ID input.
    */
   public TextField getEventIdField() {
     return eventIdField;
   }
 
   /**
-   * Creates the horizontal layout containing the label and text field for inputting event IDs.
+   * Creates the horizontal layout (HBox) containing the label and text field for inputting new
+   * event IDs.
    *
-   * @return An {@code HBox} containing the event ID input elements.
+   * @return An {@code HBox} containing the event ID label and text field.
    */
   private HBox createEventInputRow() {
     HBox inputBox = new HBox(DEFAULT_SPACING / 2);
@@ -118,21 +127,22 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Creates the horizontal layout containing the buttons for adding and removing events.
+   * Creates the horizontal layout (HBox) containing the "Add Event" and "Remove Event" buttons.
    *
-   * @return An {@code HBox} containing the add and remove event buttons.
+   * @return An {@code HBox} containing the add and remove event buttons, typically centered.
    */
   private HBox createEventButtonRow() {
     Button addButton = createButton(KEY_ADD_EVENT_BUTTON, e -> {
       String eventId = eventIdField.getText();
       if (eventId != null && !eventId.trim().isEmpty()) {
         addEventHandler.accept(eventId.trim());
+        eventIdField.clear();
       } else {
         LOG.warn("Attempted to add empty event ID.");
-        // Consider showing error via factory's showErrorAlert if needed
       }
     });
     addButton.setId("addEventButton");
+
     Button removeButton = createButton(KEY_REMOVE_EVENT_BUTTON, e -> removeEventHandler.run());
     removeButton.setId("removeEventButton");
     removeButton.getStyleClass().add("remove-button");
@@ -141,10 +151,11 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Creates a styled header label using the text from the resource bundle.
+   * Creates a styled header label using text retrieved from the resource bundle based on the
+   * provided key.
    *
-   * @param bundleKey The key to retrieve the header text from the resource bundle.
-   * @return A styled {@code Label} for the section header.
+   * @param bundleKey The key corresponding to the header text in the resource bundle.
+   * @return A styled {@code Label} configured as a section header.
    */
   private Label createHeaderLabel(String bundleKey) {
     Label label = new Label(uiBundle.getString(bundleKey));
@@ -154,11 +165,11 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Creates a styled {@code ListView} with a specified preferred height.
+   * Creates a generic, styled {@code ListView} with a specified preferred height.
    *
-   * @param preferredHeight The preferred height of the list view.
-   * @param <T>             The type of elements in the list view.
-   * @return A styled {@code ListView}.
+   * @param <T>             The type of items the ListView will hold.
+   * @param preferredHeight The preferred height for the ListView, controlling its initial size.
+   * @return A configured and styled {@code ListView<T>}.
    */
   private <T> ListView<T> createListView(double preferredHeight) {
     ListView<T> listView = new ListView<>();
@@ -168,11 +179,12 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Creates a styled {@code Button} with text from the resource bundle and an action handler.
+   * Creates a styled {@code Button} with text from the resource bundle and assigns the provided
+   * action handler.
    *
-   * @param bundleKey The key to retrieve the button text from the resource bundle.
+   * @param bundleKey The key in the resource bundle for the button's text.
    * @param handler   The event handler to be executed when the button is clicked.
-   * @return A styled {@code Button}.
+   * @return A configured and styled {@code Button}.
    */
   private Button createButton(String bundleKey,
       javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
@@ -184,10 +196,11 @@ public class EventsSectionBuilder {
   }
 
   /**
-   * Creates a centered horizontal layout containing the given buttons.
+   * Creates a centered horizontal layout (HBox) to hold one or more buttons, applying default
+   * spacing. The HBox is configured to grow horizontally if space is available.
    *
-   * @param buttons The buttons to be included in the layout.
-   * @return A centered {@code HBox} containing the buttons.
+   * @param buttons The {@code Button} nodes to add to the HBox.
+   * @return A configured {@code HBox} containing the centered buttons.
    */
   private HBox createCenteredButtonBox(Button... buttons) {
     HBox buttonBox = new HBox(DEFAULT_SPACING);

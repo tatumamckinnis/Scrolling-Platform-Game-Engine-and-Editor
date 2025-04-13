@@ -1,5 +1,8 @@
 package oogasalad.editor.view;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -7,14 +10,12 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -22,21 +23,29 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.event.EditorEvent;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+
 /**
- * Input tab component factory makes different input boxes
+ * Factory responsible for creating the UI components within the "Input" or "Events" tab
+ * of the editor. It integrates builders for managing events, conditions, and outcomes,
+ * connecting them to the EditorController and handling data flow based on object/event selection.
+ * Implements {@link EditorViewListener} to react to changes in the editor's state.
  */
 public class InputTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(InputTabComponentFactory.class);
 
   private static final String UI_BUNDLE_NAME = "InputTabUI";
-  private static final String CSS_PATH = "/css/editorStyles.css";
+  private static final String CSS_PATH = "/css/editor/editor.css";
   private static final String KEY_ERROR_SELECTION_NEEDED = "errorSelectionNeeded";
   private static final String KEY_ERROR_API_FAILURE = "errorApiFailureTitle";
+  private static final String KEY_ERROR_ACTION_FAILED = "errorActionFailedContent";
 
   private static final double DEFAULT_PADDING = 12.0;
   private static final double SECTION_SPACING = 25.0;
@@ -48,40 +57,32 @@ public class InputTabComponentFactory implements EditorViewListener {
   private ConditionsSectionBuilder conditionsSectionBuilder;
   private OutcomesSectionBuilder outcomesSectionBuilder;
 
-  private ListView<String> eventListView;
-  private ListView<String> conditionsListView;
-  private ListView<String> outcomesListView;
-  private TextField eventIdField;
-  private ComboBox<String> parameterComboBox;
-
   private UUID currentObjectId;
   private String currentEventId;
 
   /**
    * Constructs an InputTabComponentFactory.
    *
-   * @param editorController The controller responsible for handling editor logic. Must not be
-   *                         null.
+   * @param editorController The controller responsible for handling editor logic. Must not be null.
    * @throws NullPointerException if editorController is null.
    * @throws RuntimeException     if the UI resource bundle cannot be loaded.
    */
   public InputTabComponentFactory(EditorController editorController) {
-    this.editorController = Objects.requireNonNull(editorController,
-        "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
     try {
       this.uiBundle = EditorResourceLoader.loadResourceBundle(UI_BUNDLE_NAME);
     } catch (Exception e) {
-      LOG.fatal("Failed to load essential UI resource bundle {}. Cannot continue.", UI_BUNDLE_NAME,
-          e);
-      throw new RuntimeException("Failed to load UI resource bundle.", e);
+      LOG.fatal("Failed to load essential UI resource bundle {}. Cannot continue.", UI_BUNDLE_NAME, e);
+      throw new RuntimeException("Failed to load UI resource bundle: " + UI_BUNDLE_NAME, e);
     }
     createSectionBuilders();
     LOG.info("InputTabComponentFactory initialized.");
   }
 
   /**
-   * Initializes the section builder instances (Events, Conditions, Outcomes) required for
-   * constructing the UI components.
+   * Initializes the section builder instances (Events, Conditions, Outcomes)
+   * required for constructing the UI components. This involves passing the resource bundle,
+   * necessary data suppliers, and handler method references to the builder constructors.
    */
   private void createSectionBuilders() {
     eventsSectionBuilder = new EventsSectionBuilder(
@@ -90,26 +91,35 @@ public class InputTabComponentFactory implements EditorViewListener {
         this::handleRemoveEvent,
         this::handleEventSelectionChange
     );
+
     conditionsSectionBuilder = new ConditionsSectionBuilder(
         uiBundle,
+        this::getConditionTypeNames,
+        this::handleAddConditionGroup,
+        this::handleRemoveConditionGroup,
         this::handleAddCondition,
-        this::handleRemoveCondition
+        this::handleRemoveCondition,
+        this::handleEditConditionParam
     );
+
     outcomesSectionBuilder = new OutcomesSectionBuilder(
         uiBundle,
+        this::getOutcomeTypeNames,
+        this::getDynamicVariablesForObject,
         this::handleAddOutcome,
         this::handleRemoveOutcome,
-        this::openAddDynamicVariableDialog
+        this::openAddDynamicVariableDialog,
+        this::handleEditOutcomeParam
     );
   }
 
 
   /**
    * Creates the main content pane for the Input tab. This pane includes sections for managing
-   * events, conditions, and outcomes, arranged vertically within a scrollable container.
+   * events, conditions, and outcomes, generated by their respective builders, and arranged
+   * vertically within a scrollable container.
    *
-   * @return An AnchorPane containing the scrollable, vertically stacked UI components for the Input
-   * tab.
+   * @return A Pane (typically an AnchorPane wrapping a ScrollPane) containing the UI for the Input tab.
    */
   public Pane createInputTabPanel() {
     VBox contentVBox = new VBox(SECTION_SPACING);
@@ -117,16 +127,10 @@ public class InputTabComponentFactory implements EditorViewListener {
     contentVBox.setId("input-tab-content-vbox");
 
     Node eventsSection = eventsSectionBuilder.build();
-    Node conditionsPane = conditionsSectionBuilder.build();
-    Node outcomesPane = outcomesSectionBuilder.build();
+    Node conditionsSection = conditionsSectionBuilder.build();
+    Node outcomesSection = outcomesSectionBuilder.build();
 
-    this.eventListView = eventsSectionBuilder.getEventListView();
-    this.eventIdField = eventsSectionBuilder.getEventIdField();
-    this.conditionsListView = conditionsSectionBuilder.getConditionsListView();
-    this.outcomesListView = outcomesSectionBuilder.getOutcomesListView();
-    this.parameterComboBox = outcomesSectionBuilder.getParameterComboBox();
-
-    contentVBox.getChildren().addAll(eventsSection, conditionsPane, outcomesPane);
+    contentVBox.getChildren().addAll(eventsSection, conditionsSection, outcomesSection);
 
     ScrollPane scrollPane = new ScrollPane(contentVBox);
     scrollPane.setFitToWidth(true);
@@ -137,13 +141,12 @@ public class InputTabComponentFactory implements EditorViewListener {
 
     AnchorPane rootPane = new AnchorPane();
     rootPane.getChildren().add(scrollPane);
-
     AnchorPane.setTopAnchor(scrollPane, 0.0);
     AnchorPane.setBottomAnchor(scrollPane, 0.0);
     AnchorPane.setLeftAnchor(scrollPane, 0.0);
     AnchorPane.setRightAnchor(scrollPane, 0.0);
 
-    clearAllLists();
+    clearAllUIToDefault();
     LOG.debug("Input tab panel created using AnchorPane -> ScrollPane -> VBox.");
 
     return rootPane;
@@ -151,210 +154,251 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Handles the selection change event in the events list view. Updates the internal state
-   * (`currentEventId`) and refreshes the conditions and outcomes lists based on the newly selected
-   * event.
+   * Handles the selection change event in the events list view (triggered by EventsSectionBuilder).
+   * Updates the internal state (`currentEventId`) and refreshes the conditions and outcomes lists
+   * based on the newly selected event. Ensures execution on the JavaFX Application Thread.
    *
-   * @param selectedEvent The ID of the newly selected event, or null if deselected.
+   * @param selectedEventId The ID of the newly selected event, or null if deselected.
    */
-  private void handleEventSelectionChange(String selectedEvent) {
-    this.currentEventId = selectedEvent;
-    LOG.debug("Internal state: Event selection changed to: {}", currentEventId);
-
-    refreshConditionsList();
-    refreshOutcomesList();
+  private void handleEventSelectionChange(String selectedEventId) {
+    runOnFxThread(() -> {
+      this.currentEventId = selectedEventId;
+      LOG.debug("Internal state: Event selection changed to: {}", currentEventId);
+      refreshConditionsAndOutcomesForEvent();
+    });
   }
 
   /**
-   * Handles the action to add a new event to the currently selected object. Delegates the action to
-   * the {@link EditorController}. Shows an error if no object is selected or if the controller
-   * reports an error. Clears the event ID input field on success.
+   * Handles the action to add a new event to the currently selected object.
+   * Delegates the action to the {@link EditorController} via the correct data manager access.
+   * Explicitly refreshes the events list upon successful addition. Shows an error if no object
+   * is selected or if the controller reports an error.
    *
-   * @param eventId The ID of the event to add.
+   * @param eventId The ID (String) of the event to add.
    */
   private void handleAddEvent(String eventId) {
     LOG.debug("Add Event action triggered for ID: {}", eventId);
-    if (currentObjectId == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "No object selected to add event to.");
-      return;
-    }
+    if (!isSelected(true, false)) return;
     try {
-      editorController.addEvent(currentObjectId, eventId);
-
-      eventIdField.clear();
+      editorController.getEditorDataAPI().getInputDataAPI().addEvent(currentObjectId, eventId);
       LOG.info("Delegated add event '{}' for object {}", eventId, currentObjectId);
+      refreshEventsList(); // Explicitly refresh the list after adding
     } catch (Exception e) {
       LOG.error("Error delegating add event: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to add event: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "add event", e.getMessage()));
     }
   }
 
   /**
-   * Handles the action to remove the selected event from the currently selected object. Delegates
-   * the action to the {@link EditorController}. Shows an error if no object or event is selected,
+   * Handles the action to remove the selected event (obtained from EventsSectionBuilder's list view)
+   * from the currently selected object. Delegates the action to the {@link EditorController}.
+   * Explicitly refreshes the events list upon successful removal. Shows an error if no object or event is selected,
    * or if the controller reports an error.
    */
   private void handleRemoveEvent() {
     LOG.debug("Remove Event action triggered.");
-    String selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-    if (currentObjectId == null || selectedEvent == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "No object or event selected for removal.");
+    String selectedEvent = eventsSectionBuilder.getEventListView().getSelectionModel().getSelectedItem();
+    if (!isSelected(true, false) || selectedEvent == null) {
+      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "An object and an event must be selected for removal.");
       return;
     }
     try {
-      editorController.removeEvent(currentObjectId, selectedEvent);
-
+      editorController.getEditorDataAPI().getInputDataAPI().removeEvent(currentObjectId, selectedEvent);
       LOG.info("Delegated remove event '{}' for object {}", selectedEvent, currentObjectId);
+      refreshEventsList(); // Explicitly refresh the list after removing
     } catch (Exception e) {
       LOG.error("Error delegating remove event: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to remove event: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "remove event", e.getMessage()));
     }
   }
 
   /**
-   * Handles the action to add a new condition to the currently selected event. Delegates the action
-   * to the {@link EditorController}. Shows an error if no object or event is selected, or if the
-   * controller reports an error.
-   *
-   * @param conditionType The type of condition to add.
+   * Handles the action to add an empty condition group to the currently selected event.
+   * Delegates to the controller and refreshes the conditions list upon success.
    */
-  private void handleAddCondition(ConditionType conditionType) {
-    LOG.debug("Add Condition action triggered for type: {}", conditionType);
-    if (currentObjectId == null || currentEventId == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object and event must be selected.");
-      return;
-    }
+  private void handleAddConditionGroup() {
+    LOG.debug("Add Condition Group action triggered.");
+    if (!isSelected(true, true)) return;
     try {
-      editorController.addCondition(currentObjectId, currentEventId, conditionType);
+      editorController.getEditorDataAPI().getInputDataAPI().addConditionGroup(currentObjectId, currentEventId);
+      refreshConditionsAndOutcomesForEvent();
+    } catch (Exception e) {
+      LOG.error("Error delegating add condition group: {}", e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "add condition group", e.getMessage()));
+    }
+  }
 
-      LOG.info("Delegated add condition '{}' to event '{}'", conditionType, currentEventId);
+  /**
+   * Handles the action to remove a condition group at the specified index from the current event.
+   * Delegates to the controller and refreshes the conditions list upon success.
+   *
+   * @param groupIndex The index of the condition group to remove.
+   */
+  private void handleRemoveConditionGroup(int groupIndex) {
+    LOG.debug("Remove Condition Group action triggered for group index: {}", groupIndex);
+    if (!isSelected(true, true)) return;
+    try {
+      editorController.getEditorDataAPI().getInputDataAPI().removeConditionGroup(currentObjectId, currentEventId, groupIndex);
+      refreshConditionsAndOutcomesForEvent();
+    } catch (Exception e) {
+      LOG.error("Error delegating remove condition group: {}", e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "remove condition group", e.getMessage()));
+    }
+  }
+
+  /**
+   * Handles the action to add a condition of the specified type to a specific group within the current event.
+   * Delegates to the controller and refreshes the conditions list upon success.
+   *
+   * @param groupIndex The index of the condition group to add to.
+   * @param conditionType The string identifier of the condition type to add.
+   */
+  private void handleAddCondition(int groupIndex, String conditionType) {
+    LOG.debug("Add Condition action triggered for type: {} in group {}", conditionType, groupIndex);
+    if (!isSelected(true, true)) return;
+    try {
+      editorController.getEditorDataAPI().getInputDataAPI().addEventCondition(currentObjectId, currentEventId, groupIndex, conditionType);
+      refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating add condition: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to add condition: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "add condition", e.getMessage()));
     }
   }
 
   /**
-   * Handles the action to remove the selected condition from the currently selected event.
-   * Delegates the action to the {@link EditorController}. Shows an error if no object, event, or
-   * condition is selected, or if the controller reports an error.
+   * Handles the action to remove a condition at the specified group and index within the current event.
+   * Delegates to the controller and refreshes the conditions list upon success.
    *
-   * @param conditionType The type of condition derived from the selected item in the list view.
+   * @param groupIndex The index of the condition group.
+   * @param conditionIndex The index of the condition within the group to remove.
    */
-  private void handleRemoveCondition(ConditionType conditionType) {
-    LOG.debug("Remove Condition action triggered for type: {}", conditionType);
-
-    String selectedConditionStr = conditionsListView.getSelectionModel().getSelectedItem();
-    if (currentObjectId == null || currentEventId == null || selectedConditionStr == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object, event, and condition must be selected.");
-      return;
-    }
-
-    if (!conditionType.name().equals(selectedConditionStr)) {
-      LOG.warn(
-          "Mismatch between remove handler condition type ({}) and list selection ({}). Using list selection.",
-          conditionType.name(), selectedConditionStr);
-
-      try {
-        conditionType = ConditionType.valueOf(selectedConditionStr);
-      } catch (IllegalArgumentException ex) {
-        LOG.error("Could not parse selected condition for removal: {}", selectedConditionStr, ex);
-        showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to identify condition for removal.");
-        return;
-      }
-    }
-
+  private void handleRemoveCondition(int groupIndex, int conditionIndex) {
+    LOG.debug("Remove Condition action triggered for group {}, index {}", groupIndex, conditionIndex);
+    if (!isSelected(true, true)) return;
     try {
-      editorController.removeCondition(currentObjectId, currentEventId, conditionType);
-
-      LOG.info("Delegated remove condition '{}' from event '{}'", conditionType, currentEventId);
+      editorController.getEditorDataAPI().getInputDataAPI().removeEventCondition(currentObjectId, currentEventId, groupIndex, conditionIndex);
+      refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating remove condition: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to remove condition: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "remove condition", e.getMessage()));
     }
   }
 
   /**
-   * Handles the action to add a new outcome to the currently selected event. Delegates the action
-   * to the {@link EditorController}. Shows an error if no object or event is selected, or if the
-   * controller reports an error.
+   * Handles the modification of a specific parameter for a condition.
+   * Delegates the update to the controller. Catches exceptions and may refresh the UI on failure.
    *
-   * @param outcomeType The type of outcome to add.
-   * @param parameter   The parameter associated with the outcome (can be null or empty).
+   * @param groupIndex The index of the condition's group.
+   * @param conditionIndex The index of the condition within its group.
+   * @param paramName The name of the parameter being edited.
+   * @param value The new value for the parameter (expected to be String or Double).
    */
-  private void handleAddOutcome(OutcomeType outcomeType, String parameter) {
-    LOG.debug("Add Outcome action triggered for type: {}, param: {}", outcomeType, parameter);
-    if (currentObjectId == null || currentEventId == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object and event must be selected.");
-      return;
-    }
+  private void handleEditConditionParam(int groupIndex, int conditionIndex, String paramName, Object value) {
+    LOG.trace("Edit Condition Param: group={}, index={}, param={}, value={}", groupIndex, conditionIndex, paramName, value);
+    if (!isSelected(true, true)) return;
     try {
-      editorController.addOutcome(currentObjectId, currentEventId, outcomeType, parameter);
+      if (value instanceof String strValue) {
+        editorController.getEditorDataAPI().getInputDataAPI().setEventConditionStringParameter(
+            currentObjectId, currentEventId, groupIndex, conditionIndex, paramName, strValue);
+      } else if (value instanceof Double doubleValue) {
+        editorController.getEditorDataAPI().getInputDataAPI().setEventConditionDoubleParameter(
+            currentObjectId, currentEventId, groupIndex, conditionIndex, paramName, doubleValue);
+      } else {
+        LOG.warn("Unsupported parameter type for condition: {}", value == null ? "null" : value.getClass().getName());
+        return;
+      }
+    } catch (Exception e) {
+      LOG.error("Error delegating edit condition parameter: {}", e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "edit condition parameter", e.getMessage()));
+      refreshConditionsAndOutcomesForEvent();
+    }
+  }
 
-      LOG.info("Delegated add outcome '{}' (param: '{}') to event '{}'", outcomeType, parameter,
-          currentEventId);
+
+  /**
+   * Handles the action to add an outcome of the specified type to the current event.
+   * Delegates to the controller and refreshes the outcomes list upon success.
+   *
+   * @param outcomeType The string identifier of the outcome type to add.
+   */
+  private void handleAddOutcome(String outcomeType) {
+    LOG.debug("Add Outcome action triggered for type: {}", outcomeType);
+    if (!isSelected(true, true)) return;
+    try {
+      editorController.getEditorDataAPI().getInputDataAPI().addEventOutcome(currentObjectId, currentEventId, outcomeType);
+      refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating add outcome: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to add outcome: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "add outcome", e.getMessage()));
     }
   }
 
   /**
-   * Handles the action to remove the selected outcome from the currently selected event. Delegates
-   * the action to the {@link EditorController}. Shows an error if no object, event, or outcome is
-   * selected, or if the controller reports an error.
+   * Handles the action to remove an outcome at the specified index from the current event.
+   * Delegates to the controller and refreshes the outcomes list upon success.
    *
-   * @param outcomeType The type of outcome derived from the selected item in the list view.
+   * @param outcomeIndex The index of the outcome to remove.
    */
-  private void handleRemoveOutcome(OutcomeType outcomeType) {
-    LOG.debug("Remove Outcome action triggered for type: {}", outcomeType);
-
-    String selectedOutcomeStr = outcomesListView.getSelectionModel().getSelectedItem();
-    if (currentObjectId == null || currentEventId == null || selectedOutcomeStr == null) {
-      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "Object, event, and outcome must be selected.");
-      return;
-    }
-
-    String typeString = selectedOutcomeStr.split(" \\(")[0];
+  private void handleRemoveOutcome(int outcomeIndex) {
+    LOG.debug("Remove Outcome action triggered for index {}", outcomeIndex);
+    if (!isSelected(true, true)) return;
     try {
-      OutcomeType actualTypeToRemove = OutcomeType.valueOf(typeString);
-      if (outcomeType != actualTypeToRemove) {
-        LOG.warn(
-            "Mismatch between remove handler outcome type ({}) and list selection ({} derived from {}). Using list selection.",
-            outcomeType.name(), actualTypeToRemove.name(), selectedOutcomeStr);
-      }
-
-      editorController.removeOutcome(currentObjectId, currentEventId, actualTypeToRemove);
-
-      LOG.info("Delegated remove outcome '{}' from event '{}'", actualTypeToRemove, currentEventId);
-    } catch (IllegalArgumentException ex) {
-      LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStr, ex);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to identify outcome for removal.");
+      editorController.getEditorDataAPI().getInputDataAPI().removeEventOutcome(currentObjectId, currentEventId, outcomeIndex);
+      refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating remove outcome: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to remove outcome: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "remove outcome", e.getMessage()));
+    }
+  }
+
+  /**
+   * Handles the modification of a specific parameter for an outcome.
+   * Delegates the update to the controller. Catches exceptions and may refresh the UI on failure.
+   *
+   * @param outcomeIndex The index of the outcome whose parameter is being edited.
+   * @param paramName The name of the parameter being edited.
+   * @param value The new value for the parameter (expected to be String or Double).
+   */
+  private void handleEditOutcomeParam(int outcomeIndex, String paramName, Object value) {
+    LOG.trace("Edit Outcome Param: index={}, param={}, value={}", outcomeIndex, paramName, value);
+    if (!isSelected(true, true)) return;
+    try {
+      if (value instanceof String strValue) {
+        editorController.getEditorDataAPI().getInputDataAPI().setEventOutcomeStringParameter(
+            currentObjectId, currentEventId, outcomeIndex, paramName, strValue);
+      } else if (value instanceof Double doubleValue) {
+        editorController.getEditorDataAPI().getInputDataAPI().setEventOutcomeDoubleParameter(
+            currentObjectId, currentEventId, outcomeIndex, paramName, doubleValue);
+      } else {
+        LOG.warn("Unsupported parameter type for outcome: {}", value == null ? "null" : value.getClass().getName());
+        return;
+      }
+    } catch (Exception e) {
+      LOG.error("Error delegating edit outcome parameter: {}", e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "edit outcome parameter", e.getMessage()));
+      refreshConditionsAndOutcomesForEvent();
     }
   }
 
 
   /**
-   * Opens a dialog window to allow the user to define and add a new dynamic variable. If the user
-   * confirms the dialog, the {@link #handleAddDynamicVariable(DynamicVariable)} method is called.
+   * Opens a dialog window ({@link DynamicVariableDialog}) to allow the user to define and add
+   * a new dynamic variable to the currently selected object. Requires an object to be selected.
    */
   private void openAddDynamicVariableDialog() {
     LOG.debug("Opening 'Add Dynamic Variable' dialog.");
+    if (!isSelected(true, false)) return;
     DynamicVariableDialog dialog = new DynamicVariableDialog(uiBundle);
     Optional<DynamicVariable> result = dialog.showAndWait();
     result.ifPresent(this::handleAddDynamicVariable);
   }
 
   /**
-   * Handles the result from the dynamic variable creation dialog. Delegates the addition of the new
-   * dynamic variable to the {@link EditorController}. Shows an error if the variable is null or if
-   * the controller reports an error.
+   * Handles the result from the dynamic variable creation dialog. Delegates the addition
+   * of the new dynamic variable to the {@link EditorController} via the {@link DynamicVariableContainer}.
+   * Relies on {@link #onDynamicVariablesChanged()} listener to update the UI.
    *
-   * @param dynamicVar The {@link DynamicVariable} object created by the user, or null if
-   *                   cancelled.
+   * @param dynamicVar The {@link DynamicVariable} object created by the user.
    */
   private void handleAddDynamicVariable(DynamicVariable dynamicVar) {
     try {
@@ -362,19 +406,70 @@ public class InputTabComponentFactory implements EditorViewListener {
         LOG.warn("Attempted to add a null dynamic variable.");
         return;
       }
-      editorController.addDynamicVariable(dynamicVar);
+      DynamicVariableContainer container = editorController.getEditorDataAPI().getDynamicVariableContainer();
+      if (container != null) {
+        container.addVariable(dynamicVar);
+        LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
+      } else {
+        LOG.error("DynamicVariableContainer is null, cannot add variable.");
+        showErrorAlert(KEY_ERROR_API_FAILURE, "Internal error: Cannot access variable storage.");
+      }
 
-      LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
     } catch (Exception e) {
       LOG.error("Error delegating add dynamic variable: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to add variable: " + e.getMessage());
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "add dynamic variable", e.getMessage()));
     }
   }
 
 
   /**
-   * Safely executes a {@link Runnable} action on the JavaFX Application Thread. If called from the
-   * FX thread, it runs immediately. Otherwise, it uses {@link Platform#runLater(Runnable)}.
+   * Provides the list of available condition type names (Strings) to the ConditionsSectionBuilder.
+   * This implementation currently derives the names directly from the {@link ConditionType} enum.
+   * @return A sorted List of condition type names.
+   */
+  private List<String> getConditionTypeNames() {
+    return Stream.of(ConditionType.values()).map(Enum::name).sorted().collect(Collectors.toList());
+  }
+
+  /**
+   * Provides the list of available outcome type names (Strings) to the OutcomesSectionBuilder.
+   * This implementation currently derives the names directly from the {@link OutcomeType} enum.
+   * @return A sorted List of outcome type names.
+   */
+  private List<String> getOutcomeTypeNames() {
+    return Stream.of(OutcomeType.values()).map(Enum::name).sorted().collect(Collectors.toList());
+  }
+
+  /**
+   * Provides the list of {@link DynamicVariable}s associated with the currently selected object
+   * to the OutcomesSectionBuilder for its variable selection ComboBox.
+   * Retrieves variables from the {@link DynamicVariableContainer}.
+   * Returns an empty list if no object is selected or an error occurs during fetching.
+   * @return List of {@link DynamicVariable} objects for the current object.
+   */
+  private List<DynamicVariable> getDynamicVariablesForObject() {
+    if (currentObjectId == null) {
+      return Collections.emptyList();
+    }
+    try {
+      DynamicVariableContainer container = editorController.getEditorDataAPI().getDynamicVariableContainer();
+      if (container != null) {
+        Collection<DynamicVariable> vars = container.getAllVariables();
+        return (vars != null) ? new ArrayList<>(vars) : Collections.emptyList();
+      } else {
+        LOG.warn("DynamicVariableContainer is null, cannot retrieve variables.");
+        return Collections.emptyList();
+      }
+    } catch (Exception e) {
+      LOG.error("Failed to get dynamic variables for object {}: {}", currentObjectId, e.getMessage(), e);
+      return Collections.emptyList();
+    }
+  }
+
+
+  /**
+   * Safely executes a {@link Runnable} action on the JavaFX Application Thread.
+   * If called from the FX thread, it runs immediately. Otherwise, it uses {@link Platform#runLater(Runnable)}.
    *
    * @param action The action to execute on the FX thread.
    */
@@ -387,409 +482,187 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes all lists (events, conditions, outcomes) and the parameter combo box based on the
-   * currently selected object (`currentObjectId`). Ensures execution on the FX thread.
+   * Refreshes the entire UI associated with this factory (events, conditions, outcomes, dynamic variables)
+   * based on the currently selected object ID. Ensures execution on the JavaFX Application Thread.
    */
-  private void refreshAllListsForObject() {
+  private void refreshUIForObject() {
     runOnFxThread(() -> {
-      LOG.debug("Refreshing all lists for object: {}", currentObjectId);
-      refreshEventsListInternal();
-      updateParameterComboBoxInternal();
-
-      if (currentEventId == null) {
-        refreshConditionsListInternal();
-        refreshOutcomesListInternal();
-      }
+      LOG.debug("Refreshing UI for object: {}", currentObjectId);
+      refreshEventsList();
+      refreshDynamicVariables();
     });
   }
 
   /**
-   * Refreshes the event list based on the currently selected object. Attempts to reselect the
-   * previously selected event if still available. Clears sub-lists if no object or event is
-   * selected.
+   * Refreshes the events list in the UI based on the {@code currentObjectId}.
+   * Fetches the events, updates the list view in {@link EventsSectionBuilder}, and attempts
+   * to re-select the previously selected event. If no event is selected or re-selection fails,
+   * it clears the conditions and outcomes UI sections. Ensures execution on the JavaFX Application Thread.
    */
-  private void refreshEventsListInternal() {
-    String previouslySelectedEvent = currentEventId;
-    LOG.trace("Refreshing event list. Previously selected: {}", previouslySelectedEvent);
-    clearListsInternal(true, false, false);
+  private void refreshEventsList() {
+    runOnFxThread(() -> {
+      String previouslySelectedEvent = currentEventId;
+      Map<String, EditorEvent> events = fetchEventsForCurrentObject();
 
+      if (events == null) {
+        eventsSectionBuilder.getEventListView().getItems().clear();
+        clearConditionsAndOutcomesUI();
+        return;
+      }
+
+      List<String> sortedEventIds = events.keySet().stream().sorted().collect(Collectors.toList());
+      eventsSectionBuilder.getEventListView().getItems().setAll(sortedEventIds);
+
+      if (previouslySelectedEvent != null && sortedEventIds.contains(previouslySelectedEvent)) {
+        eventsSectionBuilder.getEventListView().getSelectionModel().select(previouslySelectedEvent);
+      } else {
+        clearConditionsAndOutcomesUI();
+      }
+      LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId, sortedEventIds.size());
+    });
+  }
+
+
+  /**
+   * Fetches the map of event IDs to {@link EditorEvent} objects for the {@code currentObjectId}
+   * from the controller using the correct data manager access method.
+   * Handles exceptions during the fetch operation.
+   * @return A Map of event IDs to EditorEvent objects, or null if an error occurs or no object is selected.
+   */
+  private Map<String, EditorEvent> fetchEventsForCurrentObject() {
     if (currentObjectId == null) {
-      LOG.debug("Events list cleared (no object selected). Clearing sub-lists.");
-      clearSubListsAndResetEventId();
-      return;
+      return Collections.emptyMap();
     }
-
-    List<String> sortedEventIds = fetchAndPopulateEvents();
-
-    if (sortedEventIds == null || sortedEventIds.isEmpty()) {
-      clearSubListsAndResetEventId();
-    } else {
-      if (!tryReselectEvent(previouslySelectedEvent, sortedEventIds)) {
-        clearSubListsAndResetEventId();
-      }
-    }
-  }
-
-  /**
-   * Fetches events for the current object from the controller, populates the list view, and returns
-   * a sorted list of event IDs.
-   *
-   * @return a sorted list of event IDs, an empty list if none, or null if an error occurs
-   */
-  private List<String> fetchAndPopulateEvents() {
     try {
-      Map<String, ?> events = editorController.getEventsForObject(currentObjectId);
-      if (eventListView != null && events != null && !events.isEmpty()) {
-        List<String> sortedEventIds = events.keySet().stream().sorted()
-            .collect(Collectors.toList());
-        eventListView.getItems().setAll(sortedEventIds);
-        LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId,
-            events.size());
-        return sortedEventIds;
-      } else {
-        LOG.debug("No events found for object {}.", currentObjectId);
-        return List.of();
-      }
+      return editorController.getEditorDataAPI().getInputDataAPI().getEvents(currentObjectId);
     } catch (Exception e) {
-      LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
-          e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load events: " + e.getMessage());
-      eventListView.getItems().clear();
+      LOG.error("Controller failed to get events for object {}: {}", currentObjectId, e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "fetch events", e.getMessage()));
       return null;
     }
   }
 
   /**
-   * Attempts to reselect a previously selected event if it still exists in the list.
-   *
-   * @param previouslySelectedEvent the ID of the previously selected event
-   * @param availableEvents         the list of currently available event IDs
-   * @return true if reselection was successful, false otherwise
+   * Refreshes the conditions and outcomes UI sections based on the {@code currentEventId}.
+   * Fetches the relevant data from the controller and updates the corresponding builders.
+   * Ensures execution on the JavaFX Application Thread.
    */
-  private boolean tryReselectEvent(String previouslySelectedEvent, List<String> availableEvents) {
-    if (previouslySelectedEvent != null && availableEvents.contains(previouslySelectedEvent)) {
-      LOG.trace("Attempting to re-select event: {}", previouslySelectedEvent);
-      eventListView.getSelectionModel().select(previouslySelectedEvent);
-      if (Objects.equals(eventListView.getSelectionModel().getSelectedItem(),
-          previouslySelectedEvent)) {
-        LOG.debug("Re-selected event: {}", previouslySelectedEvent);
-        return true;
-      } else {
-        LOG.warn("Failed to re-select event '{}' even though it exists in the list.",
-            previouslySelectedEvent);
-        return false;
-      }
-    }
-    LOG.trace("Previous event '{}' not found or null after refresh.", previouslySelectedEvent);
-    return false;
+  private void refreshConditionsAndOutcomesForEvent() {
+    runOnFxThread(() -> {
+      LOG.debug("Refreshing conditions and outcomes for event: {}", currentEventId);
+      List<List<ExecutorData>> conditions = fetchConditionsForCurrentEvent();
+      List<ExecutorData> outcomes = fetchOutcomesForCurrentEvent();
+
+      conditionsSectionBuilder.updateConditionsListView(conditions);
+      outcomesSectionBuilder.updateOutcomesListView(outcomes);
+    });
   }
 
   /**
-   * Clears the condition and outcome lists, and resets the current event ID.
+   * Fetches the list of condition groups (each group being a list of {@link ExecutorData})
+   * for the current object and event from the controller using the correct data manager access method.
+   * Handles exceptions.
+   * @return A List of condition groups (List<List<ExecutorData>>), or null if an error occurs or no event/object is selected.
    */
-  private void clearSubListsAndResetEventId() {
-    this.currentEventId = null;
-    clearListsInternal(false, true, true);
-  }
-
-  /**
-   * Refreshes the conditions list based on the currently selected object and event. Ensures
-   * execution on the FX thread by calling {@link #refreshConditionsListInternal()}.
-   */
-  private void refreshConditionsList() {
-    runOnFxThread(this::refreshConditionsListInternal);
-  }
-
-  /**
-   * Refreshes the conditions list for the currently selected object and event. Clears the list and
-   * repopulates it if valid selections exist.
-   */
-  private void refreshConditionsListInternal() {
-    clearListsInternal(false, true, false);
-
-    if (currentObjectId != null && currentEventId != null) {
-      LOG.trace("Refreshing conditions for event: {}", currentEventId);
-      fetchAndPopulateConditions();
-    } else {
-      LOG.trace("Conditions list not refreshed (no object/event selected).");
-    }
-  }
-
-  /**
-   * Fetches the list of conditions for the currently selected object and event. If fetching fails,
-   * logs the error, shows an alert, and clears the list view. On success, passes the conditions to
-   * be populated in the UI.
-   */
-  private void fetchAndPopulateConditions() {
-    List<ConditionType> conditions = null;
-    try {
-      conditions = editorController.getConditionsForEvent(currentObjectId, currentEventId);
-    } catch (Exception e) {
-      LOG.error("Controller failed to get conditions for event '{}': {}", currentEventId,
-          e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load conditions: " + e.getMessage());
-      if (conditionsListView != null) {
-        conditionsListView.getItems().clear();
-      }
-      return;
-    }
-
-    populateConditionList(conditions);
-  }
-
-  /**
-   * Populates the condition list view with the given list of conditions. Sorts the condition names
-   * alphabetically and clears the list if empty or null.
-   *
-   * @param conditions the list of ConditionType values to display
-   */
-  private void populateConditionList(List<ConditionType> conditions) {
-    if (conditionsListView == null) {
-      LOG.warn("ConditionsListView is null, cannot populate.");
-      return;
-    }
-
-    if (conditions != null && !conditions.isEmpty()) {
-      List<String> conditionNames = conditions.stream()
-          .map(ConditionType::name)
-          .sorted()
-          .collect(Collectors.toList());
-      conditionsListView.getItems().setAll(conditionNames);
-      LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
-          conditionNames.size());
-    } else {
-      conditionsListView.getItems().clear();
-      LOG.debug("No conditions found or list was null for event '{}'.", currentEventId);
-    }
-  }
-
-
-  /**
-   * Refreshes the outcomes list based on the currently selected object and event. Ensures execution
-   * on the FX thread by calling {@link #refreshOutcomesListInternal()}.
-   */
-  private void refreshOutcomesList() {
-    runOnFxThread(this::refreshOutcomesListInternal);
-  }
-
-  private void refreshOutcomesListInternal() {
-    clearListsInternal(false, false, true);
-
+  private List<List<ExecutorData>> fetchConditionsForCurrentEvent() {
     if (currentObjectId == null || currentEventId == null) {
-      LOG.trace("Outcomes list not refreshed (no object/event selected).");
-      return;
+      return null;
     }
-    LOG.trace("Refreshing outcomes for event: {}", currentEventId);
-
-    List<OutcomeType> outcomes = fetchOutcomes();
-
-    if (outcomes == null) {
-      LOG.debug("Outcome fetch failed for event '{}'. List remains cleared.", currentEventId);
-      clearOutcomeListViewSafely();
-      return;
-    }
-
-    if (outcomes.isEmpty()) {
-      LOG.debug("No outcomes found for event '{}'. Clearing list.", currentEventId);
-      clearOutcomeListViewSafely();
-      return;
-    }
-
-    List<String> displayStrings = formatOutcomeDisplayStrings(outcomes);
-    populateOutcomesList(displayStrings);
-  }
-
-  /**
-   * Helper to safely clear the outcomes list view if it exists.
-   */
-  private void clearOutcomeListViewSafely() {
-    if (outcomesListView != null) {
-      outcomesListView.getItems().clear();
-    }
-  }
-
-  /**
-   * Fetches the list of outcomes for the current object and event from the controller.
-   *
-   * @return the list of OutcomeTypes, or null if an error occurs
-   */
-  private List<OutcomeType> fetchOutcomes() {
     try {
-      return editorController.getOutcomesForEvent(currentObjectId, currentEventId);
+      return editorController.getEditorDataAPI().getInputDataAPI().getEventConditions(currentObjectId, currentEventId);
     } catch (Exception e) {
-      LOG.error("Controller failed to get outcomes for event '{}': {}", currentEventId,
-          e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load outcomes: " + e.getMessage());
+      LOG.error("Controller failed to get conditions for event {}: {}", currentEventId, e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "fetch conditions", e.getMessage()));
       return null;
     }
   }
 
   /**
-   * Converts a list of OutcomeTypes into display strings that include any parameters.
-   *
-   * @param outcomes the list of outcomes to format
-   * @return a sorted list of display strings for the outcomes
+   * Fetches the list of outcomes (as {@link ExecutorData}) for the current object and event from the controller
+   * using the correct data manager access method. Handles exceptions.
+   * @return A List of outcomes (List<ExecutorData>), or null if an error occurs or no event/object is selected.
    */
-  private List<String> formatOutcomeDisplayStrings(List<OutcomeType> outcomes) {
-    if (outcomes == null) {
-      return List.of();
+  private List<ExecutorData> fetchOutcomesForCurrentEvent() {
+    if (currentObjectId == null || currentEventId == null) {
+      return null;
     }
-
-    return outcomes.stream()
-        .map(outcome -> {
-          String parameter = getOutcomeParameterSafely(outcome);
-          return formatOutcomeString(outcome, parameter);
-        })
-        .sorted()
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Safely retrieves the parameter associated with the given outcome.
-   *
-   * @param outcome the OutcomeType whose parameter is to be retrieved
-   * @return the parameter string, or null if retrieval fails
-   */
-  private String getOutcomeParameterSafely(OutcomeType outcome) {
     try {
-      String parameter = editorController.getOutcomeParameter(currentObjectId, currentEventId,
-          outcome);
-      return parameter;
-    } catch (Exception paramEx) {
-      LOG.warn("Could not retrieve parameter for outcome {} on event {}: {}", outcome,
-          currentEventId, paramEx.getMessage());
+      return editorController.getEditorDataAPI().getInputDataAPI().getEventOutcomes(currentObjectId, currentEventId);
+    } catch (Exception e) {
+      LOG.error("Controller failed to get outcomes for event {}: {}", currentEventId, e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "fetch outcomes", e.getMessage()));
       return null;
     }
   }
 
   /**
-   * Formats an outcome and its parameter into a display string.
+   * Refreshes the dynamic variable combo box in the {@link OutcomesSectionBuilder} by triggering
+   * its update method. Ensures execution on the JavaFX Application Thread.
+   */
+  private void refreshDynamicVariables() {
+    runOnFxThread(() -> {
+      LOG.debug("Refreshing dynamic variables for object: {}", currentObjectId);
+      outcomesSectionBuilder.updateDynamicVariableComboBox();
+    });
+  }
+
+  /**
+   * Clears the UI components related to conditions and outcomes within their respective builders.
+   * Also resets the {@code currentEventId} to null. Ensures execution on the JavaFX Application Thread.
+   */
+  private void clearConditionsAndOutcomesUI() {
+    runOnFxThread(() -> {
+      this.currentEventId = null;
+      conditionsSectionBuilder.updateConditionsListView(null);
+      outcomesSectionBuilder.updateOutcomesListView(null);
+      LOG.trace("Cleared conditions and outcomes UI sections.");
+    });
+  }
+
+  /**
+   * Clears all UI elements managed by this factory to their default empty state.
+   * Clears the event list and field, conditions list, outcomes list, and dynamic variables combo box.
+   * Ensures execution on the JavaFX Application Thread.
+   */
+  private void clearAllUIToDefault() {
+    runOnFxThread(() -> {
+      eventsSectionBuilder.getEventListView().getItems().clear();
+      eventsSectionBuilder.getEventIdField().clear();
+      conditionsSectionBuilder.updateConditionsListView(null);
+      outcomesSectionBuilder.updateOutcomesListView(null);
+      refreshDynamicVariables();
+      LOG.trace("Cleared all input tab UI to default.");
+    });
+  }
+
+  /**
+   * Checks if the required selections (object and/or event) are currently available.
+   * If a required selection is missing, logs a warning and displays an error alert to the user.
+   * Must be called on the JavaFX Application thread if potentially showing an alert.
    *
-   * @param outcome   the OutcomeType to format
-   * @param parameter the associated parameter, may be null
-   * @return the formatted outcome string
+   * @param requireObjectSelection If true, checks if {@code currentObjectId} is non-null.
+   * @param requireEventSelection If true, checks if {@code currentEventId} is non-null.
+   * @return {@code true} if all required selections are present, {@code false} otherwise.
    */
-  private String formatOutcomeString(OutcomeType outcome, String parameter) {
-    if (parameter != null && !parameter.trim().isEmpty()) {
-      return String.format("%s (%s)", outcome.name(), parameter.trim());
-    } else {
-      return outcome.name();
+  private boolean isSelected(boolean requireObjectSelection, boolean requireEventSelection) {
+    if (requireObjectSelection && currentObjectId == null) {
+      LOG.warn("Action requires an object selection, but none found.");
+      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "An object must be selected.");
+      return false;
     }
-  }
-
-  /**
-   * Populates the outcomes list view with the provided display strings.
-   *
-   * @param displayStrings the list of formatted outcome strings to display
-   */
-  private void populateOutcomesList(List<String> displayStrings) {
-    if (outcomesListView != null) {
-      outcomesListView.getItems().setAll(displayStrings);
-      LOG.debug("Refreshed outcomes list for event '{}': {} outcomes.", currentEventId,
-          displayStrings.size());
+    if (requireEventSelection && currentEventId == null) {
+      LOG.warn("Action requires an event selection, but none found.");
+      showErrorAlert(KEY_ERROR_SELECTION_NEEDED, "An event must be selected.");
+      return false;
     }
+    return true;
   }
 
 
   /**
-   * Updates the parameter combo box with available dynamic variables for the current object
-   * context. Ensures execution on the FX thread by calling
-   * {@link #updateParameterComboBoxInternal()}.
-   */
-  private void updateParameterComboBox() {
-    runOnFxThread(this::updateParameterComboBoxInternal);
-  }
-
-  /**
-   * Internal method to update the items in the parameter combo box. Fetches the available
-   * {@link DynamicVariable}s from the controller for the `currentObjectId` and updates the combo
-   * box provided by the {@link OutcomesSectionBuilder}. Must be called on the FX thread.
-   */
-  private void updateParameterComboBoxInternal() {
-    if (outcomesSectionBuilder == null || parameterComboBox == null) {
-      return;
-    }
-
-    try {
-      List<DynamicVariable> variables = editorController.getAvailableDynamicVariables(
-          currentObjectId);
-
-      outcomesSectionBuilder.updateParameterComboBox(variables);
-      LOG.debug("Updated parameter combo box based on available variables.");
-    } catch (Exception e) {
-      LOG.error("Controller failed to get available dynamic variables: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load parameters: " + e.getMessage());
-
-      outcomesSectionBuilder.updateParameterComboBox(null);
-    }
-  }
-
-
-  /**
-   * Clears all list views (events, conditions, outcomes) and resets related state. Ensures
-   * execution on the FX thread by calling {@link #clearListsInternal(boolean, boolean, boolean)}.
-   */
-  private void clearAllLists() {
-    runOnFxThread(() -> clearListsInternal(true, true, true));
-  }
-
-  /**
-   * Clears the event, condition, and/or outcome lists based on the provided flags.
-   *
-   * @param clearEvents     whether to clear the event list and ID field
-   * @param clearConditions whether to clear the conditions list
-   * @param clearOutcomes   whether to clear the outcomes list
-   */
-  private void clearListsInternal(boolean clearEvents, boolean clearConditions,
-      boolean clearOutcomes) {
-    if (clearEvents) {
-      clearEventListAndField();
-    }
-    if (clearConditions) {
-      clearConditionList();
-    }
-    if (clearOutcomes) {
-      clearOutcomeList();
-    }
-
-    LOG.trace("Cleared lists - Events: {}, Conditions: {}, Outcomes: {}", clearEvents,
-        clearConditions, clearOutcomes);
-  }
-
-  /**
-   * Clears the event list view and the event ID text field, if they exist.
-   */
-  private void clearEventListAndField() {
-    if (eventListView != null) {
-      eventListView.getItems().clear();
-    }
-    if (eventIdField != null) {
-      eventIdField.clear();
-    }
-  }
-
-  /**
-   * Clears the conditions list view, if it exists.
-   */
-  private void clearConditionList() {
-    if (conditionsListView != null) {
-      conditionsListView.getItems().clear();
-    }
-  }
-
-  /**
-   * Clears the outcomes list view, if it exists.
-   */
-  private void clearOutcomeList() {
-    if (outcomesListView != null) {
-      outcomesListView.getItems().clear();
-    }
-  }
-
-
-  /**
-   * Displays an error alert dialog to the user. Ensures the alert is shown on the JavaFX
-   * Application Thread. Attempts to apply custom CSS styling to the dialog.
+   * Displays an error alert dialog to the user on the JavaFX Application Thread.
+   * Uses text from the resource bundle for the title and formats the content message.
+   * Attempts to apply custom CSS styling to the dialog.
    *
    * @param titleKey    The resource bundle key for the alert title.
    * @param contentText The main message text to display in the alert.
@@ -801,12 +674,8 @@ public class InputTabComponentFactory implements EditorViewListener {
       alert.setHeaderText(null);
       alert.setContentText(contentText);
       try {
-
         String cssUrl = Objects.requireNonNull(getClass().getResource(CSS_PATH)).toExternalForm();
         alert.getDialogPane().getStylesheets().add(cssUrl);
-        LOG.trace("Applied CSS {} to error alert.", CSS_PATH);
-      } catch (NullPointerException e) {
-        LOG.warn("Could not find CSS file at path: {}", CSS_PATH);
       } catch (Exception e) {
         LOG.warn("Could not apply CSS {} to error alert: {}", CSS_PATH, e.getMessage());
       }
@@ -816,23 +685,22 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Handles notification that an object was added to the model. Refreshes the parameter list in
-   * case global parameters are affected.
-   *
+   * Called when an object is added to the editor model.
+   * Triggers a refresh of the dynamic variables display.
+   * Ensures execution on the JavaFX Application Thread.
    * @param objectId The UUID of the added object.
    */
   @Override
   public void onObjectAdded(UUID objectId) {
     LOG.trace("InputTab received: onObjectAdded {}", objectId);
-
-    runOnFxThread(this::updateParameterComboBoxInternal);
+    refreshDynamicVariables();
   }
 
   /**
-   * Handles notification that an object was removed from the model. If the removed object is the
-   * currently selected object, it clears the Input tab's display. Ensures execution on the FX
-   * thread.
-   *
+   * Called when an object is removed from the editor model.
+   * If the removed object was the one currently selected, clears the entire UI.
+   * Always refreshes the dynamic variables display.
+   * Ensures execution on the JavaFX Application Thread.
    * @param objectId The UUID of the removed object.
    */
   @Override
@@ -843,20 +711,18 @@ public class InputTabComponentFactory implements EditorViewListener {
         LOG.debug("Selected object {} was removed. Clearing input tab.", objectId);
         this.currentObjectId = null;
         this.currentEventId = null;
-        clearListsInternal(true, true, true);
-        updateParameterComboBoxInternal();
-      } else {
-
-        updateParameterComboBoxInternal();
+        clearAllUIToDefault();
       }
+      refreshDynamicVariables();
     });
   }
 
   /**
-   * Handles notification that an object's data has been updated in the model. If the updated object
-   * is the currently selected object, refreshes the event list and related UI elements. Ensures
-   * execution on the FX thread.
-   *
+   * Called when an object's data is updated in the editor model.
+   * If the updated object is the one currently selected, refreshes the events list
+   * (which may trigger subsequent refreshes of conditions/outcomes).
+   * Always refreshes the dynamic variables display.
+   * Ensures execution on the JavaFX Application Thread.
    * @param objectId The UUID of the updated object.
    */
   @Override
@@ -865,24 +731,17 @@ public class InputTabComponentFactory implements EditorViewListener {
       LOG.trace("InputTab received: onObjectUpdated {}", objectId);
       if (Objects.equals(this.currentObjectId, objectId)) {
         LOG.debug("Refreshing InputTab because selected object {} was updated.", objectId);
-
-        refreshEventsListInternal();
-
-        updateParameterComboBoxInternal();
-
-
-      } else {
-
-        updateParameterComboBoxInternal();
+        refreshEventsList();
       }
+      refreshDynamicVariables();
     });
   }
 
   /**
-   * Handles notification that the selected object in the editor has changed. Updates the internal
-   * `currentObjectId` and refreshes all lists in the Input tab to display information for the newly
-   * selected object. Ensures execution on the FX thread.
-   *
+   * Called when the editor's object selection changes.
+   * Updates the internal current object ID. If the selection changed,
+   * either refreshes the UI for the new object or clears the UI if deselected.
+   * Ensures execution on the JavaFX Application Thread.
    * @param selectedObjectId The UUID of the newly selected object, or null if deselected.
    */
   @Override
@@ -892,37 +751,36 @@ public class InputTabComponentFactory implements EditorViewListener {
       if (!Objects.equals(this.currentObjectId, selectedObjectId)) {
         this.currentObjectId = selectedObjectId;
         this.currentEventId = null;
-
-        refreshAllListsForObject();
+        if (this.currentObjectId != null) {
+          refreshUIForObject();
+        } else {
+          clearAllUIToDefault();
+        }
       }
     });
   }
 
   /**
-   * Handles notification that the list of available dynamic variables has changed. Refreshes the
-   * parameter combo box in the Outcomes section and the outcomes list (as parameters are displayed
-   * there). Ensures execution on the FX thread.
+   * Called when the list of dynamic variables potentially changes in the model.
+   * Triggers a refresh of the dynamic variables combo box in the UI.
+   * Ensures execution on the JavaFX Application Thread.
    */
   @Override
   public void onDynamicVariablesChanged() {
     runOnFxThread(() -> {
       LOG.debug("InputTab received: onDynamicVariablesChanged");
-      updateParameterComboBoxInternal();
-
-      refreshOutcomesListInternal();
+      refreshDynamicVariables();
     });
   }
 
   /**
-   * Handles notification of an error occurring elsewhere in the application (e.g.,
-   * model/controller). Displays an error alert to the user.
-   *
+   * Called when a general error occurs elsewhere that should be reported to the user.
+   * Displays the error message in an alert dialog.
    * @param errorMessage The error message to display.
    */
   @Override
   public void onErrorOccurred(String errorMessage) {
     LOG.warn("InputTab received: onErrorOccurred: {}", errorMessage);
-
     showErrorAlert(KEY_ERROR_API_FAILURE, errorMessage);
   }
 }

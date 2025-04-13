@@ -45,6 +45,7 @@ public class EditorEvent {
     if (index < outcomes.size()) {
       return outcomes.get(index);
     }
+    return null;
   }
 
   /**
@@ -210,6 +211,7 @@ public class EditorEvent {
     if (conditions.size() > groupIndex) {
       return conditions.get(groupIndex);
     }
+    return null;
   }
 
   /**
