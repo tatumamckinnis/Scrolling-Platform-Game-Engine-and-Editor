@@ -56,7 +56,9 @@ public class SplashScreen extends Display {
     this.viewState = viewState;
   }
 
-  @Override
+  /**
+   * renders the SplashScreen
+   */
   public void initialRender() {
     initializeSplashScreen();
   }

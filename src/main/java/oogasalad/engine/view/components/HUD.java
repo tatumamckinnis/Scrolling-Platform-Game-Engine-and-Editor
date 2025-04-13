@@ -7,11 +7,13 @@ import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 
 public class HUD extends Display {
+
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackage().getName() + "." + "Exceptions");
 
-
-  @Override
+  /**
+   * renders the HUD view
+   */
   public void initialRender() {
     Text playerScore = new Text("Score: " + "1000");
   }

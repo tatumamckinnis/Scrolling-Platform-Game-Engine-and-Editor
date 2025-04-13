@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class GameControlPanel extends Display {
+
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackage().getName() + "." + "Exceptions");
@@ -52,15 +53,15 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * @see Display#initialRender()
-   * Adds all buttons a container.
+   * renders the Game Control Panel
    */
-  @Override
   public void initialRender() {
     HBox buttonContainer = new HBox();
     buttonContainer.getChildren().addAll(buttons);
-    int containerSpacing = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
-    int containerLayoutX = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
+    int containerSpacing = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
+    int containerLayoutX = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
     buttonContainer.setSpacing(containerSpacing);
     buttonContainer.setLayoutX(containerLayoutX);
 
@@ -74,11 +75,13 @@ public class GameControlPanel extends Display {
 
   private void createHomeButton() {
     Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(
-            engineComponentProperties.getProperty("gameControlPanel.image.home"))));
+        engineComponentProperties.getProperty("gameControlPanel.image.home"))));
     ImageView imageView = new ImageView(image);
 
-    int homeFitWidth = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.width"));
-    int homeFitHeight = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.height"));
+    int homeFitWidth = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.image.home.width"));
+    int homeFitHeight = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.image.home.height"));
 
     imageView.setFitWidth(homeFitWidth);
     imageView.setFitHeight(homeFitHeight);

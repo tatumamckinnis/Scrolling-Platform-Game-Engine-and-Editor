@@ -10,6 +10,7 @@ import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
 public class NewGameComponents extends Display {
+
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackage().getName() + "." + "Exceptions");
 
@@ -30,7 +31,9 @@ public class NewGameComponents extends Display {
     });
   }
 
-  @Override
+  /**
+   * renders the new game components
+   */
   public void initialRender() {
     VBox buttonContainer = new VBox();
     buttonContainer.getChildren().addAll(highScore, play);

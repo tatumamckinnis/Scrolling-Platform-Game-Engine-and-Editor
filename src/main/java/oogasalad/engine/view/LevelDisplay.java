@@ -33,9 +33,8 @@ public class LevelDisplay extends Display {
   }
 
   /**
-   * @see Display#initialRender()
+   * renders the Level Display
    */
-  @Override
   public void initialRender() {
     LOG.info("Rendering level...");
   }
