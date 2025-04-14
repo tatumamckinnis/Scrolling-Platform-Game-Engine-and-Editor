@@ -16,6 +16,7 @@ import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -107,6 +108,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   @Override
   public void displayGameObjects() throws RenderingException, FileNotFoundException {
     myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
+  }
+
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    myView.removeGameObjectImage(gameObject);
   }
 
   /**

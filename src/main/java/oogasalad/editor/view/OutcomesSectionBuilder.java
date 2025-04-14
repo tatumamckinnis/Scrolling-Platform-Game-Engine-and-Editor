@@ -81,12 +81,10 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Creates and lays out the UI components for the outcomes section. This includes a header, a
-   * ComboBox for selecting outcome types, a row for selecting an optional parameter (with a button
-   * to create new parameters), Add/Remove buttons, and a ListView to display the currently added
-   * outcomes with their parameters.
+   * Builds and returns the complete UI node for managing outcomes, including combo boxes, parameter
+   * selection, list view, and control buttons.
    *
-   * @return A Node (specifically a VBox) containing all the UI elements for this section.
+   * @return the constructed Node representing the outcomes UI section
    */
   public Node build() {
     VBox pane = new VBox(DEFAULT_SPACING);
@@ -94,53 +92,101 @@ public class OutcomesSectionBuilder {
     pane.setPadding(new Insets(DEFAULT_PADDING));
 
     Label header = createHeaderLabel(KEY_OUTCOMES_HEADER);
-    outcomeComboBox = new ComboBox<>(FXCollections.observableArrayList(OutcomeType.values()));
-    outcomeComboBox.setPromptText(PROMPT_SELECT_OUTCOME);
-    outcomeComboBox.setMaxWidth(Double.MAX_VALUE);
-    outcomeComboBox.setId("outcomeTypeComboBox");
-
+    setupOutcomeComboBox();
     Node parameterRow = createParameterSelectionRow();
-    outcomesListView = createListView(LIST_VIEW_HEIGHT);
-    outcomesListView.setId("outcomesListView");
+    setupOutcomesListView();
 
-    Button addButton = createButton(KEY_ADD_OUTCOME_BUTTON, e -> {
-      OutcomeType selectedOutcome = outcomeComboBox.getSelectionModel().getSelectedItem();
-      String selectedParameter = parameterComboBox.getValue();
-      if (selectedOutcome != null) {
-        addOutcomeHandler.accept(selectedOutcome, selectedParameter);
-      } else {
-        LOG.warn("Attempted to add null outcome type.");
-
-      }
-    });
-    addButton.setId("addOutcomeButton");
-
-    Button removeButton = createButton(KEY_REMOVE_OUTCOME_BUTTON, e -> {
-      String selectedOutcomeStrWithParam = outcomesListView.getSelectionModel().getSelectedItem();
-      if (selectedOutcomeStrWithParam != null) {
-        try {
-          String outcomeStr = selectedOutcomeStrWithParam.split(" \\(")[0];
-          OutcomeType outcome = OutcomeType.valueOf(outcomeStr);
-          removeOutcomeHandler.accept(outcome);
-        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {
-          LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStrWithParam,
-              ex);
-
-        }
-      } else {
-        LOG.warn("Attempted to remove null outcome.");
-
-      }
-    });
-    removeButton.setId("removeOutcomeButton");
-    removeButton.getStyleClass().add("remove-button");
-
+    Button addButton = setupAddButton();
+    Button removeButton = setupRemoveButton();
     HBox buttonRow = createCenteredButtonBox(addButton, removeButton);
 
     pane.getChildren().addAll(header, outcomeComboBox, parameterRow, outcomesListView, buttonRow);
     VBox.setVgrow(outcomesListView, Priority.ALWAYS);
     LOG.debug("Outcomes section UI built.");
     return pane;
+  }
+
+  /**
+   * Initializes the combo box for selecting outcome types.
+   */
+  private void setupOutcomeComboBox() {
+    outcomeComboBox = new ComboBox<>(FXCollections.observableArrayList(OutcomeType.values()));
+    outcomeComboBox.setPromptText(PROMPT_SELECT_OUTCOME);
+    outcomeComboBox.setMaxWidth(Double.MAX_VALUE);
+    outcomeComboBox.setId("outcomeTypeComboBox");
+  }
+
+  /**
+   * Initializes the list view that displays added outcomes.
+   */
+  private void setupOutcomesListView() {
+    outcomesListView = createListView(LIST_VIEW_HEIGHT);
+    outcomesListView.setId("outcomesListView");
+  }
+
+  /**
+   * Creates and returns a button that triggers the add outcome action.
+   *
+   * @return the configured "Add" button
+   */
+  private Button setupAddButton() {
+    Button addButton = createButton(KEY_ADD_OUTCOME_BUTTON, e -> handleAddAction());
+    addButton.setId("addOutcomeButton");
+    return addButton;
+  }
+
+  /**
+   * Handles the logic for adding the selected outcome and parameter, and passes it to the
+   * addOutcomeHandler.
+   */
+  private void handleAddAction() {
+    OutcomeType selectedOutcome = outcomeComboBox.getSelectionModel().getSelectedItem();
+    String selectedParameter = parameterComboBox.getValue();
+    if (selectedOutcome != null) {
+      addOutcomeHandler.accept(selectedOutcome, selectedParameter);
+    } else {
+      LOG.warn("Attempted to add null outcome type.");
+    }
+  }
+
+  /**
+   * Creates and returns a button that triggers the remove outcome action.
+   *
+   * @return the configured "Remove" button
+   */
+  private Button setupRemoveButton() {
+    Button removeButton = createButton(KEY_REMOVE_OUTCOME_BUTTON, e -> handleRemoveAction());
+    removeButton.setId("removeOutcomeButton");
+    removeButton.getStyleClass().add("remove-button");
+    return removeButton;
+  }
+
+  /**
+   * Handles the logic for removing the selected outcome by parsing its display string.
+   */
+  private void handleRemoveAction() {
+    String selectedOutcomeStrWithParam = outcomesListView.getSelectionModel().getSelectedItem();
+    if (selectedOutcomeStrWithParam != null) {
+      tryParseAndRemoveOutcome(selectedOutcomeStrWithParam);
+    } else {
+      LOG.warn("Attempted to remove null outcome.");
+    }
+  }
+
+  /**
+   * Parses the selected outcome string and removes the corresponding outcome.
+   *
+   * @param selectedItem the selected string from the list view, expected in the format
+   *                     "OUTCOME_NAME" or "OUTCOME_NAME (Parameter)"
+   */
+  private void tryParseAndRemoveOutcome(String selectedItem) {
+    try {
+      String outcomeStr = selectedItem.split(" \\(")[0];
+      OutcomeType outcome = OutcomeType.valueOf(outcomeStr);
+      removeOutcomeHandler.accept(outcome);
+    } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {
+      LOG.error("Could not parse selected outcome for removal: {}", selectedItem, ex);
+    }
   }
 
   /**

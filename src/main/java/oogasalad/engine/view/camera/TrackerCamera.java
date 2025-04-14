@@ -3,12 +3,12 @@ package oogasalad.engine.view.camera;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.LevelDisplay;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
- * follows a specific {@link ViewObject} in the game world. It adjusts the position of the entire
+ * follows a specific {@link ImmutableGameObject} in the game world. It adjusts the position of the entire
  * game world to keep the object centered on screen.
  *
  * @author Alana Zinkin
@@ -30,7 +30,7 @@ public class TrackerCamera implements Camera {
   private static final double CAMERA_OFFSET_Y = Double.parseDouble(
       LEVEL_RESOURCES.getString("LevelHeight")) / 2.0;
 
-  private ViewObject viewObjectToTrack;
+  private ImmutableGameObject viewObjectToTrack;
   /**
    * Updates the camera view by translating the game world to center the followed object. The game
    * world is moved in the opposite direction of the object's position, so that the object remains
@@ -44,8 +44,8 @@ public class TrackerCamera implements Camera {
       throw new NullPointerException(LEVEL_RESOURCES.getString("GameWorldNull"));
     }
     try {
-      gameWorld.setTranslateX(CAMERA_OFFSET_X - viewObjectToTrack.getX());
-      gameWorld.setTranslateY(CAMERA_OFFSET_Y - viewObjectToTrack.getY());
+      gameWorld.setTranslateX(CAMERA_OFFSET_X - viewObjectToTrack.getXPosition());
+      gameWorld.setTranslateY(CAMERA_OFFSET_Y - viewObjectToTrack.getYPosition());
     } catch (Exception e) {
       throw new NoSuchElementException(LEVEL_RESOURCES.getString("ObjectDoesntExist"));
     }
@@ -55,7 +55,7 @@ public class TrackerCamera implements Camera {
    * sets the view object to track for the camera
    * @param viewObjectToTrack the View Object that the camera tracks
    */
-  public void setViewObjectToTrack(ViewObject viewObjectToTrack) {
+  public void setViewObjectToTrack(ImmutableGameObject viewObjectToTrack) {
     this.viewObjectToTrack = viewObjectToTrack;
   }
 }

@@ -404,58 +404,92 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Internal method to refresh the events list view. Clears event list, fetches events for the
-   * `currentObjectId` from the controller and populates the `eventListView`. Attempts to re-select
-   * the previous event. Must be called on the FX thread.
+   * Refreshes the event list based on the currently selected object. Attempts to reselect the
+   * previously selected event if still available. Clears sub-lists if no object or event is
+   * selected.
    */
   private void refreshEventsListInternal() {
-
     String previouslySelectedEvent = currentEventId;
     LOG.trace("Refreshing event list. Previously selected: {}", previouslySelectedEvent);
-
     clearListsInternal(true, false, false);
 
-    if (currentObjectId != null) {
-      try {
-        Map<String, ?> events = editorController.getEventsForObject(currentObjectId);
-        if (eventListView != null && events != null && !events.isEmpty()) {
-
-          List<String> sortedEventIds = events.keySet().stream().sorted()
-              .collect(Collectors.toList());
-          eventListView.getItems().addAll(sortedEventIds);
-          LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId,
-              events.size());
-
-          if (previouslySelectedEvent != null && sortedEventIds.contains(previouslySelectedEvent)) {
-            LOG.trace("Attempting to re-select event: {}", previouslySelectedEvent);
-
-            eventListView.getSelectionModel().select(previouslySelectedEvent);
-
-            LOG.debug("Re-selected event: {}", previouslySelectedEvent);
-          } else {
-            LOG.trace("Previous event '{}' not found or null after refresh. Clearing sub-lists.",
-                previouslySelectedEvent);
-            this.currentEventId = null;
-            clearListsInternal(false, true, true);
-          }
-
-        } else {
-          LOG.debug("No events found for object {}. Clearing sub-lists.", currentObjectId);
-          this.currentEventId = null;
-          clearListsInternal(false, true, true);
-        }
-      } catch (Exception e) {
-        LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
-            e.getMessage(), e);
-        showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load events: " + e.getMessage());
-        this.currentEventId = null;
-        clearListsInternal(false, true, true);
-      }
-    } else {
+    if (currentObjectId == null) {
       LOG.debug("Events list cleared (no object selected). Clearing sub-lists.");
-      this.currentEventId = null;
-      clearListsInternal(false, true, true);
+      clearSubListsAndResetEventId();
+      return;
     }
+
+    List<String> sortedEventIds = fetchAndPopulateEvents();
+
+    if (sortedEventIds == null || sortedEventIds.isEmpty()) {
+      clearSubListsAndResetEventId();
+    } else {
+      if (!tryReselectEvent(previouslySelectedEvent, sortedEventIds)) {
+        clearSubListsAndResetEventId();
+      }
+    }
+  }
+
+  /**
+   * Fetches events for the current object from the controller, populates the list view, and returns
+   * a sorted list of event IDs.
+   *
+   * @return a sorted list of event IDs, an empty list if none, or null if an error occurs
+   */
+  private List<String> fetchAndPopulateEvents() {
+    try {
+      Map<String, ?> events = editorController.getEventsForObject(currentObjectId);
+      if (eventListView != null && events != null && !events.isEmpty()) {
+        List<String> sortedEventIds = events.keySet().stream().sorted()
+            .collect(Collectors.toList());
+        eventListView.getItems().setAll(sortedEventIds);
+        LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId,
+            events.size());
+        return sortedEventIds;
+      } else {
+        LOG.debug("No events found for object {}.", currentObjectId);
+        return List.of();
+      }
+    } catch (Exception e) {
+      LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
+          e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load events: " + e.getMessage());
+      eventListView.getItems().clear();
+      return null;
+    }
+  }
+
+  /**
+   * Attempts to reselect a previously selected event if it still exists in the list.
+   *
+   * @param previouslySelectedEvent the ID of the previously selected event
+   * @param availableEvents         the list of currently available event IDs
+   * @return true if reselection was successful, false otherwise
+   */
+  private boolean tryReselectEvent(String previouslySelectedEvent, List<String> availableEvents) {
+    if (previouslySelectedEvent != null && availableEvents.contains(previouslySelectedEvent)) {
+      LOG.trace("Attempting to re-select event: {}", previouslySelectedEvent);
+      eventListView.getSelectionModel().select(previouslySelectedEvent);
+      if (Objects.equals(eventListView.getSelectionModel().getSelectedItem(),
+          previouslySelectedEvent)) {
+        LOG.debug("Re-selected event: {}", previouslySelectedEvent);
+        return true;
+      } else {
+        LOG.warn("Failed to re-select event '{}' even though it exists in the list.",
+            previouslySelectedEvent);
+        return false;
+      }
+    }
+    LOG.trace("Previous event '{}' not found or null after refresh.", previouslySelectedEvent);
+    return false;
+  }
+
+  /**
+   * Clears the condition and outcome lists, and resets the current event ID.
+   */
+  private void clearSubListsAndResetEventId() {
+    this.currentEventId = null;
+    clearListsInternal(false, true, true);
   }
 
   /**
@@ -467,36 +501,68 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Internal method to refresh the conditions list view. Clears the conditions list, then fetches
-   * conditions for the `currentObjectId` and `currentEventId` from the controller and populates the
-   * `conditionsListView`. Must be called on the FX thread.
+   * Refreshes the conditions list for the currently selected object and event. Clears the list and
+   * repopulates it if valid selections exist.
    */
   private void refreshConditionsListInternal() {
     clearListsInternal(false, true, false);
 
     if (currentObjectId != null && currentEventId != null) {
       LOG.trace("Refreshing conditions for event: {}", currentEventId);
-      try {
-        List<ConditionType> conditions = editorController.getConditionsForEvent(currentObjectId,
-            currentEventId);
-        if (conditionsListView != null && conditions != null) {
-
-          conditions.stream().map(ConditionType::name).sorted()
-              .forEach(conditionsListView.getItems()::add);
-          LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
-              conditions.size());
-        } else {
-          LOG.debug("No conditions found for event '{}'.", currentEventId);
-        }
-      } catch (Exception e) {
-        LOG.error("Controller failed to get conditions for event '{}': {}", currentEventId,
-            e.getMessage(), e);
-        showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load conditions: " + e.getMessage());
-      }
+      fetchAndPopulateConditions();
     } else {
       LOG.trace("Conditions list not refreshed (no object/event selected).");
     }
   }
+
+  /**
+   * Fetches the list of conditions for the currently selected object and event. If fetching fails,
+   * logs the error, shows an alert, and clears the list view. On success, passes the conditions to
+   * be populated in the UI.
+   */
+  private void fetchAndPopulateConditions() {
+    List<ConditionType> conditions = null;
+    try {
+      conditions = editorController.getConditionsForEvent(currentObjectId, currentEventId);
+    } catch (Exception e) {
+      LOG.error("Controller failed to get conditions for event '{}': {}", currentEventId,
+          e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load conditions: " + e.getMessage());
+      if (conditionsListView != null) {
+        conditionsListView.getItems().clear();
+      }
+      return;
+    }
+
+    populateConditionList(conditions);
+  }
+
+  /**
+   * Populates the condition list view with the given list of conditions. Sorts the condition names
+   * alphabetically and clears the list if empty or null.
+   *
+   * @param conditions the list of ConditionType values to display
+   */
+  private void populateConditionList(List<ConditionType> conditions) {
+    if (conditionsListView == null) {
+      LOG.warn("ConditionsListView is null, cannot populate.");
+      return;
+    }
+
+    if (conditions != null && !conditions.isEmpty()) {
+      List<String> conditionNames = conditions.stream()
+          .map(ConditionType::name)
+          .sorted()
+          .collect(Collectors.toList());
+      conditionsListView.getItems().setAll(conditionNames);
+      LOG.debug("Refreshed conditions list for event '{}': {} conditions.", currentEventId,
+          conditionNames.size());
+    } else {
+      conditionsListView.getItems().clear();
+      LOG.debug("No conditions found or list was null for event '{}'.", currentEventId);
+    }
+  }
+
 
   /**
    * Refreshes the outcomes list based on the currently selected object and event. Ensures execution
@@ -506,53 +572,124 @@ public class InputTabComponentFactory implements EditorViewListener {
     runOnFxThread(this::refreshOutcomesListInternal);
   }
 
-  /**
-   * Internal method to refresh the outcomes list view. Clears the outcomes list, then fetches
-   * outcomes (and their parameters) for the `currentObjectId` and `currentEventId` from the
-   * controller and populates the `outcomesListView`. Formats the display string to include the
-   * parameter if available. Must be called on the FX thread.
-   */
   private void refreshOutcomesListInternal() {
     clearListsInternal(false, false, true);
 
-    if (currentObjectId != null && currentEventId != null) {
-      LOG.trace("Refreshing outcomes for event: {}", currentEventId);
-      try {
-        List<OutcomeType> outcomes = editorController.getOutcomesForEvent(currentObjectId,
-            currentEventId);
-        if (outcomesListView != null && outcomes != null) {
-
-          List<String> displayStrings = outcomes.stream().map(outcome -> {
-            String parameter = null;
-            try {
-
-              parameter = editorController.getOutcomeParameter(currentObjectId, currentEventId,
-                  outcome);
-            } catch (Exception paramEx) {
-              LOG.warn("Could not retrieve parameter for outcome {} on event {}: {}", outcome,
-                  currentEventId, paramEx.getMessage());
-            }
-
-            return (parameter != null && !parameter.trim().isEmpty())
-                ? String.format("%s (%s)", outcome.name(), parameter.trim())
-                : outcome.name();
-          }).sorted().toList();
-
-          outcomesListView.getItems().addAll(displayStrings);
-          LOG.debug("Refreshed outcomes list for event '{}': {} outcomes.", currentEventId,
-              displayStrings.size());
-        } else {
-          LOG.debug("No outcomes found for event '{}'.", currentEventId);
-        }
-      } catch (Exception e) {
-        LOG.error("Controller failed to get outcomes for event '{}': {}", currentEventId,
-            e.getMessage(), e);
-        showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load outcomes: " + e.getMessage());
-      }
-    } else {
+    if (currentObjectId == null || currentEventId == null) {
       LOG.trace("Outcomes list not refreshed (no object/event selected).");
+      return;
+    }
+    LOG.trace("Refreshing outcomes for event: {}", currentEventId);
+
+    List<OutcomeType> outcomes = fetchOutcomes();
+
+    if (outcomes == null) {
+      LOG.debug("Outcome fetch failed for event '{}'. List remains cleared.", currentEventId);
+      clearOutcomeListViewSafely();
+      return;
+    }
+
+    if (outcomes.isEmpty()) {
+      LOG.debug("No outcomes found for event '{}'. Clearing list.", currentEventId);
+      clearOutcomeListViewSafely();
+      return;
+    }
+
+    List<String> displayStrings = formatOutcomeDisplayStrings(outcomes);
+    populateOutcomesList(displayStrings);
+  }
+
+  /**
+   * Helper to safely clear the outcomes list view if it exists.
+   */
+  private void clearOutcomeListViewSafely() {
+    if (outcomesListView != null) {
+      outcomesListView.getItems().clear();
     }
   }
+
+  /**
+   * Fetches the list of outcomes for the current object and event from the controller.
+   *
+   * @return the list of OutcomeTypes, or null if an error occurs
+   */
+  private List<OutcomeType> fetchOutcomes() {
+    try {
+      return editorController.getOutcomesForEvent(currentObjectId, currentEventId);
+    } catch (Exception e) {
+      LOG.error("Controller failed to get outcomes for event '{}': {}", currentEventId,
+          e.getMessage(), e);
+      showErrorAlert(KEY_ERROR_API_FAILURE, "Failed to load outcomes: " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Converts a list of OutcomeTypes into display strings that include any parameters.
+   *
+   * @param outcomes the list of outcomes to format
+   * @return a sorted list of display strings for the outcomes
+   */
+  private List<String> formatOutcomeDisplayStrings(List<OutcomeType> outcomes) {
+    if (outcomes == null) {
+      return List.of();
+    }
+
+    return outcomes.stream()
+        .map(outcome -> {
+          String parameter = getOutcomeParameterSafely(outcome);
+          return formatOutcomeString(outcome, parameter);
+        })
+        .sorted()
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Safely retrieves the parameter associated with the given outcome.
+   *
+   * @param outcome the OutcomeType whose parameter is to be retrieved
+   * @return the parameter string, or null if retrieval fails
+   */
+  private String getOutcomeParameterSafely(OutcomeType outcome) {
+    try {
+      String parameter = editorController.getOutcomeParameter(currentObjectId, currentEventId,
+          outcome);
+      return parameter;
+    } catch (Exception paramEx) {
+      LOG.warn("Could not retrieve parameter for outcome {} on event {}: {}", outcome,
+          currentEventId, paramEx.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Formats an outcome and its parameter into a display string.
+   *
+   * @param outcome   the OutcomeType to format
+   * @param parameter the associated parameter, may be null
+   * @return the formatted outcome string
+   */
+  private String formatOutcomeString(OutcomeType outcome, String parameter) {
+    if (parameter != null && !parameter.trim().isEmpty()) {
+      return String.format("%s (%s)", outcome.name(), parameter.trim());
+    } else {
+      return outcome.name();
+    }
+  }
+
+  /**
+   * Populates the outcomes list view with the provided display strings.
+   *
+   * @param displayStrings the list of formatted outcome strings to display
+   */
+  private void populateOutcomesList(List<String> displayStrings) {
+    if (outcomesListView != null) {
+      outcomesListView.getItems().setAll(displayStrings);
+      LOG.debug("Refreshed outcomes list for event '{}': {} outcomes.", currentEventId,
+          displayStrings.size());
+    }
+  }
+
 
   /**
    * Updates the parameter combo box with available dynamic variables for the current object
@@ -597,35 +734,56 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Internal method to clear the items from the specified list views and potentially clear the
-   * event ID field. Must be called on the FX thread.
+   * Clears the event, condition, and/or outcome lists based on the provided flags.
    *
-   * @param clearEvents     If true, clears the event list view and event ID field.
-   * @param clearConditions If true, clears the conditions list view.
-   * @param clearOutcomes   If true, clears the outcomes list view.
+   * @param clearEvents     whether to clear the event list and ID field
+   * @param clearConditions whether to clear the conditions list
+   * @param clearOutcomes   whether to clear the outcomes list
    */
   private void clearListsInternal(boolean clearEvents, boolean clearConditions,
       boolean clearOutcomes) {
-
     if (clearEvents) {
-      if (eventListView != null) {
-        eventListView.getItems().clear();
-      }
-      if (eventIdField != null) {
-        eventIdField.clear();
-      }
-
-
+      clearEventListAndField();
     }
-    if (clearConditions && conditionsListView != null) {
-      conditionsListView.getItems().clear();
+    if (clearConditions) {
+      clearConditionList();
     }
-    if (clearOutcomes && outcomesListView != null) {
-      outcomesListView.getItems().clear();
+    if (clearOutcomes) {
+      clearOutcomeList();
     }
 
     LOG.trace("Cleared lists - Events: {}, Conditions: {}, Outcomes: {}", clearEvents,
         clearConditions, clearOutcomes);
+  }
+
+  /**
+   * Clears the event list view and the event ID text field, if they exist.
+   */
+  private void clearEventListAndField() {
+    if (eventListView != null) {
+      eventListView.getItems().clear();
+    }
+    if (eventIdField != null) {
+      eventIdField.clear();
+    }
+  }
+
+  /**
+   * Clears the conditions list view, if it exists.
+   */
+  private void clearConditionList() {
+    if (conditionsListView != null) {
+      conditionsListView.getItems().clear();
+    }
+  }
+
+  /**
+   * Clears the outcomes list view, if it exists.
+   */
+  private void clearOutcomeList() {
+    if (outcomesListView != null) {
+      outcomesListView.getItems().clear();
+    }
   }
 
 
