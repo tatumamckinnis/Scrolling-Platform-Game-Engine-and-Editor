@@ -22,13 +22,16 @@ import org.apache.logging.log4j.Logger;
 /**
  * Concrete implementation of SaverStrategy for saving data in XML format.
  */
-public class XMLStrategy implements SaverStrategy {
+public class XmlStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();
   private static final String INDENT = "  ";
   private static final String INDENT2 = INDENT + INDENT;
   private static final String INDENT3 = INDENT2 + INDENT;
   private static final String INDENT4 = INDENT3 + INDENT;
 
+  /**
+   * @see SaverStrategy#save(LevelData, Stage)
+   */
   @Override
   public void save(LevelData levelData, Stage userStage) throws IOException {
     File file = setExportPath(userStage);
@@ -96,7 +99,9 @@ public class XMLStrategy implements SaverStrategy {
 
   private void writeLayers(BufferedWriter writer, LevelData data) throws IOException {
     List<GameObjectData> objects = data.gameObjects();
-    if (objects == null || objects.isEmpty()) return;
+    if (objects == null || objects.isEmpty()) {
+      return;
+    }
 
     Map<Integer, List<GameObjectData>> layerMap = groupObjectsByLayer(objects);
 

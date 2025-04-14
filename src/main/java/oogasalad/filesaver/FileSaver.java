@@ -1,9 +1,12 @@
 package oogasalad.filesaver;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import javafx.stage.Stage;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class will export level data into a file of the user's desired type ie XML, JSON, etc.
@@ -11,6 +14,7 @@ import oogasalad.filesaver.savestrategy.SaverStrategy;
  * @author Aksel Bell
  */
 public class FileSaver {
+  private static final Logger LOG = LogManager.getLogger();
   private LevelData myLevelData;
   private SaverStrategy mySaverStrategy;
   private Stage userStage;
@@ -35,8 +39,10 @@ public class FileSaver {
       String className = "oogasalad.filesaver.savestrategy." + fileType + "Strategy";
       Class<?> clazz = Class.forName(className);
       mySaverStrategy = (SaverStrategy) clazz.getDeclaredConstructor().newInstance();
-    } catch (Exception e) {
-      throw new RuntimeException("Unsupported export type: " + fileType, e);
+    } catch (RuntimeException | ClassNotFoundException | InvocationTargetException |
+             InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+      LOG.warn("Issue with reflection when choosing export type");
+      throw new RuntimeException(e);
     }
   }
 

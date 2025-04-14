@@ -96,7 +96,7 @@ public class XMLStrategyTest {
   }
 
 
-  private static class MockXMLStrategy extends XMLStrategy {
+  private static class MockXMLStrategy extends XmlStrategy {
     private final File mockFile;
 
     public MockXMLStrategy(File mockFile) {
