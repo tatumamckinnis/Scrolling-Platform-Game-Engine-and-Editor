@@ -19,7 +19,8 @@ import org.apache.logging.log4j.Logger;
 public class XMLStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();
   private static final String INDENT = "  ";
-  private static final String DOUBLE_INDENT = INDENT + INDENT;
+  private static final String INDENT2 = INDENT + INDENT;
+  private static final String INDENT3 = INDENT + INDENT + INDENT;
 
   @Override
   public void save(LevelData levelData, Stage userStage) throws IOException {
@@ -64,19 +65,23 @@ public class XMLStrategy implements SaverStrategy {
 
     writer.write(String.format(INDENT + "<cameraData type=\"%s\">\n", camera.type()));
 
-    writer.write(INDENT + "  <stringProperties>\n");
-    for (Map.Entry<String, String> entry : camera.stringProperties().entrySet()) {
-      writer.write(String.format(DOUBLE_INDENT + "<property name=\"%s\" value=\"%s\"/>\n",
-          entry.getKey(), entry.getValue()));
+    writer.write(INDENT2 + "<stringProperties>\n");
+    if (camera.stringProperties() != null) {
+      for (Map.Entry<String, String> entry : camera.stringProperties().entrySet()) {
+        writer.write(String.format(INDENT3 + "<property name=\"%s\" value=\"%s\"/>\n",
+            entry.getKey(), entry.getValue()));
+      }
     }
-    writer.write(INDENT + "  </stringProperties>\n");
+    writer.write(INDENT2 + "</stringProperties>\n");
 
-    writer.write(INDENT + "  <doubleProperties>\n");
-    for (Map.Entry<String, Double> entry : camera.doubleProperties().entrySet()) {
-      writer.write(String.format(DOUBLE_INDENT + "<property name=\"%s\" value=\"%s\"/>\n",
-          entry.getKey(), entry.getValue()));
+    writer.write(INDENT2 + "<doubleProperties>\n");
+    if (camera.doubleProperties() != null) {
+      for (Map.Entry<String, Double> entry : camera.doubleProperties().entrySet()) {
+        writer.write(String.format(INDENT3 + "<property name=\"%s\" value=\"%s\"/>\n",
+            entry.getKey(), entry.getValue()));
+      }
     }
-    writer.write(INDENT + "  </doubleProperties>\n");
+    writer.write(INDENT2 + "</doubleProperties>\n");
 
     writer.write(INDENT + "</cameraData>\n");
   }
