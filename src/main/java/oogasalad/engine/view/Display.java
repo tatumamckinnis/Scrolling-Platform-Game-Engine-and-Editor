@@ -16,12 +16,6 @@ import oogasalad.exceptions.RenderingException;
 public abstract class Display extends Group {
 
   /**
-   * This method should be implemented by subclasses to render the display. It is used to show the
-   * content, layout, or other visual elements.
-   */
-  public abstract void initialRender();
-
-  /**
    * Allows a Display to render game objects onto the screen. Default implementation does nothing.
    * Subclasses (like GameScene) can override this if needed.
    */
@@ -34,7 +28,7 @@ public abstract class Display extends Group {
    * implement the shift or choose not to. Default implementation chooses not to shift node. For
    * example, a splash screen should never be able to be translated but a levelView should.
    *
-   * @param camera               a camera instance which the node should shift relative to.
+   * @param camera a camera instance which the node should shift relative to.
    */
   public void shiftNode(Camera camera) {
   }
@@ -55,17 +49,9 @@ public abstract class Display extends Group {
   }
 
   /**
-   * This method checks if the display is currently visible.
-   */
-  public boolean isCurrentlyVisible() {
-    return this.isVisible();
-  }
-
-  /**
    * removes game object from the level view scene
-   * @param gameObject the game object that should be remoed
+   *
+   * @param gameObject the game object that should be removed
    */
-  public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    return ;
-  }
+  public abstract void removeGameObjectImage(ImmutableGameObject gameObject);
 }

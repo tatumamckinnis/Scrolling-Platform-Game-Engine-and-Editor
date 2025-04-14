@@ -7,9 +7,9 @@ import oogasalad.engine.view.LevelDisplay;
 
 /**
  * AutoScrollingCamera provides an automatic scrolling behavior for the game.
- *
- * Every time updateCamera is called (e.g. once per frame in the game loop), the camera
- * moves by a fixed scroll speed. This is achieved by adjusting the translation of the game world.
+ * <p>
+ * Every time updateCamera is called (e.g. once per frame in the game loop), the camera moves by a
+ * fixed scroll speed. This is achieved by adjusting the translation of the game world.
  */
 public class AutoScrollingCamera implements Camera {
 
@@ -19,17 +19,18 @@ public class AutoScrollingCamera implements Camera {
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackageName() + "." + "Exceptions");
 
-  // Constants for scroll speed (pixels per update)
-  private static final double SCROLL_SPEED_X = Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedX"));
-  private static final double SCROLL_SPEED_Y = Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedY"));; // Change if vertical scrolling is needed
+  private double scrollSpeedX;
+  private double scrollSpeedY; // Change if vertical scrolling is needed
 
   // Current accumulated offsets for the camera
-  private double currentOffsetX = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetX"));;
-  private double currentOffsetY = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetY"));;
+  private double currentOffsetX = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetX"));
+  ;
+  private double currentOffsetY = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetY"));
+  ;
 
   /**
-   * Updates the camera, causing the game world to scroll automatically.
-   * This method should be called at a regular interval (e.g., each frame).
+   * Updates the camera, causing the game world to scroll automatically. This method should be
+   * called at a regular interval (e.g., each frame).
    *
    * @param gameWorld the JavaFX Group representing the game world
    * @throws NullPointerException if gameWorld is null
@@ -40,11 +41,30 @@ public class AutoScrollingCamera implements Camera {
       throw new NullPointerException(EXCEPTIONS.getString("GameWorldNull"));
     }
     // Increment the current offsets by the scroll speeds.
-    currentOffsetX += SCROLL_SPEED_X;
-    currentOffsetY += SCROLL_SPEED_Y;
+    currentOffsetX += scrollSpeedX;
+    currentOffsetY += scrollSpeedY;
     // Apply the offsets to the game world.
     // Negative translation moves the world in the opposite direction to simulate camera movement.
     gameWorld.setTranslateX(-currentOffsetX);
     gameWorld.setTranslateY(-currentOffsetY);
   }
+
+  /**
+   * sets the X scroll speed for the camera
+   *
+   * @param scrollSpeedX the X scroll speed
+   */
+  public void setScrollSpeedX(double scrollSpeedX) {
+    this.scrollSpeedX = scrollSpeedX;
+  }
+
+  /**
+   * sets the Y scroll speed for the camera
+   *
+   * @param scrollSpeedY the Y scroll speed
+   */
+  public void setScrollSpeedY(double scrollSpeedY) {
+    this.scrollSpeedY = scrollSpeedY;
+  }
+
 }

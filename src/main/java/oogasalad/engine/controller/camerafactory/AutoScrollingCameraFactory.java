@@ -1,9 +1,14 @@
 package oogasalad.engine.controller.camerafactory;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 import oogasalad.engine.model.object.GameObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.view.LevelDisplay;
 import oogasalad.engine.view.camera.AutoScrollingCamera;
 import oogasalad.engine.view.camera.Camera;
+import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.fileparser.records.CameraData;
 
 /**
@@ -24,6 +29,9 @@ import oogasalad.fileparser.records.CameraData;
  */
 public class AutoScrollingCameraFactory implements CameraFactory {
 
+  private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
+      LevelDisplay.class.getPackage().getName() + ".Level");
+
   /**
    * Creates a new {@link AutoScrollingCamera} instance.
    *
@@ -35,6 +43,16 @@ public class AutoScrollingCameraFactory implements CameraFactory {
    */
   @Override
   public Camera create(CameraData data, Map<String, GameObject> gameObjectMap) {
-    return new AutoScrollingCamera();
+    return makeAutoScrollingCamera(data);
+  }
+
+  private AutoScrollingCamera makeAutoScrollingCamera(CameraData cameraData) {
+    AutoScrollingCamera camera = new AutoScrollingCamera();
+    Map<String, Double> properties = cameraData.doubleProperties();
+    camera.setScrollSpeedX(properties.getOrDefault("scrollSpeedX",
+        Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedX"))));
+    camera.setScrollSpeedY(properties.getOrDefault("scrollSpeedY",
+        Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedY"))));
+    return camera;
   }
 }
