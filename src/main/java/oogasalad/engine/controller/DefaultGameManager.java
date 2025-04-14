@@ -29,6 +29,8 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.fileparser.records.LevelData;
+import oogasalad.filesaver.FileSaver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
