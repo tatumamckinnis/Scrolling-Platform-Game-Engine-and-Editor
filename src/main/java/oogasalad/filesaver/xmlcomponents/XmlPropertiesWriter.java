@@ -15,6 +15,7 @@ public class XmlPropertiesWriter {
   private final int indentLevel;
   private final Map<String, String> stringProps;
   private final Map<String, Double> doubleProps;
+  private final String insideName;
 
   /**
    * Instantiates a writer.
@@ -23,11 +24,12 @@ public class XmlPropertiesWriter {
    * @param stringProps mapping of string properties the tag should contain.
    * @param doubleProps mapping of double properties the tag should contain.
    */
-  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel, Map<String, String> stringProps, Map<String, Double> doubleProps) {
+  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel, Map<String, String> stringProps, Map<String, Double> doubleProps, String insideName) {
     this.writer = writer;
     this.indentLevel = indentLevel;
     this.stringProps = stringProps;
     this.doubleProps = doubleProps;
+    this.insideName = insideName;
   }
 
   /**
@@ -40,7 +42,7 @@ public class XmlPropertiesWriter {
     writer.write(indent + "<stringProperties>\n");
     if (stringProps != null) {
       for (var entry : stringProps.entrySet()) {
-        writer.write(String.format(inner + "<property name=\"%s\" value=\"%s\"/>\n", entry.getKey(), entry.getValue()));
+        writer.write(String.format(inner + "<%s name=\"%s\" value=\"%s\"/>\n", insideName, entry.getKey(), entry.getValue()));
       }
     }
     writer.write(indent + "</stringProperties>\n");
@@ -48,7 +50,7 @@ public class XmlPropertiesWriter {
     writer.write(indent + "<doubleProperties>\n");
     if (doubleProps != null) {
       for (var entry : doubleProps.entrySet()) {
-        writer.write(String.format(inner + "<property name=\"%s\" value=\"%s\"/>\n", entry.getKey(), entry.getValue()));
+        writer.write(String.format(inner + "<%s name=\"%s\" value=\"%s\"/>\n", insideName, entry.getKey(), entry.getValue()));
       }
     }
     writer.write(indent + "</doubleProperties>\n");

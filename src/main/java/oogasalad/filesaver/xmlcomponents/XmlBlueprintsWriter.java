@@ -87,7 +87,7 @@ public class XmlBlueprintsWriter {
     ));
 
     writer.write(INDENT4 + "<properties>\n");
-    new XmlPropertiesWriter(writer, 5, blueprint.stringProperties(), blueprint.doubleProperties()).write();
+    new XmlPropertiesWriter(writer, 5, blueprint.stringProperties(), blueprint.doubleProperties(), "property").write();
     writer.write(INDENT4 + "</properties>\n");
 
     writer.write(INDENT3 + "</object>\n");
