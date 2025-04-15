@@ -1,4 +1,4 @@
-package oogasalad.filesaver.savestrategy.xmlcomponents;
+package oogasalad.filesaver.xmlcomponents;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

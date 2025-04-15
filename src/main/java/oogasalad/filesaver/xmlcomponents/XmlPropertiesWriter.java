@@ -1,4 +1,4 @@
-package oogasalad.filesaver.savestrategy.xmlcomponents;
+package oogasalad.filesaver.xmlcomponents;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -23,8 +23,7 @@ public class XmlPropertiesWriter {
    * @param stringProps mapping of string properties the tag should contain.
    * @param doubleProps mapping of double properties the tag should contain.
    */
-  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel,
-      Map<String, String> stringProps, Map<String, Double> doubleProps) {
+  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel, Map<String, String> stringProps, Map<String, Double> doubleProps) {
     this.writer = writer;
     this.indentLevel = indentLevel;
     this.stringProps = stringProps;
