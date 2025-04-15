@@ -5,6 +5,8 @@ import java.util.Map;
 /**
  * A class representing a singular exeuctor (condition/outcome) for an event. Holds the name of the
  * executor type and string and double parameters.
+ *
+ * @author Jacob You
  */
 public class ExecutorData {
 
@@ -32,17 +34,16 @@ public class ExecutorData {
   }
 
   public void setStringParam(String paramName, String paramValue) {
-    if (paramValue == null) {
+    if (paramValue == null || paramName == null) {
       return;
     }
-    if (stringParams.containsKey(paramName)) {
-      stringParams.put(paramName, paramValue);
-    }
+    stringParams.put(paramName, paramValue);
   }
 
   public void setDoubleParam(String paramName, Double paramValue) {
-    if (doubleParams.containsKey(paramName)) {
-      doubleParams.put(paramName, paramValue);
+    if (paramName == null) {
+      return;
     }
+    doubleParams.put(paramName, paramValue);
   }
 }

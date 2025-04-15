@@ -1,6 +1,7 @@
 package oogasalad.editor.model.data.object.event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
@@ -56,6 +57,9 @@ public class EditorEvent {
    * @return the {@link ExecutorData}, or null if no condition exists.
    */
   public ExecutorData getConditionData(int groupIndex, int index) {
+    if (groupIndex >= conditions.size()) {
+      return null;
+    }
     List<ExecutorData> conditionGroup = conditions.get(groupIndex);
     if (conditionGroup != null) {
       if (index < conditionGroup.size()) {
@@ -75,7 +79,7 @@ public class EditorEvent {
    */
   public void setOutcomeStringParameter(int index, String paramName, String value) {
     ExecutorData outcome = getOutcomeData(index);
-    if (outcome != null) {
+    if (outcome != null && paramName != null) {
       outcome.setStringParam(paramName, value);
     }
   }
@@ -90,7 +94,7 @@ public class EditorEvent {
    */
   public void setOutcomeDoubleParameter(int index, String paramName, Double value) {
     ExecutorData outcome = getOutcomeData(index);
-    if (outcome != null) {
+    if (outcome != null && paramName != null) {
       outcome.setDoubleParam(paramName, value);
     }
   }
@@ -135,8 +139,8 @@ public class EditorEvent {
    */
   public void addCondition(int groupIndex, String conditionType) {
     List<ExecutorData> conditionGroup = conditions.get(groupIndex);
-    conditionGroup.add(new ExecutorData(conditionType, null,
-        null)); // TODO: Check if name exists, then autogenerate params
+    conditionGroup.add(new ExecutorData(conditionType, new HashMap<>(),
+        new HashMap<>())); // TODO: Check if name exists, then autogenerate params
   }
 
   /**
@@ -152,8 +156,8 @@ public class EditorEvent {
    * @param outcomeType The name of the outcomeType to add
    */
   public void addOutcome(String outcomeType) {
-    outcomes.add(new ExecutorData(outcomeType, null,
-        null)); // TODO: Check if name exists, then autogenerate params
+    outcomes.add(new ExecutorData(outcomeType, new HashMap<>(),
+        new HashMap<>())); // TODO: Check if name exists, then autogenerate params
   }
 
   /**

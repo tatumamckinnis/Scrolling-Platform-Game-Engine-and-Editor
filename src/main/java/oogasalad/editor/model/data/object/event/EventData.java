@@ -6,6 +6,8 @@ import java.util.List;
 /**
  * The EventData class holds a list of all events by string ID in a specific order. This order is
  * what will be used as the order of execution.
+ *
+ * @author Jacob You
  */
 public class EventData {
 
