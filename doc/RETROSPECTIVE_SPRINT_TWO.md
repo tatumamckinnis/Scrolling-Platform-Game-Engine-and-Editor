@@ -26,6 +26,7 @@
     * Select a game based on name and level and have continuous levels
     * Convert the Camera data to a Camera Back-end Object
     * Add tests for the event converter
+
 * Blockers/Issues in your way
 
     * Need the front-end to match the back-end in terms of a player winning/losing a game
@@ -68,9 +69,16 @@
 
 ### Aksel Bell
 
-* Work done this Sprint
+* Work done this Sprint:
+  * Refactor the view by adding a View variable bridge but then replacing that with a viewState that is passed around
+  * Refactor the buttons by adding a factory to make it easy to add new buttons
+
 * Plan for next Sprint?
+  * Work on backend by helping with the file saver
+  * specifically, I am in charge of converting the level data into an XML file that the engine can play
 * Blockers/Issues in your way
+  * Working on the frontend had a steep learning curve for me and I didn't really enjoy it much.
+  * So I decided to work on the backend instead so I can be a bigger contributor.
 
 ### Luke Nam
 
@@ -122,12 +130,11 @@
 ## Teamwork that worked well
 
 * Thing #1:
-
     * We needed to do a TON of refactoring this sprint. I would say a large majority of the sprint
       focused on redesigning and implementing core features - which worked well because we all met
       up together consistently to agree upon what would be the best way.
-* Thing #2
 
+* Thing #2
     * We met consistently and started doing more agile meetings over zoom so we could screen share (
       but in person)
 
@@ -137,6 +144,7 @@
 
     * We need to make our issues board more clear and assign all issues to individuals
     * Sprint planning will make our communication and roles easier
+
 * Thing #2:
 
     * We want to make steady progress each day, rather than making tons of commits on one day
