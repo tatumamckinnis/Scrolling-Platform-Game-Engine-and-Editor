@@ -2,14 +2,16 @@ package oogasalad.editor.model.data;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.UUID;
-import oogasalad.editor.model.data.object.CollisionData;
+import oogasalad.editor.model.data.object.event.CollisionData;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
-import oogasalad.editor.model.data.object.InputData;
-import oogasalad.editor.model.data.object.PhysicsData;
+import oogasalad.editor.model.data.object.event.CustomEventData;
+import oogasalad.editor.model.data.object.event.InputData;
+import oogasalad.editor.model.data.object.event.PhysicsData;
+import oogasalad.editor.model.data.object.event.EventData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,8 @@ class EditorObjectTest {
   private CollisionData sampleCollisionData;
   private SpriteData sampleSpriteData;
   private HitboxData sampleHitboxData;
+  private CustomEventData sampleCustomData;
+  private EventData sampleEventData;
 
   /**
    * Sets up the test environment.
@@ -43,6 +47,8 @@ class EditorObjectTest {
     sampleCollisionData = new CollisionData();
     //sampleSpriteData = new SpriteData(10, 20, "path/to/sprite");
     sampleHitboxData = new HitboxData(10, 20, 30, 40, "circle");
+    sampleEventData = new EventData();
+    sampleCustomData = new CustomEventData();
   }
 
   /**
@@ -57,7 +63,9 @@ class EditorObjectTest {
         samplePhysicsData,
         sampleCollisionData,
         sampleSpriteData,
-        sampleHitboxData
+        sampleHitboxData,
+        sampleCustomData,
+        sampleEventData
     );
     assertEquals(sampleIdentityData, editorObject.getIdentityData());
     assertEquals(sampleInputData, editorObject.getInputData());
@@ -65,6 +73,8 @@ class EditorObjectTest {
     assertEquals(sampleCollisionData, editorObject.getCollisionData());
     assertEquals(sampleSpriteData, editorObject.getSpriteData());
     assertEquals(sampleHitboxData, editorObject.getHitboxData());
+    assertEquals(sampleCustomData, editorObject.getCustomEventData());
+    assertEquals(sampleEventData, editorObject.getEventData());
   }
 
   /**
@@ -75,7 +85,7 @@ class EditorObjectTest {
     EditorObject editorObject = new EditorObject(mockEditorLevelData);
     assertNotNull(editorObject.getIdentityData());
     assertEquals("Untitled", editorObject.getIdentityData().getName());
-    assertEquals("", editorObject.getIdentityData().getGroup());
+    assertEquals("", editorObject.getIdentityData().getType());
     HitboxData hitboxData = editorObject.getHitboxData();
     assertNotNull(hitboxData);
     assertEquals(0, hitboxData.getX());
@@ -93,6 +103,8 @@ class EditorObjectTest {
     assertEquals(new HashMap<>(), editorObject.getCollisionData().getEvents());
     assertEquals(new HashMap<>(), editorObject.getPhysicsData().getEvents());
     assertEquals(new HashMap<>(), editorObject.getInputData().getEvents());
+    assertEquals(new HashMap<>(), editorObject.getCustomEventData().getEvents());
+    assertEquals(new ArrayList<>(), editorObject.getEventData().getEvents());
   }
 
   /**
@@ -208,5 +220,45 @@ class EditorObjectTest {
     EditorObject editorObject = new EditorObject(mockEditorLevelData);
     editorObject.setCollisionData(null);
     assertNull(editorObject.getCollisionData());
+  }
+
+  /**
+   * Tests setCustomEventData with a valid CollisionData object.
+   */
+  @Test
+  void setCustomEventData_whenValidObject_shouldUpdateCollisionData() {
+    EditorObject editorObject = new EditorObject(mockEditorLevelData);
+    editorObject.setCustomEventData(sampleCustomData);
+    assertEquals(sampleCustomData, editorObject.getCustomEventData());
+  }
+
+  /**
+   * Tests setCustomEventData with null.
+   */
+  @Test
+  void setCustomEventData_whenNull_shouldAcceptNull() {
+    EditorObject editorObject = new EditorObject(mockEditorLevelData);
+    editorObject.setCustomEventData(null);
+    assertNull(editorObject.getCustomEventData());
+  }
+
+  /**
+   * Tests setEventData with a valid EventData object.
+   */
+  @Test
+  void setEventData_whenValidObject_shouldUpdateEventData() {
+    EditorObject editorObject = new EditorObject(mockEditorLevelData);
+    editorObject.setEventData(sampleEventData);
+    assertEquals(sampleEventData, editorObject.getEventData());
+  }
+
+  /**
+   * Tests setEventData with null.
+   */
+  @Test
+  void setEventData_whenNull_shouldAcceptNull() {
+    EditorObject editorObject = new EditorObject(mockEditorLevelData);
+    editorObject.setEventData(null);
+    assertNull(editorObject.getEventData());
   }
 }

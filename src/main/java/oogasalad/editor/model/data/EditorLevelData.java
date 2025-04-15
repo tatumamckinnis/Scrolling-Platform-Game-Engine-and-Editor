@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
+import oogasalad.editor.model.data.object.HitboxData;
 
 /**
  * Represents the level data used by the editor, including groups, layers, and mappings between
@@ -23,6 +24,8 @@ public class EditorLevelData {
 
   private static Logger LOG = Logger.getLogger(EditorLevelData.class.getName());
 
+  private String gameName;
+  private String levelName;
   private List<String> myGroups;
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
@@ -45,6 +48,8 @@ public class EditorLevelData {
    * the object data mapping. The first layer is automatically added.
    */
   public EditorLevelData() {
+    gameName = "";
+    levelName = "";
     myGroups = new ArrayList<>();
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
@@ -124,6 +129,24 @@ public class EditorLevelData {
   }
 
   /**
+   * Retrieves the name of the game
+   *
+   * @return a {@link String} of the game name
+   */
+  public String getGameName() {
+    return gameName;
+  }
+
+  /**
+   * Retrieves the name of the level
+   *
+   * @return a {@link String} of the level name
+   */
+  public String getLevelName() {
+    return levelName;
+  }
+
+  /**
    * Retrieves the list of group names defined in the level.
    *
    * @return a {@link List} of group names
@@ -150,7 +173,7 @@ public class EditorLevelData {
    */
   public boolean removeGroup(String group) {
     for (EditorObject object : myObjectDataMap.values()) {
-      if (group.equals(object.getIdentityData().getGroup())) {
+      if (group.equals(object.getIdentityData().getType())) {
         return false;
       }
     }
@@ -239,5 +262,41 @@ public class EditorLevelData {
    */
   public Map<UUID, EditorObject> getObjectDataMap() {
     return myObjectDataMap;
+  }
+
+  /**
+   * Retrieves a list of editor objects by the Layer.
+   *
+   * @return a {@link Map} where keys are the Layer object and values are a {@link List} of
+   * {@link EditorObject} instances
+   */
+  public Map<Layer, List<EditorObject>> getObjectLayerDataMap() {
+    return myLayerDataMap;
+  }
+
+  /**
+   * Retrieves the minimum and maximum dimensions of all objects.
+   *
+   * @return an integer array of minX, minY, maxX, maxY
+   */
+  public int[] getBounds() {
+    double minX = Double.MAX_VALUE;
+    double minY = Double.MAX_VALUE;
+    double maxX = Double.MIN_VALUE;
+    double maxY = Double.MIN_VALUE;
+
+    for (EditorObject object : myObjectDataMap.values()) {
+      HitboxData hitbox = object.getHitboxData();
+      double x = hitbox.getX();
+      double y = hitbox.getY();
+      double width = hitbox.getWidth();
+      double height = hitbox.getHeight();
+
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x + width);
+      maxY = Math.max(maxY, y + height);
+    }
+    return new int[]{(int) minX, (int) minY, (int) maxX, (int) maxY};
   }
 }

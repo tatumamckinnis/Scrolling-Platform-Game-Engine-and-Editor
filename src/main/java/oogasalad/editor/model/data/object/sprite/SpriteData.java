@@ -12,8 +12,10 @@ import java.util.Map;
  */
 public class SpriteData {
 
+  private String name;
   private int x;
   private int y;
+  private double rotation;
   private Map<String, FrameData> frames;
   private Map<String, AnimationData> animations;
   private String spritePath;
@@ -21,19 +23,32 @@ public class SpriteData {
   /**
    * Constructs a new SpriteData instance with the specified properties.
    *
+   * @param name       the unique name of the sprite
    * @param x          the x-coordinate of the sprite's position
    * @param y          the y-coordinate of the sprite's position
+   * @param rotation   the rotation of the sprite
    * @param frames     a map of frame names to their corresponding {@link FrameData}
    * @param animations a map of animation names to their corresponding {@link AnimationData}
    * @param spritePath the file path to the sprite image
    */
-  public SpriteData(int x, int y, Map<String, FrameData> frames,
+  public SpriteData(String name, int x, int y, int rotation, Map<String, FrameData> frames,
       Map<String, AnimationData> animations, String spritePath) {
+    this.name = name;
     this.x = x;
     this.y = y;
+    this.rotation = rotation;
     this.frames = frames;
     this.animations = animations;
     this.spritePath = spritePath;
+  }
+
+  /**
+   * Retrieves the name of the sprite.
+   *
+   * @return the name of the sprite
+   */
+  public String getName() {
+    return name;
   }
 
   /**
@@ -52,6 +67,15 @@ public class SpriteData {
    */
   public int getY() {
     return y;
+  }
+
+  /**
+   * Retrieves the rotation of the sprite.
+   *
+   * @return the rotation in angles
+   */
+  public double getRotation() {
+    return rotation;
   }
 
   /**
@@ -122,6 +146,15 @@ public class SpriteData {
   }
 
   /**
+   * Sets the name of the sprite.
+   *
+   * @param name the new name
+   */
+  public void setX(String name) {
+    this.name = name;
+  }
+
+  /**
    * Sets the x-coordinate of the sprite's position.
    *
    * @param x the new x-coordinate
@@ -137,6 +170,15 @@ public class SpriteData {
    */
   public void setY(int y) {
     this.y = y;
+  }
+
+  /**
+   * Sets the rotation of the sprite.
+   *
+   * @param rotation the new rotation
+   */
+  public void setRotation(double rotation) {
+    this.rotation = rotation;
   }
 
   /**

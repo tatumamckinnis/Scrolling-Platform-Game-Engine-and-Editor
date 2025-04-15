@@ -21,7 +21,8 @@ public record GameObjectData(
     UUID uniqueId,
     int x,
     int y,
-    int layer
+    int layer,
+    String layerName // Purely for editor purposes, not used in engine
 ) {
 
 }

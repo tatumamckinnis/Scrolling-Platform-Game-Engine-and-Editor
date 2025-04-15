@@ -54,7 +54,7 @@ public class GameObjectDataParser {
 
         if (index < uidArray.length) {
           UUID uuid = UUID.fromString(uidArray[index].trim());
-          gameObjectDataList.add(new GameObjectData(blueprintId, uuid, x, y, z));
+          gameObjectDataList.add(new GameObjectData(blueprintId, uuid, x, y, z, ""));
         } else {
           break;
         }

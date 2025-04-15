@@ -13,16 +13,16 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Jacob You
  */
-public abstract class EditorEventData {
+public abstract class AbstractEventMapData {
 
-  private static final Logger LOG = LogManager.getLogger(EditorEventData.class);
+  private static final Logger LOG = LogManager.getLogger(AbstractEventMapData.class);
 
   private final Map<String, EditorEvent> events;
 
   /**
    * Constructor initializes the events map.
    */
-  public EditorEventData() {
+  public AbstractEventMapData() {
     events = new HashMap<>();
   }
 
