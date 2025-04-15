@@ -10,7 +10,7 @@ import oogasalad.fileparser.records.LevelData;
  *
  * @author Aksel Bell
  */
-public class XmlCameraDataWriter {
+public class XmlCameraDataWriter implements XmlComponentWriter{
   private static final String INDENT = "  ";
   private final BufferedWriter writer;
   private final LevelData data;

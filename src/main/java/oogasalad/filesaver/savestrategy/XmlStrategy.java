@@ -22,9 +22,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class XmlStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();
-  private static final String INDENT = "  ";
-  private static final String INDENT2 = INDENT + INDENT;
-  private static final String INDENT3 = INDENT2 + INDENT;
 
   /**
    * @see SaverStrategy#save(LevelData, Stage)

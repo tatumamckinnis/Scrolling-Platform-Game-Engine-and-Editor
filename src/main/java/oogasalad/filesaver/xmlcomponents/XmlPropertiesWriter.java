@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author Aksel Bell
  */
-public class XmlPropertiesWriter {
+public class XmlPropertiesWriter implements XmlComponentWriter{
   private static final String INDENT = "  ";
   private final BufferedWriter writer;
   private final int indentLevel;

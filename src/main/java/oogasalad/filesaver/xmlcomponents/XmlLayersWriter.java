@@ -12,7 +12,7 @@ import oogasalad.fileparser.records.LevelData;
  *
  * @author Aksel Bell
  */
-public class XmlLayersWriter {
+public class XmlLayersWriter implements XmlComponentWriter {
   private static final String INDENT = "  ";
   private static final String INDENT2 = INDENT + INDENT;
   private static final String INDENT3 = INDENT2 + INDENT;

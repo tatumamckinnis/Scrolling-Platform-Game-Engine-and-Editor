@@ -13,7 +13,7 @@ import oogasalad.fileparser.records.OutcomeData;
  *
  * @author Aksel Bell
  */
-public class XmlEventsWriter {
+public class XmlEventsWriter implements XmlComponentWriter{
   private static final String INDENT = "  ";
   private static final String INDENT2 = INDENT + INDENT;
   private static final String INDENT3 = INDENT2 + INDENT;

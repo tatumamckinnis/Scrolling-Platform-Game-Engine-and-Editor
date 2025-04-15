@@ -11,7 +11,7 @@ import oogasalad.fileparser.records.*;
  *
  * @author Aksel Bell
  */
-public class XmlBlueprintsWriter {
+public class XmlBlueprintsWriter implements XmlComponentWriter{
   private static final String INDENT = "  ";
   private static final String INDENT2 = INDENT + INDENT;
   private static final String INDENT3 = INDENT2 + INDENT;
