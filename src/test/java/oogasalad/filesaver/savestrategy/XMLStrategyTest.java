@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javafx.stage.Stage;
 import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
@@ -22,17 +21,17 @@ public class XMLStrategyTest {
 
   @BeforeEach
   void setup() throws IOException {
-    tempFile = File.createTempFile("test_level", ".xml");
+    tempFile = File.createTempFile("xmlstrategy_test", ".xml");
     tempFile.deleteOnExit();
   }
 
   @Test
   void save_MapSize_XMLContainsMapSize() throws IOException {
     LevelData levelData = new LevelData("", -500, -700, 4000, 500, null, null, null);
-    saver = new FileSaver(levelData, null);
+    saver = new FileSaver();
 
-    saver.setSaverStrategy(new MockXMLStrategy(tempFile));
-    saver.saveLevelData();
+    saver.chooseExportType("XML");
+    saver.saveLevelData(levelData, tempFile.getAbsolutePath());
 
     String content = Files.readString(tempFile.toPath());
     assertTrue(content.contains("<map minX=\"-500\" minY=\"-700\" maxX=\"4000\" maxY=\"500\">"));
@@ -48,9 +47,9 @@ public class XMLStrategyTest {
 
     LevelData levelData = new LevelData("", -500, -700, 4000, 500, cameraData, null, null);
 
-    saver = new FileSaver(levelData, null);
-    saver.setSaverStrategy(new MockXMLStrategy(tempFile));
-    saver.saveLevelData();
+    saver = new FileSaver();
+    saver.chooseExportType("XML");
+    saver.saveLevelData(levelData, tempFile.getAbsolutePath());
 
     String content = Files.readString(tempFile.toPath());
 
@@ -77,9 +76,9 @@ public class XMLStrategyTest {
 
     LevelData levelData = new LevelData("", -500, -700, 4000, 500, null, null, gameObjects);
 
-    saver = new FileSaver(levelData, null);
-    saver.setSaverStrategy(new MockXMLStrategy(tempFile));
-    saver.saveLevelData();
+    saver = new FileSaver();
+    saver.chooseExportType("XML");
+    saver.saveLevelData(levelData, tempFile.getAbsolutePath());
 
     String content = Files.readString(tempFile.toPath());
 
@@ -93,19 +92,5 @@ public class XMLStrategyTest {
     assertTrue(content.contains("<object id=\"1\" coordinates=\"(0,500)\" uid=\"d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5\" />"));
     assertTrue(content.contains("<object id=\"2\" coordinates=\"(480,500)\" uid=\"3f780051-ec51-4c02-bc98-82d450d12397\" />"));
     assertTrue(content.contains("<object id=\"111\" coordinates=\"(100,400)\" uid=\"e816f04c-3047-4e30-9e20-2e601a99dde8\" />"));
-  }
-
-
-  private static class MockXMLStrategy extends XMLStrategy {
-    private final File mockFile;
-
-    public MockXMLStrategy(File mockFile) {
-      this.mockFile = mockFile;
-    }
-
-    @Override
-    File setExportPath(Stage userStage) {
-      return mockFile;
-    }
   }
 }
