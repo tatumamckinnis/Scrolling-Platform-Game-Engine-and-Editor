@@ -1,4 +1,4 @@
-package oogasalad.editor.saver.api;
+package oogasalad.editor.model.saver.api;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;

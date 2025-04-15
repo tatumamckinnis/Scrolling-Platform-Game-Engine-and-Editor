@@ -1,4 +1,4 @@
-package oogasalad.editor.saver;
+package oogasalad.editor.model.saver;
 
 import java.io.File;
 import java.util.ArrayList;

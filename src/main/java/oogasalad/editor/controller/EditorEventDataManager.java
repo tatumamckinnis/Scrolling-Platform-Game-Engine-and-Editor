@@ -7,14 +7,14 @@ import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.event.EditorEvent;
-import oogasalad.editor.model.data.object.event.EditorEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract class for managing event data (conditions, outcomes, and their parameters) associated
- * with {@link EditorObject}s. Sub‑classes decide which concrete {@link EditorEventData} container
+ * with {@link EditorObject}s. Sub‑classes decide which concrete {@link AbstractEventMapData} container
  * (e.g. input, collision, timer, etc.) is used to hold the event data for an editor object.
  *
  * @author Jacob You
@@ -42,9 +42,9 @@ public abstract class EditorEventDataManager {
    * </p>
    *
    * @param object the {@link EditorObject} for which to obtain the event data container
-   * @return the corresponding {@link EditorEventData}
+   * @return the corresponding {@link AbstractEventMapData}
    */
-  protected abstract EditorEventData createDataIfAbsent(EditorObject object);
+  protected abstract AbstractEventMapData createDataIfAbsent(EditorObject object);
 
   /**
    * Retrieves the {@link EditorObject} corresponding to the supplied UUID.
@@ -76,7 +76,7 @@ public abstract class EditorEventDataManager {
   protected EditorEvent getEvent(UUID objectId, String eventId) {
     Objects.requireNonNull(eventId, "Event ID cannot be null.");
     EditorObject object = getObject(objectId);
-    EditorEventData data = createDataIfAbsent(object);
+    AbstractEventMapData data = createDataIfAbsent(object);
     EditorEvent event = data.getEvent(eventId);
     if (event == null) {
       LOG.error("Event '{}' not found for object {}.", eventId, objectId);

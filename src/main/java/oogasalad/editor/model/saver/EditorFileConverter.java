@@ -1,9 +1,10 @@
-package oogasalad.editor.saver;
+package oogasalad.editor.model.saver;
 
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.saver.api.EditorFileConverterAPI;
+import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.filesaver.FileSaver;
 
 /**
  * Implements the {@link EditorFileConverterAPI} to handle conversion of editor level data to and

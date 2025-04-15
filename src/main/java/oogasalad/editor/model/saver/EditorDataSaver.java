@@ -1,4 +1,4 @@
-package oogasalad.editor.saver;
+package oogasalad.editor.model.saver;
 
 import java.util.ArrayList;
 import java.util.HashMap;

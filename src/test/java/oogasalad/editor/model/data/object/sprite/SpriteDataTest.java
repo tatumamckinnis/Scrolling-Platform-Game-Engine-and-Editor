@@ -32,7 +32,7 @@ class SpriteDataTest {
     animations.put("idle", new AnimationData(0.5, new ArrayList<>(List.of("frame1"))));
     animations.put("walk", new AnimationData(0.25, new ArrayList<>(List.of("frame1", "frame2"))));
 
-    spriteData = new SpriteData(10, 20, frames, animations, "path/to/sprite.png");
+    spriteData = new SpriteData("", 10, 20, 0, frames, animations, "path/to/sprite.png");
   }
 
   /**

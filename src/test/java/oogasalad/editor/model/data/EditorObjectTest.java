@@ -229,7 +229,7 @@ class EditorObjectTest {
   void setCustomEventData_whenValidObject_shouldUpdateCollisionData() {
     EditorObject editorObject = new EditorObject(mockEditorLevelData);
     editorObject.setCustomEventData(sampleCustomData);
-    assertEquals(sampleCollisionData, editorObject.getCollisionData());
+    assertEquals(sampleCustomData, editorObject.getCustomEventData());
   }
 
   /**
@@ -239,7 +239,7 @@ class EditorObjectTest {
   void setCustomEventData_whenNull_shouldAcceptNull() {
     EditorObject editorObject = new EditorObject(mockEditorLevelData);
     editorObject.setCustomEventData(null);
-    assertNull(editorObject.getCollisionData());
+    assertNull(editorObject.getCustomEventData());
   }
 
   /**
