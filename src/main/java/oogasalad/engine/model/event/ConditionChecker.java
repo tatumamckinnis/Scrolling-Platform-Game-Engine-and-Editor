@@ -7,8 +7,10 @@ import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.event.condition.CollisionCondition;
 import oogasalad.engine.model.event.condition.Condition;
 import oogasalad.engine.model.event.condition.EventCondition;
+import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
 import oogasalad.engine.model.event.condition.InputCondition;
 import oogasalad.engine.model.event.condition.TrueCondition;
+import oogasalad.engine.model.event.condition.VariableThresholdCondition;
 import oogasalad.engine.model.object.GameObject;
 
 /**
@@ -52,6 +54,8 @@ public class ConditionChecker {
         new InputCondition(inputProvider, KeyCode.RIGHT));
     conditionMap.put(EventCondition.ConditionType.LEFT_ARROW_PRESSED,
         new InputCondition(inputProvider, KeyCode.LEFT));
+    conditionMap.put(ConditionType.VARIABLE_THRESHOLD,
+        new VariableThresholdCondition());
 
   }
 
