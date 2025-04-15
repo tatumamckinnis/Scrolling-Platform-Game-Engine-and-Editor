@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javafx.stage.Stage;
 import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;

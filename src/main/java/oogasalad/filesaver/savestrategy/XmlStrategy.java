@@ -4,8 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.xmlcomponents.XmlBlueprintsWriter;
 import oogasalad.filesaver.xmlcomponents.XmlCameraDataWriter;

@@ -42,11 +42,9 @@ public class XmlLayersWriter implements XmlComponentWriter {
     Map<Integer, List<GameObjectData>> layerMap = groupObjectsByLayer(objects);
 
     writer.write(INDENT + "<layers>\n");
-
     for (Map.Entry<Integer, List<GameObjectData>> entry : layerMap.entrySet()) {
       writeSingleLayer(writer, entry.getKey(), entry.getValue(), data);
     }
-
     writer.write(INDENT + "</layers>\n");
   }
 

@@ -41,13 +41,11 @@ public class XmlEventsWriter implements XmlComponentWriter{
     }
 
     writer.write(INDENT + "<events>\n");
-
     for (var blueprint : levelData.gameBluePrintData().values()) {
       for (EventData event : blueprint.eventDataList()) {
         writeEvent(event);
       }
     }
-
     writer.write(INDENT + "</events>\n");
   }
 

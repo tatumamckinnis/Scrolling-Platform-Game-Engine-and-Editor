@@ -34,17 +34,19 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
    */
   public void write() throws IOException {
     Map<Integer, BlueprintData> blueprintsMap = levelData.gameBluePrintData();
-    if (blueprintsMap == null || blueprintsMap.isEmpty()) return;
+    if (blueprintsMap == null || blueprintsMap.isEmpty()) {
+      return;
+    }
 
     Map<String, Map<String, List<BlueprintData>>> groupedBlueprints = groupBlueprintsByGameAndGroup(blueprintsMap);
 
+    // Each gameEntry is a string to a map
     for (var gameEntry : groupedBlueprints.entrySet()) {
       writeGameSection(gameEntry.getKey(), gameEntry.getValue());
     }
   }
 
-  private Map<String, Map<String, List<BlueprintData>>> groupBlueprintsByGameAndGroup(
-      Map<Integer, BlueprintData> blueprintsMap) {
+  private Map<String, Map<String, List<BlueprintData>>> groupBlueprintsByGameAndGroup(Map<Integer, BlueprintData> blueprintsMap) {
     Map<String, Map<String, List<BlueprintData>>> grouped = new HashMap<>();
     for (BlueprintData blueprint : blueprintsMap.values()) {
       grouped
@@ -95,6 +97,7 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
 
   private String getEventIdsAsString(BlueprintData blueprint) {
     return blueprint.eventDataList().stream()
+        // Grab the eventIDs
         .map(EventData::eventId)
         .filter(id -> !id.isEmpty())
         .collect(Collectors.joining(","));

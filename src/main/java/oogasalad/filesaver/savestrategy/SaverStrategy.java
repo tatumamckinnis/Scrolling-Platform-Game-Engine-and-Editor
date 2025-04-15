@@ -1,11 +1,12 @@
 package oogasalad.filesaver.savestrategy;
 
 import java.io.IOException;
-import javafx.stage.Stage;
 import oogasalad.fileparser.records.LevelData;
 
 /**
  * Strategy interface for saving level data into different formats.
+ *
+ * @author Aksel Bell
  */
 public interface SaverStrategy {
 
