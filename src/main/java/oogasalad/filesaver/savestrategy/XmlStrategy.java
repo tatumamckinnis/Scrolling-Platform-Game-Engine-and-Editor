@@ -24,16 +24,11 @@ public class XmlStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();
 
   /**
-   * @see SaverStrategy#save(LevelData, Stage)
+   * @see SaverStrategy#save(LevelData, String)
    */
   @Override
-  public void save(LevelData levelData, Stage userStage) throws IOException {
-    File file = setExportPath(userStage);
-
-    if (file == null) {
-      LOG.info("Save cancelled by user.");
-      return;
-    }
+  public void save(LevelData levelData, String filePath) throws IOException {
+    File file = new File(filePath);
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -44,18 +39,8 @@ public class XmlStrategy implements SaverStrategy {
       new XmlEventsWriter(writer, levelData).write();
       writer.write("</map>\n");
     } catch (IOException e) {
-      LOG.warn("Could not save level data", e);
+      LOG.warn("Could not save level data.", e);
       throw e;
     }
-  }
-
-  File setExportPath(Stage userStage) {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Save Level As XML");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml")
-    );
-    fileChooser.setInitialFileName("exported_level.xml");
-    return fileChooser.showSaveDialog(userStage);
   }
 }

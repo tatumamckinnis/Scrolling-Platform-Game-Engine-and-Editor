@@ -22,7 +22,7 @@ public class XmlBlueprintsWriterTest {
   }
 
   @Test
-  void write_SingleBlueprint_WritesCorrectXML() throws Exception {
+  void write_SingleBlueprint_WritesBlueprint() throws Exception {
     LevelData levelData = getLevelData();
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
@@ -30,6 +30,7 @@ public class XmlBlueprintsWriterTest {
     }
 
     String content = Files.readString(tempFile.toPath());
+    System.out.println(content);
     assertTrue(content.contains("<game name=\"platformer\">"));
     assertTrue(content.contains("<objectGroup name=\"Enemies\">"));
     assertTrue(content.contains("<object spriteName=\"player\" type=\"enemy\" id=\"1\""));

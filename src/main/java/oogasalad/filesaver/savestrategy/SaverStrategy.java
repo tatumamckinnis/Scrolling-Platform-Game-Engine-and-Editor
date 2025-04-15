@@ -13,7 +13,7 @@ public interface SaverStrategy {
    * Saves the provided level data to a file in the desired format.
    *
    * @param levelData the data to be saved
-   * @param stage the current user's stage.
+   * @param filePath the file to write to.
    */
-  void save(LevelData levelData, Stage stage) throws IOException;
+  void save(LevelData levelData, String filePath) throws IOException;
 }

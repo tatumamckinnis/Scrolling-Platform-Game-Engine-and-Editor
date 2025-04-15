@@ -26,7 +26,7 @@ public class XmlEventsWriterTest {
   }
 
   @Test
-  void write_SingleEvent_WritesCorrectXML() throws Exception {
+  void write_SingleEvent_WritesEventTag() throws Exception {
     LevelData levelData = getLevelData();
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {

@@ -2,7 +2,6 @@ package oogasalad.filesaver;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import javafx.stage.Stage;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -15,19 +14,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FileSaver {
   private static final Logger LOG = LogManager.getLogger();
-  private final LevelData myLevelData;
   private SaverStrategy mySaverStrategy;
-  private final Stage userStage;
-
-  /**
-   * Instantiate a new file saver object.
-   * @param levelData the level data to be exported.
-   * @param userStage the current stage
-   */
-  public FileSaver(LevelData levelData, Stage userStage) {
-    myLevelData = levelData;
-    this.userStage = userStage;
-  }
 
   /**
    * Chooses a strategy for exporting based on file type.
@@ -50,19 +37,15 @@ public class FileSaver {
 
   /**
    * Saves the level data using the selected saving strategy.
+   *
+   * @param levelData the level data to be exported.
+   * @param filePath the file path to write to.
    */
-  public void saveLevelData() throws IOException {
+  public void saveLevelData(LevelData levelData, String filePath) throws IOException {
     if (mySaverStrategy == null) {
+      LOG.warn("Export type not selected.");
       throw new IllegalStateException("Export type not selected. Call chooseExportType first.");
     }
-    mySaverStrategy.save(myLevelData, userStage);
-  }
-
-  /**
-   * Package protected setter method used for testing.
-   * @param strategy desired export strategy.
-   */
-  public void setSaverStrategy(SaverStrategy strategy) {
-    this.mySaverStrategy = strategy;
+    mySaverStrategy.save(levelData, filePath);
   }
 }
