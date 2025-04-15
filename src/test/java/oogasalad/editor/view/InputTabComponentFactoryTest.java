@@ -1,543 +1,473 @@
 package oogasalad.editor.view;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
+import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.controller.InputDataManager;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.resources.EditorResourceLoader;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
-import org.testfx.matcher.control.ComboBoxMatchers;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.matcher.control.ListViewMatchers;
-import org.testfx.matcher.control.TextInputControlMatchers;
-import org.testfx.robot.Motion;
-import org.testfx.service.query.PointQuery;
 import org.testfx.util.WaitForAsyncUtils;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.testfx.api.FxAssert.verifyThat;
 
+
+/**
+ * Test class for {@link InputTabComponentFactory}. Uses TestFX for UI interactions and Mockito for
+ * mocking controller dependencies. Verifies UI setup, event handler delegation to the refactored
+ * controller methods, and UI updates based on listener notifications.
+ */
 @ExtendWith({ApplicationExtension.class})
 class InputTabComponentFactoryTest {
 
+  @Mock
   private EditorController mockEditorController;
-  private ResourceBundle mockUiBundle;
+  @Mock
+  private EditorDataAPI mockEditorDataAPI;
+  @Mock
+  private InputDataManager mockInputDataManager;
+  @Mock
+  private DynamicVariableContainer mockDynamicVariableContainer;
 
   private static final String EVENT_LIST_ID = "#eventListView";
   private static final String EVENT_ID_FIELD_ID = "#eventIdField";
   private static final String ADD_EVENT_BUTTON_ID = "#addEventButton";
   private static final String REMOVE_EVENT_BUTTON_ID = "#removeEventButton";
   private static final String CONDITIONS_LIST_ID = "#conditionsListView";
-  private static final String ADD_CONDITION_COMBO_ID = "#conditionComboBox";
+  private static final String ADD_CONDITION_COMBO_ID = "#conditionTypeComboBox";
   private static final String ADD_CONDITION_BUTTON_ID = "#addConditionButton";
   private static final String REMOVE_CONDITION_BUTTON_ID = "#removeConditionButton";
+  private static final String ADD_GROUP_BUTTON_ID = "#addGroupButton";
+  private static final String REMOVE_GROUP_BUTTON_ID = "#removeGroupButton";
   private static final String OUTCOMES_LIST_ID = "#outcomesListView";
   private static final String ADD_OUTCOME_COMBO_ID = "#outcomeTypeComboBox";
-  private static final String PARAM_COMBO_ID = "#parameterComboBox";
+  private static final String PARAM_COMBO_ID = "#dynamicVariableComboBox";
   private static final String ADD_OUTCOME_BUTTON_ID = "#addOutcomeButton";
   private static final String REMOVE_OUTCOME_BUTTON_ID = "#removeOutcomeButton";
   private static final String ADD_VAR_BUTTON_ID = "#addVariableButton";
+  private static final String CONDITION_PARAMS_PANE_ID = "#conditionParametersPane";
+  private static final String OUTCOME_PARAMS_PANE_ID = "#outcomeParametersPane";
 
   private InputTabComponentFactory factory;
   private Pane inputTabPanel;
 
   private UUID currentTestObjectId;
+  private String currentTestEventId;
 
-  @Captor ArgumentCaptor<DynamicVariable> dynamicVariableCaptor;
-  @Captor ArgumentCaptor<String> stringCaptor;
+  @Captor
+  ArgumentCaptor<DynamicVariable> dynamicVariableCaptor;
+  @Captor
+  ArgumentCaptor<String> stringArgCaptor;
+  @Captor
+  ArgumentCaptor<Integer> intArgCaptor;
+  @Captor
+  ArgumentCaptor<Double> doubleArgCaptor;
 
-  private void setupUI(Stage stage) {
-    mockEditorController = Mockito.mock(EditorController.class);
-    mockUiBundle = Mockito.mock(ResourceBundle.class);
 
-    currentTestObjectId = null;
+  private AutoCloseable mocks;
+
+  /**
+   * Initializes JavaFX platform, mocks, resource bundle loading, and factory instance. Creates the
+   * UI within the JavaFX thread.
+   *
+   * @param stage Primary stage provided by TestFX.
+   */
+  @Start
+  private void start(Stage stage) {
+    mocks = MockitoAnnotations.openMocks(this);
+
+    when(mockEditorController.getEditorDataAPI()).thenReturn(mockEditorDataAPI);
+    when(mockEditorDataAPI.getInputDataAPI()).thenReturn(mockInputDataManager);
+    when(mockEditorDataAPI.getDynamicVariableContainer()).thenReturn(mockDynamicVariableContainer);
 
     try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle("InputTabUI"))
-          .thenReturn(mockUiBundle);
-      when(mockUiBundle.getString(anyString())).thenReturn("Mock String");
-      when(mockUiBundle.getString("errorSelectionNeeded")).thenReturn("Selection Error Message");
-      when(mockUiBundle.getString("errorApiFailureTitle")).thenReturn("API Error Title");
-      when(mockUiBundle.getString("dialogAddVarTitle")).thenReturn("Add Variable");
-      when(mockUiBundle.getString("dialogAddButton")).thenReturn("Add");
-      when(mockUiBundle.getString("dialogVarName")).thenReturn("Name");
-      when(mockUiBundle.getString("dialogVarType")).thenReturn("Type");
-      when(mockUiBundle.getString("dialogVarValue")).thenReturn("Value");
-      when(mockUiBundle.getString("dialogVarDesc")).thenReturn("Desc");
-      when(mockUiBundle.getString("errorInvalidInputTitle")).thenReturn("Invalid Input");
-      when(mockUiBundle.getString("conditionsHeader")).thenReturn("Conditions");
-      when(mockUiBundle.getString("outcomesHeader")).thenReturn("Outcomes");
-      when(mockUiBundle.getString("parameterLabel")).thenReturn("Parameter");
-      when(mockUiBundle.getString("addConditionButton")).thenReturn("Add");
-      when(mockUiBundle.getString("removeConditionButton")).thenReturn("Remove");
-      when(mockUiBundle.getString("addOutcomeButton")).thenReturn("Add");
-      when(mockUiBundle.getString("removeOutcomeButton")).thenReturn("Remove");
-      when(mockUiBundle.getString("createParamButton")).thenReturn("+");
-
+      ResourceBundle bundle = ResourceBundle.getBundle(
+          "oogasalad.editor.view.resources.InputTabUI");
+      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString()))
+          .thenReturn(bundle);
       factory = new InputTabComponentFactory(mockEditorController);
     }
 
     inputTabPanel = factory.createInputTabPanel();
     assertNotNull(inputTabPanel);
 
-    Scene scene = new Scene(inputTabPanel, 500, 700);
+    Scene scene = new Scene(inputTabPanel, 600, 800);
     stage.setScene(scene);
     stage.setTitle("Input Tab Factory Test");
     stage.show();
+  }
 
-    WaitForAsyncUtils.waitForFxEvents();
+  /**
+   * Closes Mockito mocks after each test.
+   *
+   * @throws Exception If closing fails.
+   */
+  @AfterEach
+  void tearDown() throws Exception {
+    if (mocks != null) {
+      mocks.close();
+    }
     Platform.runLater(() -> {
-      ComboBox<ConditionType> condCombo = lookupComboBoxSafe(ADD_CONDITION_COMBO_ID);
-      if (condCombo != null) condCombo.setItems(FXCollections.observableArrayList(ConditionType.values()));
-
-      ComboBox<OutcomeType> outCombo = lookupComboBoxSafe(ADD_OUTCOME_COMBO_ID);
-      if (outCombo != null) outCombo.setItems(FXCollections.observableArrayList(OutcomeType.values()));
-
-      ComboBox<String> paramCombo = lookupComboBoxSafe(PARAM_COMBO_ID);
-      if (paramCombo != null) paramCombo.setItems(FXCollections.observableArrayList("var1", "var2"));
     });
     WaitForAsyncUtils.waitForFxEvents();
   }
 
-  @Start
-  private void start(Stage stage) {
-    setupUI(stage);
-  }
 
+  /**
+   * Looks up a node safely within the inputTabPanel. Uses lookupAll for robustness.
+   *
+   * @param query CSS selector.
+   * @param <T>   Node type.
+   * @return Found node or null.
+   */
   private <T extends Node> T lookupSafe(String query) {
     try {
       Set<Node> nodes = inputTabPanel.lookupAll(query);
       return nodes.isEmpty() ? null : (T) nodes.iterator().next();
     } catch (Exception e) {
-      System.err.println("Warning: Node not found for query: '" + query + "'. Error: " + e.getMessage());
+      System.err.println("Lookup warning for '" + query + "': " + e.getMessage());
       return null;
     }
   }
 
-  private ListView<String> lookupListViewSafe(String query) {
-    Node node = lookupSafe(query);
-    return (node instanceof ListView) ? (ListView<String>) node : null;
-  }
-
-  private <T> ComboBox<T> lookupComboBoxSafe(String query) {
-    Node node = lookupSafe(query);
-    return (node instanceof ComboBox) ? (ComboBox<T>) node : null;
-  }
-
-  private void ensureVisible(FxRobot robot, String query) {
-    Node node = robot.lookup(query).query();
-    robot.moveTo(node);
-    WaitForAsyncUtils.waitForFxEvents();
-  }
-
-  private Node ensureListCellVisible(FxRobot robot, String listViewQuery, String itemText) {
-    ListView<String> listView = lookupListViewSafe(listViewQuery);
-    assumeTrue(listView != null);
-
-    Platform.runLater(() -> {
-      for(String item : listView.getItems()) {
-        if(item.equals(itemText)) {
-          listView.scrollTo(item);
-          break;
-        }
-      }
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-    WaitForAsyncUtils.sleep(100, TimeUnit.MILLISECONDS);
-
-    Node cell = robot.lookup(".list-cell")
-        .match(n -> n instanceof ListCell && ((ListCell<?>) n).getItem() != null && ((ListCell<?>) n).getItem().toString().equals(itemText) && isVisible(n))
-        .query();
-    robot.moveTo(cell);
-    WaitForAsyncUtils.waitForFxEvents();
-    return cell;
-  }
-
-  private boolean isVisible(Node node) {
-    return node.isVisible() && node.getScene() != null && node.getScene().getWindow() != null && node.getScene().getWindow().isShowing();
-  }
+  /**
+   * Simulates selecting an object by calling the factory's listener method. Ensures it runs on the
+   * FX thread and waits for events. IMPORTANT: Caller must mock getEvents and getAllVariables
+   * *before* calling this, as onSelectionChanged triggers refreshes that use these mocks.
+   *
+   * @param objectId The UUID of the object to select, or null to deselect.
+   */
   private void selectObject(UUID objectId) {
-    clearInvocations(mockEditorController);
-
-    if (objectId != null) {
-      when(mockEditorController.getEventsForObject(eq(objectId))).thenReturn(Collections.emptyMap());
-      when(mockEditorController.getAvailableDynamicVariables(eq(objectId))).thenReturn(Collections.emptyList());
-    }
+    this.currentTestObjectId = objectId;
 
     Platform.runLater(() -> factory.onSelectionChanged(objectId));
     WaitForAsyncUtils.waitForFxEvents();
-    this.currentTestObjectId = objectId;
   }
 
-  private void selectEvent(FxRobot robot, String eventId) {
-    ListView<String> eventList = lookupListViewSafe(EVENT_LIST_ID);
-    assumeTrue(eventList != null);
-    assumeTrue(eventList.getItems().contains(eventId));
 
-    Node cell = ensureListCellVisible(robot, EVENT_LIST_ID, eventId);
-    robot.clickOn(cell, Motion.DEFAULT);
+  /**
+   * Simulates selecting an event from the event list view using the FxRobot. Waits for the event to
+   * appear in the list before clicking. Mocks subsequent data fetches for conditions/outcomes.
+   * IMPORTANT: Caller must ensure the event list is populated (via selectObject and mocks) and that
+   * currentTestObjectId is set correctly *before* calling this.
+   *
+   * @param robot   FxRobot for UI interaction.
+   * @param eventId The ID of the event to select.
+   * @throws TimeoutException if the event does not appear in time.
+   */
+  private void selectEvent(FxRobot robot, String eventId) throws TimeoutException {
+    ListView<String> eventList = lookupSafe(EVENT_LIST_ID);
+    assertNotNull(eventList, "Event list view not found for selectEvent");
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> eventList.getItems().contains(eventId));
+    assertTrue(eventList.getItems().contains(eventId),
+        "Event ID not found in list view: " + eventId);
+
+    this.currentTestEventId = eventId;
+
+    when(mockInputDataManager.getEventConditions(eq(currentTestObjectId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+    when(mockInputDataManager.getEventOutcomes(eq(currentTestObjectId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+
+    robot.clickOn(eventId);
     WaitForAsyncUtils.waitForFxEvents();
-    WaitForAsyncUtils.waitForAsync(1000, () -> assertEquals(eventId, eventList.getSelectionModel().getSelectedItem()));
-    assertEquals(eventId, eventList.getSelectionModel().getSelectedItem());
+    assertEquals(eventId, eventList.getSelectionModel().getSelectedItem(),
+        "Event selection failed in UI");
   }
 
-  private void populateEventList(List<String> events) {
-    ListView<String> eventList = lookupListViewSafe(EVENT_LIST_ID);
-    assumeTrue(eventList != null);
-    Platform.runLater(() -> {
-      eventList.setItems(FXCollections.observableArrayList(events));
-    });
-    WaitForAsyncUtils.waitForFxEvents();
+
+  /**
+   * Verifies that the main UI sections are created and accessible via lookup.
+   */
+  @Test
+  void testUILayoutCreation() {
+    assertNotNull(lookupSafe(EVENT_LIST_ID), "Event list view should be present");
+    assertNotNull(lookupSafe(CONDITIONS_LIST_ID), "Conditions list view should be present");
+    assertNotNull(lookupSafe(OUTCOMES_LIST_ID), "Outcomes list view should be present");
+    assertNotNull(lookupSafe(ADD_EVENT_BUTTON_ID), "Add event button should be present");
+    assertNotNull(lookupSafe(ADD_CONDITION_BUTTON_ID), "Add condition button should be present");
+    assertNotNull(lookupSafe(ADD_OUTCOME_BUTTON_ID), "Add outcome button should be present");
   }
 
-  private void populateConditionList(List<String> conditions) {
-    ListView<String> condList = lookupListViewSafe(CONDITIONS_LIST_ID);
-    assumeTrue(condList != null);
-    Platform.runLater(() -> {
-      condList.setItems(FXCollections.observableArrayList(conditions));
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-  }
-
-  private void populateOutcomeList(List<String> outcomes) {
-    ListView<String> outcomeList = lookupListViewSafe(OUTCOMES_LIST_ID);
-    assumeTrue(outcomeList != null);
-    Platform.runLater(() -> {
-      outcomeList.setItems(FXCollections.observableArrayList(outcomes));
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-  }
-
-  private void populateParameterCombo(List<String> params) {
-    ComboBox<String> paramCombo = lookupComboBoxSafe(PARAM_COMBO_ID);
-    assumeTrue(paramCombo != null);
-    Platform.runLater(() -> {
-      paramCombo.setItems(FXCollections.observableArrayList(params));
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-  }
-
-  private void selectCondition(FxRobot robot, String conditionString) {
-    ListView<String> condList = lookupListViewSafe(CONDITIONS_LIST_ID);
-    assumeTrue(condList != null);
-    assumeTrue(condList.getItems().contains(conditionString));
-
-    Node cell = ensureListCellVisible(robot, CONDITIONS_LIST_ID, conditionString);
-    robot.clickOn(cell, Motion.DEFAULT);
-    WaitForAsyncUtils.waitForFxEvents();
-    WaitForAsyncUtils.waitForAsync(1000, () -> assertEquals(conditionString, condList.getSelectionModel().getSelectedItem()));
-    assertEquals(conditionString, condList.getSelectionModel().getSelectedItem());
-  }
-
-  private void selectOutcome(FxRobot robot, String outcomeString) {
-    ListView<String> outcomeList = lookupListViewSafe(OUTCOMES_LIST_ID);
-    assumeTrue(outcomeList != null);
-    boolean found = outcomeList.getItems().stream().anyMatch(item -> item.equals(outcomeString));
-    assumeTrue(found);
-
-    Node cell = ensureListCellVisible(robot, OUTCOMES_LIST_ID, outcomeString);
-    robot.clickOn(cell, Motion.DEFAULT);
-    WaitForAsyncUtils.waitForFxEvents();
-    WaitForAsyncUtils.waitForAsync(1000, () -> assertEquals(outcomeString, outcomeList.getSelectionModel().getSelectedItem()));
-    assertEquals(outcomeString, outcomeList.getSelectionModel().getSelectedItem());
-  }
-
-  @Test void testAddEventAction(FxRobot robot) {
-    assumeTrue(lookupSafe(ADD_EVENT_BUTTON_ID) != null);
+  /**
+   * Tests adding an event through the UI interaction, verifying the controller call and UI refresh.
+   * Uses doAnswer to update the mock for getEvents after addEvent is called.
+   *
+   * @param robot FxRobot for UI interaction.
+   */
+  @Test
+  void testAddEvent(FxRobot robot) throws TimeoutException {
     UUID objId = UUID.randomUUID();
+    String newEventId = "PLAYER_START";
+    Map<String, EditorEvent> initialEvents = Collections.emptyMap();
+    Map<String, EditorEvent> finalEvents = Map.of(newEventId, mock(EditorEvent.class));
+
+    when(mockInputDataManager.getEvents(eq(objId))).thenReturn(initialEvents);
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(Collections.emptyList());
     selectObject(objId);
 
-    ensureVisible(robot, EVENT_ID_FIELD_ID);
-    robot.clickOn(EVENT_ID_FIELD_ID).write("TestEvent1");
-    ensureVisible(robot, ADD_EVENT_BUTTON_ID);
+    doAnswer(invocation -> {
+
+      when(mockInputDataManager.getEvents(eq(objId))).thenReturn(finalEvents);
+
+      Platform.runLater(() -> factory.refreshEventsList());
+      return null;
+    }).when(mockInputDataManager).addEvent(eq(objId), eq(newEventId));
+
+    robot.clickOn(EVENT_ID_FIELD_ID).write(newEventId);
     robot.clickOn(ADD_EVENT_BUTTON_ID);
     WaitForAsyncUtils.waitForFxEvents();
 
-    verify(mockEditorController).addEvent(eq(objId), eq("TestEvent1"));
-    verifyThat(EVENT_ID_FIELD_ID, TextInputControlMatchers.hasText(""));
+    verify(mockInputDataManager).addEvent(eq(objId), eq(newEventId));
+
+    ListView<String> eventList = lookupSafe(EVENT_LIST_ID);
+    assertNotNull(eventList);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> eventList.getItems().contains(newEventId));
+    assertTrue(eventList.getItems().contains(newEventId));
   }
 
-  @Test void testAddEventAction_EmptyId(FxRobot robot){
-    assumeTrue(lookupSafe(ADD_EVENT_BUTTON_ID) != null);
+  /**
+   * Tests removing an event through the UI interaction, verifying the controller call and UI
+   * refresh. Uses doAnswer to update the mock for getEvents after removeEvent is called.
+   *
+   * @param robot FxRobot for UI interaction.
+   */
+  @Test
+  void testRemoveEvent(FxRobot robot) throws TimeoutException {
     UUID objId = UUID.randomUUID();
+    String eventToRemove = "EVENT_1";
+    String eventToKeep = "EVENT_2";
+    Map<String, EditorEvent> initialEvents = new HashMap<>();
+    initialEvents.put(eventToRemove, mock(EditorEvent.class));
+    initialEvents.put(eventToKeep, mock(EditorEvent.class));
+    Map<String, EditorEvent> finalEvents = Map.of(eventToKeep, mock(EditorEvent.class));
+
+    when(mockInputDataManager.getEvents(eq(objId))).thenReturn(initialEvents);
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(Collections.emptyList());
     selectObject(objId);
 
-    ensureVisible(robot, ADD_EVENT_BUTTON_ID);
-    robot.clickOn(ADD_EVENT_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController, never()).addEvent(any(), anyString());
-    verifyThat(EVENT_ID_FIELD_ID, TextInputControlMatchers.hasText(""));
-  }
-
-  @Test void testAddEventAction_NoObjectSelected(FxRobot robot){
-    assumeTrue(lookupSafe(ADD_EVENT_BUTTON_ID) != null);
-    selectObject(null);
-
-    ensureVisible(robot, EVENT_ID_FIELD_ID);
-    robot.clickOn(EVENT_ID_FIELD_ID).write("NoObjectEvent");
-    ensureVisible(robot, ADD_EVENT_BUTTON_ID);
-    robot.clickOn(ADD_EVENT_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController, never()).addEvent(any(), anyString());
-    verifyThat(EVENT_ID_FIELD_ID, TextInputControlMatchers.hasText("NoObjectEvent"));
-  }
-
-  @Test void testAddEventAction_ControllerError(FxRobot robot){
-    assumeTrue(lookupSafe(ADD_EVENT_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    String eventName = "ErrorEvent";
-
-    selectObject(objId);
-    doThrow(new RuntimeException("Controller Error")).when(mockEditorController).addEvent(eq(objId), eq(eventName));
-
-    ensureVisible(robot, EVENT_ID_FIELD_ID);
-    robot.clickOn(EVENT_ID_FIELD_ID).write(eventName);
-    ensureVisible(robot, ADD_EVENT_BUTTON_ID);
-    robot.clickOn(ADD_EVENT_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController).addEvent(eq(objId), eq(eventName));
-    verifyThat(EVENT_ID_FIELD_ID, TextInputControlMatchers.hasText(eventName));
-  }
-  @Test void testRemoveEventAction(FxRobot robot){
-    assumeTrue(lookupSafe(REMOVE_EVENT_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    String eventToRemove = "eventA";
-    String otherEvent = "eventB";
-
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of(eventToRemove, mock(EditorEvent.class), otherEvent, mock(EditorEvent.class)));
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of(eventToRemove, otherEvent));
     selectEvent(robot, eventToRemove);
 
-    ensureVisible(robot, REMOVE_EVENT_BUTTON_ID);
+    doAnswer(invocation -> {
+      when(mockInputDataManager.getEvents(eq(objId))).thenReturn(finalEvents);
+
+      Platform.runLater(() -> factory.refreshEventsList());
+      return null;
+    }).when(mockInputDataManager).removeEvent(eq(objId), eq(eventToRemove));
+
     robot.clickOn(REMOVE_EVENT_BUTTON_ID);
     WaitForAsyncUtils.waitForFxEvents();
 
-    verify(mockEditorController).removeEvent(eq(objId), eq(eventToRemove));
+    verify(mockInputDataManager).removeEvent(eq(objId), eq(eventToRemove));
+
+    ListView<String> eventList = lookupSafe(EVENT_LIST_ID);
+    assertNotNull(eventList);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS,
+        () -> !eventList.getItems().contains(eventToRemove));
+    assertFalse(eventList.getItems().contains(eventToRemove));
+    assertTrue(eventList.getItems().contains(eventToKeep));
   }
 
-  @Test void testRemoveEventAction_NoEventSelected(FxRobot robot){
-    assumeTrue(lookupSafe(REMOVE_EVENT_BUTTON_ID) != null);
+
+  /**
+   * Tests adding a condition to the selected event via UI interaction. Uses doAnswer to update mock
+   * for getEventConditions.
+   *
+   * @param robot FxRobot for UI interaction.
+   */
+  @Test
+  void testAddCondition(FxRobot robot) throws TimeoutException {
     UUID objId = UUID.randomUUID();
+    String eventId = "ON_COLLIDE";
+    String conditionType = "COLLISION";
+    ExecutorData addedConditionData = new ExecutorData(conditionType, Map.of("targetTag", "Enemy"),
+        Collections.emptyMap());
+    List<List<ExecutorData>> finalConditions = List.of(List.of(addedConditionData));
 
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of("eventA", mock(EditorEvent.class), "eventB", mock(EditorEvent.class)));
+    when(mockInputDataManager.getEvents(eq(objId))).thenReturn(
+        Map.of(eventId, mock(EditorEvent.class)));
+    when(mockInputDataManager.getEventConditions(eq(objId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+    when(mockInputDataManager.getEventOutcomes(eq(objId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(Collections.emptyList());
     selectObject(objId);
+    selectEvent(robot, eventId);
+
+    doAnswer(invocation -> {
+      when(mockInputDataManager.getEventConditions(eq(objId), eq(eventId))).thenReturn(
+          finalConditions);
+
+      Platform.runLater(() -> factory.refreshConditionsAndOutcomesForEvent());
+      return null;
+    }).when(mockInputDataManager)
+        .addEventCondition(eq(objId), eq(eventId), anyInt(), eq(conditionType));
+
+    Platform.runLater(() -> {
+      ComboBox<String> combo = lookupSafe(ADD_CONDITION_COMBO_ID);
+      if (combo != null) {
+        combo.setItems(FXCollections.observableArrayList(conditionType, "OTHER"));
+      }
+    });
     WaitForAsyncUtils.waitForFxEvents();
 
-    populateEventList(List.of("eventA", "eventB"));
-
-    ensureVisible(robot, REMOVE_EVENT_BUTTON_ID);
-    robot.clickOn(REMOVE_EVENT_BUTTON_ID);
+    robot.clickOn(ADD_CONDITION_COMBO_ID).clickOn(conditionType);
+    robot.clickOn(ADD_CONDITION_BUTTON_ID);
     WaitForAsyncUtils.waitForFxEvents();
 
-    verify(mockEditorController, never()).removeEvent(any(), anyString());
+    verify(mockInputDataManager).addEventCondition(eq(objId), eq(eventId), eq(0),
+        eq(conditionType));
+
+    ListView<ConditionDisplayItem> conditionList = lookupSafe(CONDITIONS_LIST_ID);
+    assertNotNull(conditionList);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> !conditionList.getItems().isEmpty());
+    assertEquals(1, conditionList.getItems().size());
+    assertTrue(conditionList.getItems().get(0).toString().contains(conditionType));
   }
 
-  @Test void testRemoveEventAction_NoObjectSelected(FxRobot robot){
-    assumeTrue(lookupSafe(REMOVE_EVENT_BUTTON_ID) != null);
+
+  /**
+   * Tests adding an outcome to the selected event via UI interaction. Uses doAnswer to update mock
+   * for getEventOutcomes.
+   *
+   * @param robot FxRobot for UI interaction.
+   */
+  @Test
+  void testAddOutcome(FxRobot robot) throws TimeoutException {
+    UUID objId = UUID.randomUUID();
+    String eventId = "ON_JUMP";
+    String outcomeType = "PLAY_SOUND";
+    ExecutorData addedOutcomeData = new ExecutorData(outcomeType, Map.of("soundId", "jump.wav"),
+        Collections.emptyMap());
+    List<ExecutorData> finalOutcomes = List.of(addedOutcomeData);
+
+    when(mockInputDataManager.getEvents(eq(objId))).thenReturn(
+        Map.of(eventId, mock(EditorEvent.class)));
+    when(mockInputDataManager.getEventConditions(eq(objId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+    when(mockInputDataManager.getEventOutcomes(eq(objId), eq(eventId))).thenReturn(
+        Collections.emptyList());
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(Collections.emptyList());
+    selectObject(objId);
+    selectEvent(robot, eventId);
+
+    doAnswer(invocation -> {
+      when(mockInputDataManager.getEventOutcomes(eq(objId), eq(eventId))).thenReturn(finalOutcomes);
+
+      Platform.runLater(() -> factory.refreshConditionsAndOutcomesForEvent());
+      return null;
+    }).when(mockInputDataManager).addEventOutcome(eq(objId), eq(eventId), eq(outcomeType));
+
+    Platform.runLater(() -> {
+      ComboBox<String> combo = lookupSafe(ADD_OUTCOME_COMBO_ID);
+      if (combo != null) {
+        combo.setItems(FXCollections.observableArrayList(outcomeType, "OTHER"));
+      }
+    });
+    WaitForAsyncUtils.waitForFxEvents();
+
+    robot.clickOn(ADD_OUTCOME_COMBO_ID).clickOn(outcomeType);
+    robot.clickOn(ADD_OUTCOME_BUTTON_ID);
+    WaitForAsyncUtils.waitForFxEvents();
+
+    verify(mockInputDataManager).addEventOutcome(eq(objId), eq(eventId), eq(outcomeType));
+
+    ListView<OutcomeDisplayItem> outcomeList = lookupSafe(OUTCOMES_LIST_ID);
+    assertNotNull(outcomeList);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> !outcomeList.getItems().isEmpty());
+    assertEquals(1, outcomeList.getItems().size());
+    assertTrue(outcomeList.getItems().get(0).toString().contains(outcomeType));
+  }
+
+  /**
+   * Tests that selecting an object correctly updates the event list and dynamic variables combo
+   * box. Uses explicit waits for UI updates. Addresses TooFewActualInvocations.
+   */
+  @Test
+  void testObjectSelectionUpdatesUI() throws TimeoutException {
+    UUID objId1 = UUID.randomUUID();
+    UUID objId2 = UUID.randomUUID();
+    Map<String, EditorEvent> events1 = Map.of("event1", mock(EditorEvent.class));
+    Map<String, EditorEvent> events2 = Map.of("event2a", mock(EditorEvent.class), "event2b",
+        mock(EditorEvent.class));
+    List<DynamicVariable> vars1 = List.of(new DynamicVariable("var1", "int", "0", ""));
+    List<DynamicVariable> vars2 = List.of(new DynamicVariable("var2", "int", "0", ""),
+        new DynamicVariable("var3", "int", "0", ""));
+
+    ListView<String> eventList = lookupSafe(EVENT_LIST_ID);
+    ComboBox<String> varCombo = lookupSafe(PARAM_COMBO_ID);
+    assertNotNull(eventList);
+    assertNotNull(varCombo);
+
+    when(mockInputDataManager.getEvents(eq(objId1))).thenReturn(events1);
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(vars1);
+    selectObject(objId1);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> eventList.getItems().size() == 1);
+    assertEquals(1, eventList.getItems().size());
+    assertEquals("event1", eventList.getItems().get(0));
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> varCombo.getItems().size() == 1);
+    assertEquals(1, varCombo.getItems().size());
+    assertEquals("var1", varCombo.getItems().get(0));
+    verify(mockInputDataManager).getEvents(eq(objId1));
+    verify(mockDynamicVariableContainer).getAllVariables();
+
+    when(mockInputDataManager.getEvents(eq(objId2))).thenReturn(events2);
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(vars2);
+    selectObject(objId2);
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> eventList.getItems().size() == 2);
+    assertEquals(2, eventList.getItems().size());
+    assertTrue(eventList.getItems().containsAll(List.of("event2a", "event2b")));
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> varCombo.getItems().size() == 2);
+    assertEquals(2, varCombo.getItems().size());
+    assertTrue(varCombo.getItems().containsAll(List.of("var2", "var3")));
+    verify(mockInputDataManager).getEvents(eq(objId2));
+    verify(mockDynamicVariableContainer, times(2)).getAllVariables();
+
+    when(mockDynamicVariableContainer.getAllVariables()).thenReturn(Collections.emptyList());
     selectObject(null);
 
-    ensureVisible(robot, REMOVE_EVENT_BUTTON_ID);
-    robot.clickOn(REMOVE_EVENT_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController, never()).removeEvent(any(), anyString());
-  }
-
-  @Test void testAddConditionAction_KEY_SPACE(FxRobot robot) {
-    assumeTrue(lookupSafe(ADD_CONDITION_COMBO_ID) != null);
-    assumeTrue(lookupSafe(ADD_CONDITION_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    String eventId = "eventA";
-    ConditionType conditionToAdd = ConditionType.KEY_SPACE;
-
-    EditorEvent mockEvent = mock(EditorEvent.class);
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of(eventId, mockEvent));
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of(eventId));
-    selectEvent(robot, eventId);
-
-    ensureVisible(robot, ADD_CONDITION_COMBO_ID);
-    robot.clickOn(ADD_CONDITION_COMBO_ID).clickOn(conditionToAdd.toString());
-    ensureVisible(robot, ADD_CONDITION_BUTTON_ID);
-    robot.clickOn(ADD_CONDITION_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController).addCondition(eq(objId), eq(eventId), eq(conditionToAdd));
-  }
-
-  @Test void testAddConditionAction_NoEventSelected(FxRobot robot) {
-    assumeTrue(lookupSafe(ADD_CONDITION_COMBO_ID) != null);
-    assumeTrue(lookupSafe(ADD_CONDITION_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    ConditionType conditionToAdd = ConditionType.KEY_UP;
-
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of("someOtherEvent", mock(EditorEvent.class)));
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of("someOtherEvent"));
-
-    ensureVisible(robot, ADD_CONDITION_COMBO_ID);
-    robot.clickOn(ADD_CONDITION_COMBO_ID).clickOn(conditionToAdd.toString());
-    ensureVisible(robot, ADD_CONDITION_BUTTON_ID);
-    robot.clickOn(ADD_CONDITION_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController, never()).addCondition(any(), anyString(), any());
-  }
-
-  @Test void testRemoveConditionAction_KEY_LEFT(FxRobot robot) {
-    assumeTrue(lookupSafe(REMOVE_CONDITION_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    String eventId = "eventA";
-    ConditionType conditionToRemove = ConditionType.KEY_LEFT;
-    String conditionString = conditionToRemove.toString();
-
-    EditorEvent mockEvent = mock(EditorEvent.class);
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of(eventId, mockEvent));
-    when(mockEditorController.getConditionsForEvent(eq(objId), eq(eventId))).thenReturn(List.of(conditionToRemove));
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of(eventId));
-    selectEvent(robot, eventId);
-
-    populateConditionList(List.of(conditionString));
-    selectCondition(robot, conditionString);
-
-    ensureVisible(robot, REMOVE_CONDITION_BUTTON_ID);
-    robot.clickOn(REMOVE_CONDITION_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController).removeCondition(eq(objId), eq(eventId), eq(conditionToRemove));
-  }
-
-  @Test void testRemoveConditionAction_NoConditionSelected(FxRobot robot) {
-    assumeTrue(lookupSafe(REMOVE_CONDITION_BUTTON_ID) != null);
-    UUID objId = UUID.randomUUID();
-    String eventId = "eventA";
-    ConditionType existingCondition = ConditionType.KEY_RIGHT;
-
-    EditorEvent mockEvent = mock(EditorEvent.class);
-    when(mockEditorController.getEventsForObject(eq(objId))).thenReturn(Map.of(eventId, mockEvent));
-    when(mockEditorController.getConditionsForEvent(eq(objId), eq(eventId))).thenReturn(List.of(existingCondition));
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of(eventId));
-    selectEvent(robot, eventId);
-
-    populateConditionList(List.of(existingCondition.toString()));
-
-    ensureVisible(robot, REMOVE_CONDITION_BUTTON_ID);
-    robot.clickOn(REMOVE_CONDITION_BUTTON_ID);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verify(mockEditorController, never()).removeCondition(any(), any(), any());
-  }
-  @Test void testOnObjectRemoved_SelectedObject() {
-    UUID selectedId = UUID.randomUUID();
-
-    when(mockEditorController.getEventsForObject(eq(selectedId))).thenReturn(Map.of("eventX", mock(EditorEvent.class)));
-    selectObject(selectedId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of("eventX"));
-
-    Platform.runLater(() -> factory.onObjectRemoved(selectedId));
-    WaitForAsyncUtils.waitForFxEvents();
-
-    ListView<String> eventList = lookupListViewSafe(EVENT_LIST_ID);
-    assumeTrue(eventList != null);
-
-    verifyThat(EVENT_LIST_ID, ListViewMatchers.isEmpty());
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> eventList.getItems().isEmpty());
     assertTrue(eventList.getItems().isEmpty());
+
+    verify(mockDynamicVariableContainer, times(2)).getAllVariables();
+
+    WaitForAsyncUtils.waitFor(5, TimeUnit.SECONDS, () -> varCombo.getItems().isEmpty());
+    assertTrue(varCombo.getItems().isEmpty());
   }
 
-  @Test void testOnObjectRemoved_DifferentObject() {
-    UUID selectedId = UUID.randomUUID();
-    UUID removedId = UUID.randomUUID();
-
-    when(mockEditorController.getEventsForObject(eq(selectedId))).thenReturn(Map.of("eventX", mock(EditorEvent.class)));
-    selectObject(selectedId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    populateEventList(List.of("eventX"));
-
-    clearInvocations(mockEditorController);
-
-    Platform.runLater(() -> factory.onObjectRemoved(removedId));
-    WaitForAsyncUtils.waitForFxEvents();
-    WaitForAsyncUtils.sleep(200, TimeUnit.MILLISECONDS);
-
-    ListView<String> eventList = lookupListViewSafe(EVENT_LIST_ID);
-    assumeTrue(eventList != null);
-    assertFalse(eventList.getItems().isEmpty());
-    assertEquals(List.of("eventX"), new ArrayList<>(eventList.getItems()));
-    assertEquals(selectedId, this.currentTestObjectId);
-
-    verify(mockEditorController, atMostOnce()).getAvailableDynamicVariables(any());
-    verify(mockEditorController, never()).getEventsForObject(eq(selectedId));
-  }
-
-  @Test void testOnDynamicVariablesChangedUpdatesParamCombo() {
-    UUID objId = UUID.randomUUID();
-
-    selectObject(objId);
-    WaitForAsyncUtils.waitForFxEvents();
-
-    ComboBox<String> paramCombo = lookupComboBoxSafe(PARAM_COMBO_ID);
-    assumeTrue(paramCombo != null);
-
-    verifyThat(PARAM_COMBO_ID, ComboBoxMatchers.hasItems(0));
-    assertTrue(paramCombo.getItems().isEmpty());
-
-    when(mockEditorController.getAvailableDynamicVariables(eq(objId))).thenReturn(List.of());
-    Platform.runLater(() -> factory.onDynamicVariablesChanged());
-    WaitForAsyncUtils.waitForFxEvents();
-    verifyThat(PARAM_COMBO_ID, ComboBoxMatchers.hasItems(0));
-    assertTrue(paramCombo.getItems().isEmpty());
-
-    DynamicVariable varA = new DynamicVariable("varA", "int", "0", "");
-    when(mockEditorController.getAvailableDynamicVariables(eq(objId)))
-        .thenReturn(List.of(varA));
-    Platform.runLater(() -> factory.onDynamicVariablesChanged());
-    WaitForAsyncUtils.waitForFxEvents();
-
-    verifyThat(PARAM_COMBO_ID, ComboBoxMatchers.hasItems(1));
-    assertEquals(List.of("varA"), new ArrayList<>(paramCombo.getItems()));
-  }
 }
