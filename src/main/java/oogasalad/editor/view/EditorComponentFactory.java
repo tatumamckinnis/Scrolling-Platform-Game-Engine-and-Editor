@@ -8,6 +8,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -21,6 +22,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
+import oogasalad.editor.view.sprites.SpriteAssetPane;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.editor.view.tools.SelectionTool;
@@ -121,7 +123,7 @@ public class EditorComponentFactory {
     leftSplit.setOrientation(Orientation.VERTICAL);
 
     Pane mapPane = createMapPane(editorHeight);
-    Pane prefabPane = createPrefabPane();
+    Pane prefabPane = createAssetPane();
 
     leftSplit.getItems().addAll(mapPane, prefabPane);
     leftSplit.setDividerPositions(0.7); // TODO: Make this a property
@@ -186,14 +188,28 @@ public class EditorComponentFactory {
     LOG.debug("EditorGameView created with cell size {}", cellSize);
   }
 
-  private Pane createPrefabPane() {
-    VBox prefabPane = new VBox();
-    prefabPane.setId("prefab-pane");
-    prefabPane.setPrefHeight(200);
-    // TODO: Actually put some content later. For now, do nothing.
+  private Pane createAssetPane() {
 
-    LOG.debug("Prefab pane created (empty).");
-    return prefabPane;
+    BorderPane assetPane = new BorderPane();
+    assetPane.setId("prefab-pane");
+    assetPane.setPrefHeight(200);
+
+    TabPane assetTabs = new TabPane();
+    assetTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
+    ListView<String> prefabList = new ListView<>();
+    prefabList.setPlaceholder(new Label("No prefabs yet"));
+    Tab prefabsTab = new Tab("Prefabs", prefabList);
+
+    SpriteAssetPane spritePane = new SpriteAssetPane(
+        assetPane.getScene() == null ? null : assetPane.getScene().getWindow());
+    Tab spritesTab = new Tab("Sprites", spritePane);
+
+    assetTabs.getTabs().addAll(prefabsTab, spritesTab);
+    assetPane.setCenter(assetTabs);
+
+    LOG.debug("Prefab‑and‑Sprite pane created.");
+    return assetPane;
   }
 
   /**
