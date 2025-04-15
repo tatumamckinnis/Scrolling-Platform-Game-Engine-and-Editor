@@ -23,11 +23,6 @@ public class GameObjectDataParser {
 
   /**
    * Parses a game object XML element and creates a list of {@link GameObjectData} records.
-   * <p>
-   * The method reads the blueprint ID, a list of UUIDs, and a coordinate string of the form
-   * {@code "(x1,y1),(x2,y2),..."}. Each UUID is paired with one coordinate set to form a
-   * {@code GameObjectData} entry.
-   * </p>
    *
    * @param gameObjectElement the XML element representing the game object
    * @param z                 the z-index layer of the game object
@@ -37,37 +32,90 @@ public class GameObjectDataParser {
   public List<GameObjectData> getGameObjectData(Element gameObjectElement, int z)
       throws GameObjectParseException {
     try {
-      int blueprintId = Integer.parseInt(gameObjectElement.getAttribute("id"));
-
-      String uidAttr = gameObjectElement.getAttribute("uid");
-      String[] uidArray = uidAttr.split(",");
+      int blueprintId = parseBlueprintId(gameObjectElement);
+      String[] uidArray = parseUIDs(gameObjectElement);
       String coordinates = gameObjectElement.getAttribute("coordinates");
-      List<GameObjectData> gameObjectDataList = new ArrayList<>();
-
-      Pattern pattern = Pattern.compile("\\((-?\\d+),(-?\\d+)\\)");
-      Matcher matcher = pattern.matcher(coordinates);
-
-      int index = 0;
-      while (matcher.find()) {
-        int x = Integer.parseInt(matcher.group(1));
-        int y = Integer.parseInt(matcher.group(2));
-
-        if (index < uidArray.length) {
-          UUID uuid = UUID.fromString(uidArray[index].trim());
-          gameObjectDataList.add(new GameObjectData(blueprintId, uuid, x, y, z));
-        } else {
-          break;
-        }
-        index++;
-      }
-      if (gameObjectDataList.isEmpty() && !coordinates.trim().isEmpty()) {
-        throw new GameObjectParseException("Invalid coordinate format: " + coordinates);
-      }
-
-      return gameObjectDataList;
+      List<int[]> parsedCoordinates = parseCoordinates(coordinates);
+      return buildGameObjectData(blueprintId, uidArray, parsedCoordinates, z);
 
     } catch (NumberFormatException e) {
       throw new GameObjectParseException(e.getMessage(), e);
     }
+  }
+
+  /**
+   * Extracts and parses the blueprint ID from the XML element.
+   *
+   * @param element the XML element containing the blueprint ID attribute
+   * @return the parsed blueprint ID as an integer
+   * @throws NumberFormatException if the ID is not a valid integer
+   */
+  private int parseBlueprintId(Element element) throws NumberFormatException {
+    return Integer.parseInt(element.getAttribute("id"));
+  }
+
+  /**
+   * Splits the UID attribute from the XML element into an array of strings.
+   *
+   * @param element the XML element containing the UID attribute
+   * @return an array of UID strings
+   */
+  private String[] parseUIDs(Element element) {
+    String uidAttr = element.getAttribute("uid");
+    return uidAttr.split(",");
+  }
+
+  /**
+   * Parses the coordinate string into a list of integer coordinate pairs. Each pair is represented
+   * as an int array of size two, where index 0 is x and index 1 is y.
+   *
+   * @param coordinates the string containing coordinates in the form "(x1,y1),(x2,y2),..."
+   * @return a list of coordinate pairs
+   * @throws GameObjectParseException if no valid coordinates are found but the string is non-empty
+   */
+  private List<int[]> parseCoordinates(String coordinates) throws GameObjectParseException {
+    List<int[]> coords = new ArrayList<>();
+    Pattern pattern = Pattern.compile("\\((-?\\d+),(-?\\d+)\\)");
+    Matcher matcher = pattern.matcher(coordinates);
+
+    while (matcher.find()) {
+      int x = Integer.parseInt(matcher.group(1));
+      int y = Integer.parseInt(matcher.group(2));
+      coords.add(new int[]{x, y});
+    }
+
+    if (coords.isEmpty() && !coordinates.trim().isEmpty()) {
+      throw new GameObjectParseException("Invalid coordinate format: " + coordinates);
+    }
+    return coords;
+  }
+
+  /**
+   * Builds a list of {@link GameObjectData} records by pairing each parsed coordinate with a
+   * corresponding UUID from the UID array. If there are fewer UIDs than coordinates, processing
+   * stops at the end of the UID array.
+   *
+   * @param blueprintId the blueprint identifier for each game object
+   * @param uidArray    the array of UID strings
+   * @param coordinates the list of coordinate pairs
+   * @param z           the z-index layer for the game object
+   * @return a list of {@link GameObjectData} objects constructed from the inputs
+   */
+  private List<GameObjectData> buildGameObjectData(int blueprintId, String[] uidArray,
+      List<int[]> coordinates, int z) {
+    List<GameObjectData> gameObjectDataList = new ArrayList<>();
+    int index = 0;
+
+    for (int[] coord : coordinates) {
+      if (index < uidArray.length) {
+        UUID uuid = UUID.fromString(uidArray[index].trim());
+        gameObjectDataList.add(new GameObjectData(blueprintId, uuid, coord[0], coord[1], z));
+      } else {
+        break;
+      }
+      index++;
+    }
+
+    return gameObjectDataList;
   }
 }
