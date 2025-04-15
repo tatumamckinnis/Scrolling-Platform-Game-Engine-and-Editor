@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * Creates a mapping of XML names to their file paths.
+ * Creates a mapping of XML names to their file paths. Useful for constructing and traversing a
+ * tree-like structure that classifies the specific XML file. For example, cacti.xml is a enemy in
+ * entities in the dinosaur game.
  *
  * @author Aksel Bell
  */

@@ -36,7 +36,9 @@ public class FileSaver {
    */
   public void chooseExportType(String fileType) {
     try {
-      String className = "oogasalad.filesaver.savestrategy." + fileType + "Strategy";
+      String className = "oogasalad.filesaver.savestrategy."
+          + fileType.substring(0,1).toUpperCase() + fileType.substring(1).toLowerCase()
+          + "Strategy";
       Class<?> clazz = Class.forName(className);
       mySaverStrategy = (SaverStrategy) clazz.getDeclaredConstructor().newInstance();
     } catch (RuntimeException | ClassNotFoundException | InvocationTargetException |
