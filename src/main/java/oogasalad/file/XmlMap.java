@@ -13,7 +13,7 @@ import java.util.Objects;
  * @author Aksel Bell
  */
 public class XmlMap {
-  private HashMap<String, ArrayList<String>> xmlPathMap;
+  private final HashMap<String, ArrayList<String>> xmlPathMap;
 
   /**
    * Builds the mapping from XML file names to their paths.

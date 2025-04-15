@@ -15,9 +15,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class FileSaver {
   private static final Logger LOG = LogManager.getLogger();
-  private LevelData myLevelData;
+  private final LevelData myLevelData;
   private SaverStrategy mySaverStrategy;
-  private Stage userStage;
+  private final Stage userStage;
 
   /**
    * Instantiate a new file saver object.

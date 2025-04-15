@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import oogasalad.fileparser.records.*;
-import oogasalad.filesaver.xmlcomponents.XmlBlueprintsWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
