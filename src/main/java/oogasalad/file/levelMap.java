@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Level Map returns a list of levels for a given game
+ * Level Map returns a list of levels for a given game.
  */
 public class levelMap {
 
@@ -25,7 +25,6 @@ public class levelMap {
     File levelsDir = new File(baseDirPath);
     if (!levelsDir.isDirectory()) {
       LOG.info("Provided path is not a valid directory: " + baseDirPath);
-      ;
       return new HashMap<>();
     }
     return getGameMap(levelsDir);

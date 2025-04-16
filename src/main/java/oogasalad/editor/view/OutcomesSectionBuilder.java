@@ -1,177 +1,362 @@
 package oogasalad.editor.view;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
- * Builds the UI section specifically for managing Outcomes associated with an Event within the
- * Input Tab. This includes selecting an OutcomeType, optionally associating a parameter (a
- * {@link DynamicVariable} by name), adding/removing outcomes, and providing a way to trigger the
- * creation of new parameters. Relies on handler functions passed during construction to delegate
- * actions.
+ * Builds the UI section for managing Outcomes associated with an Event. Handles selecting outcome
+ * types, adding/removing outcomes by index, selecting dynamic variables (as potential parameters),
+ * and editing specific parameters (String/Double) defined within the outcome's ExecutorData. Uses
+ * separate functional interfaces for handlers.
  */
 public class OutcomesSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(OutcomesSectionBuilder.class);
 
-  private static final double LIST_VIEW_HEIGHT = 150.0;
+  private static final double LIST_VIEW_HEIGHT = 120.0;
   private static final String KEY_OUTCOMES_HEADER = "outcomesHeader";
   private static final String KEY_PARAMETER_LABEL = "parameterLabel";
   private static final String KEY_CREATE_PARAM_BUTTON = "createParamButton";
   private static final String KEY_ADD_OUTCOME_BUTTON = "addOutcomeButton";
   private static final String KEY_REMOVE_OUTCOME_BUTTON = "removeOutcomeButton";
+  private static final String KEY_EXECUTOR_PARAMETERS_HEADER = "executorParametersHeader";
   private static final String PROMPT_SELECT_OUTCOME = "Select Outcome Type";
-  private static final String PROMPT_SELECT_PARAMETER = "Select Parameter (Optional)";
+  private static final String PROMPT_SELECT_PARAMETER = "Select Variable Parameter";
 
   private static final double DEFAULT_PADDING = 12.0;
-  private static final double DEFAULT_SPACING = 12.0;
+  private static final double DEFAULT_SPACING = 8.0;
 
   private final ResourceBundle uiBundle;
-  private final BiConsumer<OutcomeType, String> addOutcomeHandler;
-  private final Consumer<OutcomeType> removeOutcomeHandler;
+  private final Supplier<List<String>> outcomeTypeSupplier;
+  private final Supplier<List<DynamicVariable>> dynamicVariableSupplier;
+  private final AddOutcomeHandler addOutcomeHandler;
+  private final IntConsumer removeOutcomeHandler;
   private final Runnable createParameterHandler;
+  private final EditOutcomeParamHandler editOutcomeParamHandler;
 
-  private ComboBox<OutcomeType> outcomeComboBox;
-  private ComboBox<String> parameterComboBox;
-  private ListView<String> outcomesListView;
+  private ComboBox<String> outcomeTypeComboBox;
+  private ComboBox<String> dynamicVariableComboBox;
+  private ListView<OutcomeDisplayItem> outcomesListView;
+  private VBox parametersPane;
 
   /**
    * Constructs a builder for the outcomes UI section.
    *
-   * @param uiBundle               The resource bundle for localizing UI text. Must not be null.
-   * @param addOutcomeHandler      A BiConsumer function called when 'Add' is clicked, passing the
-   *                               selected OutcomeType and the selected parameter name (String, may
-   *                               be null). Must not be null.
-   * @param removeOutcomeHandler   A Consumer function called when 'Remove' is clicked, passing the
-   *                               OutcomeType derived from the selected item in the list view. Must
-   *                               not be null.
-   * @param createParameterHandler A Runnable function called when the 'Create Parameter' (+) button
-   *                               is clicked. Must not be null.
+   * @param uiBundle                Resource bundle for UI text localization.
+   * @param outcomeTypeSupplier     Supplier providing a List of available outcome type names
+   *                                (Strings).
+   * @param dynamicVariableSupplier Supplier providing a List of available DynamicVariables for
+   *                                potential use as parameters.
+   * @param addOutcomeHandler       Handler (implementing {@link AddOutcomeHandler}) executed when
+   *                                "Add Outcome" is clicked.
+   * @param removeOutcomeHandler    IntConsumer executed when "Remove Outcome" is clicked, accepting
+   *                                the index of the outcome to remove.
+   * @param createParameterHandler  Runnable executed when the "Create Parameter" (+) button (for
+   *                                Dynamic Variables) is clicked.
+   * @param editOutcomeParamHandler Handler (implementing {@link EditOutcomeParamHandler}) executed
+   *                                when an ExecutorData parameter value is modified.
    * @throws NullPointerException if any argument is null.
    */
   public OutcomesSectionBuilder(ResourceBundle uiBundle,
-      BiConsumer<OutcomeType, String> addOutcomeHandler,
-      Consumer<OutcomeType> removeOutcomeHandler,
-      Runnable createParameterHandler) {
+      Supplier<List<String>> outcomeTypeSupplier,
+      Supplier<List<DynamicVariable>> dynamicVariableSupplier,
+      AddOutcomeHandler addOutcomeHandler,
+      IntConsumer removeOutcomeHandler,
+      Runnable createParameterHandler,
+      EditOutcomeParamHandler editOutcomeParamHandler) {
     this.uiBundle = Objects.requireNonNull(uiBundle);
+    this.outcomeTypeSupplier = Objects.requireNonNull(outcomeTypeSupplier);
+    this.dynamicVariableSupplier = Objects.requireNonNull(dynamicVariableSupplier);
     this.addOutcomeHandler = Objects.requireNonNull(addOutcomeHandler);
     this.removeOutcomeHandler = Objects.requireNonNull(removeOutcomeHandler);
     this.createParameterHandler = Objects.requireNonNull(createParameterHandler);
+    this.editOutcomeParamHandler = Objects.requireNonNull(editOutcomeParamHandler);
   }
 
   /**
-   * Creates and lays out the UI components for the outcomes section. This includes a header, a
-   * ComboBox for selecting outcome types, a row for selecting an optional parameter (with a button
-   * to create new parameters), Add/Remove buttons, and a ListView to display the currently added
-   * outcomes with their parameters.
+   * Builds and returns the complete UI Node for the outcomes management section. This includes
+   * controls for outcome type selection, dynamic variable selection, adding/removing outcomes,
+   * displaying the list of outcomes, and an area for editing the specific parameters
+   * (String/Double) defined within the selected outcome's ExecutorData.
    *
-   * @return A Node (specifically a VBox) containing all the UI elements for this section.
+   * @return The constructed {@code Node} representing the outcomes UI section.
    */
   public Node build() {
-    VBox pane = new VBox(DEFAULT_SPACING);
-    pane.getStyleClass().add("input-sub-section");
-    pane.setPadding(new Insets(DEFAULT_PADDING));
+    VBox sectionPane = new VBox(DEFAULT_SPACING);
+    sectionPane.getStyleClass().add("input-sub-section");
+    sectionPane.setPadding(new Insets(DEFAULT_PADDING));
 
     Label header = createHeaderLabel(KEY_OUTCOMES_HEADER);
-    outcomeComboBox = new ComboBox<>(FXCollections.observableArrayList(OutcomeType.values()));
-    outcomeComboBox.setPromptText(PROMPT_SELECT_OUTCOME);
-    outcomeComboBox.setMaxWidth(Double.MAX_VALUE);
-    outcomeComboBox.setId("outcomeTypeComboBox");
+    HBox outcomeSelectionRow = createOutcomeSelectionRow();
+    Node dynamicVariableRow = createDynamicVariableSelectionRow();
+    setupOutcomesListView();
+    Node parametersSection = buildParametersSection();
 
-    Node parameterRow = createParameterSelectionRow();
-    outcomesListView = createListView(LIST_VIEW_HEIGHT);
-    outcomesListView.setId("outcomesListView");
-
-    Button addButton = createButton(KEY_ADD_OUTCOME_BUTTON, e -> {
-      OutcomeType selectedOutcome = outcomeComboBox.getSelectionModel().getSelectedItem();
-      String selectedParameter = parameterComboBox.getValue();
-      if (selectedOutcome != null) {
-        addOutcomeHandler.accept(selectedOutcome, selectedParameter);
-      } else {
-        LOG.warn("Attempted to add null outcome type.");
-
-      }
-    });
-    addButton.setId("addOutcomeButton");
-
-    Button removeButton = createButton(KEY_REMOVE_OUTCOME_BUTTON, e -> {
-      String selectedOutcomeStrWithParam = outcomesListView.getSelectionModel().getSelectedItem();
-      if (selectedOutcomeStrWithParam != null) {
-        try {
-          String outcomeStr = selectedOutcomeStrWithParam.split(" \\(")[0];
-          OutcomeType outcome = OutcomeType.valueOf(outcomeStr);
-          removeOutcomeHandler.accept(outcome);
-        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException ex) {
-          LOG.error("Could not parse selected outcome for removal: {}", selectedOutcomeStrWithParam,
-              ex);
-
-        }
-      } else {
-        LOG.warn("Attempted to remove null outcome.");
-
-      }
-    });
-    removeButton.setId("removeOutcomeButton");
-    removeButton.getStyleClass().add("remove-button");
-
-    HBox buttonRow = createCenteredButtonBox(addButton, removeButton);
-
-    pane.getChildren().addAll(header, outcomeComboBox, parameterRow, outcomesListView, buttonRow);
-    VBox.setVgrow(outcomesListView, Priority.ALWAYS);
+    sectionPane.getChildren().addAll(
+        header,
+        outcomeSelectionRow,
+        dynamicVariableRow,
+        outcomesListView,
+        parametersSection
+    );
+    VBox.setVgrow(outcomesListView, Priority.SOMETIMES);
+    VBox.setVgrow(parametersSection.getParent(), Priority.SOMETIMES);
     LOG.debug("Outcomes section UI built.");
-    return pane;
+    return sectionPane;
   }
 
   /**
-   * Gets the ListView component used to display the outcomes (with parameters). Allows the parent
-   * component to populate or clear the list.
+   * Creates the horizontal layout (HBox) containing the outcome type ComboBox and the Add/Remove
+   * outcome buttons.
    *
-   * @return The ListView<String> instance.
+   * @return The {@code HBox} node for selecting outcome types and adding/removing outcomes.
    */
-  public ListView<String> getOutcomesListView() {
-    return outcomesListView;
+  private HBox createOutcomeSelectionRow() {
+    HBox selectionBox = new HBox(DEFAULT_SPACING / 2);
+    selectionBox.setAlignment(Pos.CENTER_LEFT);
+
+    setupOutcomeTypeComboBox();
+
+    Button addOutcomeButton = createButton(KEY_ADD_OUTCOME_BUTTON, e -> handleAddOutcomeAction());
+    addOutcomeButton.setId("addOutcomeButton");
+    addOutcomeButton.setMaxWidth(Double.MAX_VALUE);
+
+    Button removeOutcomeButton = createButton(KEY_REMOVE_OUTCOME_BUTTON,
+        e -> handleRemoveOutcomeAction());
+    removeOutcomeButton.setId("removeOutcomeButton");
+    removeOutcomeButton.getStyleClass().add("remove-button");
+
+    selectionBox.getChildren().addAll(outcomeTypeComboBox, addOutcomeButton, removeOutcomeButton);
+    HBox.setHgrow(outcomeTypeComboBox, Priority.ALWAYS);
+
+    return selectionBox;
   }
 
   /**
-   * Gets the ComboBox component used to select parameters (Dynamic Variable names). Allows the
-   * parent component to update the available items.
-   *
-   * @return The ComboBox<String> instance for parameters.
+   * Initializes and configures the ComboBox used for selecting outcome types. Populates it with
+   * values obtained from the {@code outcomeTypeSupplier}.
    */
-  public ComboBox<String> getParameterComboBox() {
-    return parameterComboBox;
+  private void setupOutcomeTypeComboBox() {
+    outcomeTypeComboBox = new ComboBox<>(
+        FXCollections.observableArrayList(outcomeTypeSupplier.get()));
+    outcomeTypeComboBox.setId("outcomeTypeComboBox");
+    outcomeTypeComboBox.setPromptText(PROMPT_SELECT_OUTCOME);
+    outcomeTypeComboBox.setMaxWidth(Double.MAX_VALUE);
   }
 
   /**
-   * Updates the items available in the parameter ComboBox based on a list of DynamicVariables.
-   * Clears existing items and adds the names of the provided variables.
+   * Creates the horizontal layout (HBox) containing the dynamic variable label, the selection
+   * ComboBox for dynamic variables, and the 'Create Parameter' (+) button used to trigger the
+   * addition of new dynamic variables globally.
    *
-   * @param variables A List of {@link DynamicVariable} objects whose names should be displayed in
-   *                  the parameter ComboBox. Can be null or empty.
+   * @return A {@code Node} (specifically an HBox) representing the dynamic variable selection row.
    */
-  public void updateParameterComboBox(List<DynamicVariable> variables) {
-    parameterComboBox.getItems().clear();
+  private Node createDynamicVariableSelectionRow() {
+    HBox paramBox = new HBox(DEFAULT_SPACING / 2);
+    paramBox.setAlignment(Pos.CENTER_LEFT);
+
+    Label label = new Label(uiBundle.getString(KEY_PARAMETER_LABEL) + ":");
+    dynamicVariableComboBox = new ComboBox<>();
+    dynamicVariableComboBox.setId("dynamicVariableComboBox");
+    dynamicVariableComboBox.setPromptText(PROMPT_SELECT_PARAMETER);
+    dynamicVariableComboBox.setMaxWidth(Double.MAX_VALUE);
+
+    Button createButton = createButton(KEY_CREATE_PARAM_BUTTON, e -> createParameterHandler.run());
+    createButton.setId("addVariableButton");
+
+    paramBox.getChildren().addAll(label, dynamicVariableComboBox, createButton);
+    HBox.setHgrow(dynamicVariableComboBox, Priority.ALWAYS);
+    return paramBox;
+  }
+
+  /**
+   * Initializes and configures the ListView that displays the added outcomes. Sets the cell factory
+   * to display {@link OutcomeDisplayItem} objects and adds a listener to update the parameters pane
+   * whenever the selection changes.
+   */
+  private void setupOutcomesListView() {
+    outcomesListView = new ListView<>(); // Uses separate class
+    outcomesListView.setId("outcomesListView");
+    outcomesListView.setPrefHeight(LIST_VIEW_HEIGHT);
+    outcomesListView.getStyleClass().add("data-list-view");
+
+    outcomesListView.getSelectionModel().selectedItemProperty()
+        .addListener((obs, oldVal, newVal) -> {
+          updateParametersPane(newVal);
+        });
+  }
+
+  /**
+   * Creates the UI section dedicated to displaying and editing the ExecutorData parameters
+   * (String/Double) of the currently selected outcome. Includes a header and a scrollable pane.
+   *
+   * @return A {@code Node} (specifically a VBox) containing the parameter editing UI for
+   * ExecutorData.
+   */
+  private Node buildParametersSection() {
+    VBox container = new VBox(DEFAULT_SPACING / 2);
+    Label header = createHeaderLabel(KEY_EXECUTOR_PARAMETERS_HEADER);
+    parametersPane = new VBox(DEFAULT_SPACING / 2);
+    parametersPane.setId("outcomeParametersPane");
+    parametersPane.setPadding(new Insets(DEFAULT_SPACING / 2, 0, 0, 0));
+
+    ScrollPane scrollPane = new ScrollPane(parametersPane);
+    scrollPane.setFitToWidth(true);
+    scrollPane.setPrefHeight(80);
+
+    container.getChildren().addAll(header, scrollPane);
+    return container;
+  }
+
+  /**
+   * Handles the action for the "Add Outcome" button. Retrieves the selected outcome type from the
+   * ComboBox and invokes the {@code addOutcomeHandler} with the type name.
+   */
+  private void handleAddOutcomeAction() {
+    String selectedType = outcomeTypeComboBox.getSelectionModel().getSelectedItem();
+    if (selectedType != null && !selectedType.trim().isEmpty()) {
+      addOutcomeHandler.handle(selectedType.trim());
+      outcomeTypeComboBox.getSelectionModel().clearSelection();
+    } else {
+      LOG.warn("No outcome type selected.");
+    }
+  }
+
+  /**
+   * Handles the action for the "Remove Outcome" button. If an outcome is selected in the ListView,
+   * invokes the {@code removeOutcomeHandler} with the index of the selected item. Otherwise, logs a
+   * warning.
+   */
+  private void handleRemoveOutcomeAction() {
+    OutcomeDisplayItem selected = outcomesListView.getSelectionModel().getSelectedItem();
+    if (selected != null) {
+      removeOutcomeHandler.accept(selected.index);
+    } else {
+      LOG.warn("No outcome selected for removal.");
+    }
+  }
+
+
+  /**
+   * Updates the content of the ExecutorData parameters pane based on the currently selected
+   * outcome. Clears the pane if no outcome is selected. Otherwise, dynamically creates
+   * Label-TextField pairs for each String and Double parameter found in the selected outcome's
+   * {@link ExecutorData}. Attaches listeners to the TextFields to invoke the
+   * {@code editOutcomeParamHandler} upon action (Enter key).
+   *
+   * @param selectedItem The currently selected {@link OutcomeDisplayItem}, or {@code null} if none
+   *                     is selected.
+   */
+  private void updateParametersPane(OutcomeDisplayItem selectedItem) {
+    parametersPane.getChildren().clear();
+    if (selectedItem == null || selectedItem.data == null) {
+      return;
+    }
+
+    ExecutorData data = selectedItem.data;
+    GridPane grid = new GridPane();
+    grid.setHgap(DEFAULT_SPACING / 2);
+    grid.setVgap(DEFAULT_SPACING / 2);
+    int rowIndex = 0;
+
+    if (data.getStringParams() != null) {
+      for (Map.Entry<String, String> entry : data.getStringParams().entrySet()) {
+        Label nameLabel = new Label(entry.getKey() + " (String):");
+        TextField valueField = new TextField(entry.getValue());
+
+        valueField.setOnAction(event -> {
+          String newValue = valueField.getText();
+          editOutcomeParamHandler.handle(selectedItem.index, entry.getKey(), newValue);
+          LOG.trace("String parameter '{}' updated via ActionEvent to: {}", entry.getKey(),
+              newValue);
+        });
+
+        grid.add(nameLabel, 0, rowIndex);
+        grid.add(valueField, 1, rowIndex++);
+        GridPane.setHgrow(valueField, Priority.ALWAYS);
+      }
+    }
+
+    if (data.getDoubleParams() != null) {
+      for (Map.Entry<String, Double> entry : data.getDoubleParams().entrySet()) {
+        Label nameLabel = new Label(entry.getKey() + " (Double):");
+        TextField valueField = new TextField(String.valueOf(entry.getValue()));
+
+        valueField.setOnAction(event -> {
+          String newValText = valueField.getText();
+          try {
+            Double doubleVal = Double.parseDouble(newValText);
+            editOutcomeParamHandler.handle(selectedItem.index, entry.getKey(), doubleVal);
+            LOG.trace("Double parameter '{}' updated via ActionEvent to: {}", entry.getKey(),
+                doubleVal);
+          } catch (NumberFormatException e) {
+            LOG.warn("Invalid double format for param '{}' on ActionEvent: {}", entry.getKey(),
+                newValText);
+            valueField.setText(String.valueOf(entry.getValue()));
+          }
+        });
+
+        grid.add(nameLabel, 0, rowIndex);
+        grid.add(valueField, 1, rowIndex++);
+        GridPane.setHgrow(valueField, Priority.ALWAYS);
+      }
+    }
+    parametersPane.getChildren().add(grid);
+    LOG.trace("Parameters pane updated for item index {}", selectedItem.index);
+  }
+
+  /**
+   * Updates the outcomes ListView to display the provided list of outcomes. Converts the List of
+   * {@link ExecutorData} into a flat ObservableList of {@link OutcomeDisplayItem}. Clears the
+   * ExecutorData parameter pane after updating the list.
+   *
+   * @param outcomes A {@code List<ExecutorData>} representing the outcomes for the current event.
+   *                 Can be null or empty.
+   */
+  public void updateOutcomesListView(List<ExecutorData> outcomes) {
+    ObservableList<OutcomeDisplayItem> displayItems = FXCollections.observableArrayList();
+    if (outcomes != null) {
+      for (int i = 0; i < outcomes.size(); i++) {
+        ExecutorData outcomeData = outcomes.get(i);
+        if (outcomeData != null) {
+          displayItems.add(new OutcomeDisplayItem(i, outcomeData));
+        }
+      }
+    }
+    outcomesListView.setItems(displayItems);
+    updateParametersPane(null);
+    LOG.trace("Outcomes list view updated with {} items.", displayItems.size());
+  }
+
+  /**
+   * Updates the items available in the dynamic variable ComboBox using the
+   * {@code dynamicVariableSupplier}. Clears existing items and adds the names of the provided
+   * {@link DynamicVariable}s. Typically called when the context changes (e.g., new object selected)
+   * or variables are added/removed.
+   */
+  public void updateDynamicVariableComboBox() {
+    List<DynamicVariable> variables = dynamicVariableSupplier.get();
+    dynamicVariableComboBox.getItems().clear();
     if (variables != null && !variables.isEmpty()) {
       List<String> varNames = variables.stream()
           .map(DynamicVariable::getName)
@@ -179,44 +364,21 @@ public class OutcomesSectionBuilder {
           .distinct()
           .sorted()
           .collect(Collectors.toList());
-      parameterComboBox.getItems().addAll(varNames);
-      LOG.debug("Updated parameter combo box with {} variables.", varNames.size());
+      dynamicVariableComboBox.getItems().addAll(varNames);
+      LOG.debug("Updated dynamic variable combo box with {} variables.", varNames.size());
     } else {
-      LOG.debug("Parameter combo box updated with empty list or null variables.");
+      LOG.debug("Dynamic variable combo box updated with empty list or null variables.");
     }
-    parameterComboBox.setPromptText(PROMPT_SELECT_PARAMETER);
-    parameterComboBox.getSelectionModel().clearSelection();
-  }
-
-
-  /**
-   * Creates the HBox layout containing the parameter label, the parameter selection ComboBox, and
-   * the 'Create Parameter' (+) button.
-   *
-   * @return A Node (specifically an HBox) representing the parameter selection row.
-   */
-  private Node createParameterSelectionRow() {
-    HBox paramBox = new HBox(DEFAULT_SPACING / 2);
-    paramBox.setAlignment(Pos.CENTER_LEFT);
-
-    Label label = new Label(uiBundle.getString(KEY_PARAMETER_LABEL) + ":");
-    parameterComboBox = new ComboBox<>();
-    parameterComboBox.setId("parameterComboBox");
-    parameterComboBox.setPromptText(PROMPT_SELECT_PARAMETER);
-    parameterComboBox.setMaxWidth(Double.MAX_VALUE);
-
-    Button createButton = createButton(KEY_CREATE_PARAM_BUTTON, e -> createParameterHandler.run());
-    createButton.setId("addVariableButton");
-    paramBox.getChildren().addAll(label, parameterComboBox, createButton);
-    HBox.setHgrow(parameterComboBox, Priority.ALWAYS);
-    return paramBox;
+    dynamicVariableComboBox.setPromptText(PROMPT_SELECT_PARAMETER);
+    dynamicVariableComboBox.getSelectionModel().clearSelection();
   }
 
   /**
-   * Creates a styled header label using text from the resource bundle.
+   * Creates a styled header label using text retrieved from the resource bundle based on the
+   * provided key.
    *
-   * @param bundleKey The key in the resource bundle corresponding to the label text.
-   * @return A configured Label node.
+   * @param bundleKey The key corresponding to the header text in the resource bundle.
+   * @return A styled {@code Label} configured as a section header.
    */
   private Label createHeaderLabel(String bundleKey) {
     Label label = new Label(uiBundle.getString(bundleKey));
@@ -226,26 +388,14 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Creates a generic, styled ListView with a specified preferred height.
+   * Creates a styled button with text from the resource bundle and assigns the provided action
+   * handler. Handles specific styling and text ('+') for the 'Create Parameter' (Dynamic Variable)
+   * button.
    *
-   * @param <T>             The type of items the ListView will hold.
-   * @param preferredHeight The preferred height for the ListView.
-   * @return A configured ListView<T> node.
-   */
-  private <T> ListView<T> createListView(double preferredHeight) {
-    ListView<T> listView = new ListView<>();
-    listView.setPrefHeight(preferredHeight);
-    listView.getStyleClass().add("data-list-view");
-    return listView;
-  }
-
-  /**
-   * Creates a styled button with text from the resource bundle and assigns an action handler.
-   * Handles specific styling and text ('+') for the 'Create Parameter' button.
-   *
-   * @param bundleKey The key in the resource bundle for the button text (or identifier).
+   * @param bundleKey The key in the resource bundle for the button's text or an identifier like
+   *                  {@code KEY_CREATE_PARAM_BUTTON}.
    * @param handler   The event handler to be executed when the button is clicked.
-   * @return A configured Button node.
+   * @return A configured and styled {@code Button}.
    */
   private Button createButton(String bundleKey,
       javafx.event.EventHandler<javafx.event.ActionEvent> handler) {
@@ -258,24 +408,7 @@ public class OutcomesSectionBuilder {
     if (bundleKey.equals(KEY_CREATE_PARAM_BUTTON)) {
       button.getStyleClass().add("small-button");
       button.setMaxWidth(Region.USE_PREF_SIZE);
-    } else {
-      button.setMaxWidth(Double.MAX_VALUE);
     }
     return button;
-  }
-
-  /**
-   * Creates an HBox to hold buttons, centering them and applying default spacing. Allows the HBox
-   * to grow horizontally to fill available space.
-   *
-   * @param buttons The Button nodes to add to the HBox.
-   * @return A configured HBox node containing the buttons.
-   */
-  private HBox createCenteredButtonBox(Button... buttons) {
-    HBox buttonBox = new HBox(DEFAULT_SPACING);
-    buttonBox.setAlignment(Pos.CENTER);
-    buttonBox.getChildren().addAll(buttons);
-    HBox.setHgrow(buttonBox, Priority.ALWAYS);
-    return buttonBox;
   }
 }

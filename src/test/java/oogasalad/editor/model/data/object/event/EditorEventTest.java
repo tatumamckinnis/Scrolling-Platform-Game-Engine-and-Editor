@@ -3,157 +3,192 @@ package oogasalad.editor.model.data.object.event;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
+import java.util.*;
 
 /**
- * Unit tests for the EditorEvent class.
+ * Comprehensive unit tests for EditorEvent (full coverage).
  * Author: Jacob
  */
 class EditorEventTest {
 
-  private EditorEvent editorEvent;
+  private EditorEvent emptyEvent;
+  private EditorEvent populatedEvent;
 
   /**
-   * Sets up the test environment.
+   * Sets up fresh empty and populated EditorEvent instances.
    */
   @BeforeEach
   void setUp() {
-    editorEvent = new EditorEvent();
+    emptyEvent = new EditorEvent();
+    emptyEvent.addConditionGroup();
+
+    ExecutorData condExec = new ExecutorData("CondExec", new HashMap<>(), new HashMap<>());
+    ExecutorData outExec = new ExecutorData("OutExec", new HashMap<>(), new HashMap<>());
+    List<List<ExecutorData>> conds = new ArrayList<>();
+    conds.add(new ArrayList<>(List.of(condExec)));
+    List<ExecutorData> outs = new ArrayList<>(List.of(outExec));
+    populatedEvent = new EditorEvent(conds, outs);
   }
 
   /**
-   * Tests the constructor that accepts condition and outcome lists.
+   * Tests addConditionGroup increases the condition group count.
    */
   @Test
-  void constructor_whenGivenConditionAndOutcomeLists_shouldInitializeFields() {
-    EditorEvent event = new EditorEvent(
-        List.of(ConditionType.KEY_UP, ConditionType.KEY_LEFT),
-        List.of(OutcomeType.MOVE, OutcomeType.JUMP)
-    );
-    assertTrue(event.getConditions().contains(ConditionType.KEY_UP));
-    assertTrue(event.getConditions().contains(ConditionType.KEY_LEFT));
-    assertTrue(event.getOutcomes().contains(OutcomeType.MOVE));
-    assertTrue(event.getOutcomes().contains(OutcomeType.JUMP));
+  void addConditionGroup_ValidCall_IncreasesGroupCount() {
+    int before = emptyEvent.getConditions().size();
+    emptyEvent.addConditionGroup();
+    assertEquals(before + 1, emptyEvent.getConditions().size());
   }
 
   /**
-   * Tests addCondition method.
+   * Tests addCondition inserts an executor into a valid group.
    */
   @Test
-  void addCondition_whenCalled_shouldAddConditionToList() {
-    editorEvent.addCondition(ConditionType.KEY_UP);
-    assertTrue(editorEvent.getConditions().contains(ConditionType.KEY_UP));
+  void addCondition_ValidGroup_AddsExecutor() {
+    emptyEvent.addCondition(0, "CollisionExec");
+    assertEquals("CollisionExec", emptyEvent.getConditionGroup(0).get(0).getExecutorName());
   }
 
   /**
-   * Tests addOutcome method.
+   * Tests addOutcome appends an executor.
    */
   @Test
-  void addOutcome_whenCalled_shouldAddOutcomeToList() {
-    editorEvent.addOutcome(OutcomeType.MOVE);
-    assertTrue(editorEvent.getOutcomes().contains(OutcomeType.MOVE));
+  void addOutcome_ValidCall_AddsExecutor() {
+    emptyEvent.addOutcome("ScoreExec");
+    assertEquals("ScoreExec", emptyEvent.getOutcomeData(0).getExecutorName());
   }
 
   /**
-   * Tests removeCondition when the condition exists in the list.
+   * Tests setOutcomeStringParameter updates a string parameter.
    */
   @Test
-  void removeCondition_whenConditionExists_shouldRemoveCondition() {
-    editorEvent.addCondition(ConditionType.KEY_SPACE);
-    editorEvent.removeCondition(ConditionType.KEY_SPACE);
-    assertFalse(editorEvent.getConditions().contains(ConditionType.KEY_SPACE));
+  void setOutcomeStringParameter_ExistingParam_UpdatesValue() {
+    emptyEvent.addOutcome("ScoreExec");
+    emptyEvent.setOutcomeStringParameter(0, "points", "100");
+    assertEquals("100", emptyEvent.getOutcomeData(0).getStringParams().get("points"));
   }
 
   /**
-   * Tests removeCondition when the condition does not exist (negative test).
+   * Tests setOutcomeDoubleParameter updates a double parameter.
    */
   @Test
-  void removeCondition_whenConditionNotExist_shouldNotThrowException() {
-    assertDoesNotThrow(() -> editorEvent.removeCondition(ConditionType.KEY_DOWN));
-    assertFalse(editorEvent.getConditions().contains(ConditionType.KEY_DOWN));
+  void setOutcomeDoubleParameter_ExistingParam_UpdatesValue() {
+    emptyEvent.addOutcome("DamageExec");
+    emptyEvent.setOutcomeDoubleParameter(0, "amount", 25.0);
+    assertEquals(25.0, emptyEvent.getOutcomeData(0).getDoubleParams().get("amount"));
   }
 
   /**
-   * Tests removeOutcome when the outcome exists in the list.
+   * Tests setConditionStringParameter updates a string parameter.
    */
   @Test
-  void removeOutcome_whenOutcomeExists_shouldRemoveOutcome() {
-    editorEvent.addOutcome(OutcomeType.ADD_OBJECT);
-    editorEvent.removeOutcome(OutcomeType.ADD_OBJECT);
-    assertFalse(editorEvent.getOutcomes().contains(OutcomeType.ADD_OBJECT));
+  void setConditionStringParameter_ExistingParam_UpdatesValue() {
+    emptyEvent.addCondition(0, "KeyExec");
+    emptyEvent.setConditionStringParameter(0, 0, "key", "W");
+    assertEquals("W", emptyEvent.getConditionGroup(0).get(0).getStringParams().get("key"));
   }
 
   /**
-   * Tests removeOutcome when the outcome does not exist (negative test).
+   * Tests removeCondition removes an executor.
    */
   @Test
-  void removeOutcome_whenOutcomeNotExist_shouldNotThrowException() {
-    assertDoesNotThrow(() -> editorEvent.removeOutcome(OutcomeType.JUMP));
-    assertFalse(editorEvent.getOutcomes().contains(OutcomeType.JUMP));
+  void removeCondition_ValidIndex_RemovesExecutor() {
+    emptyEvent.addCondition(0, "TempExec");
+    emptyEvent.removeCondition(0, 0);
+    assertTrue(emptyEvent.getConditionGroup(0).isEmpty());
   }
 
   /**
-   * Tests setOutcomeParameter when the outcome is in the list.
+   * Tests removeConditionGroup deletes a group.
    */
   @Test
-  void setOutcomeParameter_whenOutcomeExists_shouldSetParameter() {
-    editorEvent.addOutcome(OutcomeType.MOVE);
-    editorEvent.setOutcomeParameter(OutcomeType.MOVE, "100");
-    assertEquals("100", editorEvent.getOutcomeParameter(OutcomeType.MOVE));
+  void removeConditionGroup_ValidIndex_RemovesGroup() {
+    emptyEvent.addConditionGroup();
+    int before = emptyEvent.getConditions().size();
+    emptyEvent.removeConditionGroup(1);
+    assertEquals(before - 1, emptyEvent.getConditions().size());
   }
 
   /**
-   * Tests setOutcomeParameter when the outcome is not in the list (negative test).
+   * Tests removeOutcome deletes an executor.
    */
   @Test
-  void setOutcomeParameter_whenOutcomeNotExist_shouldNotChangeMap() {
-    editorEvent.setOutcomeParameter(OutcomeType.JUMP, "50");
-    assertNull(editorEvent.getOutcomeParameter(OutcomeType.JUMP));
+  void removeOutcome_ValidIndex_RemovesExecutor() {
+    emptyEvent.addOutcome("TempOut");
+    emptyEvent.removeOutcome(0);
+    assertTrue(emptyEvent.getOutcomes().isEmpty());
   }
 
   /**
-   * Tests setConditionParameter when conditionParameters doesn't have this key yet.
+   * Tests getOutcomeData invalid index returns null.
    */
   @Test
-  void setConditionParameter_whenConditionNotInMap_shouldDoNothing() {
-    editorEvent.setConditionParameter(ConditionType.KEY_LEFT, "KeyPress");
-    assertNull(editorEvent.getConditionParameter(ConditionType.KEY_LEFT));
+  void getOutcomeData_InvalidIndex_ReturnsNull() {
+    assertNull(emptyEvent.getOutcomeData(5));
   }
 
   /**
-   * Tests setConditionParameter when condition is already in the map.
+   * Tests getConditionData invalid indices return null.
    */
   @Test
-  void setConditionParameter_whenConditionExists_shouldUpdateParameter() {
-    EditorEvent eventWithData = new EditorEvent(
-        List.of(ConditionType.KEY_LEFT),
-        List.of(OutcomeType.ADD_OBJECT)
-    );
-    eventWithData.setConditionParameter(ConditionType.KEY_LEFT, "KeyW");
-    assertNull(eventWithData.getConditionParameter(ConditionType.KEY_LEFT));
-
-    // We must pre-populate the map if we want setConditionParameter to work
-    // E.g., something like eventWithData.conditionParameters.put(ConditionType.KEY_LEFT, "temp");
-    // but since it's private, we can’t do that here. So the current design won't store condition params
-    // unless the map is prefilled. This test shows that the parameter won't be set if the map doesn't contain it.
+  void getConditionData_InvalidIndices_ReturnNull() {
+    assertNull(emptyEvent.getConditionData(0, 1));
+    assertNull(emptyEvent.getConditionData(9, 0));
   }
 
   /**
-   * Tests getOutcomeParameter returns null if not set.
+   * Tests addCondition invalid group index throws exception.
    */
   @Test
-  void getOutcomeParameter_whenNotSet_shouldReturnNull() {
-    assertNull(editorEvent.getOutcomeParameter(OutcomeType.ADD_OBJECT));
+  void addCondition_InvalidGroup_ThrowsIndexOutOfBounds() {
+    assertThrows(IndexOutOfBoundsException.class, () -> emptyEvent.addCondition(5, "BadExec"));
   }
 
   /**
-   * Tests getConditionParameter returns null if not set.
+   * Tests setConditionStringParameter invalid group does nothing.
    */
   @Test
-  void getConditionParameter_whenNotSet_shouldReturnNull() {
-    assertNull(editorEvent.getConditionParameter(ConditionType.KEY_DOWN));
+  void setConditionStringParameter_InvalidGroup_NoChange() {
+    emptyEvent.setConditionStringParameter(3, 0, "k", "v");
+    assertTrue(emptyEvent.getConditionGroup(0).isEmpty());
+  }
+
+  /**
+   * Tests setOutcomeStringParameter invalid index does nothing.
+   */
+  @Test
+  void setOutcomeStringParameter_InvalidIndex_NoChange() {
+    populatedEvent.setOutcomeStringParameter(5, "foo", "bar");
+    assertNull(populatedEvent.getOutcomeData(0).getStringParams().get("foo"));
+  }
+
+  /**
+   * Tests removeConditionGroup invalid index leaves list unchanged.
+   */
+  @Test
+  void removeConditionGroup_InvalidIndex_NoEffect() {
+    int before = populatedEvent.getConditions().size();
+    populatedEvent.removeConditionGroup(7);
+    assertEquals(before, populatedEvent.getConditions().size());
+  }
+
+  /**
+   * Tests removeOutcome invalid index leaves list unchanged.
+   */
+  @Test
+  void removeOutcome_InvalidIndex_NoEffect() {
+    int before = populatedEvent.getOutcomes().size();
+    populatedEvent.removeOutcome(9);
+    assertEquals(before, populatedEvent.getOutcomes().size());
+  }
+
+  /**
+   * Tests getters return live lists that reflect external mutation.
+   */
+  @Test
+  void getters_ReturnLiveLists_ReflectMutation() {
+    List<ExecutorData> outs = populatedEvent.getOutcomes();
+    outs.clear();
+    assertTrue(populatedEvent.getOutcomes().isEmpty());
   }
 }

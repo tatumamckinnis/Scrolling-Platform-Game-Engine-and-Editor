@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import oogasalad.Main;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
@@ -24,7 +27,10 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
  * @author Aksel Bell, Luke Nam
  */
 public class GameControlPanel extends Display {
+
   private static final Logger LOG = LogManager.getLogger();
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
   private List<Button> buttons;
   private String gameControlPanelStylesheet;
   private ViewState viewState;
@@ -52,15 +58,15 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * @see Display#initialRender()
-   * Adds all buttons a container.
+   * renders the Game Control Panel
    */
-  @Override
   public void initialRender() {
     HBox buttonContainer = new HBox();
     buttonContainer.getChildren().addAll(buttons);
-    int containerSpacing = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
-    int containerLayoutX = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
+    int containerSpacing = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.spacing"));
+    int containerLayoutX = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
     buttonContainer.setSpacing(containerSpacing);
     buttonContainer.setLayoutX(containerLayoutX);
     buttonContainer.getStylesheets().add(gameControlPanelStylesheet);
@@ -68,6 +74,11 @@ public class GameControlPanel extends Display {
     this.getChildren().add(buttonContainer);
   }
 
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+  }
+  
   /**
    * Initializes the game control panel buttons based on the properties file
    */

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-map => the map node
-layer => the layer
--->
-<!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
-interact with each other -->
 <map minX="0" minY="0" maxX="500" maxY="500">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
+
   <layers>
     <layer name="backGround" width="500" height="500" z="0">
-      <data>
-      </data>
+      <data/>
     </layer>
     <layer name="foreground" width="500" height="500" z="1">
       <data>
@@ -22,109 +23,148 @@ interact with each other -->
     </layer>
     <layer name="entities" width="500" height="500" z="1">
       <data>
-        <object id="12" coordinates="(300,300)(500,300)" uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
+        <object id="12" coordinates="(300,300)(500,300)"
+          uid="e0373626-9e90-4ed3-9863-39e287926802,7f34d811-6998-452e-9b8d-49b44f4dca41"/>
         <object id="13" coordinates="(200,300)" uid="e112d04d-3047-4e30-9e20-2e601a19aae8"/>
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
-
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
-      <data>
-      </data>
+      <data/>
     </layer>
   </layers>
+
   <game name="dinosaurgame">
     <objectGroup name="entities">
-      <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
-      <!-- Objects should also have a defined hit box-->
-      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97" hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,22,24,25,27">
-        <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
+      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0"
+        eventIDs="20,22,24,25,27" velocityX="0" velocityY="0" rotation="90">
         <properties>
-          <variables>
-            <variable name = "jumpVelocity.y" value = "10"/>
-          </variables>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="jumpVelocity.y" value="10"/>
+          </doubleProperties>
         </properties>
       </object>
-      <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26">
+
+      <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26" velocityX="0" velocityY="0"
+        rotation="0">
         <properties>
-          <data name = "velocity.x" value = "5"/>
-          <data name = "velocity.y" value = "0"/>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="velocity.x" value="5"/>
+            <property name="velocity.y" value="0"/>
+          </doubleProperties>
         </properties>
       </object>
-      <object spriteName="Bird" type="enemy" id="13" spriteFile="bird.xml" hitBoxWidth="97" hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26">
+
+      <object spriteName="Bird" type="enemy" id="13" spriteFile="bird.xml" hitBoxWidth="97"
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="26" velocityX="0" velocityY="0"
+        rotation="0">
         <properties>
-          <data name = "velocity.x" value = "5"/>
-          <data name = "velocity.y" value = "0"/>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="velocity.x" value="5"/>
+            <property name="velocity.y" value="0"/>
+          </doubleProperties>
         </properties>
       </object>
     </objectGroup>
+
     <objectGroup name="blocks">
-      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" />
-      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1"  hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
-      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2"  hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
-      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10"/>
-      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480" hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" />
+      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480"
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"
+        rotation="0"/>
+      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1" hitBoxWidth="480"
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"
+        rotation="0"/>
+      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2" hitBoxWidth="480"
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"
+        rotation="0"/>
+      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480"
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"
+        rotation="0"/>
+      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480"
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"
+        rotation="0"/>
     </objectGroup>
-    <objectGroup name="backgrounds">
-    </objectGroup>
+
+    <objectGroup name="backgrounds"/>
   </game>
+
   <events>
     <event type="input" id="24">
       <conditions>
-        <condition list="SPACE_KEY_PRESSED" />
+        <conditionSet>
+          <condition name="SPACE_KEY_PRESSED"/>
+        </conditionSet>
       </conditions>
-      <outcomes list="JUMP"/>
+      <outcomes>
+        <outcome name="JUMP"/>
+      </outcomes>
       <parameters>
         <parameter name="JumpAmount">22</parameter>
         <parameter name="jumpType">Floaty</parameter>
       </parameters>
     </event>
+
     <event type="input" id="20">
       <conditions>
-        <condition list="RIGHT_ARROW_PRESSED" />
+        <conditionSet>
+          <condition name="RIGHT_ARROW_PRESSED"/>
+        </conditionSet>
       </conditions>
-      <outcomes list="MOVE_RIGHT"/>
+      <outcomes>
+        <outcome name="MOVE_RIGHT"/>
+      </outcomes>
     </event>
+
     <event type="input" id="25">
       <conditions>
-        <condition list="LEFT_ARROW_PRESSED" />
+        <conditionSet>
+          <condition name="LEFT_ARROW_PRESSED"/>
+        </conditionSet>
       </conditions>
-      <outcomes list="MOVE_LEFT"/>
+      <outcomes>
+        <outcome name="MOVE_LEFT"/>
+      </outcomes>
     </event>
-    <event>
-      <event type="physics" id="22">
-        <conditions>
-          <condition list="TRUE"/>
-        </conditions>
-        <outcomes list="APPLY_GRAVITY"/>
-        <parameters>
-          <parameter name="ApplyGravityAmount">0.1</parameter>
-        </parameters>
-      </event>
+
+    <event type="physics" id="22">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY"/>
+      </outcomes>
+      <parameters>
+        <parameter name="ApplyGravityAmount">0.1</parameter>
+      </parameters>
     </event>
-    <event>
-      <event type="physics" id="23">
-        <conditions>
-          <condition list="COLLIDED_WITH_PLAYER"/>
-        </conditions>
-        <outcomes list="DESTROY_OBJECT"/>
-      </event>
+
+    <event type="physics" id="26">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PATROL"/>
+      </outcomes>
     </event>
-    <event>
-      <event type="physics" id="26">
-        <conditions>
-          <condition list="TRUE"/>
-        </conditions>
-        <outcomes list="PATROL"/>
-      </event>
-    </event>
-    <event>
-      <event type="end" id="27">
-        <conditions>
-          <condition list="COLLIDED_WITH_ENEMY"/>
-        </conditions>
-        <outcomes list="LOSE_GAME"/>
-      </event>
+
+    <event type="end" id="27">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_ENEMY"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DESTROY_OBJECT"/>
+      </outcomes>
     </event>
   </events>
 </map>

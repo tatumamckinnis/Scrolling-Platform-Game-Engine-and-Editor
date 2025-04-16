@@ -2,7 +2,7 @@ package oogasalad.editor.controller;
 
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.object.event.EditorEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 
 /**
  * Manages the Input Event related data of a specific object. Implements EditorEventDataManager for
@@ -13,7 +13,7 @@ import oogasalad.editor.model.data.object.event.EditorEventData;
 public class InputDataManager extends EditorEventDataManager {
 
   @Override
-  protected EditorEventData createDataIfAbsent(EditorObject object) {
+  protected AbstractEventMapData createDataIfAbsent(EditorObject object) {
     return object.getInputData();
   }
 

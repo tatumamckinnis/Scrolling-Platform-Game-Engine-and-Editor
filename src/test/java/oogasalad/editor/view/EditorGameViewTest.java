@@ -130,7 +130,7 @@ class EditorGameViewTest {
     when(mockSpriteData.getSpritePath()).thenReturn(null);
     when(mockObject.getSpriteData()).thenReturn(mockSpriteData);
     when(mockObject.getIdentityData()).thenReturn(mockIdentityData);
-    when(mockIdentityData.getGroup()).thenReturn("TestGroup");
+    when(mockIdentityData.getType()).thenReturn("TestGroup");
     when(mockController.getEditorObject(testId)).thenReturn(mockObject);
 
     Platform.runLater(() -> gameView.onObjectAdded(testId));

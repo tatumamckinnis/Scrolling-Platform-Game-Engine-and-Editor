@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -26,7 +27,7 @@ public interface GameControllerAPI {
   /**
    * @return list of records of game objects only containing relevant information for the view
    */
-  List<ViewObject> getImmutableObjects();
+  List<ImmutableGameObject> getImmutableObjects();
 
   /**
    * returns view object data using id
@@ -34,7 +35,7 @@ public interface GameControllerAPI {
    * @param uuid string version of uuid
    * @return view object model data
    */
-  ViewObject getViewObjectByUUID(String uuid);
+  ImmutableGameObject getViewObjectByUUID(String uuid);
 
 
   /**
@@ -49,6 +50,12 @@ public interface GameControllerAPI {
    * Loads a new level or scene, potentially calling file loaders to retrieve data and
    * re-initializing internal structures (objects, controllers, etc.).
    */
-  void setLevelData(LevelData data);
+  void setLevelData(LevelData data)
+      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException;
+
+  /**
+   * @return the camera object which translates the game scene
+   */
+  Camera getCamera();
 
 }

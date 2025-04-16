@@ -2,7 +2,6 @@ package oogasalad.engine.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +9,20 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
+import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
-import oogasalad.engine.event.Event;
+import oogasalad.engine.controller.camerafactory.CameraFactory;
+import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.HitBox;
 import oogasalad.engine.model.object.Player;
 import oogasalad.engine.model.object.Sprite;
+import oogasalad.engine.view.camera.AutoScrollingCamera;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
@@ -33,9 +37,12 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
       DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackageName() + "." + "Exceptions");
   private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
-  private static final List<String> SUPPORTED_OBJECT_TYPES = Arrays.asList(
-      ENGINE_FILE_RESOURCES.getString("ObjectTypes").split(","));
+
+
+  private Map<String, GameObject> gameObjectMap;
 
   /**
    * Saves the current game or level status by: 1) Gathering current state from the Engine (objects,
@@ -59,8 +66,27 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   @Override
   public Map<String, GameObject> loadFileToEngine(LevelData levelData) {
     Map<Integer, BlueprintData> bluePrintMap = levelData.gameBluePrintData();
-    return initGameObjectsMap(levelData.gameObjects(), bluePrintMap);
+    gameObjectMap = initGameObjectsMap(levelData.gameObjects(), bluePrintMap);
+    return gameObjectMap;
   }
+
+  @Override
+  public Camera loadCamera(LevelData level) {
+    try {
+      CameraData cameraData = level.cameraData();
+      String cameraType = cameraData.type();
+
+      String factoryClassName = CameraFactory.class.getPackageName() + "." + cameraType + ENGINE_FILE_RESOURCES.getString("CameraFactory");
+      Class<?> factoryClass = Class.forName(factoryClassName);
+      CameraFactory factory = (CameraFactory) factoryClass.getDeclaredConstructor().newInstance();
+      return factory.create(cameraData, gameObjectMap);
+
+    } catch (Exception e) {
+      LOG.warning(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
+      return new AutoScrollingCamera();
+    }
+  }
+
 
   private Map<String, GameObject> initGameObjectsMap(List<GameObjectData> gameObjects,
       Map<Integer, BlueprintData> bluePrintMap) {

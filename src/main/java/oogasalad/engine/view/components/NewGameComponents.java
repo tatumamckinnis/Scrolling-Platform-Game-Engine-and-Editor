@@ -1,7 +1,11 @@
 package oogasalad.engine.view.components;
 
+import java.util.ResourceBundle;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import oogasalad.Main;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
@@ -11,6 +15,13 @@ import oogasalad.engine.view.ViewState;
  * @author Aksel Bell, Luke Nam
  */
 public class NewGameComponents extends Display {
+
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
+
+  // contains a game over object if it is game ober
+  // contains a play again
+  // contains a high score object
   private final ViewState viewState;
   private final Text highScore;
 
@@ -35,6 +46,11 @@ public class NewGameComponents extends Display {
     buttonContainer.setLayoutX(250); // change to levelViewWidth / 2
 
     this.getChildren().add(buttonContainer);
+  }
+
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
   }
 
 }

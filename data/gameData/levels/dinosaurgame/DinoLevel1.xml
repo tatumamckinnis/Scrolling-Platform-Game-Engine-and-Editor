@@ -6,6 +6,14 @@ layer => the layer
 <!-- The map node is the main node: width and height in pixels z defined how objects are layers and which objects
 interact with each other -->
 <map minX="-500" minY="-700" maxX="4000" maxY="500">
+  <!-- the first letter of type must be capitalized -->
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
   <layers>
     <layer name="backGround" width="500" height="500" z="10">
       <data>
@@ -40,7 +48,7 @@ interact with each other -->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
         hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25"
-        velocityX="0" velocityY="0">
+        velocityX="0" velocityY="0" rotation="0">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
           <stringProperties>
@@ -51,7 +59,7 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
-        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0">
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0">
         <properties>
           <stringProperties>
           </stringProperties>
@@ -60,27 +68,27 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
-        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0">
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="270">
       </object>
     </objectGroup>
     <objectGroup name="blocks">
       <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
       <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0"/>
+        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
     </objectGroup>
     <objectGroup name="backgrounds">
     </objectGroup>
   </game>
   <game name="doodlejump">
     <objectGroup name="backgrounds">
-      <object type="" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"/>
+      <object type="" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0"/>
     </objectGroup>
   </game>
   <events>
@@ -115,6 +123,9 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10" />
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>

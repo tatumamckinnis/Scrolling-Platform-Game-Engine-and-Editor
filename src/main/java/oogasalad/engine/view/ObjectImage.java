@@ -5,9 +5,8 @@ import java.util.ResourceBundle;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
-import oogasalad.fileparser.records.FrameData;
 
 /**
  * The {@code ObjectImage} class represents a visual object in the game world, composed of an
@@ -32,16 +31,16 @@ public class ObjectImage {
    * @param viewObject object that is converted to an image
    * @throws FileNotFoundException if the frame data image file cannot be found
    */
-  public ObjectImage(ViewObject viewObject)
+  public ObjectImage(ImmutableGameObject viewObject)
       throws FileNotFoundException {
-    this.UUID = viewObject.getUuid();
+    this.UUID = viewObject.getUUID();
     converter = new ViewObjectToImageConverter();
     this.imageView = converter.convertFrameToView(viewObject);
-    imageView.setX(viewObject.getX() + viewObject.getSpriteDx());
-    imageView.setY(viewObject.getY() + viewObject.getSpriteDy());
+    imageView.setX(viewObject.getXPosition() + viewObject.getSpriteDx());
+    imageView.setY(viewObject.getYPosition() + viewObject.getSpriteDy());
     this.spriteDx = viewObject.getSpriteDy();
     this.spriteDy = viewObject.getSpriteDy();
-    displayHitBox(viewObject.getX(), viewObject.getY(), viewObject.getHitBoxWidth(),
+    displayHitBox(viewObject.getXPosition(), viewObject.getYPosition(), viewObject.getHitBoxWidth(),
         viewObject.getHitBoxHeight());
   }
 

@@ -1,6 +1,7 @@
 package oogasalad.engine.controller;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,7 +28,6 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultLevel implements LevelAPI {
 
-  private Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
   private final FileParserApi myFileParser;
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
@@ -50,8 +50,7 @@ public class DefaultLevel implements LevelAPI {
    */
   @Override
   public void selectGame(String filePath)
-      throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException {
-    LOG.info(LEVEL_FILE_PATH);
+      throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }

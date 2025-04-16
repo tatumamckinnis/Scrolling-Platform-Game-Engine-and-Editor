@@ -40,7 +40,7 @@ public class IdentityDataManager {
    * @return the group from the object's identity data.
    */
   public String getGroup(UUID id) {
-    return level.getEditorObject(id).getIdentityData().getGroup();
+    return level.getEditorObject(id).getIdentityData().getType();
   }
 
   /**
@@ -60,7 +60,7 @@ public class IdentityDataManager {
    * @param group the new group to be set in the object's identity data.
    */
   public void setGroup(UUID id, String group) {
-    level.getEditorObject(id).getIdentityData().setGroup(group);
+    level.getEditorObject(id).getIdentityData().setType(group);
   }
 
   /**

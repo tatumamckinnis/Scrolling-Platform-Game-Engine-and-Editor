@@ -24,5 +24,15 @@ public class BlueprintParseException extends Exception {
     super(message);
   }
 
+  /**
+   * Constructs a new {@code BlueprintParseException} with the specified detail message.
+   *
+   * @param message the detail message describing the cause of the error.
+   * @param cause   the cause of the exception.
+   */
+  public BlueprintParseException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
 }
 

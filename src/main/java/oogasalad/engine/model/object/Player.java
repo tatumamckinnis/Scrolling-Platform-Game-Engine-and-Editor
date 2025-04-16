@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import oogasalad.engine.event.Event;
+import oogasalad.engine.model.event.Event;
 
 /**
  * The {@code Player} class represents a user-controlled or central game character within the game.
@@ -19,7 +19,7 @@ import oogasalad.engine.event.Event;
  *
  * @author Alana Zinkin
  */
-public class Player extends GameObject {
+public class Player extends GameObject implements ImmutablePlayer {
 
   private List<String> currentPowerUps;
 
@@ -57,6 +57,7 @@ public class Player extends GameObject {
    *
    * @return a map of visible stat names and values
    */
+  @Override
   public Map<String, Double> getDisplayedStats() {
     return displayedStats;
   }
@@ -78,5 +79,6 @@ public class Player extends GameObject {
   public void addPowerUp(String powerUp) {
     currentPowerUps.add(powerUp);
   }
+
 }
 

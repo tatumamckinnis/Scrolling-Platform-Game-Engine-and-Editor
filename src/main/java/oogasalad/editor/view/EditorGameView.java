@@ -174,32 +174,54 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up input based event handlers for zooming in and out of the current grid.
+   * Sets up zoom behavior by adding a scroll listener. Zooming is triggered when the user scrolls
+   * while holding the Control key.
    */
   private void setupZoom() {
     this.setOnScroll(event -> {
       if (event.isControlDown()) {
-        double delta = event.getDeltaY();
-
-        zoomScale = 1 / zoomScale;
-        if (delta < 0) {
-          zoomScale += ZOOM_SPEED;
-        } else {
-          zoomScale -= ZOOM_SPEED;
-        }
-        if (zoomScale < MIN_ZOOM) {
-          zoomScale = MIN_ZOOM;
-        }
-        zoomScale = 1 / zoomScale;
-
-        updateCameraCoordinates();
-
-        drawGrid();
-        redrawObjects();
-
+        handleZoomScroll(event.getDeltaY());
         event.consume();
       }
     });
+  }
+
+  /**
+   * Handles the logic for zooming in or out based on the scroll delta. Updates the zoom scale,
+   * camera position, grid, and redraws all objects.
+   *
+   * @param deltaY the amount of scroll (positive or negative)
+   */
+  private void handleZoomScroll(double deltaY) {
+    zoomScale = calculateNewZoomScale(deltaY, zoomScale);
+    updateCameraCoordinates();
+    drawGrid();
+    redrawObjects();
+  }
+
+  /**
+   * Calculates the new zoom scale based on the scroll delta and current zoom scale. Applies
+   * constraints to avoid zooming beyond set minimum or maximum limits.
+   *
+   * @param deltaY           the scroll delta indicating zoom direction
+   * @param currentZoomScale the current zoom scale before applying scroll
+   * @return the adjusted zoom scale after clamping within valid bounds
+   */
+  private double calculateNewZoomScale(double deltaY, double currentZoomScale) {
+    double inverseZoom = 1.0 / currentZoomScale;
+
+    if (deltaY < 0) {
+      inverseZoom += ZOOM_SPEED;
+    } else {
+      inverseZoom -= ZOOM_SPEED;
+    }
+
+    double maxInverseZoom = 1.0 / MIN_ZOOM;
+    double minInverseZoom = 1.0 / 20.0;
+
+    inverseZoom = Math.max(minInverseZoom, Math.min(inverseZoom, maxInverseZoom));
+
+    return 1.0 / inverseZoom;
   }
 
   /**
@@ -244,6 +266,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
     });
     panTimer = new AnimationTimer() {
       private long lastUpdate = -1;
+
       @Override
       public void handle(long now) {
         if (lastUpdate < 0) {
@@ -378,8 +401,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     g.setTextAlign(TextAlignment.CENTER);
     String type = "?";
     if (object != null && object.getIdentityData() != null
-        && object.getIdentityData().getGroup() != null) {
-      type = object.getIdentityData().getGroup();
+        && object.getIdentityData().getType() != null) {
+      type = object.getIdentityData().getType();
     }
     g.fillText(type, x + cellSize / 2.0, y + cellSize / 2.0 + PLACEHOLDER_FONT_SIZE / 3.0);
   }
@@ -401,89 +424,167 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Attempts to load the image associated with a given object ID. It retrieves the image path from
-   * the object's data via the controller, resolves the path to a loadable URL (handling resource
-   * vs. file paths), checks if a valid image is already cached, and if not, loads the image
-   * asynchronously. It sets up listeners to redraw the view when the image finishes loading or if
-   * an error occurs.
+   * Preloads the image associated with the given object ID. If the image path is invalid or loading
+   * fails, logs the error and removes the image from cache.
    *
-   * @param id The UUID of the object whose image needs to be loaded or retrieved.
+   * @param id the UUID of the object whose image is to be preloaded
    */
   private void preloadObjectImage(UUID id) {
     try {
-      EditorObject object = editorController.getEditorObject(id);
-      if (object == null || object.getSpriteData() == null
-          || object.getSpriteData().getSpritePath() == null || object.getSpriteData()
-          .getSpritePath().isEmpty()) {
+      String imagePath = getObjectSpritePath(id);
+      if (imagePath == null) {
         objectImages.remove(id);
-        LOG.trace("No valid sprite path found for object ID {}", id);
+        LOG.trace("No valid sprite path found or object missing for ID {}", id);
         return;
       }
 
-      String imagePath = object.getSpriteData().getSpritePath();
       String url = resolveImagePath(imagePath);
-
       if (url == null) {
         LOG.error("Could not resolve image resource path: {}", imagePath);
         objectImages.remove(id);
         return;
       }
 
-      Image cachedImage = objectImages.get(id);
-      if (cachedImage == null || !cachedImage.getUrl().equals(url) || cachedImage.isError()) {
-        LOG.debug("Loading image for object ID {} from resolved URL: {}", id, url);
-        Image image = new Image(url, true);
-        image.errorProperty().addListener((obs, oldErr, newErr) -> {
-          if (newErr) {
-            LOG.error("Failed to load image from {}: {}", url, image.getException().getMessage());
-            redrawObjects();
-          }
-        });
-        image.progressProperty().addListener((obs, oldProgress, newProgress) -> {
-          if (newProgress.doubleValue() >= 1.0) {
-            redrawObjects();
-          }
-        });
-        objectImages.put(id, image);
-      }
+      loadImageIfNotCached(id, url);
+
     } catch (Exception e) {
-      LOG.error("Failed to preload image for object ID {}: {}", id, e.getMessage(), e);
+      LOG.error("Failed during image preload process for object ID {}: {}", id, e.getMessage(), e);
       objectImages.remove(id);
       redrawObjects();
     }
   }
 
   /**
-   * Helper method to resolve an image path string into a loadable URL string. Attempts to
-   * differentiate between absolute/URL paths and relative resource paths. For relative paths, it
-   * assumes they are located within the application's resources.
+   * Retrieves the sprite path for the given object ID, if available and valid.
    *
-   * @param path The image path string to resolve.
-   * @return A string representation of the URL to load the image from, or null if the path cannot
-   * be resolved or is invalid.
+   * @param id the UUID of the object
+   * @return the sprite path, or null if unavailable or invalid
+   */
+  private String getObjectSpritePath(UUID id) {
+    EditorObject object = editorController.getEditorObject(id);
+    if (object == null || object.getSpriteData() == null) {
+      return null;
+    }
+    String path = object.getSpriteData().getSpritePath();
+    return (path == null || path.trim().isEmpty()) ? null : path;
+  }
+
+  /**
+   * Loads the image from the given URL if it is not already cached, or if the cached version is
+   * outdated or contains an error.
+   *
+   * @param id  the UUID of the object
+   * @param url the resolved image URL
+   */
+  private void loadImageIfNotCached(UUID id, String url) {
+    Image cachedImage = objectImages.get(id);
+    boolean needsLoading = cachedImage == null
+        || !Objects.equals(cachedImage.getUrl(), url)
+        || cachedImage.isError();
+
+    if (needsLoading) {
+      LOG.debug("Loading image for object ID {} from resolved URL: {}", id, url);
+      Image newImage = new Image(url, true);
+      setupImageListeners(newImage, url);
+      objectImages.put(id, newImage);
+    } else {
+      LOG.trace("Image for {} already cached and valid: {}", id, url);
+    }
+  }
+
+  /**
+   * Sets up listeners for an image to handle loading progress and error events.
+   *
+   * @param image the image to monitor
+   * @param url   the URL the image is being loaded from
+   */
+  private void setupImageListeners(Image image, String url) {
+    image.errorProperty()
+        .addListener((obs, oldErr, newErr) -> handleImageError(image, url, newErr));
+    image.progressProperty().addListener(
+        (obs, oldProgress, newProgress) -> handleImageProgress(image, url, newProgress));
+  }
+
+  /**
+   * Handles the logic when an image loading error occurs. Logs the error and triggers a redraw to
+   * display a placeholder.
+   *
+   * @param image   the image that failed to load
+   * @param url     the source URL of the image
+   * @param isError whether an error occurred during loading
+   */
+  private void handleImageError(Image image, String url, boolean isError) {
+    if (isError) {
+      String errorMessage =
+          (image.getException() != null) ? image.getException().getMessage() : "Unknown error";
+      LOG.error("Failed to load image from {}: {}", url, errorMessage);
+      redrawObjects();
+    }
+  }
+
+  /**
+   * Handles image load progress updates. When loading completes, it checks for errors and triggers
+   * a redraw accordingly.
+   *
+   * @param image    the image being loaded
+   * @param url      the URL the image was loaded from
+   * @param progress the loading progress value
+   */
+  private void handleImageProgress(Image image, String url, Number progress) {
+    if (progress != null && progress.doubleValue() >= 1.0) {
+      if (!image.isError()) {
+        LOG.trace("Image loaded successfully: {}", url);
+        redrawObjects();
+      } else {
+        LOG.error("Error detected after image load completion signal for URL: {}", url);
+        redrawObjects();
+      }
+    }
+  }
+
+
+  /**
+   * Resolves the given image path to a usable URL string. Returns the original path if it's an
+   * absolute path or full URL; otherwise attempts to locate it as a classpath resource.
+   *
+   * @param path the image path to resolve
+   * @return the resolved URL string, or null if resolution fails
    */
   private String resolveImagePath(String path) {
+    if (path == null || path.trim().isEmpty()) {
+      return null;
+    }
+
+    if (path.matches("^([a-zA-Z]+:.*|/).*")) {
+      return path;
+    }
+
+    return findResourcePath(path);
+  }
+
+  /**
+   * Attempts to find a relative path as a resource within the classpath.
+   *
+   * @param relativePath the relative resource path
+   * @return the URL string if found, or null if not found or an error occurs
+   */
+  private String findResourcePath(String relativePath) {
     try {
-      if (path == null || path.trim().isEmpty()) {
+      String resourcePath = relativePath.startsWith("/") ? relativePath : "/" + relativePath;
+      java.net.URL resourceUrl = getClass().getResource(resourcePath);
+
+      if (resourceUrl != null) {
+        return resourceUrl.toExternalForm();
+      } else {
+        LOG.warn("Resource not found for relative path: {}", resourcePath);
         return null;
       }
-      if (path.startsWith("/") || path.matches("^[a-zA-Z]+:.*")) {
-        return path;
-      } else {
-        String resourcePath = path.startsWith("/") ? path : "/" + path;
-        java.net.URL resourceUrl = getClass().getResource(resourcePath);
-        if (resourceUrl != null) {
-          return resourceUrl.toExternalForm();
-        } else {
-          LOG.warn("Resource not found for relative path: {}", resourcePath);
-          return null;
-        }
-      }
     } catch (Exception e) {
-      LOG.warn("Could not resolve path: {}", path, e);
+      LOG.warn("Could not resolve relative resource path '{}': {}", relativePath, e.getMessage());
       return null;
     }
   }
+
 
   /**
    * Redraws the sprite associated with the specified object ID on the canvas.

@@ -2,7 +2,7 @@ package oogasalad.editor.controller;
 
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.object.event.EditorEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 
 /**
  * Manages the Physics Event related data of a specific object. Implements EditorEventDataManager
@@ -13,7 +13,7 @@ import oogasalad.editor.model.data.object.event.EditorEventData;
 public class PhysicsDataManager extends EditorEventDataManager {
 
   @Override
-  protected EditorEventData createDataIfAbsent(EditorObject object) {
+  protected AbstractEventMapData createDataIfAbsent(EditorObject object) {
     return object.getPhysicsData();
   }
 

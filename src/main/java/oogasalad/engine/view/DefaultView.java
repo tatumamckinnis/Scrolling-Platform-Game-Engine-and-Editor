@@ -14,7 +14,9 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.view.camera.Camera;
+import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.engine.view.screen.SplashScreen;
 import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.RenderingException;
@@ -40,7 +42,7 @@ public class DefaultView implements ViewAPI {
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
   private List<KeyCode> currentInputs;
-  private final Camera myCamera;
+  private Camera myCamera;
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
@@ -48,7 +50,7 @@ public class DefaultView implements ViewAPI {
   public DefaultView(Stage stage, GameManagerAPI gameManager) throws ViewInitializationException {
     this.currentStage = stage;
     this.gameManager = gameManager;
-    this.myCamera = new TimeCamera();
+    this.myCamera = new TrackerCamera();
     currentScene = new Scene(new Group(), LEVEL_WIDTH, LEVEL_HEIGHT);
     currentInputs = new ArrayList<>();
   }
@@ -70,13 +72,14 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
-   * @see DefaultView#renderGameObjects(List, ViewObject)
+   * @see DefaultView#renderGameObjects(List, Camera)
    */
   @Override
-  public void renderGameObjects(List<ViewObject> gameObjects, ViewObject cameraObjectToFollow)
+  public void renderGameObjects(List<ImmutableGameObject> gameObjects, Camera camera)
       throws RenderingException, FileNotFoundException {
+    myCamera = camera;
     currentDisplay.renderGameObjects(gameObjects);
-    currentDisplay.shiftNode(myCamera, cameraObjectToFollow);
+    currentDisplay.shiftNode(myCamera);
   }
 
   /**
@@ -100,6 +103,15 @@ public class DefaultView implements ViewAPI {
   void setCurrentDisplay(Display display) {
     currentDisplay = display;
     currentScene.setRoot(currentDisplay);
+  }
+
+  /**
+   * removes an object image from the level display scene
+   *
+   * @param gameObject the game object to remove
+   */
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    currentDisplay.removeGameObjectImage(gameObject);
   }
 
   /**

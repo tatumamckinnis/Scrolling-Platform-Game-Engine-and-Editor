@@ -17,14 +17,15 @@ import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.GameObjectProvider;
 import oogasalad.engine.controller.api.InputProvider;
-import oogasalad.engine.event.CollisionHandler;
-import oogasalad.engine.event.DefaultCollisionHandler;
-import oogasalad.engine.event.DefaultEventHandler;
-import oogasalad.engine.event.Event;
-import oogasalad.engine.event.EventHandler;
+import oogasalad.engine.model.event.CollisionHandler;
+import oogasalad.engine.model.event.DefaultCollisionHandler;
+import oogasalad.engine.model.event.DefaultEventHandler;
+import oogasalad.engine.model.event.Event;
+import oogasalad.engine.model.event.EventHandler;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.ViewObject;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.mapObject;
+import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -54,6 +55,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   private Map<String, GameObject> myGameObjectMap;
   private List<GameObject> myGameObjects;
   private mapObject myMapObject;
+  private Camera myCamera;
   private final GameManagerAPI myGameManager;
 
   /**
@@ -77,7 +79,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
 
   @Override
-  public List<ViewObject> getImmutableObjects() {
+  public List<ImmutableGameObject> getImmutableObjects() {
     return makeGameObjectsImmutable();
   }
 
@@ -105,9 +107,9 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
 
   @Override
-  public ViewObject getViewObjectByUUID(String uuid) {
+  public ImmutableGameObject getViewObjectByUUID(String uuid) {
     try {
-      return convertToViewObject(myGameObjectMap.get(uuid));
+      return myGameObjectMap.get(uuid);
     } catch (NullPointerException e) {
       throw new NoSuchElementException(CONTROLLER_RESOURCES.getString("NoObjectWithUUID") + uuid);
     }
@@ -130,9 +132,11 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
-  public void setLevelData(LevelData data) {
+  public void setLevelData(LevelData data)
+      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
+    myCamera = converter.loadCamera(data);
     myGameObjects = new ArrayList<>(myGameObjectMap.values());
     myMapObject = new mapObject(data.minX(), data.minY(), data.maxX(), data.maxY());
   }
@@ -141,22 +145,31 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   public void destroyGameObject(GameObject gameObject) {
     myGameObjects.remove(gameObject);
     myGameObjectMap.remove(gameObject.getUUID());
+    myGameManager.removeGameObjectImage(gameObject);
   }
 
-  private List<ViewObject> makeGameObjectsImmutable() {
-    List<ViewObject> immutableObjects = new ArrayList<>();
+  @Override
+  public Camera getCamera() {
+    return myCamera;
+  }
+
+  @Override
+  public void selectLevel(String filePath)
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
+    myGameManager.selectGame(filePath);
+  }
+
+
+  private List<ImmutableGameObject> makeGameObjectsImmutable() {
+    List<ImmutableGameObject> immutableObjects = new ArrayList<>();
     for (GameObject gameObject : myGameObjects) {
-      ViewObject viewObject = convertToViewObject(gameObject);
       // only gives objects to view if there's a real image
       if (gameObject.getCurrentFrame() != null) {
-        immutableObjects.add(viewObject);
+        immutableObjects.add(gameObject);
       }
     }
     return immutableObjects;
   }
 
-  private static ViewObject convertToViewObject(GameObject gameObject) {
-    return new ViewObject(gameObject);
-  }
 
 }

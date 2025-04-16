@@ -30,7 +30,8 @@ import org.w3c.dom.NodeList;
  *   Element root = ...; // obtain the XML root element
  *   List&lt;EventData&gt; events = ...; // get event data list
  *   BlueprintDataParser parser = new BlueprintDataParser();
- *   Map&lt;Integer, BlueprintData&gt; blueprintData = parser.getBlueprintData(root, events);
+ *   Map&lt;Integer, BlueprintData&gt;
+ *   blueprintData = parser.getBlueprintData(root, events);
  * </pre>
  * </p>
  *
@@ -154,9 +155,10 @@ public class BlueprintDataParser {
   /**
    * Parses a single game object node into a {@link BlueprintData} record.
    * <p>
-   * This method extracts basic attributes (ID, type, sprite name, and sprite file), creates the
-   * corresponding {@link SpriteData} and {@link HitBoxData} objects, processes event identifiers,
-   * and parses property nodes using the dedicated {@link PropertyParser}.
+   * This method extracts basic attributes (ID, velocityX, velocityY, rotation, shape, sprite name,
+   * and sprite file), creates the corresponding {@link SpriteData} and {@link HitBoxData} objects,
+   * processes event identifiers, and parses property nodes using the dedicated
+   * {@link PropertyParser}.
    * </p>
    *
    * @param gameObjectNode the XML {@link Element} representing a game object.
@@ -168,43 +170,49 @@ public class BlueprintDataParser {
       throws BlueprintParseException, SpriteParseException, HitBoxParseException,
       PropertyParsingException {
     mySpriteDataParser = new SpriteDataParser();
+    try {
+      int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
+      double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
+      double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
+      double rotation = Double.parseDouble(gameObjectNode.getAttribute("rotation"));
+      String type = gameObjectNode.getAttribute("type");
+      String spriteName = gameObjectNode.getAttribute("spriteName");
+      String spriteFile = gameObjectNode.getAttribute("spriteFile");
 
-    int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
-    double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
-    double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
-    String type = gameObjectNode.getAttribute("type");
-    String spriteName = gameObjectNode.getAttribute("spriteName");
-    String spriteFile = gameObjectNode.getAttribute("spriteFile");
+      SpriteData spriteData = null;
+      if (gameName != null && !gameName.isEmpty()) {
+        SpriteRequest request = new SpriteRequest(gameName, groupName, type, spriteName,
+            spriteFile);
+        spriteData = mySpriteDataParser.getSpriteData(request);
+      }
 
-    SpriteData spriteData = null;
-    if (gameName != null && !gameName.isEmpty()) {
-      SpriteRequest request = new SpriteRequest(gameName, groupName, type, spriteName, spriteFile);
-      spriteData = mySpriteDataParser.getSpriteData(request);
+      HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
+      List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
+
+      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,
+          "doubleProperties", "property");
+      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,
+          "stringProperties", "property");
+      List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
+
+      return new BlueprintData(
+          id,
+          velocityX,
+          velocityY,
+          rotation,
+          gameName,
+          groupName,
+          type,
+          spriteData,
+          hitBoxData,
+          eventDataList,
+          stringProperties,
+          doubleProperties,
+          displayedProperties
+      );
+    } catch (NumberFormatException e) {
+      throw new BlueprintParseException("error.number", e);
     }
-
-    HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
-    List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
-
-    Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,
-        "doubleProperties", "property");
-    Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,
-        "stringProperties", "property");
-    List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
-
-    return new BlueprintData(
-        id,
-        velocityX,
-        velocityY,
-        gameName,
-        groupName,
-        type,
-        spriteData,
-        hitBoxData,
-        eventDataList,
-        stringProperties,
-        doubleProperties,
-        displayedProperties
-    );
   }
 
   /**

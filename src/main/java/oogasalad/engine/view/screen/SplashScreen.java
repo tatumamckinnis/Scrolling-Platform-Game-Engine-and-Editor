@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +19,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
+import oogasalad.Main;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 
 /**
@@ -30,6 +33,8 @@ public class SplashScreen extends Display {
   private static final Logger LOG = LogManager.getLogger();
   private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
   private String splashStylesheet;
   private int splashWidth;
   private int splashHeight;
@@ -55,9 +60,16 @@ public class SplashScreen extends Display {
     this.viewState = viewState;
   }
 
-  @Override
+  /**
+   * renders the SplashScreen
+   */
   public void initialRender() {
     initializeSplashScreen();
+  }
+
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
   }
 
   /**
