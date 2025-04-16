@@ -22,6 +22,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.resources.EditorResourceLoader;
@@ -247,6 +248,9 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   private void handleEditConditionParam(int groupIndex, int conditionIndex, String paramName,
       Object value) {
+    if (!isSelected(true, true)) {
+      return;
+    }
     handleEditParam(paramName, value,
         (strVal) -> editorController.setEventConditionStringParameter(currentObjectId,
             currentEventId, groupIndex, conditionIndex, paramName, strVal),
@@ -289,6 +293,9 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   private void handleEditOutcomeParam(int outcomeIndex, String paramName, Object value) {
+    if (!isSelected(true, true)) {
+      return;
+    }
     handleEditParam(paramName, value,
         (strVal) -> editorController.setEventOutcomeStringParameter(currentObjectId,
             currentEventId, outcomeIndex, paramName, strVal),
@@ -301,9 +308,6 @@ public class InputTabComponentFactory implements EditorViewListener {
   private void handleEditParam(String paramName, Object value,
       Consumer<String> stringSetter, Consumer<Double> doubleSetter, String contextType) {
     LOG.trace("Edit {} Param: param={}, value={}", contextType, paramName, value);
-    if (!isSelected(true, true)) {
-      return;
-    }
     try {
       if (value instanceof String strValue) {
         stringSetter.accept(strValue);
