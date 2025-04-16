@@ -38,7 +38,6 @@ public class NewGameComponents extends Display {
   /**
    * Renders the high score text on the game engine screen.
    */
-  @Override
   public void initialRender() {
     VBox buttonContainer = new VBox();
     buttonContainer.getChildren().add(highScore);

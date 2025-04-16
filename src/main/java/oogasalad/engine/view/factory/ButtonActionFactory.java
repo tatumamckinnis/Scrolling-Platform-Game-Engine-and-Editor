@@ -1,7 +1,6 @@
 package oogasalad.engine.view.factory;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -30,9 +29,9 @@ import oogasalad.exceptions.InputException;
 import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.exceptions.RenderingException;
 
 /**
  * This class returns the desired function for a specific button.
