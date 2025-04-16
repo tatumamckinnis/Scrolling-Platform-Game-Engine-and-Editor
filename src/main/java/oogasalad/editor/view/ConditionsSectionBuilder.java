@@ -235,7 +235,7 @@ public class ConditionsSectionBuilder {
   private void handleRemoveGroupAction() {
     ConditionDisplayItem selected = conditionsListView.getSelectionModel().getSelectedItem();
     if (selected != null) {
-      removeGroupHandler.accept(selected.groupIndex);
+      removeGroupHandler.accept(selected.getGroupIndex());
     } else {
       LOG.warn("No condition selected, cannot determine group to remove.");
     }
@@ -255,7 +255,7 @@ public class ConditionsSectionBuilder {
     }
 
     ConditionDisplayItem selectedItem = conditionsListView.getSelectionModel().getSelectedItem();
-    int targetGroupIndex = (selectedItem != null) ? selectedItem.groupIndex : 0;
+    int targetGroupIndex = (selectedItem != null) ? selectedItem.getGroupIndex() : 0;
 
     addConditionHandler.handle(targetGroupIndex, selectedType.trim());
     conditionTypeComboBox.getSelectionModel().clearSelection();
@@ -270,7 +270,7 @@ public class ConditionsSectionBuilder {
   private void handleRemoveConditionAction() {
     ConditionDisplayItem selected = conditionsListView.getSelectionModel().getSelectedItem();
     if (selected != null) {
-      removeConditionHandler.handle(selected.groupIndex, selected.conditionIndex);
+      removeConditionHandler.handle(selected.getGroupIndex(), selected.getConditionIndex());
     } else {
       LOG.warn("No condition selected for removal.");
     }
@@ -288,11 +288,11 @@ public class ConditionsSectionBuilder {
    */
   private void updateParametersPane(ConditionDisplayItem selectedItem) {
     parametersPane.getChildren().clear();
-    if (selectedItem == null || selectedItem.data == null) {
+    if (selectedItem == null || selectedItem.getData() == null) {
       return;
     }
 
-    ExecutorData data = selectedItem.data;
+    ExecutorData data = selectedItem.getData();
     GridPane grid = new GridPane();
     grid.setHgap(DEFAULT_SPACING / 2);
     grid.setVgap(DEFAULT_SPACING / 2);
@@ -305,11 +305,11 @@ public class ConditionsSectionBuilder {
 
         valueField.setOnAction(event -> {
           String newValue = valueField.getText();
-          System.out.println("!!! String setOnAction: Field Value = '" + newValue
-              + "', Calling handler..."); // Keep debug log for now
-          editConditionParamHandler.handle(selectedItem.groupIndex, selectedItem.conditionIndex,
+          editConditionParamHandler.handle(selectedItem.getGroupIndex(), selectedItem.getConditionIndex(),
               entry.getKey(), newValue);
+          LOG.trace("String parameter '{}' updated via ActionEvent to: {}", entry.getKey(), newValue);
         });
+
 
         grid.add(nameLabel, 0, rowIndex);
         grid.add(valueField, 1, rowIndex++);
@@ -323,17 +323,14 @@ public class ConditionsSectionBuilder {
         TextField valueField = new TextField(String.valueOf(entry.getValue()));
         valueField.setOnAction(event -> {
           String newValText = valueField.getText();
-          System.out.println(
-              "!!! Double setOnAction: Field Text = '" + newValText + "'"); // Keep debug log
+          LOG.trace("Attempting update for double parameter '{}' with text: {}", entry.getKey(), newValText);
           try {
             Double doubleVal = Double.parseDouble(newValText);
-            System.out.println("!!! Double setOnAction: Parsed OK (" + doubleVal
-                + "), Calling handler..."); // Keep debug log
-            editConditionParamHandler.handle(selectedItem.groupIndex, selectedItem.conditionIndex,
+            editConditionParamHandler.handle(selectedItem.getGroupIndex(), selectedItem.getConditionIndex(),
                 entry.getKey(), doubleVal);
+            LOG.trace("Double parameter '{}' updated via ActionEvent to: {}", entry.getKey(), doubleVal);
           } catch (NumberFormatException e) {
-            System.out.println(
-                "!!! Double setOnAction: Caught NFE for '" + newValText + "'"); // Keep debug log
+            LOG.trace("Resetting field for double parameter '{}' to original value: {}", entry.getKey(), entry.getValue());
             LOG.warn("Invalid double format for param '{}' on ActionEvent: {}", entry.getKey(),
                 newValText);
             valueField.setText(String.valueOf(entry.getValue())); // Reset field
@@ -348,9 +345,9 @@ public class ConditionsSectionBuilder {
       }
     }
     parametersPane.getChildren().add(grid);
-    if (selectedItem != null && selectedItem.data != null) {
-      LOG.trace("Parameters pane updated for item Group {}, Index {}", selectedItem.groupIndex,
-          selectedItem.conditionIndex);
+    if (selectedItem != null && selectedItem.getData() != null) {
+      LOG.trace("Parameters pane updated for item Group {}, Index {}", selectedItem.getGroupIndex(),
+          selectedItem.getConditionIndex());
     }
   }
 

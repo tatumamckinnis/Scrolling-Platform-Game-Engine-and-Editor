@@ -250,7 +250,7 @@ public class OutcomesSectionBuilder {
   private void handleRemoveOutcomeAction() {
     OutcomeDisplayItem selected = outcomesListView.getSelectionModel().getSelectedItem();
     if (selected != null) {
-      removeOutcomeHandler.accept(selected.index);
+      removeOutcomeHandler.accept(selected.getIndex());
     } else {
       LOG.warn("No outcome selected for removal.");
     }
@@ -269,11 +269,11 @@ public class OutcomesSectionBuilder {
    */
   private void updateParametersPane(OutcomeDisplayItem selectedItem) {
     parametersPane.getChildren().clear();
-    if (selectedItem == null || selectedItem.data == null) {
+    if (selectedItem == null || selectedItem.getData() == null) {
       return;
     }
 
-    ExecutorData data = selectedItem.data;
+    ExecutorData data = selectedItem.getData();
     GridPane grid = new GridPane();
     grid.setHgap(DEFAULT_SPACING / 2);
     grid.setVgap(DEFAULT_SPACING / 2);
@@ -286,7 +286,7 @@ public class OutcomesSectionBuilder {
 
         valueField.setOnAction(event -> {
           String newValue = valueField.getText();
-          editOutcomeParamHandler.handle(selectedItem.index, entry.getKey(), newValue);
+          editOutcomeParamHandler.handle(selectedItem.getIndex(), entry.getKey(), newValue);
           LOG.trace("String parameter '{}' updated via ActionEvent to: {}", entry.getKey(),
               newValue);
         });
@@ -306,7 +306,7 @@ public class OutcomesSectionBuilder {
           String newValText = valueField.getText();
           try {
             Double doubleVal = Double.parseDouble(newValText);
-            editOutcomeParamHandler.handle(selectedItem.index, entry.getKey(), doubleVal);
+            editOutcomeParamHandler.handle(selectedItem.getIndex(), entry.getKey(), doubleVal);
             LOG.trace("Double parameter '{}' updated via ActionEvent to: {}", entry.getKey(),
                 doubleVal);
           } catch (NumberFormatException e) {
@@ -322,7 +322,7 @@ public class OutcomesSectionBuilder {
       }
     }
     parametersPane.getChildren().add(grid);
-    LOG.trace("Parameters pane updated for item index {}", selectedItem.index);
+    LOG.trace("Parameters pane updated for item index {}", selectedItem.getIndex());
   }
 
   /**

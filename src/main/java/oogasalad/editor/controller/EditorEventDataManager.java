@@ -23,7 +23,7 @@ public abstract class EditorEventDataManager {
 
   private static final Logger LOG = LogManager.getLogger(EditorEventDataManager.class);
 
-  protected final EditorLevelData level; // Changed to protected
+  private final EditorLevelData level;
 
   /**
    * Constructs a manager for the supplied level.
@@ -62,6 +62,19 @@ public abstract class EditorEventDataManager {
       throw new IllegalArgumentException("Object not found: " + objectId);
     }
     return object;
+  }
+
+  /**
+   * Public access point to retrieve an EditorObject by its ID.
+   * Delegates to the internal getObject method.
+   *
+   * @param objectId The unique identifier of the editor object.
+   * @return The corresponding EditorObject.
+   * @throws NullPointerException     if objectId is null.
+   * @throws IllegalArgumentException if no object with the given ID is found.
+   */
+  public EditorObject getObjectById(UUID objectId) {
+    return getObject(objectId);
   }
 
   /**
