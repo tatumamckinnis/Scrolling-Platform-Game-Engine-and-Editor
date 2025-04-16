@@ -108,11 +108,6 @@ public class EditorComponentFactory {
    *
    * @return The fully assembled editor Scene.
    */
-  /**
-   * Creates the main editor scene, assembling the map pane and component pane.
-   *
-   * @return The fully assembled editor Scene.
-   */
   public Scene createEditorScene() {
     SplitPane root = new SplitPane();
     root.setId("editor-root");
@@ -123,9 +118,10 @@ public class EditorComponentFactory {
     leftSplit.setOrientation(Orientation.VERTICAL);
 
     Pane mapPane = createMapPane(editorHeight);
-    Pane prefabPane = createAssetPane();
+    PrefabPalettePane prefabPalettePane = createPrefabPalettePane(); // Create PrefabPalettePane
+    Pane assetPane = createAssetPane(prefabPalettePane); // Modify createAssetPane
 
-    leftSplit.getItems().addAll(mapPane, prefabPane);
+    leftSplit.getItems().addAll(mapPane, assetPane);
     leftSplit.setDividerPositions(0.7); // TODO: Make this a property
 
     Pane componentsPane = createComponentPane(editorHeight);
@@ -188,8 +184,11 @@ public class EditorComponentFactory {
     LOG.debug("EditorGameView created with cell size {}", cellSize);
   }
 
-  private Pane createAssetPane() {
+  private PrefabPalettePane createPrefabPalettePane() {
+    return new PrefabPalettePane(editorController);
+  }
 
+  private Pane createAssetPane(PrefabPalettePane prefabPalettePane) {
     BorderPane assetPane = new BorderPane();
     assetPane.setId("prefab-pane");
     assetPane.setPrefHeight(200);
@@ -197,13 +196,10 @@ public class EditorComponentFactory {
     TabPane assetTabs = new TabPane();
     assetTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+    Tab prefabsTab = new Tab("Prefabs", prefabPalettePane);
     ListView<String> prefabList = new ListView<>();
     prefabList.setPlaceholder(new Label("No prefabs yet"));
-    Tab prefabsTab = new Tab("Prefabs", prefabList);
-
-    SpriteAssetPane spritePane = new SpriteAssetPane(
-        assetPane.getScene() == null ? null : assetPane.getScene().getWindow());
-    Tab spritesTab = new Tab("Sprites", spritePane);
+    Tab spritesTab = new Tab("Sprites", new SpriteAssetPane(assetPane.getScene() == null ? null : assetPane.getScene().getWindow()));
 
     assetTabs.getTabs().addAll(prefabsTab, spritesTab);
     assetPane.setCenter(assetTabs);
@@ -211,6 +207,7 @@ public class EditorComponentFactory {
     LOG.debug("Prefab‑and‑Sprite pane created.");
     return assetPane;
   }
+
 
   /**
    * Creates the toolbar with object placement tool selection buttons. Requires gameView to be

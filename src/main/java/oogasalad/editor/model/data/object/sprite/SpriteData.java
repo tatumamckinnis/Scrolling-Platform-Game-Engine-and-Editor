@@ -1,3 +1,4 @@
+
 package oogasalad.editor.model.data.object.sprite;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class SpriteData {
   private Map<String, FrameData> frames;
   private Map<String, AnimationData> animations;
   private String spritePath;
+  private String baseFrame; // Added field
 
   /**
    * Constructs a new SpriteData instance with the specified properties.
@@ -31,7 +33,7 @@ public class SpriteData {
    * @param animations a map of animation names to their corresponding {@link AnimationData}
    * @param spritePath the file path to the sprite image
    */
-  public SpriteData(String name, int x, int y, int rotation, Map<String, FrameData> frames,
+  public SpriteData(String name, int x, int y, double rotation, Map<String, FrameData> frames,
       Map<String, AnimationData> animations, String spritePath) {
     this.name = name;
     this.x = x;
@@ -40,6 +42,16 @@ public class SpriteData {
     this.frames = frames;
     this.animations = animations;
     this.spritePath = spritePath;
+  }
+
+  /**
+   * Adds a new animation to the sprite.
+   *
+   * @param name The name of the animation.
+   * @param animation The AnimationData to add.
+   */
+  public void addAnimation(String name, AnimationData animation) {
+    this.animations.put(name, animation);
   }
 
   /**
@@ -150,7 +162,7 @@ public class SpriteData {
    *
    * @param name the new name
    */
-  public void setX(String name) {
+  public void setName(String name) {
     this.name = name;
   }
 
@@ -194,7 +206,7 @@ public class SpriteData {
    * Replaces the current animation data map with a new map.
    *
    * @param animations a map where keys are animation names and values are {@link AnimationData}
-   *                   objects
+   * objects
    */
   public void setAnimations(Map<String, AnimationData> animations) {
     this.animations = animations;
@@ -289,5 +301,14 @@ public class SpriteData {
    */
   public void setSpritePath(String spritePath) {
     this.spritePath = spritePath;
+  }
+
+  /**
+   * Sets the base frame of the sprite.
+   *
+   * @param baseFrame the new base frame
+   */
+  public void setBaseFrame(String baseFrame) {
+    this.baseFrame = baseFrame;
   }
 }

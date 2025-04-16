@@ -29,21 +29,25 @@ public class EditorDataAPI {
   private final CollisionDataManager collisionAPI;
   private final SpriteDataManager spriteAPI;
   private final EditorLevelData level;
-  private final DynamicVariableContainer dynamicVariableContainer; // Field already exists
+  private final DynamicVariableContainer dynamicVariableContainer;
+  private final CustomEventDataManager customEventAPI;
+  private String currentGameDirectoryPath;
 
   /**
    * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
    * all related data managers.
+   *
    */
-  public EditorDataAPI() {
+  public EditorDataAPI(){
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
-    this.inputAPI = new InputDataManager(level); // InputDataManager manages InputData/EditorEvents
+    this.inputAPI = new InputDataManager(level);
     this.physicsAPI = new PhysicsDataManager(level);
     this.collisionAPI = new CollisionDataManager(level);
     this.spriteAPI = new SpriteDataManager(level);
-    this.dynamicVariableContainer = new DynamicVariableContainer(); // Field already initialized
+    this.customEventAPI = new CustomEventDataManager(level);
+    this.dynamicVariableContainer = new DynamicVariableContainer();
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -130,7 +134,7 @@ public class EditorDataAPI {
     LOG.debug("Adding layer '{}' via EditorLevelData.", layerName);
     int newPriority = 0;
     if (!level.getLayers().isEmpty()) {
-      newPriority = level.getLayers().stream().mapToInt(Layer::getPriority).max().orElse(-1) + 1;
+      newPriority = level.getLayers().stream().mapToInt(Layer::getPriority).max().orElse(0) + 1;
     }
     level.addLayer(new Layer(layerName, newPriority));
   }
@@ -148,10 +152,11 @@ public class EditorDataAPI {
    * Removes the layer identified by the given layer name from the editor level.
    *
    * @param layerName the name of the layer to remove.
+   * @return true if the layer was removed; false otherwise
    */
-  public void removeLayer(String layerName) {
+  public boolean removeLayer(String layerName) {
     LOG.debug("Removing layer '{}' via EditorLevelData.", layerName);
-    level.removeLayer(layerName);
+    return level.removeLayer(layerName);
   }
 
   /**
@@ -177,10 +182,12 @@ public class EditorDataAPI {
    * Removes the group identified by the provided group name from the editor level.
    *
    * @param groupName the name of the group to remove.
+   * @return true if the group was successfully removed, false if any editor object is still
+   * associated with it
    */
-  public void removeGroup(String groupName) {
+  public boolean removeGroup(String groupName) {
     LOG.debug("Removing group '{}' via EditorLevelData.", groupName);
-    level.removeGroup(groupName);
+    return level.removeGroup(groupName);
   }
 
   /**
@@ -253,5 +260,39 @@ public class EditorDataAPI {
    */
   public DynamicVariableContainer getDynamicVariableContainer() {
     return dynamicVariableContainer;
+  }
+
+  /**
+   * Sets the current game directory path.
+   * @param path The path to the current game directory.
+   */
+  public void setCurrentGameDirectoryPath(String path) {
+    this.currentGameDirectoryPath = path;
+  }
+
+  /**
+   * Gets the current game directory path.
+   * @return The path to the current game directory.
+   */
+  public String getCurrentGameDirectoryPath() {
+    return currentGameDirectoryPath;
+  }
+
+  /**
+   * Gets the CustomEventDataManager instance.
+   * @return The CustomEventDataManager instance.
+   */
+  public CustomEventDataManager getCustomEventDataAPI() {
+    return customEventAPI;
+  }
+
+
+  /**
+   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
+   *
+   * @param errorMessage the error message to be reported to the listeners.
+   */
+  public void notifyErrorOccurred(String errorMessage) {
+    LOG.error("Error occurred in EditorDataAPI: {}", errorMessage);
   }
 }

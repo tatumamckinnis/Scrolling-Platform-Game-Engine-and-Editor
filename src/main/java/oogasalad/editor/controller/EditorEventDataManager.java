@@ -23,7 +23,7 @@ public abstract class EditorEventDataManager {
 
   private static final Logger LOG = LogManager.getLogger(EditorEventDataManager.class);
 
-  private final EditorLevelData level;
+  protected final EditorLevelData level; // Changed to protected
 
   /**
    * Constructs a manager for the supplied level.

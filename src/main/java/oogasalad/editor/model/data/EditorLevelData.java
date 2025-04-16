@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.logging.Logger;
+import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.object.HitboxData;
 
 /**
@@ -77,7 +78,7 @@ public class EditorLevelData {
    * @return the unique identifier of the created editor object, or null if not implemented
    */
   public UUID createEditorObject(String prefab) {
-    return null; // Will eventually implement a Prefab API of sorts
+    return null;
   }
 
   /**

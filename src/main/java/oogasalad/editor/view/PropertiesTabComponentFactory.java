@@ -91,6 +91,11 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     return box;
   }
 
+  @Override
+  public void onPrefabsChanged() {
+    LOG.debug("PropertiesTabComponentFactory notified of prefab changes.");
+  }
+
   /**
    * Factory method for creating identity text fields (Name, Group).
    */

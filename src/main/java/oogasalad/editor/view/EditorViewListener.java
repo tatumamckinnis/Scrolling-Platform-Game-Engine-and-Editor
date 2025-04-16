@@ -55,5 +55,8 @@ public interface EditorViewListener {
    * @param errorMessage A message describing the error.
    */
   void onErrorOccurred(String errorMessage);
-
+  /**
+   * Called when prefabs are changed
+   */
+  void onPrefabsChanged();
 }

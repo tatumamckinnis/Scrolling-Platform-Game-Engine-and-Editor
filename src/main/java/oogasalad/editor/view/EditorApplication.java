@@ -1,5 +1,7 @@
+//  oogasalad/editor/view/EditorApplication.java
 package oogasalad.editor.view;
 
+import java.util.List;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -20,6 +22,8 @@ public class EditorApplication extends Application {
 
   private static final Logger LOG = LogManager.getLogger(EditorApplication.class);
 
+  private String gameDirectoryPath;
+
   /**
    * Starts the JavaFX application, creates the editor scene, and shows the primary stage. Includes
    * basic initialization error handling.
@@ -32,13 +36,27 @@ public class EditorApplication extends Application {
 
     try {
       // --- Dependency Setup ---
-      // 1. Instantiate the backend facade/data manager required by the controller
-      EditorDataAPI editorDataAPI = new EditorDataAPI();
-      LOG.debug("EditorDataAPI instance created.");
 
       // 2. Instantiate the concrete controller, passing its dependencies
-      EditorController editorController = new ConcreteEditorController(editorDataAPI);
+      EditorDataAPI editorDataAPI = new EditorDataAPI();
+      EditorController editorController = new ConcreteEditorController(editorDataAPI); // Corrected line
       LOG.info("ConcreteEditorController created.");
+
+      // 1. Instantiate the backend facade/data manager required by the controller
+      // Corrected line
+      LOG.debug("EditorDataAPI instance created.");
+
+
+      // Set the game directory path
+      if (gameDirectoryPath != null && !gameDirectoryPath.isEmpty()) {
+        editorDataAPI.setCurrentGameDirectoryPath(gameDirectoryPath);
+        LOG.info("Game directory path set to: {}", gameDirectoryPath);
+      } else {
+        LOG.warn("Game directory path is not provided. Prefab sprite resolution may fail.");
+        // Optionally, set a default or handle this more gracefully
+        editorDataAPI.setCurrentGameDirectoryPath("data/gameData/unknown_game"); // Default or error handling
+      }
+
       // --- End Dependency Setup ---
 
       // 3. Create the view factory, passing the controller
@@ -82,5 +100,15 @@ public class EditorApplication extends Application {
    */
   public static void main(String[] args) {
     launch(args);
+  }
+
+  @Override
+  public void init() throws Exception {
+    super.init();
+    Parameters params = getParameters();
+    List<String> raw = params.getRaw();
+    if (raw.size() > 0) {
+      gameDirectoryPath = raw.get(0);
+    }
   }
 }
