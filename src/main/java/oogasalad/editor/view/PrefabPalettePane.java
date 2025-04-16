@@ -60,7 +60,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
   public PrefabPalettePane(EditorController controller) {
     this.controller = controller;
-    this.uiResources = EditorResourceLoader.loadResourceBundle(DEFAULT_RESOURCE_PACKAGE + UI_RESOURCES);
+    this.uiResources = EditorResourceLoader.loadResourceBundle(UI_RESOURCES);
 
     this.placeholderImage = loadPlaceholderImage();
 
