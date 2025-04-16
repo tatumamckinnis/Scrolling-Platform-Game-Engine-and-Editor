@@ -82,6 +82,11 @@ public class InputTabComponentFactory implements EditorViewListener {
     LOG.info("InputTabComponentFactory initialized.");
   }
 
+  @Override
+  public void onPrefabsChanged() {
+    LOG.debug("InputTabComponentFactory notified of prefab changes.");
+  }
+
   /**
    * Initializes the section builder instances (Events, Conditions, Outcomes) required for
    * constructing the UI components. This involves passing the resource bundle, necessary data

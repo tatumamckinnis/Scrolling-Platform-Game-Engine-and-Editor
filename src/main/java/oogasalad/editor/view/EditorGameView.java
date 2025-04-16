@@ -20,6 +20,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
+import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,6 +77,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private UUID selectedObjectId;
   private boolean drawHitboxes = true;
   private boolean snapToGrid = true;
+  private PrefabPalettePane prefabPalettePane;
+
+
 
   /**
    * Creates a new editor game view.
@@ -83,9 +87,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * @param cellSize         Size of each grid cell in pixels.
    * @param editorController Controller for handling actions and state changes.
    * @throws IllegalArgumentException if editorController is null or dimensions/cellSize are
-   *                                  non-positive.
+   * non-positive.
    */
-  public EditorGameView(int cellSize, double zoomScale, EditorController editorController) {
+  public EditorGameView(int cellSize, double zoomScale, EditorController editorController, PrefabPalettePane prefabPalettePane) { // Add PrefabPalettePane parameter
     if (editorController == null) {
       throw new IllegalArgumentException("EditorController cannot be null.");
     }
@@ -94,6 +98,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
       throw new IllegalArgumentException("View dimensions and cell size must be positive.");
     }
 
+    this.prefabPalettePane = Objects.requireNonNull(prefabPalettePane, "PrefabPalettePane cannot be null.");
     this.gridCanvas = new Canvas();
     this.objectCanvas = new Canvas();
     this.gridGraphicsContext = gridCanvas.getGraphicsContext2D();
@@ -121,6 +126,20 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
     initializeView();
     LOG.info("EditorGameView initialized with cell size {}", cellSize);
+  }
+
+
+  /**
+   * Gets the currently selected prefab.
+   * @return The selected prefab.
+   */
+  public BlueprintData getSelectedPrefab() {
+    return prefabPalettePane.getSelectedPrefab();
+  }
+
+  @Override
+  public void onPrefabsChanged() {
+    LOG.debug("EditorGameView notified of prefab changes.");
   }
 
   /**
@@ -766,4 +785,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
   public double getGridHeight() {
     return gridCanvas.getHeight();
   }
+
+
 }

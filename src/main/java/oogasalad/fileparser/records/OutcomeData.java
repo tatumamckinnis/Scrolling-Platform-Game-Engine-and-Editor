@@ -19,4 +19,15 @@ public record OutcomeData(String name,
                           Map<String, String> stringProperties,
                           Map<String, Double> doubleProperties) {
 
+  public String outcomeType() {
+    return name;
+  }
+
+  public Map<String, String> stringParams() {
+    return stringProperties;
+  }
+
+  public Map<String, Double> doubleParams() {
+    return doubleProperties;
+  }
 }

@@ -2,6 +2,7 @@ package oogasalad.editor.controller;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.Layer; // Import Layer
 
 /**
  * Manages identity-related data for EditorObjects, including name, group, and layer information.
@@ -71,5 +72,34 @@ public class IdentityDataManager {
    */
   public int getLayerPriority(UUID id) {
     return level.getEditorObject(id).getIdentityData().getLayer().getPriority();
+  }
+
+  /**
+   * Sets the type of the EditorObject.
+   * @param id The UUID of the object.
+   * @param type The type to set.
+   */
+  public void setType(UUID id, String type) {
+    level.getEditorObject(id).getIdentityData().setType(type);
+  }
+
+  /**
+   * Sets the layer of the EditorObject.
+   * @param id The UUID of the object.
+   * @param layer The layer to set.
+   */
+  public void setLayer(UUID id, String layer) {
+    Layer foundLayer = null;
+    for (Layer l : level.getLayers()) {
+      if (l.getName().equals(layer)) {
+        foundLayer = l;
+        break;
+      }
+    }
+    if (foundLayer != null) {
+      level.getEditorObject(id).getIdentityData().setLayer(foundLayer);
+    } else {
+      System.err.println("Layer '" + layer + "' not found!");
+    }
   }
 }

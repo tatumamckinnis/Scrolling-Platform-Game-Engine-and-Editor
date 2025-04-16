@@ -1,21 +1,50 @@
 package oogasalad.editor.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import oogasalad.editor.model.EditorObjectPopulator;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
+import oogasalad.editor.model.saver.BlueprintBuilder;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.BlueprintDataParser;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.EventData;
+import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.SpriteData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Concrete implementation of the EditorController interface. Acts as a mediator between the editor
@@ -30,27 +59,329 @@ public class ConcreteEditorController implements EditorController {
 
   private final EditorDataAPI editorDataAPI;
   private UUID currentSelectedObjectId;
+  private String activeToolName = "selectionTool";
 
   private final List<EditorViewListener> viewListeners = new CopyOnWriteArrayList<>();
 
-  /**
-   * Constructor for ConcreteEditorController.
-   *
-   * @param editorDataAPI The data access API providing methods to interact with editor data. Must not be null.
-   * @throws NullPointerException if editorDataAPI is null.
-   */
   public ConcreteEditorController(EditorDataAPI editorDataAPI) {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null.");
     LOG.info("ConcreteEditorController initialized.");
   }
+  @Override
+  public void notifyPrefabsChanged() {
+    LOG.debug("Notifying listeners: Prefabs changed");
+    for (EditorViewListener listener : viewListeners) {
+      listener.onPrefabsChanged();
+    }
+  }
+  @Override
+  public UUID getCurrentSelectedObjectId() {
+    return currentSelectedObjectId;
+  }
 
+  @Override
+  public void notifyErrorOccurred(String errorMessage) { // Change to public
+    LOG.debug("Notifying listeners: Error occurred - {}", errorMessage);
+    for (EditorViewListener listener : viewListeners) {
+      listener.onErrorOccurred(errorMessage);
+    }
+  }
+  @Override
+  public void requestPrefabPlacement(BlueprintData prefabData, double worldX, double worldY) {
+
+    Objects.requireNonNull(prefabData, "PrefabData cannot be null for placement request");
+    LOG.info("Processing prefab placement request: Type='{}', Pos=({},{})", prefabData.type(), worldX, worldY);
+    UUID newObjectId = null;
+    try {
+      newObjectId = editorDataAPI.createEditorObject();
+      EditorObject newObject = editorDataAPI.getEditorObject(newObjectId);
+
+      if (newObject == null) {
+        throw new IllegalStateException("Failed to create or retrieve new EditorObject with ID: " + newObjectId);
+      }
+
+      EditorObjectPopulator.populateFromBlueprint(newObject, prefabData, editorDataAPI);
+
+      if (!Double.isFinite(worldX) || !Double.isFinite(worldY)) {
+        throw new IllegalArgumentException("Invalid placement coordinates: (" + worldX + ", " + worldY + ")");
+      }
+      int floorWorldX = (int) Math.floor(worldX);
+      int floorWorldY = (int) Math.floor(worldY);
+
+      editorDataAPI.getSpriteDataAPI().setX(newObjectId, floorWorldX);
+      editorDataAPI.getSpriteDataAPI().setY(newObjectId, floorWorldY);
+
+      int hitboxX = floorWorldX;
+      int hitboxY = floorWorldY;
+      if (prefabData.hitBoxData() != null) {
+        hitboxX += prefabData.hitBoxData().spriteDx();
+        hitboxY += prefabData.hitBoxData().spriteDy();
+      }
+      editorDataAPI.getHitboxDataAPI().setX(newObjectId, hitboxX);
+      editorDataAPI.getHitboxDataAPI().setY(newObjectId, hitboxY);
+
+      String uniqueName = String.format("%s_%d_%d_%s",
+          prefabData.type(), floorWorldX, floorWorldY,
+          UUID.randomUUID().toString().substring(0, 4));
+      editorDataAPI.getIdentityDataAPI().setName(newObjectId, uniqueName);
+
+      LOG.debug("Object {} created and populated from prefab.", newObjectId);
+      notifyObjectAdded(newObjectId);
+      notifyObjectSelected(newObjectId);
+
+    } catch (Exception e) {
+      LOG.error("Failed during prefab placement: {}", e.getMessage(), e);
+      if (newObjectId != null) {
+        try {
+          editorDataAPI.removeEditorObject(newObjectId);
+        } catch (Exception removeEx) {
+          LOG.error("Failed to clean up object {} after placement error: {}", newObjectId, removeEx.getMessage(), removeEx);
+        }
+      }
+      notifyErrorOccurred("Failed to place prefab: " + e.getMessage());
+    }
+  }
+
+  @Override
+  public void requestSaveAsPrefab(EditorObject objectToSave) {
+    Objects.requireNonNull(objectToSave, "Object to save as prefab cannot be null");
+    LOG.info("Processing request to save object {} as prefab", objectToSave.getId());
+    try {
+      BlueprintData newPrefabData = BlueprintBuilder.fromEditorObject(objectToSave);
+
+      // --- Determine Target File Path ---
+      String currentGameDirectory = editorDataAPI.getCurrentGameDirectoryPath();
+      if (currentGameDirectory == null || currentGameDirectory.isEmpty()) {
+        LOG.error("Cannot save prefab: Current game directory path is not set.");
+        notifyErrorOccurred("Cannot save prefab: Game path unknown.");
+        return;
+      }
+      String prefabFilePath = Paths.get(currentGameDirectory, "prefabs.xml").toString();
+      File prefabFile = new File(prefabFilePath);
+
+      // --- Load Existing Prefabs ---
+      Map<Integer, BlueprintData> existingPrefabs = loadPrefabsFromFile(prefabFile); // Use implemented method
+
+      // --- Check for Duplicates ---
+      boolean duplicateFound = existingPrefabs.values().stream()
+          .anyMatch(existing -> existing.equals(newPrefabData));
+
+      if (duplicateFound) {
+        // TODO: Implement user confirmation dialog (Overwrite / Cancel)
+        LOG.warn("Duplicate prefab definition found based on content for type: {}. Skipping save.", newPrefabData.type());
+        notifyErrorOccurred("Prefab with similar properties already exists. Not saved.");
+        return;
+      }
+
+      // --- Assign a new unique ID ---
+      int maxId = existingPrefabs.keySet().stream().max(Integer::compare).orElse(0);
+      BlueprintData finalPrefabData = newPrefabData.withId(maxId + 1);
+
+      existingPrefabs.put(finalPrefabData.blueprintId(), finalPrefabData);
+
+      // --- Save Updated Prefabs Map ---
+      savePrefabsToFile(prefabFile, existingPrefabs); // Use implemented method
+
+      LOG.info("Prefab '{}' (ID: {}) saved to {}", finalPrefabData.type(), finalPrefabData.blueprintId(), prefabFilePath);
+
+      // --- Notify Palette to Reload ---
+      notifyPrefabsChanged();
+
+    } catch (Exception e) {
+      LOG.error("Failed to save object {} as prefab: {}", objectToSave.getId(), e.getMessage(), e);
+      notifyErrorOccurred("Failed to save as prefab: " + e.getMessage());
+    }
+  }
+
+  private Map<Integer, BlueprintData> loadPrefabsFromFile(File prefabFile) {
+    Map<Integer, BlueprintData> prefabs = new HashMap<>();
+    if (!prefabFile.exists() || !prefabFile.isFile()) {
+      LOG.info("Prefab file does not exist or is not a file, skipping: {}", prefabFile.getPath());
+      return prefabs;
+    }
+    LOG.debug("Loading prefabs from: {}", prefabFile.getPath());
+
+    try {
+      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+      Document doc = dBuilder.parse(prefabFile);
+      doc.getDocumentElement().normalize();
+
+      Element rootElement = doc.getDocumentElement();
+      if (!rootElement.getNodeName().equalsIgnoreCase("prefabs")) {
+        LOG.error("Invalid prefab file format: Root element must be <prefabs> in {}", prefabFile.getPath());
+        return prefabs; // Return empty map on format error
+      }
+
+      BlueprintDataParser parser = new BlueprintDataParser();
+      // Pass root element, parser iterates through <game>, <objectGroup>, <object>
+      prefabs = parser.getBlueprintData(rootElement, new ArrayList<>()); // Empty event list ok
+
+    } catch (ParserConfigurationException | SAXException | IOException | RuntimeException |
+             BlueprintParseException | SpriteParseException | HitBoxParseException |
+             PropertyParsingException | EventParseException e) { // Catch potential parsing exceptions
+      LOG.error("Failed to parse prefab file {}: {}", prefabFile.getPath(), e.getMessage(), e);
+      notifyErrorOccurred("Error loading prefabs from " + prefabFile.getName() + ": " + e.getMessage());
+      return new HashMap<>(); // Return empty map on error
+    }
+    return prefabs;
+  }
 
   /**
-   * Registers a new view listener if it is not already registered and is not null.
-   * This listener will be notified of changes in the editor state.
-   *
-   * @param listener the {@link EditorViewListener} to register.
+   * Saves the provided map of prefabs to the specified XML file.
+   * Creates the <prefabs><game><objectGroup><object>...</objectGroup></game></prefabs> structure.
    */
+  private void savePrefabsToFile(File prefabFile, Map<Integer, BlueprintData> prefabsMap)
+      throws ParserConfigurationException, IOException, TransformerException, TransformerException {
+    LOG.debug("Saving {} prefabs to {}", prefabsMap.size(), prefabFile.getPath());
+
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.newDocument();
+
+    // Root element <prefabs>
+    Element rootElement = doc.createElement("prefabs");
+    doc.appendChild(rootElement);
+
+    // Group prefabs by game name, then by group name
+    Map<String, Map<String, List<BlueprintData>>> groupedByGame = prefabsMap.values().stream()
+        .collect(Collectors.groupingBy(BlueprintData::gameName,
+            Collectors.groupingBy(BlueprintData::group)));
+
+    // Iterate through games
+    for (Map.Entry<String, Map<String, List<BlueprintData>>> gameEntry : groupedByGame.entrySet()) {
+      String gameName = gameEntry.getKey();
+      Map<String, List<BlueprintData>> groupsInGame = gameEntry.getValue();
+
+      Element gameElement = doc.createElement("game");
+      gameElement.setAttribute("name", gameName);
+      rootElement.appendChild(gameElement);
+
+      // Iterate through groups within the game
+      for (Map.Entry<String, List<BlueprintData>> groupEntry : groupsInGame.entrySet()) {
+        String groupName = groupEntry.getKey();
+        List<BlueprintData> blueprintsInGroup = groupEntry.getValue();
+
+        Element groupElement = doc.createElement("objectGroup");
+        groupElement.setAttribute("name", groupName);
+        gameElement.appendChild(groupElement);
+
+        // Iterate through blueprints within the group
+        for (BlueprintData bp : blueprintsInGroup) {
+          Element objectElement = createObjectElement(doc, bp);
+          groupElement.appendChild(objectElement);
+        }
+      }
+    }
+    // Write the DOM document to the file
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    Transformer transformer = transformerFactory.newTransformer();
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes"); // Pretty print
+    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2"); // Indentation amount
+    DOMSource source = new DOMSource(doc);
+    StreamResult result = new StreamResult(prefabFile);
+
+    transformer.transform(source, result);
+    LOG.info("Successfully saved prefabs to {}", prefabFile.getPath());
+  }
+  /**
+   * Helper method to create an <object> Element from BlueprintData.
+   * Mirrors the structure expected by BlueprintDataParser and generated by XmlBlueprintsWriter.
+   */
+  private Element createObjectElement(Document doc, BlueprintData bp) {
+    Element objectElement = doc.createElement("object");
+
+    // --- Basic Attributes ---
+    objectElement.setAttribute("id", String.valueOf(bp.blueprintId()));
+    objectElement.setAttribute("type", bp.type());
+    objectElement.setAttribute("velocityX", String.format("%.2f", bp.velocityX()));
+    objectElement.setAttribute("velocityY", String.format("%.2f", bp.velocityY()));
+    objectElement.setAttribute("rotation", String.format("%.2f", bp.rotation()));
+
+    // --- Sprite Attributes (if sprite data exists) ---
+    SpriteData sprite = bp.spriteData();
+    if (sprite != null && sprite.spriteFile() != null) {
+      objectElement.setAttribute("spriteName", sprite.name() != null ? sprite.name() : "");
+      objectElement.setAttribute("spriteFile", sprite.spriteFile().getPath() != null ? sprite.spriteFile().getPath() : "");
+    } else {
+      objectElement.setAttribute("spriteName", "");
+      objectElement.setAttribute("spriteFile", "");
+    }
+
+    // --- Hitbox Attributes (if hitbox data exists) ---
+    HitBoxData hitbox = bp.hitBoxData();
+    if (hitbox != null) {
+      objectElement.setAttribute("hitBoxWidth", String.valueOf(hitbox.hitBoxWidth()));
+      objectElement.setAttribute("hitBoxHeight", String.valueOf(hitbox.hitBoxHeight()));
+      objectElement.setAttribute("hitBoxShape", hitbox.shape() != null ? hitbox.shape() : "RECTANGLE"); // Default shape
+      objectElement.setAttribute("spriteDx", String.valueOf(hitbox.spriteDx()));
+      objectElement.setAttribute("spriteDy", String.valueOf(hitbox.spriteDy()));
+    } else {
+      // Default hitbox attributes if none provided? Or omit them? Omitting for now.
+      LOG.warn("No hitbox data found for blueprint ID {}, omitting hitbox attributes.", bp.blueprintId());
+    }
+
+    // --- Event IDs Attribute ---
+    String eventIdsString = bp.eventDataList().stream()
+        .map(EventData::eventId)
+        .filter(Objects::nonNull)
+        .filter(id -> !id.isEmpty())
+        .collect(Collectors.joining(","));
+    objectElement.setAttribute("eventIDs", eventIdsString);
+
+    // --- Properties Element ---
+    Element propertiesElement = doc.createElement("properties");
+    objectElement.appendChild(propertiesElement);
+
+    // String Properties
+    Element stringPropsElement = doc.createElement("stringProperties");
+    if (bp.stringProperties() != null) {
+      bp.stringProperties().forEach((key, value) -> {
+        Element prop = doc.createElement("property");
+        prop.setAttribute("key", key);
+        prop.setAttribute("value", value);
+        stringPropsElement.appendChild(prop);
+      });
+    }
+    propertiesElement.appendChild(stringPropsElement);
+
+    // Double Properties
+    Element doublePropsElement = doc.createElement("doubleProperties");
+    if (bp.doubleProperties() != null) {
+      bp.doubleProperties().forEach((key, value) -> {
+        Element prop = doc.createElement("property");
+        prop.setAttribute("key", key);
+        prop.setAttribute("value", String.format("%.2f", value)); // Format double
+        doublePropsElement.appendChild(prop);
+      });
+    }
+    propertiesElement.appendChild(doublePropsElement);
+
+    // Displayed Properties (Optional, add if needed)
+    // Element displayedPropsElement = doc.createElement("displayedProperties");
+    // displayedPropsElement.setAttribute("propertyList", String.join(",", bp.displayedProperties()));
+    // propertiesElement.appendChild(displayedPropsElement);
+
+    return objectElement;
+  }
+  // --- Tool Management ---
+  @Override
+  public void setActiveTool(String toolName) { // Implementation for new method
+    if (toolName != null && !toolName.equals(this.activeToolName)) {
+      this.activeToolName = toolName;
+      LOG.info("Controller: Active tool changed to {}", toolName);
+      // Optionally notify the view if it needs to update tool button states
+      // notifyToolChanged(toolName); // Requires adding to listener interface
+    }
+  }
+
+
+    /**
+     * Registers a new view listener if it is not already registered and is not null.
+     * This listener will be notified of changes in the editor state.
+     *
+     * @param listener the {@link EditorViewListener} to register.
+     */
   @Override
   public void registerViewListener(EditorViewListener listener) {
     if (listener != null && !viewListeners.contains(listener)) {
@@ -144,17 +475,6 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
-  /**
-   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
-   *
-   * @param errorMessage the error message to be reported to the listeners.
-   */
-  private void notifyErrorOccurred(String errorMessage) {
-    LOG.debug("Notifying listeners: Error occurred - {}", errorMessage);
-    for (EditorViewListener listener : viewListeners) {
-      listener.onErrorOccurred(errorMessage);
-    }
-  }
 
   /**
    * Requests the placement of a new object within the editor at the specified world coordinates.
