@@ -21,25 +21,10 @@ import oogasalad.fileparser.records.SpriteData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Utility class to populate an EditorObject with data from a BlueprintData record. This is
- * essentially the inverse operation of BlueprintBuilder.
- *
- * @author Tatum McKinnis
- */
 public class EditorObjectPopulator {
 
   private static final Logger LOG = LogManager.getLogger(EditorObjectPopulator.class);
 
-  /**
-   * Populates the target EditorObject with data from the source BlueprintData. Note: Does NOT set
-   * the object's ID or Name, as these should be unique within the level context. Does NOT set X/Y
-   * position, as that's determined by placement.
-   *
-   * @param target The EditorObject to populate.
-   * @param source The BlueprintData containing the source information.
-   * @param api    The EditorDataAPI to interact with the object's data managers.
-   */
   public static void populateFromBlueprint(EditorObject target, BlueprintData source,
       EditorDataAPI api) {
     if (target == null || source == null || api == null) {
@@ -62,7 +47,6 @@ public class EditorObjectPopulator {
           e);
     }
   }
-
 
   private static void populateIdentity(UUID targetId, BlueprintData source, EditorDataAPI api) {
     api.getIdentityDataAPI().setGroup(targetId, source.group());
@@ -161,57 +145,59 @@ public class EditorObjectPopulator {
 
   private static void populateEvents(EditorObject target, UUID targetId, BlueprintData source,
       EditorDataAPI api) {
-
-    target.getInputData().getEvents().clear();
-    target.getCollisionData().getEvents().clear();
-    target.getPhysicsData().getEvents().clear();
-    target.getCustomEventData().getEvents().clear();
-    target.getEventData().getEvents().clear();
+    clearTargetEvents(target);
 
     if (source.eventDataList() == null) {
       return;
     }
 
     for (EventData sourceEvent : source.eventDataList()) {
-      if (sourceEvent == null) {
-        continue;
-      }
-      EditorEvent editorEvent = convertToEditorEvent(sourceEvent);
-      String eventId = sourceEvent.eventId();
-      String eventType = sourceEvent.type();
-
-      if (eventId == null || eventType == null) {
-        LOG.warn("Skipping event with null ID or type from blueprint.");
-        continue;
-      }
-
-      boolean eventAdded = addEventToCorrectManager(targetId, eventId, eventType, editorEvent,
-          api);
-
-      if (eventAdded) {
-        target.getEventData().addEvent(eventId);
-      }
+      processSingleSourceEvent(target, targetId, sourceEvent, api);
     }
   }
 
+  private static void clearTargetEvents(EditorObject target) {
+    target.getInputData().getEvents().clear();
+    target.getCollisionData().getEvents().clear();
+    target.getPhysicsData().getEvents().clear();
+    target.getCustomEventData().getEvents().clear();
+    target.getEventData().getEvents().clear();
+  }
+
+  private static void processSingleSourceEvent(EditorObject target, UUID targetId, EventData sourceEvent, EditorDataAPI api) {
+    if (sourceEvent == null) {
+      return;
+    }
+
+    EditorEvent editorEvent = convertToEditorEvent(sourceEvent);
+    String eventId = sourceEvent.eventId();
+    String eventType = sourceEvent.type();
+
+    if (eventId == null || eventType == null) {
+      LOG.warn("Skipping event with null ID or type from blueprint.");
+      return;
+    }
+
+    boolean eventAdded = addEventToCorrectManager(targetId, eventId, eventType, editorEvent, api);
+
+    if (eventAdded) {
+      target.getEventData().addEvent(eventId);
+    }
+  }
 
   private static boolean addEventToCorrectManager(UUID targetId, String eventId, String eventType,
       EditorEvent editorEvent, EditorDataAPI api) {
     switch (eventType.toLowerCase()) {
       case "input":
-        api.getInputDataAPI().addEvent(targetId, eventId);
         api.getInputDataAPI().setEvent(targetId, eventId, editorEvent);
         return true;
       case "collision":
-        api.getCollisionDataAPI().addEvent(targetId, eventId);
         api.getCollisionDataAPI().setEvent(targetId, eventId, editorEvent);
         return true;
       case "physics":
-        api.getPhysicsDataAPI().addEvent(targetId, eventId);
         api.getPhysicsDataAPI().setEvent(targetId, eventId, editorEvent);
         return true;
       case "custom":
-        api.getCustomEventDataAPI().addEvent(targetId, eventId);
         api.getCustomEventDataAPI().setEvent(targetId, eventId, editorEvent);
         return true;
       default:
@@ -224,18 +210,14 @@ public class EditorObjectPopulator {
 
   private static void populateProperties(EditorObject target, BlueprintData source,
       EditorDataAPI api) {
-    // TODO: Implement setting string/double properties on the target EditorObject
-    // Requires methods like target.setStringProperty(key, value) or similar on EditorObject or its data managers.
     if (source.stringProperties() != null) {
       source.stringProperties().forEach((key, value) -> {
         LOG.trace("Setting string property from blueprint: {} = {}", key, value);
-        // target.getSomeDataManager().setStringProperty(target.getId(), key, value); // Example
       });
     }
     if (source.doubleProperties() != null) {
       source.doubleProperties().forEach((key, value) -> {
         LOG.trace("Setting double property from blueprint: {} = {}", key, value);
-        // target.getSomeDataManager().setDoubleProperty(target.getId(), key, value); // Example
       });
     }
     if (source.stringProperties() == null && source.doubleProperties() == null) {
@@ -247,13 +229,6 @@ public class EditorObjectPopulator {
     }
   }
 
-
-  /**
-   * Converts a file-based EventData record into an editor-based EditorEvent object.
-   *
-   * @param sourceEvent The EventData record from the file/blueprint.
-   * @return An EditorEvent object populated with conditions and outcomes.
-   */
   private static EditorEvent convertToEditorEvent(EventData sourceEvent) {
     EditorEvent editorEvent = new EditorEvent();
     convertAndAddConditions(editorEvent, sourceEvent.conditionGroups());
@@ -261,9 +236,6 @@ public class EditorObjectPopulator {
     return editorEvent;
   }
 
-  /**
-   * Helper method to convert condition groups from BlueprintData format to EditorEvent format.
-   */
   private static void convertAndAddConditions(EditorEvent editorEvent,
       List<List<ConditionData>> sourceConditionGroups) {
     if (sourceConditionGroups == null) {
@@ -286,9 +258,6 @@ public class EditorObjectPopulator {
     }
   }
 
-  /**
-   * Helper method to convert outcomes from BlueprintData format to EditorEvent format.
-   */
   private static void convertAndAddOutcomes(EditorEvent editorEvent,
       List<OutcomeData> sourceOutcomes) {
     if (sourceOutcomes == null) {

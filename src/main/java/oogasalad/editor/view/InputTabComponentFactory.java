@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javafx.application.Platform;
@@ -21,7 +22,6 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.event_enum.ConditionType;
 import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
-import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.resources.EditorResourceLoader;
@@ -247,29 +247,13 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   private void handleEditConditionParam(int groupIndex, int conditionIndex, String paramName,
       Object value) {
-    LOG.trace("Edit Condition Param: group={}, index={}, param={}, value={}", groupIndex,
-        conditionIndex, paramName, value);
-    if (!isSelected(true, true)) {
-      return;
-    }
-    try {
-      if (value instanceof String strValue) {
-        editorController.setEventConditionStringParameter(
-            currentObjectId, currentEventId, groupIndex, conditionIndex, paramName, strValue);
-      } else if (value instanceof Double doubleValue) {
-        editorController.setEventConditionDoubleParameter(
-            currentObjectId, currentEventId, groupIndex, conditionIndex, paramName, doubleValue);
-      } else {
-        LOG.warn("Unsupported parameter type for condition: {}",
-            value == null ? "null" : value.getClass().getName());
-      }
-    } catch (Exception e) {
-      LOG.error("Error delegating edit condition parameter: {}", e.getMessage(), e);
-      showErrorAlert(KEY_ERROR_API_FAILURE,
-          String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "edit condition parameter",
-              e.getMessage()));
-      refreshConditionsAndOutcomesForEvent();
-    }
+    handleEditParam(paramName, value,
+        (strVal) -> editorController.setEventConditionStringParameter(currentObjectId,
+            currentEventId, groupIndex, conditionIndex, paramName, strVal),
+        (dblVal) -> editorController.setEventConditionDoubleParameter(currentObjectId,
+            currentEventId, groupIndex, conditionIndex, paramName, dblVal),
+        "condition"
+    );
   }
 
   private void handleAddOutcome(String outcomeType) {
@@ -305,29 +289,39 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   private void handleEditOutcomeParam(int outcomeIndex, String paramName, Object value) {
-    LOG.trace("Edit Outcome Param: index={}, param={}, value={}", outcomeIndex, paramName, value);
+    handleEditParam(paramName, value,
+        (strVal) -> editorController.setEventOutcomeStringParameter(currentObjectId,
+            currentEventId, outcomeIndex, paramName, strVal),
+        (dblVal) -> editorController.setEventOutcomeDoubleParameter(currentObjectId,
+            currentEventId, outcomeIndex, paramName, dblVal),
+        "outcome"
+    );
+  }
+
+  private void handleEditParam(String paramName, Object value,
+      Consumer<String> stringSetter, Consumer<Double> doubleSetter, String contextType) {
+    LOG.trace("Edit {} Param: param={}, value={}", contextType, paramName, value);
     if (!isSelected(true, true)) {
       return;
     }
     try {
       if (value instanceof String strValue) {
-        editorController.setEventOutcomeStringParameter(
-            currentObjectId, currentEventId, outcomeIndex, paramName, strValue);
+        stringSetter.accept(strValue);
       } else if (value instanceof Double doubleValue) {
-        editorController.setEventOutcomeDoubleParameter(
-            currentObjectId, currentEventId, outcomeIndex, paramName, doubleValue);
+        doubleSetter.accept(doubleValue);
       } else {
-        LOG.warn("Unsupported parameter type for outcome: {}",
+        LOG.warn("Unsupported parameter type for {}: {}", contextType,
             value == null ? "null" : value.getClass().getName());
       }
     } catch (Exception e) {
-      LOG.error("Error delegating edit outcome parameter: {}", e.getMessage(), e);
+      LOG.error("Error delegating edit {} parameter: {}", contextType, e.getMessage(), e);
       showErrorAlert(KEY_ERROR_API_FAILURE,
-          String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "edit outcome parameter",
+          String.format(uiBundle.getString(KEY_ERROR_ACTION_FAILED), "edit " + contextType + " parameter",
               e.getMessage()));
       refreshConditionsAndOutcomesForEvent();
     }
   }
+
 
   private void openAddDynamicVariableDialog() {
     LOG.debug("Opening 'Add Dynamic Variable' dialog.");
