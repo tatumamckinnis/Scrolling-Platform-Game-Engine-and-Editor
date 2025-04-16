@@ -144,6 +144,7 @@ public class ButtonActionFactory {
     return () -> {
       try {
         viewState.getGameManager().restartGame();
+        viewState.getGameManager().pauseGame();
       } catch (DataFormatException e) {
         LOG.error("Failed to restart game due to misformatted data", e);
       } catch (IOException e) {
