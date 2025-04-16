@@ -26,6 +26,7 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
 public class GameControlPanel extends Display {
   private static final Logger LOG = LogManager.getLogger();
   private List<Button> buttons;
+  private String gameControlPanelStylesheet;
   private ViewState viewState;
 
   private static final String engineComponentPropertiesFilepath = "/oogasalad/screens/engineComponent.properties";
@@ -41,6 +42,9 @@ public class GameControlPanel extends Display {
     } catch (IOException e) {
       LOG.warn("Unable to load engine component properties");
     }
+    String gameControlPanelStylesheetFilepath = engineComponentProperties.getProperty("gameControlPanel.stylesheet");
+    gameControlPanelStylesheet = Objects.requireNonNull(getClass().getResource(
+      gameControlPanelStylesheetFilepath)).toExternalForm();
     buttons = new ArrayList<>();
     this.viewState = viewState;
     this.setViewOrder(-1);
@@ -59,6 +63,7 @@ public class GameControlPanel extends Display {
     int containerLayoutX = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.layoutX"));
     buttonContainer.setSpacing(containerSpacing);
     buttonContainer.setLayoutX(containerLayoutX);
+    buttonContainer.getStylesheets().add(gameControlPanelStylesheet);
 
     this.getChildren().add(buttonContainer);
   }
