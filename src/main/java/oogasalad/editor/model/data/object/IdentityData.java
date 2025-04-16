@@ -30,8 +30,8 @@ public class IdentityData {
     this.name = name;
     this.type = type;
     this.layer = layer;
-  }
 
+  }
   /**
    * Returns the unique identifier (UUID) of the editor object.
    *
@@ -40,7 +40,6 @@ public class IdentityData {
   public UUID getId() {
     return id;
   }
-
   /**
    * Returns the name of the editor object.
    *
@@ -104,3 +103,4 @@ public class IdentityData {
     this.layer = layer;
   }
 }
+

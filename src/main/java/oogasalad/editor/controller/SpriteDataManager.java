@@ -61,4 +61,40 @@ public class SpriteDataManager {
   public void setY(UUID id, int y) {
     level.getEditorObject(id).getSpriteData().setY(y);
   }
+
+  /**
+   * Sets the name of the sprite for the specified EditorObject.
+   * @param id The UUID of the object.
+   * @param name The name to set.
+   */
+  public void setName(UUID id, String name) {
+    level.getEditorObject(id).getSpriteData().setName(name);
+  }
+
+  /**
+   * Sets the sprite path for the specified EditorObject.
+   * @param id The UUID of the object.
+   * @param spritePath The sprite path to set.
+   */
+  public void setSpritePath(UUID id, String spritePath) {
+    level.getEditorObject(id).getSpriteData().setSpritePath(spritePath);
+  }
+
+  /**
+   * Sets the rotation of the sprite for the specified EditorObject.
+   * @param id The UUID of the object.
+   * @param rotation The rotation to set.
+   */
+  public void setRotation(UUID id, double rotation) {
+    level.getEditorObject(id).getSpriteData().setRotation(rotation);
+  }
+
+  /**
+   * Sets the base frame of the sprite for the specified EditorObject.
+   * @param id The UUID of the object.
+   * @param baseFrame The base frame to set.
+   */
+  public void setBaseFrame(UUID id, String baseFrame) {
+    level.getEditorObject(id).getSpriteData().setBaseFrame(baseFrame);
+  }
 }

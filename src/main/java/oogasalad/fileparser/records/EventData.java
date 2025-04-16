@@ -27,4 +27,11 @@ public record EventData(
     List<OutcomeData> outcomes
 ) {
 
+  public List<List<ConditionData>> conditionGroups() {
+    return conditions;
+  }
+
+  public List<OutcomeData> outcomes() {
+    return outcomes;
+  }
 }

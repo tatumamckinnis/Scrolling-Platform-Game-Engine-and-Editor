@@ -36,6 +36,12 @@ public class EditorEvent {
     this.outcomes = new ArrayList<>();
   }
 
+
+
+  public void addOutcome(ExecutorData outcome) {
+    outcomes.add(outcome);
+  }
+
   /**
    * Retrieves the parameter associated with the given outcome.
    *
@@ -225,5 +231,12 @@ public class EditorEvent {
    */
   public List<ExecutorData> getOutcomes() {
     return outcomes;
+  }
+
+  /**
+   * Adds a conditionGroup to the event.
+   */
+  public void addConditionGroup(List<ExecutorData> group) {
+    conditions.add(group);
   }
 }

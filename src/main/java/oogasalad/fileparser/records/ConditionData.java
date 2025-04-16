@@ -1,3 +1,4 @@
+
 package oogasalad.fileparser.records;
 
 import java.util.Map;
@@ -18,4 +19,15 @@ public record ConditionData(String name,
                             Map<String, String> stringProperties,
                             Map<String, Double> doubleProperties) {
 
+  public String conditionType() {
+    return name;
+  }
+
+  public Map<String, String> stringParams() {
+    return stringProperties;
+  }
+
+  public Map<String, Double> doubleParams() {
+    return doubleProperties;
+  }
 }
