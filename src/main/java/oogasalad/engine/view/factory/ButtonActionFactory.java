@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.DataFormatException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
@@ -27,8 +31,6 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * This class returns the desired function for a specific button.
@@ -112,6 +114,68 @@ public class ButtonActionFactory {
   private Runnable openHelp() throws ViewInitializationException {
     // TODO need to implement
     return null;
+  }
+
+  /**
+   * Returns a runnable that resumes the game
+   * @return a runnable that resumes the game
+   */
+  private Runnable playGame() {
+    return () -> {
+      viewState.getGameManager().playGame();
+    };
+  }
+
+  /**
+   * Returns a runnable that pauses the game.
+   * @return a runnable that pauses the game
+   */
+  private Runnable pauseGame() {
+    return () -> {
+      viewState.getGameManager().pauseGame();
+    };
+  }
+
+  /**
+   * Returns a runnable that restarts the game, or throws an exception given an error
+   * @return a runnable that restarts the game
+   */
+  private Runnable restartGame() {
+    return () -> {
+      try {
+        viewState.getGameManager().restartGame();
+      } catch (DataFormatException e) {
+        LOG.error("Failed to restart game due to misformatted data", e);
+      } catch (IOException e) {
+        LOG.error("Failed to restart game due to I/O errors", e);
+      } catch (ClassNotFoundException e) {
+        LOG.error("Unable to find specified class for game restart", e);
+      } catch (InvocationTargetException e) {
+        LOG.error("Invoked exception cannot be called", e);
+      } catch (NoSuchMethodException e) {
+        LOG.error("Failed to call the provided exception", e);
+      } catch (InstantiationException e) {
+        LOG.error("Unable to create exception for provided class", e);
+      } catch (IllegalAccessException e) {
+        LOG.error("Illegal permissions for accessing provided class", e);
+      } catch (LayerParseException e) {
+        LOG.error("Failed to parse layer", e);
+      } catch (LevelDataParseException e) {
+        LOG.error("Failed to parse level data", e);
+      } catch (PropertyParsingException e) {
+        LOG.error("Failed to parse property", e);
+      } catch (SpriteParseException e) {
+        LOG.error("Failed to parse sprite", e);
+      } catch (EventParseException e) {
+        LOG.error("Failed to parse event", e);
+      } catch (HitBoxParseException e) {
+        LOG.error("Failed to parse hitbox", e);
+      } catch (BlueprintParseException e) {
+        LOG.error("Failed to parse blueprint", e);
+      } catch (GameObjectParseException e) {
+        LOG.error("Failed to parse game object", e);
+      }
+    };
   }
 
   /**

@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -13,18 +17,15 @@ import javafx.scene.layout.HBox;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * This class holds a panel of buttons such as a home button and a play/pause button.
  *
- * @author Aksel Bell
+ * @author Aksel Bell, Luke Nam
  */
 public class GameControlPanel extends Display {
   private static final Logger LOG = LogManager.getLogger();
   private List<Button> buttons;
-  private String homeButtonID = "levelHomeButton";
   private ViewState viewState;
 
   private static final String engineComponentPropertiesFilepath = "/oogasalad/screens/engineComponent.properties";
@@ -43,7 +44,7 @@ public class GameControlPanel extends Display {
     buttons = new ArrayList<>();
     this.viewState = viewState;
     this.setViewOrder(-1);
-    createHomeButton();
+    initializeGameControlPanelButtons();
   }
 
   /**
@@ -62,26 +63,54 @@ public class GameControlPanel extends Display {
     this.getChildren().add(buttonContainer);
   }
 
-  private void createHomeButton() {
-    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(
-            engineComponentProperties.getProperty("gameControlPanel.image.home"))));
-    ImageView imageView = new ImageView(image);
+  /**
+   * Initializes the game control panel buttons based on the properties file
+   */
+  public void initializeGameControlPanelButtons() {
+    String[] buttonKeys = engineComponentProperties.getProperty("gameControlPanel.buttons").split(",");
+    for (String buttonKey : buttonKeys) {
+      String formattedButtonKey = "gameControlPanel.button." + buttonKey.trim();
+      Button gameControlPanelButton = createGameControlPanelButton(formattedButtonKey);
+      buttons.add(gameControlPanelButton);
+    }
+  }
 
-    int homeFitWidth = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.width"));
-    int homeFitHeight = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.image.home.height"));
+  /**
+   * Creates a button for the game control panel, such as play, pause, restart, home, etc.
+   * The button is created using the properties file to get its image and dimensions.
+   * @param buttonKey the properties key of the button to be created
+   */
+  private Button createGameControlPanelButton(String buttonKey) {
+    Button gameControlPanelButton = new Button();
+    applyButtonDimensions(gameControlPanelButton, buttonKey);
 
-    imageView.setFitWidth(homeFitWidth);
-    imageView.setFitHeight(homeFitHeight);
-    Button homeButton = new Button();
-    homeButton.setGraphic(imageView);
-    homeButton.setMinSize(homeFitWidth, homeFitHeight);
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
-    homeButton.setOnAction(event -> {
-      factory.getAction(homeButtonID).run();
+    String buttonID = engineComponentProperties.getProperty(buttonKey + ".id");
+    gameControlPanelButton.setOnAction(event -> {
+      factory.getAction(buttonID).run();
     });
 
-    homeButton.setFocusTraversable(false);
-    homeButton.setViewOrder(-1);
-    buttons.add(homeButton);
+    gameControlPanelButton.setFocusTraversable(false);
+    return gameControlPanelButton;
+  }
+
+  /**
+   * Applies the image and preferred dimensions to the button.
+   * @param button the button object where we will apply the image and dimensions
+   * @param buttonKey the property key of the button to be modified
+   */
+  private void applyButtonDimensions(Button button, String buttonKey) {
+    int fitWidth = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.width"));
+    int fitHeight = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.height"));
+
+    Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(
+      engineComponentProperties.getProperty(buttonKey + ".image"))));
+    ImageView imageView = new ImageView(image);
+
+    imageView.setFitWidth(fitWidth);
+    imageView.setFitHeight(fitHeight);
+
+    button.setGraphic(imageView);
+    button.setMinSize(fitWidth, fitHeight);
   }
 }
