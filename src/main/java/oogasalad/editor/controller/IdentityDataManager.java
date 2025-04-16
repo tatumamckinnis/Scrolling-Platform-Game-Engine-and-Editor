@@ -2,7 +2,9 @@ package oogasalad.editor.controller;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.Layer; // Import Layer
+import oogasalad.editor.model.data.Layer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Manages identity-related data for EditorObjects, including name, group, and layer information.
@@ -14,6 +16,8 @@ import oogasalad.editor.model.data.Layer; // Import Layer
 public class IdentityDataManager {
 
   private EditorLevelData level;
+  private static final Logger LOG = LogManager.getLogger(IdentityDataManager.class);
+
 
   /**
    * Constructs an IdentityDataManager with the specified EditorLevelData.
@@ -99,7 +103,7 @@ public class IdentityDataManager {
     if (foundLayer != null) {
       level.getEditorObject(id).getIdentityData().setLayer(foundLayer);
     } else {
-      System.err.println("Layer '" + layer + "' not found!");
+      LOG.error("Layer '{}' not found!", layer);
     }
   }
 }

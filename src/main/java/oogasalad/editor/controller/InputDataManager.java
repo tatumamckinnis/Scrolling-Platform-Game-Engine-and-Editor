@@ -35,7 +35,7 @@ public class InputDataManager extends EditorEventDataManager {
    * @param event The event to set.
    */
   public void setEvent(UUID objectId, String eventId, EditorEvent event) {
-    EditorObject object = level.getEditorObject(objectId);
+    EditorObject object = getObjectById(objectId);
     if (object != null) {
       object.getInputData().setEvent(eventId, event);
     }

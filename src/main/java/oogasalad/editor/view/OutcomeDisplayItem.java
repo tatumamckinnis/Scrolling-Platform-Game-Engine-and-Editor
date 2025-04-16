@@ -9,9 +9,9 @@ import java.util.Objects;
  * and formats a display text string.
  */
 class OutcomeDisplayItem {
-  final int index;
-  final String displayText;
-  final ExecutorData data;
+  private final int index;
+  private final String displayText;
+  private final ExecutorData data;
 
   /**
    * Constructs an OutcomeDisplayItem.

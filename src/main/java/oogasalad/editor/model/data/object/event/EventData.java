@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class EventData {
 
-  List<String> events;
+  private List<String> events;
 
   /**
    * Instantiates events to a new {@link ArrayList}.
