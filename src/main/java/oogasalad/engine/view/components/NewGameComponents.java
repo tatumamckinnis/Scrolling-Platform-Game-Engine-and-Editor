@@ -9,6 +9,11 @@ import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
+/**
+ * This class hold the components for a new game screen once the player either completes a level or
+ * loses a life. It displays the high score of the player currently.
+ * @author Aksel Bell, Luke Nam
+ */
 public class NewGameComponents extends Display {
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
@@ -19,24 +24,23 @@ public class NewGameComponents extends Display {
   // contains a high score object
   private final ViewState viewState;
   private final Text highScore;
-  private final Button play;
 
+  /**
+   * Constructor for the NewGameComponents class that initializes the high score text.
+   * TODO: Externalize high score configuration
+   * @param viewState the current view state of the game
+   */
   public NewGameComponents(ViewState viewState) {
     this.viewState = viewState;
     highScore = new Text("High score: " + 0);
-    play = new Button("Play");
-    play.setOnAction(event -> {
-      viewState.getGameManager().playGame();
-      this.hide();
-    });
   }
 
   /**
-   * renders the new game components
+   * Renders the high score text on the game engine screen.
    */
   public void initialRender() {
     VBox buttonContainer = new VBox();
-    buttonContainer.getChildren().addAll(highScore, play);
+    buttonContainer.getChildren().add(highScore);
     buttonContainer.setSpacing(20);
     buttonContainer.setLayoutX(250); // change to levelViewWidth / 2
 
