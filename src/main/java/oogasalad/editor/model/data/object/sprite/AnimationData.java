@@ -10,18 +10,15 @@ import java.util.List;
  */
 public class AnimationData {
 
-  private String name;
   private double frameLength;
   private List<String> frameNames;
 
   /**
    * Constructs an AnimationData instance with the specified frame length and frame names.
-   * @param name
    * @param frameLength the duration of each frame in the animation (in seconds)
    * @param frameNames  a list of frame names that compose the animation sequence
    */
-  public AnimationData(String name, double frameLength, List<String> frameNames) {
-    this.name = name;
+  public AnimationData(double frameLength, List<String> frameNames) {
     this.frameLength = frameLength;
     this.frameNames = frameNames;
   }
@@ -68,9 +65,5 @@ public class AnimationData {
    */
   public void removeFrameName(String frameName) {
     this.frameNames.remove(frameName);
-  }
-
-  public String getName() {
-    return name;
   }
 }
