@@ -79,15 +79,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private boolean snapToGrid = true;
   private PrefabPalettePane prefabPalettePane;
 
+
+
   /**
    * Creates a new editor game view.
    *
    * @param cellSize         Size of each grid cell in pixels.
    * @param editorController Controller for handling actions and state changes.
    * @throws IllegalArgumentException if editorController is null or dimensions/cellSize are
-   *                                  non-positive.
+   * non-positive.
    */
-  public EditorGameView(int cellSize, double zoomScale, EditorController editorController) {
+  public EditorGameView(int cellSize, double zoomScale, EditorController editorController, PrefabPalettePane prefabPalettePane) { // Add PrefabPalettePane parameter
     if (editorController == null) {
       throw new IllegalArgumentException("EditorController cannot be null.");
     }
@@ -125,6 +127,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
     initializeView();
     LOG.info("EditorGameView initialized with cell size {}", cellSize);
   }
+
 
   /**
    * Gets the currently selected prefab.

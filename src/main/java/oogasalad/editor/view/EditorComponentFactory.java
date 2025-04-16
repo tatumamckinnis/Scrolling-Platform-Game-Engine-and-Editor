@@ -71,11 +71,12 @@ public class EditorComponentFactory {
 
   private final Properties editorProperties;
   private final ResourceBundle uiBundle;
-  private final EditorController editorController; // Use the controller interface
+  private final EditorController editorController;
   private final InputTabComponentFactory inputTabFactory;
   private final PropertiesTabComponentFactory propertiesTabFactory;
 
   private EditorGameView gameView;
+  private PrefabPalettePane prefabPalettePane;
 
   /**
    * Constructs the factory, loading necessary resources and initializing dependencies.
@@ -100,6 +101,9 @@ public class EditorComponentFactory {
     editorController.registerViewListener(propertiesTabFactory);
     LOG.info("TabComponentFactories created and registered as listeners.");
 
+    this.prefabPalettePane = createPrefabPalettePane();
+    LOG.info("PrefabPalettePane created.");
+
     LOG.info("EditorComponentFactory initialized.");
   }
 
@@ -118,8 +122,8 @@ public class EditorComponentFactory {
     leftSplit.setOrientation(Orientation.VERTICAL);
 
     Pane mapPane = createMapPane(editorHeight);
-    PrefabPalettePane prefabPalettePane = createPrefabPalettePane(); // Create PrefabPalettePane
-    Pane assetPane = createAssetPane(prefabPalettePane); // Modify createAssetPane
+    PrefabPalettePane prefabPalettePane = createPrefabPalettePane();
+    Pane assetPane = createAssetPane();
 
     leftSplit.getItems().addAll(mapPane, assetPane);
     leftSplit.setDividerPositions(0.7); // TODO: Make this a property
@@ -144,9 +148,8 @@ public class EditorComponentFactory {
     return scene;
   }
 
-  /**
-   * Creates the left pane containing the map view and toolbar.
-   */
+
+
   private Pane createMapPane(int height) {
     BorderPane mapPane = new BorderPane();
     mapPane.setId("map-pane");
@@ -180,7 +183,7 @@ public class EditorComponentFactory {
     double zoomScale = getDoubleProperty(PROP_ZOOM_SCALE, 1);
     double zoomStep = getDoubleProperty(PROP_ZOOM_STEP, 0.05);
 
-    gameView = new EditorGameView(cellSize, zoomScale, editorController);
+    gameView = new EditorGameView(cellSize, zoomScale, editorController, prefabPalettePane);
     LOG.debug("EditorGameView created with cell size {}", cellSize);
   }
 
@@ -188,7 +191,7 @@ public class EditorComponentFactory {
     return new PrefabPalettePane(editorController);
   }
 
-  private Pane createAssetPane(PrefabPalettePane prefabPalettePane) {
+  private Pane createAssetPane() {
     BorderPane assetPane = new BorderPane();
     assetPane.setId("prefab-pane");
     assetPane.setPrefHeight(200);
