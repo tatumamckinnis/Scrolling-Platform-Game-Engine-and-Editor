@@ -1,6 +1,7 @@
 package oogasalad.engine.view.factory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +32,7 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.exceptions.RenderingException;
 
 /**
  * This class returns the desired function for a specific button.
@@ -144,6 +146,10 @@ public class ButtonActionFactory {
     return () -> {
       try {
         viewState.getGameManager().restartGame();
+        GameDisplay game = new GameDisplay(viewState);
+        game.initialRender();
+        viewState.setDisplay(game);
+        viewState.getGameManager().displayGameObjects();
         viewState.getGameManager().pauseGame();
       } catch (DataFormatException e) {
         LOG.error("Failed to restart game due to misformatted data", e);
@@ -175,6 +181,8 @@ public class ButtonActionFactory {
         LOG.error("Failed to parse blueprint", e);
       } catch (GameObjectParseException e) {
         LOG.error("Failed to parse game object", e);
+      } catch (RenderingException e) {
+        LOG.error("Failed to render game", e);
       }
     };
   }
