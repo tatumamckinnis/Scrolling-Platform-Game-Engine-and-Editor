@@ -1,17 +1,19 @@
 package oogasalad.engine.view.screen;
 
-import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import oogasalad.engine.view.ViewState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.view.ViewState;
 
 public class WinScreen extends GameOverlayScreen {
     private static final Logger LOG = LogManager.getLogger();
@@ -104,6 +106,13 @@ public class WinScreen extends GameOverlayScreen {
                 overlayProperties.getProperty("win.button.restartLevel.id"),
                 overlayProperties.getProperty("win.button.returnHome.id")
         };
+    }
+
+    @Override
+    public void removeGameObjectImage(ImmutableGameObject gameObject) {
+        // No need to remove game objects from the win screen, as it is a static overlay
+        // that doesn't support adding dynamic objects.
+        // This method is intentionally left blank.
     }
 
 }
