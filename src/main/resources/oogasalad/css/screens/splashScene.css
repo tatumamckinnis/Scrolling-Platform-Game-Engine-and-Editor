@@ -26,6 +26,12 @@ html {
     -fx-scale-y: 1.1;
 }
 
+.button:pressed {
+    -fx-scale-x: 0.9;
+    -fx-scale-y: 0.9;
+    -fx-text-fill: white;
+}
+
 .type-button {
     -fx-border-color: #ff746c;
 }

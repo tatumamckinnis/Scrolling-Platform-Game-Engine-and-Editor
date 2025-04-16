@@ -24,9 +24,3 @@
     -fx-border-color: #ff746c;
     -fx-text-fill: white;
 }
-
-.button:focused {
-    -fx-background-color: #ff746c;
-    -fx-border-color: #ff746c;
-    -fx-text-fill: white;
-}
