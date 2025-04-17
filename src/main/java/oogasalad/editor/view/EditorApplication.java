@@ -99,6 +99,10 @@ public class EditorApplication extends Application {
    * @param args Command line arguments (not used).
    */
   public static void main(String[] args) {
+    launchApp(args);
+  }
+
+  public static void launchApp(String[] args) {
     launch(args);
   }
 
