@@ -9,13 +9,25 @@ import oogasalad.editor.view.EditorGameView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * A tool for deleting objects. When a grid square is clicked, it performs a hit test and notifies
+ * the controller of deletion.
+ *
+ * @author Alana Zinkin
+ */
 public class DeleteTool implements ObjectInteractionTool {
+
   private static final Logger LOG = LogManager.getLogger(DeleteTool.class);
 
   private final EditorGameView editorView;
   private final EditorController editorController;
 
+  /**
+   * Constructs a new Delete Tool, which removes objects from the editor scene
+   *
+   * @param editorView       the EditorGameView instance; must not be null.
+   * @param editorController the controller to use for selection notifications; must not be null.
+   */
   public DeleteTool(EditorGameView editorView, EditorController editorController) {
     this.editorView = Objects.requireNonNull(editorView, "EditorGameView cannot be null.");
     this.editorController = Objects.requireNonNull(editorController,
