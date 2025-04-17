@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * JavaFX Pane to display available prefabs (Blueprints) loaded from game-specific and global files.
  * Allows users to select a prefab for placement. Implements EditorViewListener to reload when
  * prefabs are saved.
+ * @author Tatum McKinnis
  */
 public class PrefabPalettePane extends VBox implements EditorViewListener {
 

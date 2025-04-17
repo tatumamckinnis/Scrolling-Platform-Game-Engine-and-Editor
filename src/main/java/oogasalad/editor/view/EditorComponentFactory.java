@@ -1,14 +1,14 @@
 package oogasalad.editor.view;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -31,48 +31,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Factory class responsible for creating the main UI components of the Editor scene. Uses external
- * configuration, delegates actions to the EditorController, and registers view components as
- * listeners. (DESIGN-01, DESIGN-09: MVC, DESIGN-15, DESIGN-20: Factory Pattern, Observer Pattern)
- *
+ * Factory class responsible for creating the main UI components of the Editor scene.
+ * Uses external configuration for identifiers, properties, UI text, and styling.
+ * Delegates actions to the EditorController and registers view components as listeners.
  * @author Tatum McKinnis
  */
 public class EditorComponentFactory {
 
   private static final Logger LOG = LogManager.getLogger(EditorComponentFactory.class);
 
-  private static final String EDITOR_PROPERTIES_PATH = "/oogasalad/screens/editorScene.properties";
-  private static final String UI_BUNDLE_NAME = "EditorUI";
-  private static final String CSS_PATH = "/oogasalad/css/editor/editor.css";
-
-  private static final String PROP_EDITOR_WIDTH = "editor.width";
-  private static final String PROP_EDITOR_HEIGHT = "editor.height";
-  private static final String PROP_MAP_WIDTH = "editor.map.width";
-  private static final String PROP_COMPONENT_WIDTH = "editor.component.width";
-  private static final String PROP_CELL_SIZE = "editor.map.cellSize";
-  private static final String PROP_ZOOM_SCALE = "editor.map.zoomScale";
-  private static final String PROP_ZOOM_STEP = "editor.map.zoomStep";
-  private static final String PROP_ENTITY_TYPE = "editor.tool.entity.type";
-  private static final String PROP_ENTITY_PREFIX = "editor.tool.entity.prefix";
-
-  private static final String KEY_MAP_TITLE = "mapTitle";
-  private static final String KEY_ADD_ENTITY_TOOL = "addEntityTool";
-  private static final String KEY_SELECT_TOOL = "selectTool";
-  private static final String KEY_DELETE_TOOL = "deleteTool";
-  private static final String KEY_PROPERTIES_TITLE = "propertiesTitle";
-  private static final String KEY_PROPERTIES_TAB = "propertiesTab";
-  private static final String KEY_INPUT_TAB = "inputTab";
-  private static final String KEY_PROPERTIES_PLACEHOLDER = "propertiesPlaceholder";
-
-  private static final double DEFAULT_PADDING = 10.0;
-  private static final double DEFAULT_SPACING = 10.0;
-  private static final double SECTION_PADDING = 20.0;
-
-  private static final String DEFAULT_ENTITY_TYPE = "ENTITY";
-  private static final String DEFAULT_ENTITY_PREFIX = "Entity_";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/editor_component_factory_identifiers.properties";
 
   private final Properties editorProperties;
-  private final ResourceBundle uiBundle;
+  private final Properties identifierProps;
+  private ResourceBundle uiBundle;
   private final EditorController editorController;
   private final InputTabComponentFactory inputTabFactory;
   private final PropertiesTabComponentFactory propertiesTabFactory;
@@ -82,19 +54,33 @@ public class EditorComponentFactory {
 
   /**
    * Constructs the factory, loading necessary resources and initializing dependencies.
+   * Loads core editor properties and UI text using {@link EditorResourceLoader}.
+   * Loads internal identifiers (keys, IDs, paths) from its own properties file.
    *
    * @param editorController The main controller for editor actions.
+   * @throws RuntimeException if essential resources (editor properties, UI bundle, identifiers) cannot be loaded.
+   * @throws NullPointerException if editorController is null.
    */
   public EditorComponentFactory(EditorController editorController) {
     this.editorController = Objects.requireNonNull(editorController,
-        "EditorController cannot be null.");
+        "EditorController cannot be null. Cannot proceed.");
+
+    this.identifierProps = loadIdentifierProperties();
+
+    Properties tempEditorProperties = null;
+    ResourceBundle tempUiBundle = null;
+    String errorMessage = "Fatal: Failed to load essential editor resources.";
 
     try {
-      this.editorProperties = EditorResourceLoader.loadProperties(EDITOR_PROPERTIES_PATH);
-      this.uiBundle = EditorResourceLoader.loadResourceBundle(UI_BUNDLE_NAME);
+      String editorPropsPath = getId("editor.properties.path");
+      String uiBundleBaseName = getId("ui.bundle.name");
+      tempEditorProperties = EditorResourceLoader.loadProperties(editorPropsPath);
+      tempUiBundle = EditorResourceLoader.loadResourceBundle(uiBundleBaseName);
+      this.editorProperties = tempEditorProperties;
+      this.uiBundle = tempUiBundle;
     } catch (Exception e) {
-      LOG.fatal("Failed to load essential resources. Cannot continue.", e);
-      throw new RuntimeException("Failed to load essential resources.", e);
+      LOG.fatal(errorMessage, e);
+      throw new RuntimeException(errorMessage, e);
     }
 
     this.inputTabFactory = new InputTabComponentFactory(editorController);
@@ -104,46 +90,84 @@ public class EditorComponentFactory {
     LOG.info("TabComponentFactories created and registered as listeners.");
 
     this.prefabPalettePane = createPrefabPalettePane();
-    LOG.info("PrefabPalettePane created.");
+    editorController.registerViewListener(prefabPalettePane);
+    LOG.info("PrefabPalettePane created and registered.");
 
     LOG.info("EditorComponentFactory initialized.");
   }
 
   /**
-   * Creates the main editor scene, assembling the map pane and component pane.
+   * Loads the identifier strings (keys, CSS classes, IDs, paths) from the properties file.
+   * @return A Properties object containing the loaded identifiers.
+   * @throws RuntimeException If the properties file cannot be found or read.
+   */
+  private Properties loadIdentifierProperties() {
+    Properties props = new Properties();
+    try (InputStream input = EditorComponentFactory.class.getResourceAsStream(IDENTIFIERS_PROPERTIES_PATH)) {
+      if (input == null) {
+        LOG.error("CRITICAL: Unable to find identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH);
+        throw new RuntimeException("Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
+      }
+      props.load(input);
+    } catch (IOException ex) {
+      LOG.error("CRITICAL: Error loading identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH, ex);
+      throw new RuntimeException("Error loading identifiers properties file", ex);
+    }
+    return props;
+  }
+
+  /**
+   * Retrieves an identifier value from the loaded identifier properties.
+   * @param key The key for the identifier.
+   * @return The identifier string.
+   * @throws RuntimeException If the key is not found.
+   */
+  private String getId(String key) {
+    String value = identifierProps.getProperty(key);
+    if (value == null || value.trim().isEmpty()) {
+      LOG.error("Missing identifier in properties file for key: {}", key);
+      throw new RuntimeException("Missing identifier in properties file for key: " + key);
+    }
+    return value;
+  }
+
+
+  /**
+   * Creates the main editor scene, assembling the major layout panes (map, assets, components)
+   * using SplitPanes. Dimensions and styling are controlled by external properties and CSS.
    *
-   * @return The fully assembled editor Scene.
+   * @return The fully assembled editor Scene object, ready to be set on the stage.
    */
   public Scene createEditorScene() {
     SplitPane root = new SplitPane();
-    root.setId("editor-root");
-    int editorWidth = getIntProperty(PROP_EDITOR_WIDTH, 1200);
-    int editorHeight = getIntProperty(PROP_EDITOR_HEIGHT, 800);
+    root.setId(getId("id.editor.root"));
+    int editorWidth = getIntProperty(getId("prop.editor.width"), getDefaultInt("default.editor.width"));
+    int editorHeight = getIntProperty(getId("prop.editor.height"), getDefaultInt("default.editor.height"));
 
     SplitPane leftSplit = new SplitPane();
     leftSplit.setOrientation(Orientation.VERTICAL);
 
     Pane mapPane = createMapPane(editorHeight);
-    PrefabPalettePane prefabPalettePane = createPrefabPalettePane();
     Pane assetPane = createAssetPane();
 
     leftSplit.getItems().addAll(mapPane, assetPane);
-    leftSplit.setDividerPositions(0.7); // TODO: Make this a property
+    leftSplit.setDividerPositions(getDoubleProperty(getId("layout.left.split.divider"), 0.7));
 
     Pane componentsPane = createComponentPane(editorHeight);
 
     root.getItems().addAll(leftSplit, componentsPane);
-
-    root.setDividerPositions(0.7); // TODO: Make this a property
+    root.setDividerPositions(getDoubleProperty(getId("layout.root.split.divider"), 0.7));
 
     Scene scene = new Scene(root, editorWidth, editorHeight);
+    String cssPath = getId("css.path");
     try {
-      String css = Objects.requireNonNull(getClass().getResource(CSS_PATH),
-          "CSS file not found: " + CSS_PATH).toExternalForm();
+      String css = Objects.requireNonNull(getClass().getResource(cssPath),
+              String.format(uiBundle.getString(getId("key.error.css.not.found")), cssPath))
+          .toExternalForm();
       scene.getStylesheets().add(css);
-      LOG.info("Loaded stylesheet: {}", CSS_PATH);
+      LOG.info("Loaded stylesheet: {}", cssPath);
     } catch (RuntimeException e) {
-      LOG.error("Failed to load stylesheet from path: {}", CSS_PATH, e);
+      LOG.error(String.format(uiBundle.getString(getId("key.error.css.load.failed")), cssPath), e);
     }
 
     LOG.info("Editor scene created with dimensions {}x{}", editorWidth, editorHeight);
@@ -151,23 +175,27 @@ public class EditorComponentFactory {
   }
 
 
-
+  /**
+   * Creates the main map viewing and interaction area, including the title, toolbar, and the game view canvas.
+   *
+   * @param height The suggested initial height, primarily used for context if needed.
+   * @return A Pane containing the map section components.
+   */
   private Pane createMapPane(int height) {
     BorderPane mapPane = new BorderPane();
-    mapPane.setId("map-pane");
-    int mapPaneWidth = getIntProperty(PROP_MAP_WIDTH, 800);
-    mapPane.setPrefSize(mapPaneWidth, height);
+    mapPane.setId(getId("id.map.pane"));
 
-    Label mapLabel = createStyledLabel(uiBundle.getString(KEY_MAP_TITLE), "header-label");
-    mapLabel.setId("map-label");
-    createGameView();
+    Label mapLabel = createStyledLabel(uiBundle.getString(getId("key.map.title")), getId("style.header.label"));
+    mapLabel.setId(getId("id.map.label"));
+
+    createGameView(uiBundle);
     editorController.registerViewListener(gameView);
     LOG.debug("EditorGameView registered as listener.");
 
     HBox toolbarBox = createToolbar();
 
-    VBox mapContent = new VBox(DEFAULT_SPACING);
-    mapContent.setPadding(new Insets(SECTION_PADDING));
+    VBox mapContent = new VBox();
+    mapContent.setId(getId("id.map.content.vbox"));
     mapContent.setAlignment(Pos.TOP_CENTER);
     mapContent.getChildren().addAll(mapLabel, toolbarBox, gameView);
 
@@ -179,74 +207,94 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Creates the interactive game view canvas.
+   * Creates and initializes the {@link EditorGameView} instance using configuration
+   * values loaded from properties.
    */
-  private void createGameView() {
-    int cellSize = getIntProperty(PROP_CELL_SIZE, 32);
-    double zoomScale = getDoubleProperty(PROP_ZOOM_SCALE, 1);
-    double zoomStep = getDoubleProperty(PROP_ZOOM_STEP, 0.05);
-
-    gameView = new EditorGameView(cellSize, zoomScale, editorController, prefabPalettePane);
+  /**
+   * Creates and initializes the {@link EditorGameView} instance using configuration
+   * values loaded from properties and passes necessary dependencies.
+   *
+   * @param resourceBundle The UI ResourceBundle for localized text (e.g., error messages).
+   */
+  private void createGameView(ResourceBundle resourceBundle) { // Add parameter
+    int cellSize = getIntProperty(getId("prop.cell.size"), getDefaultInt("default.cell.size"));
+    double zoomScale = getDoubleProperty(getId("prop.zoom.scale"), getDefaultDouble("default.zoom.scale"));
+    gameView = new EditorGameView(cellSize, zoomScale, editorController, prefabPalettePane, resourceBundle);
     LOG.debug("EditorGameView created with cell size {}", cellSize);
   }
 
+  /**
+   * Creates the {@link PrefabPalettePane} instance.
+   *
+   * @return A new PrefabPalettePane.
+   */
   private PrefabPalettePane createPrefabPalettePane() {
     return new PrefabPalettePane(editorController);
   }
 
+  /**
+   * Creates the asset pane located below the map pane, containing tabs for prefabs and sprites.
+   *
+   * @return A Pane containing the asset tabs.
+   */
   private Pane createAssetPane() {
     BorderPane assetPane = new BorderPane();
-    assetPane.setId("prefab-pane");
-    assetPane.setPrefHeight(200);
+    assetPane.setId(getId("id.prefab.pane"));
+    assetPane.setPrefHeight(getDoubleProperty(getId("layout.asset.pane.height"), 200.0));
 
     TabPane assetTabs = new TabPane();
+    assetTabs.setId(getId("id.asset.tabs"));
     assetTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-    Tab prefabsTab = new Tab("Prefabs", prefabPalettePane);
-    ListView<String> prefabList = new ListView<>();
-    prefabList.setPlaceholder(new Label("No prefabs yet"));
-    Tab spritesTab = new Tab("Sprites", new SpriteAssetPane(editorController, assetPane.getScene() == null ? null : assetPane.getScene().getWindow()));
+    Tab prefabsTab = new Tab(uiBundle.getString(getId("key.prefabs.tab.title")), this.prefabPalettePane);
+    prefabsTab.setId(getId("id.prefabs.tab"));
+
+    // Corrected Constructor Call: Pass controller and null for window
+    SpriteAssetPane spriteAssetPane = new SpriteAssetPane(editorController, null);
+    // Removed listener registration as SpriteAssetPane does not implement EditorViewListener
+    // editorController.registerViewListener(spriteAssetPane);
+    Tab spritesTab = new Tab(uiBundle.getString(getId("key.sprites.tab.title")), spriteAssetPane);
+    spritesTab.setId(getId("id.sprites.tab"));
 
     assetTabs.getTabs().addAll(prefabsTab, spritesTab);
     assetPane.setCenter(assetTabs);
 
-    LOG.debug("Prefab‑and‑Sprite pane created.");
+    LOG.debug("Asset pane (Prefabs/Sprites) created.");
     return assetPane;
   }
 
 
   /**
-   * Creates the toolbar with object placement tool selection buttons. Requires gameView to be
-   * initialized.
+   * Creates the toolbar HBox containing toggle buttons for selecting interaction tools (placement, selection, deletion).
+   * Relies on the {@code gameView} instance having been created previously.
+   *
+   * @return HBox node representing the toolbar.
+   * @throws IllegalStateException if {@code gameView} has not been initialized.
    */
   private HBox createToolbar() {
     if (gameView == null) {
-      LOG.error("createToolbar called before createGameView was successfully completed.");
-      throw new IllegalStateException("GameView must be created before the toolbar.");
+      String errorMsg = uiBundle.getString(getId("key.error.gameview.needed"));
+      LOG.error(errorMsg);
+      throw new IllegalStateException(errorMsg);
     }
 
-    HBox toolbar = new HBox(DEFAULT_SPACING);
-    toolbar.setId("map-toolbar");
-    toolbar.setPadding(new Insets(DEFAULT_PADDING));
+    HBox toolbar = new HBox();
+    toolbar.setId(getId("id.map.toolbar"));
     toolbar.setAlignment(Pos.CENTER);
 
     ToggleGroup toolGroup = new ToggleGroup();
 
-    String entityType = editorProperties.getProperty(PROP_ENTITY_TYPE, DEFAULT_ENTITY_TYPE);
-    String entityPrefix = editorProperties.getProperty(PROP_ENTITY_PREFIX, DEFAULT_ENTITY_PREFIX);
+    String entityType = editorProperties.getProperty(getId("prop.entity.type"), getId("default.entity.type"));
+    String entityPrefix = editorProperties.getProperty(getId("prop.entity.prefix"), getId("default.entity.prefix"));
 
-    ObjectInteractionTool entityTool = new GameObjectPlacementTool(gameView, editorController,
-        entityType, entityPrefix);
-    ToggleButton entityButton = createToolToggleButton(toolGroup,
-        uiBundle.getString(KEY_ADD_ENTITY_TOOL), entityTool, false);
+    ObjectInteractionTool entityTool = new GameObjectPlacementTool(gameView, editorController, entityType, entityPrefix);
+    ToggleButton entityButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.add.entity.tool")), entityTool, false);
 
     ObjectInteractionTool selectTool = new SelectionTool(gameView, editorController);
-    ToggleButton selectButton = createToolToggleButton(toolGroup,
-        uiBundle.getString(KEY_SELECT_TOOL), selectTool, false);
+    ToggleButton selectButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.select.tool")), selectTool, false);
 
     ObjectInteractionTool deleteTool = new DeleteTool(gameView, editorController);
-    ToggleButton deleteButton = createToolToggleButton(toolGroup,
-        uiBundle.getString(KEY_DELETE_TOOL), deleteTool, false);
+    ToggleButton deleteButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.delete.tool")), deleteTool, false);
 
     toolbar.getChildren().addAll(entityButton, selectButton, deleteButton);
     gameView.updateCurrentTool(null);
@@ -255,48 +303,61 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Helper method to create a styled ToggleButton for the toolbar.
+   * Helper method to create a styled ToggleButton for the toolbar, linking it to a specific tool
+   * and adding it to a ToggleGroup. Sets up the action to update the current tool in the game view.
+   *
+   * @param group     The ToggleGroup the button belongs to.
+   * @param text      The text label for the button.
+   * @param tool      The {@link ObjectInteractionTool} activated by this button.
+   * @param selected  Whether this button should be initially selected.
+   * @return The configured ToggleButton.
    */
-  private ToggleButton createToolToggleButton(ToggleGroup group, String text,
-      ObjectInteractionTool tool, boolean selected) {
+  private ToggleButton createToolToggleButton(ToggleGroup group, String text, ObjectInteractionTool tool, boolean selected) {
     ToggleButton button = new ToggleButton(text);
     button.setToggleGroup(group);
     button.setSelected(selected);
     button.setOnAction(e -> {
-      if (gameView != null && button.isSelected()) {
-        gameView.updateCurrentTool(tool);
-        LOG.debug("Tool selected: {}", tool.getClass().getSimpleName());
-      }
-      if (gameView != null && !button.isSelected()) {
-        gameView.updateCurrentTool(null);
-        LOG.debug("Tool deselected: {}", tool.getClass().getSimpleName());
+      if (gameView != null) {
+        if (button.isSelected()) {
+          gameView.updateCurrentTool(tool);
+          LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.selected")), tool.getClass().getSimpleName()));
+        } else {
+          if (group.getSelectedToggle() == null) {
+            gameView.updateCurrentTool(null);
+            LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.deselected")), tool.getClass().getSimpleName()));
+          }
+        }
       }
     });
-    button.getStyleClass().add("tool-button");
+    button.getStyleClass().add(getId("style.tool.button"));
     return button;
   }
 
   /**
-   * Creates the right-hand pane containing the properties and input tabs.
+   * Creates the right-hand component pane containing tabs for Properties and Input configuration.
+   *
+   * @param height The suggested initial height, primarily used for context if needed.
+   * @return A Pane containing the component tabs.
    */
   private Pane createComponentPane(int height) {
     BorderPane componentPane = new BorderPane();
-    componentPane.setId("component-pane");
-    int componentPaneWidth = getIntProperty(PROP_COMPONENT_WIDTH, 400);
-    componentPane.setPrefSize(componentPaneWidth, height);
+    componentPane.setId(getId("id.component.pane"));
 
-    Label componentsLabel = createStyledLabel(uiBundle.getString(KEY_PROPERTIES_TITLE),
-        "header-label");
+    Label componentsLabel = createStyledLabel(uiBundle.getString(getId("key.properties.title")), getId("style.header.label"));
+    componentsLabel.setId(getId("id.components.label"));
 
     TabPane tabPane = new TabPane();
-    tabPane.setId("component-tab-pane");
+    tabPane.setId(getId("id.component.tab.pane"));
+    tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+
     Tab propertiesTab = createPropertiesTab();
     Tab inputTab = createInputTab();
     tabPane.getTabs().addAll(propertiesTab, inputTab);
 
-    VBox componentContent = new VBox(DEFAULT_SPACING);
-    componentContent.setPadding(new Insets(SECTION_PADDING));
+    VBox componentContent = new VBox();
+    componentContent.setId(getId("id.component.content.vbox"));
     componentContent.getChildren().addAll(componentsLabel, tabPane);
+    VBox.setVgrow(tabPane, Priority.ALWAYS);
 
     componentPane.setCenter(componentContent);
     LOG.debug("Component pane created.");
@@ -304,11 +365,13 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Creates the "Properties" tab.
+   * Creates the "Properties" tab using the {@link PropertiesTabComponentFactory}.
+   *
+   * @return The configured Properties Tab.
    */
   private Tab createPropertiesTab() {
-    Tab propertiesTab = new Tab(uiBundle.getString(KEY_PROPERTIES_TAB));
-    propertiesTab.setId("properties-tab");
+    Tab propertiesTab = new Tab(uiBundle.getString(getId("key.properties.tab")));
+    propertiesTab.setId(getId("id.properties.tab"));
     propertiesTab.setClosable(false);
 
     ScrollPane propertiesPane = propertiesTabFactory.createPropertiesPane();
@@ -319,12 +382,15 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Creates the "Input" tab using the InputTabComponentFactory.
+   * Creates the "Input" tab using the {@link InputTabComponentFactory}.
+   *
+   * @return The configured Input Tab.
    */
   private Tab createInputTab() {
-    Tab inputTab = new Tab(uiBundle.getString(KEY_INPUT_TAB));
-    inputTab.setId("input-tab");
+    Tab inputTab = new Tab(uiBundle.getString(getId("key.input.tab")));
+    inputTab.setId(getId("id.input.tab"));
     inputTab.setClosable(false);
+
     Pane inputPane = inputTabFactory.createInputTabPanel();
     inputTab.setContent(inputPane);
     LOG.debug("Input tab created.");
@@ -333,7 +399,12 @@ public class EditorComponentFactory {
 
 
   /**
-   * Safely retrieves an integer property from the loaded properties.
+   * Safely retrieves an integer property value from the loaded editor properties file.
+   * Uses a default value if the key is not found or the value is not a valid integer.
+   *
+   * @param key          The property key (retrieved via getId).
+   * @param defaultValue The default integer value to use if lookup or parsing fails.
+   * @return The integer value from properties or the default value.
    */
   int getIntProperty(String key, int defaultValue) {
     String value = editorProperties.getProperty(key);
@@ -341,8 +412,7 @@ public class EditorComponentFactory {
       try {
         return Integer.parseInt(value.trim());
       } catch (NumberFormatException e) {
-        LOG.warn("Invalid integer format for property key '{}': value='{}', using default {}", key,
-            value, defaultValue);
+        LOG.warn("Invalid integer format for property key '{}': value='{}', using default {}", key, value, defaultValue);
       }
     } else {
       LOG.warn("Property key '{}' not found, using default {}", key, defaultValue);
@@ -351,7 +421,30 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Safely retrieves an double property from the loaded properties.
+   * Safely retrieves an integer property value from the loaded identifier properties file.
+   * Used for default integer values originally defined as constants.
+   *
+   * @param idKey        The identifier key for the default value.
+   * @return The integer value from identifier properties.
+   * @throws RuntimeException if the identifier key is not found or parsing fails.
+   */
+  int getDefaultInt(String idKey) {
+    String value = getId(idKey);
+    try {
+      return Integer.parseInt(value.trim());
+    } catch (NumberFormatException e) {
+      LOG.error("Invalid integer format for identifier key '{}': value='{}'", idKey, value, e);
+      throw new RuntimeException("Invalid integer format for identifier key '" + idKey + "'", e);
+    }
+  }
+
+  /**
+   * Safely retrieves a double property value from the loaded editor properties file.
+   * Uses a default value if the key is not found or the value is not a valid double.
+   *
+   * @param key          The property key (retrieved via getId).
+   * @param defaultValue The default double value to use if lookup or parsing fails.
+   * @return The double value from properties or the default value.
    */
   double getDoubleProperty(String key, double defaultValue) {
     String value = editorProperties.getProperty(key);
@@ -359,8 +452,7 @@ public class EditorComponentFactory {
       try {
         return Double.parseDouble(value.trim());
       } catch (NumberFormatException e) {
-        LOG.warn("Invalid double format for property key '{}': value='{}', using default {}", key,
-            value, defaultValue);
+        LOG.warn("Invalid double format for property key '{}': value='{}', using default {}", key, value, defaultValue);
       }
     } else {
       LOG.warn("Property key '{}' not found, using default {}", key, defaultValue);
@@ -369,11 +461,38 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Creates a Label and applies a CSS style class.
+   * Safely retrieves a double property value from the loaded identifier properties file.
+   * Used for default double values originally defined as constants.
+   *
+   * @param idKey        The identifier key for the default value.
+   * @return The double value from identifier properties.
+   * @throws RuntimeException if the identifier key is not found or parsing fails.
+   */
+  double getDefaultDouble(String idKey) {
+    String value = getId(idKey);
+    try {
+      return Double.parseDouble(value.trim());
+    } catch (NumberFormatException e) {
+      LOG.error("Invalid double format for identifier key '{}': value='{}'", idKey, value, e);
+      throw new RuntimeException("Invalid double format for identifier key '" + idKey + "'", e);
+    }
+  }
+
+
+  /**
+   * Creates a Label node with the specified text and applies a given CSS style class.
+   *
+   * @param text       The text content for the label.
+   * @param styleClass The CSS style class name to apply to the label.
+   * @return The configured Label node.
    */
   private Label createStyledLabel(String text, String styleClass) {
     Label label = new Label(text);
-    label.getStyleClass().add(styleClass);
+    if (styleClass != null && !styleClass.trim().isEmpty()) {
+      label.getStyleClass().add(styleClass);
+    } else {
+      LOG.warn("Attempted to apply null or empty style class to label with text: {}", text);
+    }
     return label;
   }
 }

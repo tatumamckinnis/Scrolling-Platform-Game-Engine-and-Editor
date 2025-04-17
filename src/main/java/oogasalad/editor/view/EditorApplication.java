@@ -1,4 +1,3 @@
-//  oogasalad/editor/view/EditorApplication.java
 package oogasalad.editor.view;
 
 import java.util.List;
