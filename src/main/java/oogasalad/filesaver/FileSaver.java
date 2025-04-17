@@ -1,5 +1,6 @@
 package oogasalad.filesaver;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import oogasalad.fileparser.records.LevelData;
@@ -46,6 +47,6 @@ public class FileSaver {
       LOG.warn("Export type not selected.");
       throw new IllegalStateException("Export type not selected. Call chooseExportType first.");
     }
-    mySaverStrategy.save(levelData, filePath);
+    mySaverStrategy.save(levelData, new File(filePath));
   }
 }

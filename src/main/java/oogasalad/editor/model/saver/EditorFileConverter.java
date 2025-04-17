@@ -1,10 +1,11 @@
 package oogasalad.editor.model.saver;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
-import oogasalad.filesaver.FileSaver;
+import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 /**
  * Implements the {@link EditorFileConverterAPI} to handle conversion of editor level data to and
@@ -17,9 +18,10 @@ import oogasalad.filesaver.FileSaver;
 public class EditorFileConverter implements EditorFileConverterAPI {
 
   @Override
-  public void saveEditorDataToFile(EditorLevelData editorLevelData)
+  public void saveEditorDataToFile(EditorLevelData editorLevelData, String fileName,
+      SaverStrategy saver)
       throws IOException, DataFormatException {
-    //TODO: Implement saving
+    saver.save(EditorDataSaver.buildLevelData(editorLevelData), new File(fileName));
   }
 
   @Override

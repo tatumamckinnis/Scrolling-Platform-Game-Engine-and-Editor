@@ -202,7 +202,7 @@ public class EditorComponentFactory {
     Tab prefabsTab = new Tab("Prefabs", prefabPalettePane);
     ListView<String> prefabList = new ListView<>();
     prefabList.setPlaceholder(new Label("No prefabs yet"));
-    Tab spritesTab = new Tab("Sprites", new SpriteAssetPane(assetPane.getScene() == null ? null : assetPane.getScene().getWindow()));
+    Tab spritesTab = new Tab("Sprites", new SpriteAssetPane(editorController, assetPane.getScene() == null ? null : assetPane.getScene().getWindow()));
 
     assetTabs.getTabs().addAll(prefabsTab, spritesTab);
     assetPane.setCenter(assetTabs);

@@ -3,6 +3,7 @@ package oogasalad.editor.model.saver.api;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 /**
  * Defines the API for converting Editor data to and from files. Implementations of this interface
@@ -19,10 +20,13 @@ public interface EditorFileConverterAPI {
    * model 2) Converting them into a format recognized by GameFileParserAPI 3) Sending the write
    * operation to GameFileParserAPI
    *
+   * @param editorLevelData The level data to save
+   * @param fileName        The file path to save the data to
+   * @param saver           The saving strategy to use
    * @throws IOException         if underlying file operations fail
    * @throws DataFormatException if data cannot be translated into the parser's model
    */
-  void saveEditorDataToFile(EditorLevelData editorLevelData)
+  void saveEditorDataToFile(EditorLevelData editorLevelData, String fileName, SaverStrategy saver)
       throws IOException, DataFormatException;
 
   /**

@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -36,6 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import oogasalad.editor.controller.EditorController;
 
 /**
  * Pane for slicing a sprite-sheet in TILE_SIZE, COLS_ROWS, or MANUAL modes.
@@ -70,15 +70,15 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private static final Color SPRITESHEET_GRID_COLOR = Color.rgb(255, 0, 0, 0.8);
   private static final Color SPRITESHEET_SELECTED_AREA_COLOR = Color.rgb(0, 200, 0, 0.8);
 
-  private enum SpritesheetMode {TILE_SIZE, COLS_ROWS, MANUAL}
+  private enum SpriteSheetMode {TILE_SIZE, COLS_ROWS, MANUAL}
 
   private interface RegionStrategy {
 
     void compute(Image img);
   }
 
-  private final Map<SpritesheetMode, RegionStrategy> strategies = new EnumMap<>(
-      SpritesheetMode.class);
+  private final Map<SpriteSheetMode, RegionStrategy> strategies = new EnumMap<>(
+      SpriteSheetMode.class);
 
   private final List<SpriteRegion> regions = FXCollections.observableArrayList();
 
@@ -92,7 +92,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private final TextField manualY = intField(DEFAULT_MANUAL_Y);
   private final TextField manualWidth = intField(DEFAULT_MANUAL_WIDTH);
   private final TextField manualHeight = intField(DEFAULT_MANUAL_HEIGHT);
-  private final ChoiceBox<SpritesheetMode> modeBox = new ChoiceBox<>();
+  private final ChoiceBox<SpriteSheetMode> modeBox = new ChoiceBox<>();
   private final Button loadSheet = new Button("Load Sheet");
   private final Button save = new Button("Save");
   private final Button addManual = new Button("Add Box");
@@ -102,12 +102,16 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private final GridPane colsRowsPane = new GridPane();
   private final GridPane manualPane = new GridPane();
 
+  private final EditorController controller;
+
   /**
    * Constructs the sprite-sheet processor pane and wires up its UI and logic.
    *
-   * @param owner the owner window for file chooser dialogs
+   * @param editorController the editorController for the current editor
+   * @param owner            the owner window for file chooser dialogs
    */
-  public SpriteSheetProcessorPane(Window owner) {
+  public SpriteSheetProcessorPane(EditorController editorController, Window owner) {
+    this.controller = editorController;
     initStrategies();
     buildUI(owner);
     wireEvents(owner);
@@ -120,14 +124,14 @@ public class SpriteSheetProcessorPane extends BorderPane {
    */
   private void initStrategies() {
     modeBox.getItems().addAll(
-        SpritesheetMode.TILE_SIZE,
-        SpritesheetMode.COLS_ROWS,
-        SpritesheetMode.MANUAL);
+        SpriteSheetMode.TILE_SIZE,
+        SpriteSheetMode.COLS_ROWS,
+        SpriteSheetMode.MANUAL);
 
-    modeBox.setValue(SpritesheetMode.TILE_SIZE);
+    modeBox.setValue(SpriteSheetMode.TILE_SIZE);
 
-    strategies.put(SpritesheetMode.TILE_SIZE, this::tileSizeStrategy);
-    strategies.put(SpritesheetMode.COLS_ROWS, this::colsRowsStrategy);
+    strategies.put(SpriteSheetMode.TILE_SIZE, this::tileSizeStrategy);
+    strategies.put(SpriteSheetMode.COLS_ROWS, this::colsRowsStrategy);
   }
 
   /**
@@ -223,7 +227,13 @@ public class SpriteSheetProcessorPane extends BorderPane {
       return;
     }
     try {
-      SpriteSheetSaver.save(sheetView.getImage(), regions, dest);
+      controller.getEditorDataAPI().getSpriteSheetDataAPI().saveSpriteSheet(
+          sheetView.getImage().getUrl(),
+          (int) sheetView.getImage().getWidth(),
+          (int) sheetView.getImage().getHeight(),
+          regions,
+          dest
+      );
     } catch (Exception ex) {
       new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
     }
@@ -240,7 +250,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
       return;
     }
 
-    if (modeBox.getValue() == SpritesheetMode.MANUAL) {
+    if (modeBox.getValue() == SpriteSheetMode.MANUAL) {
       redrawOverlay();
       return;
     }
@@ -256,7 +266,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
    * Adds a manually defined region from the input fields.
    */
   private void addManualRegion() {
-    if (modeBox.getValue() != SpritesheetMode.MANUAL) {
+    if (modeBox.getValue() != SpriteSheetMode.MANUAL) {
       return;
     }
     Image img = sheetView.getImage();
@@ -284,6 +294,9 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private void tileSizeStrategy(Image img) {
     int imgW = (int) img.getWidth();
     int imgH = (int) img.getHeight();
+    if (tileWidth.getText().isEmpty() || tileHeight.getText().isEmpty()) {
+      return;
+    }
     int w = parse(tileWidth);
     int h = parse(tileHeight);
     if (w <= 0 || h <= 0) {
@@ -312,6 +325,9 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private void colsRowsStrategy(Image img) {
     int imgW = (int) img.getWidth();
     int imgH = (int) img.getHeight();
+    if (numCols.getText().isEmpty() || numRows.getText().isEmpty()) {
+      return;
+    }
     int cols = parse(numCols);
     int rows = parse(numRows);
     if (cols <= 0 || rows <= 0) {
@@ -376,7 +392,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
     });
 
     /* live preview for MANUAL mode (green dashed) */
-    if (modeBox.getValue() == SpritesheetMode.MANUAL && sheetView.getImage() != null) {
+    if (modeBox.getValue() == SpriteSheetMode.MANUAL && sheetView.getImage() != null) {
       try {
         int x = parse(manualX), y = parse(manualY), w = parse(manualWidth), h = parse(manualHeight);
         double imgW = sheetView.getImage().getWidth();
@@ -409,7 +425,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
    */
   private void addLoadSaveControls(GridPane root) {
     root.add(loadSheet, 0, 0);
-    root.add(new Label("SpritesheetMode:"), 1, 0);
+    root.add(new Label("SpriteSheetMode:"), 1, 0);
     root.add(modeBox, 2, 0);
     root.add(save, 3, 0);
   }
@@ -473,11 +489,11 @@ public class SpriteSheetProcessorPane extends BorderPane {
    * Updates which parameter pane is visible based on the selected mode.
    */
   private void updateVisibleParamPane() {
-    tilePane.setVisible(modeBox.getValue() == SpritesheetMode.TILE_SIZE);
+    tilePane.setVisible(modeBox.getValue() == SpriteSheetMode.TILE_SIZE);
     tilePane.setManaged(tilePane.isVisible());
-    colsRowsPane.setVisible(modeBox.getValue() == SpritesheetMode.COLS_ROWS);
+    colsRowsPane.setVisible(modeBox.getValue() == SpriteSheetMode.COLS_ROWS);
     colsRowsPane.setManaged(colsRowsPane.isVisible());
-    manualPane.setVisible(modeBox.getValue() == SpritesheetMode.MANUAL);
+    manualPane.setVisible(modeBox.getValue() == SpriteSheetMode.MANUAL);
     manualPane.setManaged(manualPane.isVisible());
   }
 
@@ -522,11 +538,11 @@ public class SpriteSheetProcessorPane extends BorderPane {
    *
    * @param owner the owner window for modality
    */
-  public static void show(Window owner) {
+  public static void show(EditorController controller, Window owner) {
     Stage st = new Stage();
     st.setTitle("Sprite‑Sheet Processor");
     st.initOwner(owner);
-    st.setScene(new Scene(new SpriteSheetProcessorPane(owner), DIALOG_WIDTH, DIALOG_HEIGHT));
+    st.setScene(new Scene(new SpriteSheetProcessorPane(controller, owner), DIALOG_WIDTH, DIALOG_HEIGHT));
     st.show();
   }
 }

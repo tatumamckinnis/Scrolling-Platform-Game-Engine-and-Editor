@@ -7,6 +7,8 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.filesaver.savestrategy.SaverStrategy;
+import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorDataAPI {
 
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
+  private static final SaverStrategy DEFAULT_SAVE_STRATEGY = new XmlStrategy();
 
   private final IdentityDataManager identityAPI;
   private final HitboxDataManager hitboxAPI;
@@ -31,6 +34,8 @@ public class EditorDataAPI {
   private final EditorLevelData level;
   private final DynamicVariableContainer dynamicVariableContainer;
   private final CustomEventDataManager customEventAPI;
+  private final SpriteSheetDataManager spriteSheetAPI;
+  private SaverStrategy saverStrategy;
   private String currentGameDirectoryPath;
 
   /**
@@ -39,6 +44,7 @@ public class EditorDataAPI {
    *
    */
   public EditorDataAPI(){
+    saverStrategy = DEFAULT_SAVE_STRATEGY;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
@@ -48,6 +54,8 @@ public class EditorDataAPI {
     this.spriteAPI = new SpriteDataManager(level);
     this.customEventAPI = new CustomEventDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
+    this.spriteSheetAPI = new SpriteSheetDataManager(saverStrategy);
+    this.saverStrategy = DEFAULT_SAVE_STRATEGY;
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -286,6 +294,13 @@ public class EditorDataAPI {
     return customEventAPI;
   }
 
+  /**
+   * Gets the current SpriteSheetDataManager instance.
+   * @return The current SpriteSheetDataManager instance
+   */
+  public SpriteSheetDataManager getSpriteSheetDataAPI() {
+    return spriteSheetAPI;
+  }
 
   /**
    * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
