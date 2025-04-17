@@ -157,6 +157,7 @@ public class EditorComponentFactory {
     mapPane.setPrefSize(mapPaneWidth, height);
 
     Label mapLabel = createStyledLabel(uiBundle.getString(KEY_MAP_TITLE), "header-label");
+    mapLabel.setId("map-label");
     createGameView();
     editorController.registerViewListener(gameView);
     LOG.debug("EditorGameView registered as listener.");
