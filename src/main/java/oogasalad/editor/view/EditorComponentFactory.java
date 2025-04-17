@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.sprites.SpriteAssetPane;
+import oogasalad.editor.view.tools.DeleteTool;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.editor.view.tools.SelectionTool;
@@ -57,6 +58,7 @@ public class EditorComponentFactory {
   private static final String KEY_MAP_TITLE = "mapTitle";
   private static final String KEY_ADD_ENTITY_TOOL = "addEntityTool";
   private static final String KEY_SELECT_TOOL = "selectTool";
+  private static final String KEY_DELETE_TOOL = "deleteTool";
   private static final String KEY_PROPERTIES_TITLE = "propertiesTitle";
   private static final String KEY_PROPERTIES_TAB = "propertiesTab";
   private static final String KEY_INPUT_TAB = "inputTab";
@@ -157,6 +159,7 @@ public class EditorComponentFactory {
     mapPane.setPrefSize(mapPaneWidth, height);
 
     Label mapLabel = createStyledLabel(uiBundle.getString(KEY_MAP_TITLE), "header-label");
+    mapLabel.setId("map-label");
     createGameView();
     editorController.registerViewListener(gameView);
     LOG.debug("EditorGameView registered as listener.");
@@ -241,7 +244,11 @@ public class EditorComponentFactory {
     ToggleButton selectButton = createToolToggleButton(toolGroup,
         uiBundle.getString(KEY_SELECT_TOOL), selectTool, false);
 
-    toolbar.getChildren().addAll(entityButton, selectButton);
+    ObjectInteractionTool deleteTool = new DeleteTool(gameView, editorController);
+    ToggleButton deleteButton = createToolToggleButton(toolGroup,
+        uiBundle.getString(KEY_DELETE_TOOL), deleteTool, false);
+
+    toolbar.getChildren().addAll(entityButton, selectButton, deleteButton);
     gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
     return toolbar;

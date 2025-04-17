@@ -16,18 +16,24 @@ public class CustomEventDataManager extends EditorEventDataManager {
     return object.getCustomEventData();
   }
 
+  /**
+   * constructor for custom event data manager
+   *
+   * @param level the level to be created within the editor
+   */
   public CustomEventDataManager(EditorLevelData level) {
     super(level);
   }
 
   /**
    * Sets an event for the specified object.
+   *
    * @param objectId The UUID of the object.
-   * @param eventId The ID of the event.
-   * @param event The event to set.
+   * @param eventId  The ID of the event.
+   * @param event    The event to set.
    */
   public void setEvent(UUID objectId, String eventId, EditorEvent event) {
-    EditorObject object = level.getEditorObject(objectId);
+    EditorObject object = getObjectById(objectId);
     if (object != null) {
       object.getCustomEventData().setEvent(eventId, event);
     }

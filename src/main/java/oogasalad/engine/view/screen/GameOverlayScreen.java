@@ -1,5 +1,13 @@
 package oogasalad.engine.view.screen;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
+import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -7,13 +15,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
-import java.util.Properties;
 
 /**
  * Abstract class for implementing special screens during a game, like losing, pausing, and winning.
@@ -38,6 +39,12 @@ public abstract class GameOverlayScreen extends Display {
         }
         this.viewState = viewState;
     }
+
+    /**
+     * Creates the screen with all the Text and Button components for an overlay screen, whether it be a win, pause,
+     * or a loss.
+     */
+    public abstract void initialRender();
 
     /**
      * Creates a VBox containing explanatory text for the game overlay screen, such as "YOU WIN!" or "GAME OVER!"

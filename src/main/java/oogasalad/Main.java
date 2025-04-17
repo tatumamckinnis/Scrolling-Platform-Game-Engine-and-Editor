@@ -23,7 +23,7 @@ public class Main extends Application {
   @Override
   public void start(Stage primaryStage) {
     try {
-      GameManagerAPI manager = new DefaultGameManager();
+      new DefaultGameManager();
       LOG.info("Starting game...");
     } catch (Exception e) {
       LOG.warn("Error starting main");

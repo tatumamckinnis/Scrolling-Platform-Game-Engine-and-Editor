@@ -12,10 +12,10 @@ import oogasalad.editor.model.data.object.event.ExecutorData;
  */
 class ConditionDisplayItem {
 
-  final int groupIndex;
-  final int conditionIndex;
-  final String displayText;
-  final ExecutorData data;
+  private final int groupIndex;
+  private final int conditionIndex;
+  private final String displayText;
+  private final ExecutorData data;
 
   /**
    * Constructs a ConditionDisplayItem.

@@ -113,6 +113,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
     this.setId("editor-game-view");
     getChildren().addAll(gridCanvas, objectCanvas);
 
+
     gridCanvas.widthProperty().bind(widthProperty());
     gridCanvas.heightProperty().bind(heightProperty());
     objectCanvas.widthProperty().bind(widthProperty());
@@ -671,11 +672,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onObjectAdded(UUID objectId) {
     Platform.runLater(() -> {
+      // ---> MAKE SURE THE LOG IS HERE <---
       LOG.debug("EditorGameView received: onObjectAdded {}", objectId);
       if (!displayedObjectIds.contains(objectId)) {
         displayedObjectIds.add(objectId);
         preloadObjectImage(objectId);
       }
+      redrawObjects();
     });
   }
 
