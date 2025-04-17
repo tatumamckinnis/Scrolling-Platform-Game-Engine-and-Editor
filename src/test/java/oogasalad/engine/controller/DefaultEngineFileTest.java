@@ -43,7 +43,7 @@ class DefaultEngineFileTest {
     bluePrintMap.put(1, new BlueprintData(1, 1, 1, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1,
         new ArrayList<>(), new HashMap<>(), new HashMap<>(), new ArrayList<>()));
     UUID expectedUUID = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
-    GameObjectData gameObject1 = new GameObjectData(1, expectedUUID, 1, 1, 0);
+    GameObjectData gameObject1 = new GameObjectData(1, expectedUUID, 1, 1, 0, "");
     List<GameObjectData> gameObjects = new ArrayList<>();
     gameObjects.add(gameObject1);
     expectedCamera = new CameraData("Tracker", Map.of("objectToTrack","e816f04c-3047-4e30-9e20-2e601a99dde8"), new HashMap<>());

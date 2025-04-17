@@ -41,8 +41,18 @@
 ### Gage Garcia
 
 * Work done this Sprint
+  * Backend level selection work to support selecting + restarting levels
+  * Destroy game object outcome
+  * platform collision event
+  * Large refactor through entire engine backend to inject new interfaces as dependencies
+  * lose game outcome
 * Plan for next Sprint?
+  * properties file of events and their parameters
+  * dynamic variable events
+  * level selection events
+  * lots of testing
 * Blockers/Issues in your way
+  * unsure of how to work with dynamic vars in backend
 
 ### Tatum McKinnis
 

@@ -62,7 +62,7 @@ class EditorLevelDataTest {
   void removeGroup_whenGroupIsInUse_shouldReturnFalseAndNotRemove() {
     UUID id = levelData.createEditorObject();
     EditorObject obj = levelData.getEditorObject(id);
-    obj.getIdentityData().setGroup("InUseGroup");
+    obj.getIdentityData().setType("InUseGroup");
     levelData.addGroup("InUseGroup");
     assertFalse(levelData.removeGroup("InUseGroup"));
     assertTrue(levelData.getGroups().contains("InUseGroup"));

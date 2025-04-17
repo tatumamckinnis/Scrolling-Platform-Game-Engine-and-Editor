@@ -4,130 +4,210 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.fileparser.records.BlueprintData;
 
 /**
- * Defines the contract between the Editor View components and the underlying Controller logic.
- * Includes methods for actions, data fetching, and listener management for view updates (Observer
- * Pattern). (DESIGN-09, DESIGN-11, DESIGN-18, DESIGN-20)
+ * Defines the primary interface for interaction between the Editor View and the Editor Model/Data.
+ * Provides methods for managing editor objects, selection, events, and listeners. Includes methods
+ * for handling prefab (BlueprintData) placement and saving.
  *
  * @author Tatum McKinnis, Jacob You
  */
 public interface EditorController {
 
   /**
-   * Requests the placement of a new game object.
+   * Registers a view listener to receive updates from the controller.
+   */
+  void registerViewListener(EditorViewListener listener);
+
+  /**
+   * Unregisters a previously registered view listener.
+   */
+  void unregisterViewListener(EditorViewListener listener);
+
+  /**
+   * Returns the data API that provides access to the current state of the editor data.
+   */
+  EditorDataAPI getEditorDataAPI();
+
+  // --- Object Lifecycle ---
+
+  /**
+   * Requests placement of a new object in the world at the specified coordinates.
    */
   void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
       double worldY, int cellSize);
 
   /**
-   * Notifies the controller that an object has been selected in the view.
-   */
-  void notifyObjectSelected(UUID objectId);
-
-  /**
-   * Returns the editorDataAPI
-   */
-  EditorDataAPI getEditorDataAPI();
-
-  /**
-   * notifies if the object has been deselected
-   */
-  void notifyObjectDeselected();
-
-  /**
-   * Adds a new event definition to the specified object.
-   */
-  void addEvent(UUID objectId, String eventId);
-
-  /**
-   * Removes an event definition from the specified object.
-   */
-  void removeEvent(UUID objectId, String eventId);
-
-  /**
-   * Adds a condition to an existing event.
-   */
-  void addCondition(UUID objectId, String eventId, ConditionType condition);
-
-  /**
-   * Removes a condition from an existing event.
-   */
-  void removeCondition(UUID objectId, String eventId, ConditionType condition);
-
-  /**
-   * Adds an outcome to an existing event, potentially with a parameter.
-   */
-  void addOutcome(UUID objectId, String eventId, OutcomeType outcome, String parameter);
-
-  /**
-   * Removes an outcome from an existing event.
-   */
-  void removeOutcome(UUID objectId, String eventId, OutcomeType outcome);
-
-  /**
-   * Adds a new dynamic variable.
-   */
-  void addDynamicVariable(DynamicVariable variable);
-
-  /**
-   * Requests the removal of the specified game object.
+   * Requests removal of the object with the given UUID.
    */
   void requestObjectRemoval(UUID objectId);
 
   /**
-   * Requests an update to an existing game object using the provided data.
+   * Requests an update to an existing object’s properties.
    */
   void requestObjectUpdate(EditorObject updatedObject);
 
   /**
-   * Gets the EditorObject associated with the given ID.
+   * Requests placement of a prefab (group of objects) at the specified world coordinates.
+   */
+  void requestPrefabPlacement(BlueprintData prefabData, double worldX, double worldY);
+
+  /**
+   * Saves the specified object as a new prefab.
+   */
+  void requestSaveAsPrefab(EditorObject objectToSave);
+
+  // --- Selection ---
+
+  /**
+   * Notifies the controller that a specific object was selected by the user.
+   */
+  void notifyObjectSelected(UUID objectId);
+
+  /**
+   * Notifies the controller that the user deselected the currently selected object.
+   */
+  void notifyObjectDeselected();
+
+  /**
+   * Retrieves the object corresponding to the given UUID.
    */
   EditorObject getEditorObject(UUID objectId);
 
   /**
-   * Gets all events associated with the specified object ID.
+   * Returns the ID of the object located at the specified grid coordinates, if any.
+   */
+  UUID getObjectIDAt(double gridX, double gridY);
+
+  /**
+   * Returns the UUID of the currently selected object, if any.
+   */
+  UUID getCurrentSelectedObjectId();
+
+  // --- Tool Management ---
+
+  /**
+   * Sets the currently active tool by name (e.g., "select", "place", etc.).
+   */
+  void setActiveTool(String toolName);
+
+  // --- Event Handling ---
+
+  /**
+   * Adds an event with the given ID to the specified object.
+   */
+  void addEvent(UUID objectId, String eventId);
+
+  /**
+   * Removes the specified event from the object.
+   */
+  void removeEvent(UUID objectId, String eventId);
+
+  /**
+   * Returns the full map of event IDs to event data for the specified object.
    */
   Map<String, EditorEvent> getEventsForObject(UUID objectId);
 
   /**
-   * Gets all conditions associated with a specific event.
+   * Adds a new condition group to an event (supports multiple AND/OR condition sets).
    */
-  List<ConditionType> getConditionsForEvent(UUID objectId, String eventId);
+  void addConditionGroup(UUID objectId, String eventId);
 
   /**
-   * Gets all outcomes associated with a specific event.
+   * Adds a condition to a specific group in an event's condition structure.
    */
-  List<OutcomeType> getOutcomesForEvent(UUID objectId, String eventId);
+  void addEventCondition(UUID objectId, String eventId, int groupIndex, String conditionType);
 
   /**
-   * Gets the parameter associated with a specific outcome of an event.
+   * Removes a condition from a specific group in an event.
    */
-  String getOutcomeParameter(UUID objectId, String eventId, OutcomeType outcome);
+  void removeEventCondition(UUID objectId, String eventId, int groupIndex, int conditionIndex);
 
   /**
-   * Gets all available dynamic variables (context might depend on objectId).
+   * Removes a full group of conditions from an event.
+   */
+  void removeConditionGroup(UUID objectId, String eventId, int groupIndex);
+
+  /**
+   * Sets a string parameter for a specific condition within an event.
+   */
+  void setEventConditionStringParameter(UUID objectId, String eventId, int groupIndex,
+      int conditionIndex, String paramName, String value);
+
+  /**
+   * Sets a numeric parameter for a specific condition within an event.
+   */
+  void setEventConditionDoubleParameter(UUID objectId, String eventId, int groupIndex,
+      int conditionIndex, String paramName, Double value);
+
+  /**
+   * Returns all condition groups and their associated conditions for the given event.
+   */
+  List<List<ExecutorData>> getEventConditions(UUID objectId, String eventId);
+
+  /**
+   * Returns the condition group at the specified index for the given event.
+   */
+  List<ExecutorData> getEventConditionGroup(UUID objectId, String eventId, int groupIndex);
+
+  /**
+   * Adds an outcome (response/action) to the specified event.
+   */
+  void addEventOutcome(UUID objectId, String eventId, String outcomeType);
+
+  /**
+   * Removes an outcome at the given index from the event.
+   */
+  void removeEventOutcome(UUID objectId, String eventId, int outcomeIndex);
+
+  /**
+   * Sets a string parameter for a specific outcome in an event.
+   */
+  void setEventOutcomeStringParameter(UUID objectId, String eventId, int outcomeIndex,
+      String paramName, String value);
+
+  /**
+   * Sets a numeric parameter for a specific outcome in an event.
+   */
+  void setEventOutcomeDoubleParameter(UUID objectId, String eventId, int outcomeIndex,
+      String paramName, Double value);
+
+  /**
+   * Returns a list of all outcomes associated with the specified event.
+   */
+  List<ExecutorData> getEventOutcomes(UUID objectId, String eventId);
+
+  /**
+   * Retrieves data for a specific outcome by index from the event.
+   */
+  ExecutorData getEventOutcomeData(UUID objectId, String eventId, int outcomeIndex);
+
+  // --- Dynamic Variables ---
+
+  /**
+   * Adds a new dynamic variable to the editor’s shared variable list.
+   */
+  void addDynamicVariable(DynamicVariable variable);
+
+  /**
+   * Returns a list of dynamic variables available to the specified object.
    */
   List<DynamicVariable> getAvailableDynamicVariables(UUID objectId);
 
+  // --- Notifications ---
 
   /**
-   * Registers a listener to receive notifications about model/state changes.
+   * Notifies the view that an error occurred and provides a message for display.
    */
-  void registerViewListener(EditorViewListener listener);
+  void notifyErrorOccurred(String errorMessage);
 
   /**
-   * Unregisters a listener.
+   * Notifies the view that the available prefab list has changed and should be refreshed.
    */
-  void unregisterViewListener(EditorViewListener listener);
-
-  /**
-   * Retrieves the object at specific coordinates.
-   */
-  UUID getObjectIDAt(double x, double y);
+  void notifyPrefabsChanged();
 }

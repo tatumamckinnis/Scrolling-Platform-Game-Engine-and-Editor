@@ -34,6 +34,10 @@ public class Sprite {
   private Map<String, FrameData> frameMap;
   private Map<String, AnimationData> animations;
   private File spriteFile;
+  private String currAnimation;
+  private int frameNumber;
+  private int animationNumber;
+
 
   /**
    * Constructs a new {@code Sprite} with the provided frame data and rendering offsets.
@@ -52,7 +56,9 @@ public class Sprite {
     this.currentSprite = currentSprite;
     this.animations = animations;
     this.spriteFile = spriteFile;
-
+    this.frameNumber = 0;
+    this.animationNumber = 0;
+    this.currAnimation = "base";
   }
 
   /**
@@ -111,5 +117,19 @@ public class Sprite {
   public File getSpriteFile() {
     return spriteFile;
   }
+
+  public String getCurrAnimation() {
+    return currAnimation;
+  }
+
+  public int getFrameNumber() {
+    return frameNumber;
+  }
+
+  public int getAnimationNumber() {
+    return animationNumber;
+  }
+
+
 }
 

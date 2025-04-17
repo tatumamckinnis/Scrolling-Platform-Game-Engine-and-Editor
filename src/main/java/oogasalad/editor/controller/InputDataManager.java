@@ -1,8 +1,10 @@
 package oogasalad.editor.controller;
 
+import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.object.event.EditorEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
+import oogasalad.editor.model.data.object.event.EditorEvent;
 
 /**
  * Manages the Input Event related data of a specific object. Implements EditorEventDataManager for
@@ -13,7 +15,7 @@ import oogasalad.editor.model.data.object.event.EditorEventData;
 public class InputDataManager extends EditorEventDataManager {
 
   @Override
-  protected EditorEventData createDataIfAbsent(EditorObject object) {
+  protected AbstractEventMapData createDataIfAbsent(EditorObject object) {
     return object.getInputData();
   }
 
@@ -24,5 +26,18 @@ public class InputDataManager extends EditorEventDataManager {
    */
   public InputDataManager(EditorLevelData level) {
     super(level);
+  }
+
+  /**
+   * Sets an event for the specified object.
+   * @param objectId The UUID of the object.
+   * @param eventId The ID of the event.
+   * @param event The event to set.
+   */
+  public void setEvent(UUID objectId, String eventId, EditorEvent event) {
+    EditorObject object = getObjectById(objectId);
+    if (object != null) {
+      object.getInputData().setEvent(eventId, event);
+    }
   }
 }

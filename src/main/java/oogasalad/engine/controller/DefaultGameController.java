@@ -153,6 +153,11 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     return myCamera;
   }
 
+  @Override
+  public void selectLevel(String filePath)
+      throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
+    myGameManager.selectGame(filePath);
+  }
 
 
   private List<ImmutableGameObject> makeGameObjectsImmutable() {

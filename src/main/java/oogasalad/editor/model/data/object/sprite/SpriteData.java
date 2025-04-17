@@ -1,3 +1,4 @@
+
 package oogasalad.editor.model.data.object.sprite;
 
 import java.util.List;
@@ -12,28 +13,54 @@ import java.util.Map;
  */
 public class SpriteData {
 
+  private String name;
   private int x;
   private int y;
+  private double rotation;
   private Map<String, FrameData> frames;
   private Map<String, AnimationData> animations;
   private String spritePath;
+  private String baseFrame; // Added field
 
   /**
    * Constructs a new SpriteData instance with the specified properties.
    *
+   * @param name       the unique name of the sprite
    * @param x          the x-coordinate of the sprite's position
    * @param y          the y-coordinate of the sprite's position
+   * @param rotation   the rotation of the sprite
    * @param frames     a map of frame names to their corresponding {@link FrameData}
    * @param animations a map of animation names to their corresponding {@link AnimationData}
    * @param spritePath the file path to the sprite image
    */
-  public SpriteData(int x, int y, Map<String, FrameData> frames,
+  public SpriteData(String name, int x, int y, double rotation, Map<String, FrameData> frames,
       Map<String, AnimationData> animations, String spritePath) {
+    this.name = name;
     this.x = x;
     this.y = y;
+    this.rotation = rotation;
     this.frames = frames;
     this.animations = animations;
     this.spritePath = spritePath;
+  }
+
+  /**
+   * Adds a new animation to the sprite.
+   *
+   * @param name The name of the animation.
+   * @param animation The AnimationData to add.
+   */
+  public void addAnimation(String name, AnimationData animation) {
+    this.animations.put(name, animation);
+  }
+
+  /**
+   * Retrieves the name of the sprite.
+   *
+   * @return the name of the sprite
+   */
+  public String getName() {
+    return name;
   }
 
   /**
@@ -52,6 +79,15 @@ public class SpriteData {
    */
   public int getY() {
     return y;
+  }
+
+  /**
+   * Retrieves the rotation of the sprite.
+   *
+   * @return the rotation in angles
+   */
+  public double getRotation() {
+    return rotation;
   }
 
   /**
@@ -122,6 +158,15 @@ public class SpriteData {
   }
 
   /**
+   * Sets the name of the sprite.
+   *
+   * @param name the new name
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
    * Sets the x-coordinate of the sprite's position.
    *
    * @param x the new x-coordinate
@@ -140,6 +185,15 @@ public class SpriteData {
   }
 
   /**
+   * Sets the rotation of the sprite.
+   *
+   * @param rotation the new rotation
+   */
+  public void setRotation(double rotation) {
+    this.rotation = rotation;
+  }
+
+  /**
    * Replaces the current frame data map with a new map.
    *
    * @param frames a map where keys are frame names and values are {@link FrameData} objects
@@ -152,7 +206,7 @@ public class SpriteData {
    * Replaces the current animation data map with a new map.
    *
    * @param animations a map where keys are animation names and values are {@link AnimationData}
-   *                   objects
+   * objects
    */
   public void setAnimations(Map<String, AnimationData> animations) {
     this.animations = animations;
@@ -247,5 +301,14 @@ public class SpriteData {
    */
   public void setSpritePath(String spritePath) {
     this.spritePath = spritePath;
+  }
+
+  /**
+   * Sets the base frame of the sprite.
+   *
+   * @param baseFrame the new base frame
+   */
+  public void setBaseFrame(String baseFrame) {
+    this.baseFrame = baseFrame;
   }
 }

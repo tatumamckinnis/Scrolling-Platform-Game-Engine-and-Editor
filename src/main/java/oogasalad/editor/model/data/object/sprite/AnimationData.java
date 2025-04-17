@@ -15,7 +15,6 @@ public class AnimationData {
 
   /**
    * Constructs an AnimationData instance with the specified frame length and frame names.
-   *
    * @param frameLength the duration of each frame in the animation (in seconds)
    * @param frameNames  a list of frame names that compose the animation sequence
    */
@@ -23,7 +22,6 @@ public class AnimationData {
     this.frameLength = frameLength;
     this.frameNames = frameNames;
   }
-
   /**
    * Retrieves the duration of each frame in the animation.
    *

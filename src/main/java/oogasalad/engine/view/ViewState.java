@@ -1,11 +1,13 @@
 package oogasalad.engine.view;
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Holds the internal state needed to manage the current view of the application, such as stage,
@@ -15,6 +17,8 @@ import org.apache.logging.log4j.Logger;
  * Acts as a central, mutable state object that can be shared across internal view components. Is
  * only accessible by the factory package to encapsulate the View's state from external view
  * packages.
+ * <p>
+ * @author Aksel Bell, Luke Nam
  */
 public class ViewState {
 

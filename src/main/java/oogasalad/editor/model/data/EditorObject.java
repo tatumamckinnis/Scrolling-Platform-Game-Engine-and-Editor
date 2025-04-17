@@ -3,11 +3,13 @@ package oogasalad.editor.model.data;
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.object.CollisionData;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
-import oogasalad.editor.model.data.object.InputData;
-import oogasalad.editor.model.data.object.PhysicsData;
+import oogasalad.editor.model.data.object.event.CollisionData;
+import oogasalad.editor.model.data.object.event.CustomEventData;
+import oogasalad.editor.model.data.object.event.EventData;
+import oogasalad.editor.model.data.object.event.InputData;
+import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 
 /**
@@ -27,6 +29,8 @@ public class EditorObject {
   private CollisionData collision;
   private SpriteData sprite;
   private HitboxData hitbox;
+  private CustomEventData custom;
+  private EventData event;
   private Properties editorConfig;
 
   /**
@@ -39,9 +43,12 @@ public class EditorObject {
    * @param collision the collision data for this object
    * @param sprite    the sprite data for this object
    * @param hitbox    the hitbox data for this object
+   * @param custom    the custom event data for this object
+   * @param event     the event data for this object
    */
   public EditorObject(EditorLevelData level, IdentityData identity, InputData input,
-      PhysicsData physics, CollisionData collision, SpriteData sprite, HitboxData hitbox) {
+      PhysicsData physics, CollisionData collision, SpriteData sprite, HitboxData hitbox,
+      CustomEventData custom, EventData event) {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
     this.identity = identity;
@@ -50,6 +57,8 @@ public class EditorObject {
     this.collision = collision;
     this.sprite = sprite;
     this.hitbox = hitbox;
+    this.custom = custom;
+    this.event = event;
   }
 
   /**
@@ -69,10 +78,12 @@ public class EditorObject {
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
         editorConfig.getProperty("defaultHitboxShape"));
-    this.sprite = new SpriteData(0, 0, new HashMap<>(), new HashMap<>(), "");
+    this.sprite = new SpriteData("", 0, 0, 0, new HashMap<>(), new HashMap<>(), "");
     this.input = new InputData();
     this.physics = new PhysicsData();
     this.collision = new CollisionData();
+    this.event = new EventData();
+    this.custom = new CustomEventData();
   }
 
   /**
@@ -193,5 +204,41 @@ public class EditorObject {
    */
   public void setHitboxData(HitboxData hitbox) {
     this.hitbox = hitbox;
+  }
+
+  /**
+   * Retrieves the custom event data of this editor object.
+   *
+   * @return the {@link CustomEventData} associated with this object
+   */
+  public CustomEventData getCustomEventData() {
+    return custom;
+  }
+
+  /**
+   * Sets the custom data for this editor object.
+   *
+   * @param custom the new {@link CustomEventData} to set
+   */
+  public void setCustomEventData(CustomEventData custom) {
+    this.custom = custom;
+  }
+
+  /**
+   * Retrieves the event data of this editor object.
+   *
+   * @return the {@link EventData} associated with this object
+   */
+  public EventData getEventData() {
+    return event;
+  }
+
+  /**
+   * Sets the event data for this editor object.
+   *
+   * @param event the new {@link EventData} to set
+   */
+  public void setEventData(EventData event) {
+    this.event = event;
   }
 }

@@ -9,9 +9,13 @@
 
 /* --- Map Pane --- */
 #map-pane {
-  -fx-background-color: lightblue;
+  -fx-background-color: #0a4f7d;
   -fx-border-color: gray;
   -fx-border-width: 1px;
+}
+
+#map-label {
+  -fx-text-fill: white; /* blue, or any color */
 }
 
 #map-toolbar {
@@ -24,8 +28,24 @@
 
 .tool-button {
   /* Styles for toggle buttons in the toolbar */
-  -fx-pref-width: 100px;
+  -fx-background-color: #eba743;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-background-radius: 10;
+  -fx-padding: 8 20;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 2);
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", sans-serif;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-transition: all 0.3s ease;
 }
+
+.tool-button:hover {
+  -fx-background-color: #f8d65c; /* yellow hover */
+}
+
 
 /* --- Component Pane --- */
 #component-pane {
@@ -36,13 +56,32 @@
 
 #properties-tab {
   /* Specific styles for the properties tab if needed */
+  -fx-background-color: #eba743;
+}
+
+#properties-tab:hover {
+  -fx-background-color: #f8d65c;
+}
+
+#properties-tab:selected {
+  -fx-background-color: #f8d65c;
 }
 
 #input-tab {
   /* Specific styles for the input tab if needed */
   /* Remove padding if main pane adds it */
   /* -fx-padding: 0; */
+  -fx-background-color: #eba743;
 }
+
+#input-tab:hover {
+  -fx-background-color: #f8d65c;
+}
+
+#input-tab:selected {
+  -fx-background-color: #f8d65c;
+}
+
 
 #input-tab-main {
   /* Style for the root BorderPane of the input tab */
@@ -194,4 +233,186 @@
 /* Style for error dialogs if needed */
 .error-dialog-pane {
   /* -fx-background-color: #fff0f0; */ /* Example: light red background */
+}
+
+/* Styles for DynamicVariableDialog */
+.dynamic-variable-dialog .grid-pane { /* Target grid inside the dialog */
+  -fx-hgap: 10px; /* Replaces DEFAULT_SPACING */
+  -fx-vgap: 10px; /* Replaces DEFAULT_SPACING */
+  -fx-padding: 20px; /* Replaces SECTION_SPACING Insets */
+}
+
+/* Apply preferred width to input fields within the dialog */
+.dynamic-variable-dialog #varNameField,
+.dynamic-variable-dialog #varTypeCombo,
+.dynamic-variable-dialog #varValueField,
+.dynamic-variable-dialog #varDescField {
+  -fx-pref-width: 200px; /* Replaces DIALOG_INPUT_WIDTH */
+}
+
+/* Add specific styling for the dialog pane if needed */
+.dynamic-variable-dialog {
+  /* Example: -fx-background-color: #f0f0f0; */
+}
+
+/* Default spacing/padding for major containers if needed */
+#map-content-vbox, #component-content-vbox {
+  -fx-spacing: 10px; /* Replaces DEFAULT_SPACING for these VBoxes */
+  -fx-padding: 20px; /* Replaces SECTION_PADDING Insets */
+}
+
+#map-toolbar {
+  -fx-spacing: 10px; /* Replaces DEFAULT_SPACING for this HBox */
+  -fx-padding: 10px; /* Replaces DEFAULT_PADDING Insets */
+  /* -fx-alignment: center; */ /* Alignment can stay in code or move here */
+}
+
+/* Style for header labels */
+.header-label {
+  /* Add specific styling like font size, weight, color */
+  -fx-font-size: 1.2em;
+  -fx-font-weight: bold;
+}
+
+/* Style for toolbar buttons */
+.tool-button {
+  /* Add specific styling */
+}
+
+/* Style for the EditorGameView Pane */
+#editor-game-view {
+  -fx-background-color: #FFFFFF; /* Or use loaded background color */
+  /* Add borders or other base styles if needed */
+}
+
+/* Styles for EventsSectionBuilder */
+#eventsSectionVbox {
+  -fx-spacing: 12px; /* Replaces DEFAULT_SPACING */
+  -fx-padding: 12px; /* Replaces DEFAULT_PADDING */
+  /* Inherits .input-section styles */
+}
+
+#eventInputRowHbox {
+  -fx-spacing: 6px; /* Replaces DEFAULT_SPACING / 2 */
+  /* -fx-alignment: center-left; */ /* Alignment can stay in code or move here */
+}
+
+#eventButtonRowHbox {
+  -fx-spacing: 12px; /* Replaces DEFAULT_SPACING */
+  /* -fx-alignment: center; */ /* Alignment can stay in code or move here */
+}
+
+#eventListView {
+  -fx-pref-height: 150px; /* Replaces LIST_VIEW_HEIGHT */
+  /* Inherits .data-list-view styles */
+}
+
+/* Ensure styles for .input-section, .section-header, .data-list-view,
+   .action-button, .remove-button are defined */
+
+.input-section {
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1px;
+  -fx-border-radius: 5px;
+  -fx-background-color: #f9f9f9;
+  -fx-background-radius: 5px;
+}
+.section-header {
+  -fx-font-size: 1.15em;
+  -fx-font-weight: bold;
+  -fx-padding-bottom: 8px; /* Example spacing */
+}
+.data-list-view {
+  -fx-border-color: #dddddd;
+  -fx-border-radius: 3px;
+}
+.action-button {
+  /* Define styles */
+  -fx-pref-width: 100px; /* Example width */
+}
+.remove-button {
+  /* Define styles */
+  -fx-pref-width: 100px; /* Example width */
+  -fx-background-color: #d9534f;
+  -fx-text-fill: white;
+}
+.remove-button:hover {
+  -fx-background-color: #c9302c;
+}
+
+/* Styles for InputTabComponentFactory */
+#input-tab-content-vbox {
+  -fx-spacing: 25px; /* Replaces SECTION_SPACING */
+  -fx-padding: 12px; /* Replaces DEFAULT_PADDING */
+}
+
+#input-tab-scroll-pane {
+  /* Base styles for the scroll pane if needed */
+  -fx-background-color: transparent; /* Example */
+}
+
+/* Ensure styles for sections within the VBox are defined */
+/* (e.g., .input-section if applied by builders) */
+
+/* Styles for OutcomesSectionBuilder */
+#outcomesSectionVbox {
+  -fx-spacing: 8px; /* Replaces DEFAULT_SPACING */
+  -fx-padding: 12px; /* Replaces DEFAULT_PADDING */
+  /* Inherits .input-sub-section styles if applied */
+}
+
+#outcomeSelectionRow, #dynamicVariableRow {
+  -fx-spacing: 4px; /* Replaces DEFAULT_SPACING / 2 */
+  /* -fx-alignment: center-left; */
+}
+
+#outcomesListView {
+  -fx-pref-height: 120px; /* Replaces LIST_VIEW_HEIGHT */
+  /* Inherits .data-list-view styles */
+}
+
+#outcomeParametersContainer {
+  -fx-spacing: 4px; /* Replaces DEFAULT_SPACING / 2 */
+}
+
+#outcomeParametersPane {
+  -fx-spacing: 4px; /* Replaces DEFAULT_SPACING / 2 */
+  -fx-padding: 4px 0 0 0; /* Replaces Insets(DEFAULT_SPACING / 2, 0, 0, 0) */
+}
+
+#outcomeParametersScrollPane {
+  -fx-pref-height: 80px; /* Example height */
+}
+
+#outcomeParametersGrid {
+  -fx-hgap: 4px; /* Replaces DEFAULT_SPACING / 2 */
+  -fx-vgap: 4px; /* Replaces DEFAULT_SPACING / 2 */
+}
+
+/* Ensure styles for .input-sub-section, .remove-button, .data-list-view,
+   .section-header, .action-button, .small-button are defined */
+
+.input-sub-section {
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1px;
+  /* ... other styles */
+}
+.remove-button {
+  -fx-background-color: #d9534f;
+  /* ... other styles */
+}
+.data-list-view {
+  -fx-border-color: #dddddd;
+  /* ... other styles */
+}
+.section-header {
+  -fx-font-size: 1.15em;
+  /* ... other styles */
+}
+.action-button {
+  /* Define general styles */
+}
+.small-button {
+  /* Define specific styles for small buttons like '+' */
+  -fx-padding: 2px 6px;
 }

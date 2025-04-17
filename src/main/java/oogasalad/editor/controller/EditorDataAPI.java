@@ -7,6 +7,11 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.saver.EditorFileConverter;
+import oogasalad.editor.model.saver.SpriteSheetSaver;
+import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.filesaver.savestrategy.SaverStrategy;
+import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorDataAPI {
 
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
+  private static final SaverStrategy DEFAULT_SAVE_STRATEGY = new XmlStrategy();
 
   private final IdentityDataManager identityAPI;
   private final HitboxDataManager hitboxAPI;
@@ -29,21 +35,34 @@ public class EditorDataAPI {
   private final CollisionDataManager collisionAPI;
   private final SpriteDataManager spriteAPI;
   private final EditorLevelData level;
-  private final DynamicVariableContainer dynamicVariableContainer; // Field already exists
+  private final DynamicVariableContainer dynamicVariableContainer;
+  private final CustomEventDataManager customEventAPI;
+  private final SpriteSheetDataManager spriteSheetAPI;
+  private final EditorFileConverterAPI fileConverterAPI;
+  private final SpriteSheetSaver spriteSheetSaver;
+  private SaverStrategy saverStrategy;
+  private String currentGameDirectoryPath;
 
   /**
    * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
    * all related data managers.
+   *
    */
-  public EditorDataAPI() {
+  public EditorDataAPI(){
+    saverStrategy = DEFAULT_SAVE_STRATEGY;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
-    this.inputAPI = new InputDataManager(level); // InputDataManager manages InputData/EditorEvents
+    this.inputAPI = new InputDataManager(level);
     this.physicsAPI = new PhysicsDataManager(level);
     this.collisionAPI = new CollisionDataManager(level);
     this.spriteAPI = new SpriteDataManager(level);
-    this.dynamicVariableContainer = new DynamicVariableContainer(); // Field already initialized
+    this.customEventAPI = new CustomEventDataManager(level);
+    this.dynamicVariableContainer = new DynamicVariableContainer();
+
+    this.fileConverterAPI = new EditorFileConverter();
+    this.spriteSheetSaver = new SpriteSheetSaver();
+    this.spriteSheetAPI = new SpriteSheetDataManager(spriteSheetSaver, saverStrategy);
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -130,7 +149,7 @@ public class EditorDataAPI {
     LOG.debug("Adding layer '{}' via EditorLevelData.", layerName);
     int newPriority = 0;
     if (!level.getLayers().isEmpty()) {
-      newPriority = level.getLayers().stream().mapToInt(Layer::getPriority).max().orElse(-1) + 1;
+      newPriority = level.getLayers().stream().mapToInt(Layer::getPriority).max().orElse(0) + 1;
     }
     level.addLayer(new Layer(layerName, newPriority));
   }
@@ -148,10 +167,11 @@ public class EditorDataAPI {
    * Removes the layer identified by the given layer name from the editor level.
    *
    * @param layerName the name of the layer to remove.
+   * @return true if the layer was removed; false otherwise
    */
-  public void removeLayer(String layerName) {
+  public boolean removeLayer(String layerName) {
     LOG.debug("Removing layer '{}' via EditorLevelData.", layerName);
-    level.removeLayer(layerName);
+    return level.removeLayer(layerName);
   }
 
   /**
@@ -177,10 +197,12 @@ public class EditorDataAPI {
    * Removes the group identified by the provided group name from the editor level.
    *
    * @param groupName the name of the group to remove.
+   * @return true if the group was successfully removed, false if any editor object is still
+   * associated with it
    */
-  public void removeGroup(String groupName) {
+  public boolean removeGroup(String groupName) {
     LOG.debug("Removing group '{}' via EditorLevelData.", groupName);
-    level.removeGroup(groupName);
+    return level.removeGroup(groupName);
   }
 
   /**
@@ -253,5 +275,46 @@ public class EditorDataAPI {
    */
   public DynamicVariableContainer getDynamicVariableContainer() {
     return dynamicVariableContainer;
+  }
+
+  /**
+   * Sets the current game directory path.
+   * @param path The path to the current game directory.
+   */
+  public void setCurrentGameDirectoryPath(String path) {
+    this.currentGameDirectoryPath = path;
+  }
+
+  /**
+   * Gets the current game directory path.
+   * @return The path to the current game directory.
+   */
+  public String getCurrentGameDirectoryPath() {
+    return currentGameDirectoryPath;
+  }
+
+  /**
+   * Gets the CustomEventDataManager instance.
+   * @return The CustomEventDataManager instance.
+   */
+  public CustomEventDataManager getCustomEventDataAPI() {
+    return customEventAPI;
+  }
+
+  /**
+   * Gets the current SpriteSheetDataManager instance.
+   * @return The current SpriteSheetDataManager instance
+   */
+  public SpriteSheetDataManager getSpriteSheetDataAPI() {
+    return spriteSheetAPI;
+  }
+
+  /**
+   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
+   *
+   * @param errorMessage the error message to be reported to the listeners.
+   */
+  public void notifyErrorOccurred(String errorMessage) {
+    LOG.error("Error occurred in EditorDataAPI: {}", errorMessage);
   }
 }

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Level Map returns a list of levels for a given game
+ * Level Map returns a list of levels for a given game.
  */
 public class levelMap {
 

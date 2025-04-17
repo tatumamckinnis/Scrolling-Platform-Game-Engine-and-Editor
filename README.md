@@ -1,6 +1,6 @@
 # oogasalad
 ## TEAM NAME
-## NAMES
+## Billy McCune
 
 
 This project implements an authoring environment and player for multiple related games.

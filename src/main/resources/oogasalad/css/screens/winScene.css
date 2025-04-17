@@ -1,0 +1,36 @@
+.button {
+    -fx-font-family: "Montserrat", "Lato", serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-width: 5px;
+    -fx-border-style: solid;
+    -fx-border-color: #ffbe4e;
+    -fx-pref-width: 400px;
+    transition-duration: 0.5s;
+}
+
+.button:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-background-color: #ffbe4e;
+    -fx-text-fill: white;
+}
+
+.background {
+    -fx-background-color: #d9ead3c0;
+}
+
+body {
+    font-family: 'Montserrat', 'Lato', serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: white;
+}
+
+Text {
+    -fx-font-family: "Montserrat", "Lato", serif;
+    -fx-font-weight: bold;
+    -fx-fill: #333333;
+}

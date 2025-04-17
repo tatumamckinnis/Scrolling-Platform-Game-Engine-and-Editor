@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.model.event.outcome.ChangeVarOutcome;
 import oogasalad.engine.model.event.outcome.DestroyObjectOutcome;
 import oogasalad.engine.model.event.outcome.EventOutcome;
+import oogasalad.engine.model.event.outcome.EventOutcome.OutcomeType;
 import oogasalad.engine.model.event.outcome.GravityOutcome;
 import oogasalad.engine.model.event.outcome.JumpOutcome;
 import oogasalad.engine.model.event.outcome.LoseGameOutcome;
@@ -17,6 +19,7 @@ import oogasalad.engine.model.event.outcome.Outcome;
 import oogasalad.engine.model.event.outcome.PatrolOutcome;
 import oogasalad.engine.model.event.outcome.PlatformPassThroughOutcome;
 import oogasalad.engine.model.event.outcome.RestartLevelOutcome;
+import oogasalad.engine.model.event.outcome.SelectLevelOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -59,6 +62,10 @@ public class OutcomeExecutor {
         new MoveLeftOutcome());
     outcomeMap.put(EventOutcome.OutcomeType.RESTART_LEVEL,
         new RestartLevelOutcome(gameExecutor));
+    outcomeMap.put(EventOutcome.OutcomeType.SELECT_LEVEL,
+        new SelectLevelOutcome(gameExecutor));
+    outcomeMap.put(OutcomeType.CHANGE_VAR,
+        new ChangeVarOutcome());
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
