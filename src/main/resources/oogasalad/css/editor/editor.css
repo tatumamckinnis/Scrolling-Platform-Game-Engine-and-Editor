@@ -9,9 +9,13 @@
 
 /* --- Map Pane --- */
 #map-pane {
-  -fx-background-color: lightblue;
+  -fx-background-color: #0a4f7d;
   -fx-border-color: gray;
   -fx-border-width: 1px;
+}
+
+#map-label {
+  -fx-text-fill: white; /* blue, or any color */
 }
 
 #map-toolbar {
@@ -24,8 +28,24 @@
 
 .tool-button {
   /* Styles for toggle buttons in the toolbar */
-  -fx-pref-width: 100px;
+  -fx-background-color: #eba743;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-background-radius: 10;
+  -fx-padding: 8 20;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 2);
+  -fx-cursor: hand;
+  -fx-font-family: "Segoe UI", sans-serif;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-transition: all 0.3s ease;
 }
+
+.tool-button:hover {
+  -fx-background-color: #f8d65c; /* yellow hover */
+}
+
 
 /* --- Component Pane --- */
 #component-pane {
@@ -36,13 +56,32 @@
 
 #properties-tab {
   /* Specific styles for the properties tab if needed */
+  -fx-background-color: #eba743;
+}
+
+#properties-tab:hover {
+  -fx-background-color: #f8d65c;
+}
+
+#properties-tab:selected {
+  -fx-background-color: #f8d65c;
 }
 
 #input-tab {
   /* Specific styles for the input tab if needed */
   /* Remove padding if main pane adds it */
   /* -fx-padding: 0; */
+  -fx-background-color: #eba743;
 }
+
+#input-tab:hover {
+  -fx-background-color: #f8d65c;
+}
+
+#input-tab:selected {
+  -fx-background-color: #f8d65c;
+}
+
 
 #input-tab-main {
   /* Style for the root BorderPane of the input tab */
