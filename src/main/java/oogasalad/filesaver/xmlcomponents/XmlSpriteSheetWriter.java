@@ -16,6 +16,11 @@ import oogasalad.fileparser.records.SpriteSheetData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * This class writes the sprite sheet atlas in an XML format given a sprite sheet data
+ *
+ * @author Jacob You
+ */
 public class XmlSpriteSheetWriter implements XmlComponentWriter {
 
   private String imagePath;
@@ -24,6 +29,13 @@ public class XmlSpriteSheetWriter implements XmlComponentWriter {
   private List<FrameData> frames;
   File outputFile;
 
+  /**
+   * Given sprite sheet data and a file, writes the data in a easily readable format in an XML
+   * format.
+   *
+   * @param spriteSheetData The data for the sprite sheet to save
+   * @param outputFile      The file location to save the data
+   */
   public XmlSpriteSheetWriter(SpriteSheetData spriteSheetData,
       File outputFile) {
     imagePath = spriteSheetData.imagePath();
@@ -40,7 +52,7 @@ public class XmlSpriteSheetWriter implements XmlComponentWriter {
           .newDocumentBuilder()
           .newDocument();
 
-      Element root = doc.createElement("spriteFile");
+      Element root = doc.createElement("TextureAtlas");
       root.setAttribute("imagePath",
           imagePath.substring(imagePath.lastIndexOf('/') + 1));
       root.setAttribute("width", Integer.toString(sheetWidth));

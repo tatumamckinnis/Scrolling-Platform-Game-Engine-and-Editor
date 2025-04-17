@@ -32,7 +32,7 @@ public final class SpriteSheetSaver {
    * @param outputFile  The file to save the data to
    * @throws SpriteSheetSaveException The exception to throw when something goes wrong with saving
    */
-  public static void save(String imagePath, int sheetWidth, int sheetHeight,
+  public void save(String imagePath, int sheetWidth, int sheetHeight,
       List<oogasalad.editor.model.data.object.sprite.FrameData> frames, File outputFile,
       SaverStrategy saver)
       throws SpriteSheetSaveException {
@@ -45,7 +45,7 @@ public final class SpriteSheetSaver {
         outputFile);
   }
 
-  private static FrameData convertFrameData(
+  private FrameData convertFrameData(
       oogasalad.editor.model.data.object.sprite.FrameData frameData) {
     return new FrameData(
         frameData.name(),

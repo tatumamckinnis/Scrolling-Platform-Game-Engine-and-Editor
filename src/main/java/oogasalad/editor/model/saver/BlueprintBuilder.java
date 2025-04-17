@@ -18,13 +18,28 @@ import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.OutcomeData;
 import oogasalad.fileparser.records.SpriteData;
 
+/**
+ * Builds {@link BlueprintData} records from in‑editor objects.
+ * <p>
+ * This class translates an {@link EditorObject}'s identity, sprite, hitbox, and event data
+ * into the {@code BlueprintData} format required by the file parser API.
+ * </p>
+ *
+ * @author Jacob You
+ */
 public class BlueprintBuilder {
 
   private static final int BLUEPRINT_PLACEHOLDER_ID = -1;
 
+  /**
+   * Converts the given editor object into a {@link BlueprintData} instance.
+   *
+   * @param obj the editor object to convert
+   * @return a BlueprintData record representing the object's state
+   */
   public static BlueprintData fromEditorObject(EditorObject obj) {
     String gameName = obj.getIdentityData().getName();
-    String group = "";
+    String group = "";  // placeholder, replace with actual grouping logic if needed
     String type = obj.getIdentityData().getType();
     double rotation = obj.getSpriteData().getRotation();
 
@@ -55,13 +70,19 @@ public class BlueprintBuilder {
       oogasalad.editor.model.data.object.sprite.SpriteData editorSpriteData) {
     List<FrameData> frames = new ArrayList<>();
     editorSpriteData.getFrames().forEach((name, editorFrame) -> {
-      frames.add(new FrameData(name, editorFrame.x(), editorFrame.y(), editorFrame.width(),
+      frames.add(new FrameData(
+          name,
+          editorFrame.x(),
+          editorFrame.y(),
+          editorFrame.width(),
           editorFrame.height()));
     });
 
     List<AnimationData> animations = new ArrayList<>();
     editorSpriteData.getAnimations().forEach((name, editorAnimation) -> {
-      animations.add(new AnimationData(name, editorAnimation.getFrameLength(),
+      animations.add(new AnimationData(
+          name,
+          editorAnimation.getFrameLength(),
           editorAnimation.getFrameNames()));
     });
 
@@ -76,7 +97,8 @@ public class BlueprintBuilder {
     );
   }
 
-  private static HitBoxData toHitboxRecord(HitboxData editorHitboxData,
+  private static HitBoxData toHitboxRecord(
+      HitboxData editorHitboxData,
       oogasalad.editor.model.data.object.sprite.SpriteData editorSpriteData) {
     return new HitBoxData(
         editorHitboxData.getShape(),
@@ -91,22 +113,20 @@ public class BlueprintBuilder {
     List<EventData> all = new ArrayList<>();
 
     addEvents("Collision", obj.getCollisionData().getEvents(), all);
-    addEvents("Input", obj.getInputData().getEvents(), all);
-    addEvents("Physics", obj.getPhysicsData().getEvents(), all);
-    addEvents("Custom", obj.getCustomEventData().getEvents(), all);
+    addEvents("Input",     obj.getInputData().getEvents(),     all);
+    addEvents("Physics",   obj.getPhysicsData().getEvents(),   all);
+    addEvents("Custom",    obj.getCustomEventData().getEvents(), all);
 
     sortEventRecord(obj, all);
-
     return all;
   }
 
   private static void sortEventRecord(EditorObject obj, List<EventData> all) {
     List<String> order = obj.getEventData().getEvents();
-    Map<String,Integer> indexMap = new HashMap<>();
+    Map<String, Integer> indexMap = new HashMap<>();
     for (int i = 0; i < order.size(); i++) {
       indexMap.put(order.get(i), i);
     }
-
     all.sort((a, b) -> {
       int ia = indexMap.getOrDefault(a.eventId(), Integer.MAX_VALUE);
       int ib = indexMap.getOrDefault(b.eventId(), Integer.MAX_VALUE);
@@ -114,29 +134,23 @@ public class BlueprintBuilder {
     });
   }
 
-  private static void addEvents(String type,
+  private static void addEvents(
+      String type,
       Map<String, EditorEvent> src,
       List<EventData> dest) {
-
-    for (Map.Entry<String, EditorEvent> entry : src.entrySet()) {
+    for (var entry : src.entrySet()) {
       String eventId = entry.getKey();
       EditorEvent ev = entry.getValue();
-
-      List<List<ConditionData>> condGroups = getConditionLists(
-          ev);
+      List<List<ConditionData>> condGroups = getConditionLists(ev);
       List<OutcomeData> outList = getOutcomesLists(ev);
-
       dest.add(new EventData(type, eventId, condGroups, outList));
     }
   }
 
   private static List<List<ConditionData>> getConditionLists(EditorEvent ev) {
     List<List<ConditionData>> condGroups = new ArrayList<>();
-
-    List<List<ExecutorData>> edGroups = ev.getConditions();
-    for (List<ExecutorData> edGroup : edGroups) {
+    for (List<ExecutorData> edGroup : ev.getConditions()) {
       List<ConditionData> group = new ArrayList<>();
-
       for (ExecutorData ex : edGroup) {
         group.add(new ConditionData(
             ex.getExecutorName(),
@@ -151,7 +165,6 @@ public class BlueprintBuilder {
 
   private static List<OutcomeData> getOutcomesLists(EditorEvent ev) {
     List<OutcomeData> outList = new ArrayList<>();
-
     for (ExecutorData ex : ev.getOutcomes()) {
       outList.add(new OutcomeData(
           ex.getExecutorName(),

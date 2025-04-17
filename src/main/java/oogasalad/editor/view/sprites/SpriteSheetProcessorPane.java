@@ -70,7 +70,7 @@ public class SpriteSheetProcessorPane extends BorderPane {
   private static final Color SPRITESHEET_GRID_COLOR = Color.rgb(255, 0, 0, 0.8);
   private static final Color SPRITESHEET_SELECTED_AREA_COLOR = Color.rgb(0, 200, 0, 0.8);
 
-  private enum SpriteSheetMode {TILE_SIZE, COLS_ROWS, MANUAL}
+  enum SpriteSheetMode {TILE_SIZE, COLS_ROWS, MANUAL}
 
   private interface RegionStrategy {
 

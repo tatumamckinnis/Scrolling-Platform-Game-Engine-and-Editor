@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Concrete implementation of SaverStrategy for saving data in XML format.
  *
- * @author Aksel Bell
+ * @author Aksel Bell, Jacob You
  */
 public class XmlStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();

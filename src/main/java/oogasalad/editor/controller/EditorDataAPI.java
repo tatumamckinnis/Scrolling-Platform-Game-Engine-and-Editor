@@ -7,6 +7,9 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.saver.EditorFileConverter;
+import oogasalad.editor.model.saver.SpriteSheetSaver;
+import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +38,8 @@ public class EditorDataAPI {
   private final DynamicVariableContainer dynamicVariableContainer;
   private final CustomEventDataManager customEventAPI;
   private final SpriteSheetDataManager spriteSheetAPI;
+  private final EditorFileConverterAPI fileConverterAPI;
+  private final SpriteSheetSaver spriteSheetSaver;
   private SaverStrategy saverStrategy;
   private String currentGameDirectoryPath;
 
@@ -54,8 +59,10 @@ public class EditorDataAPI {
     this.spriteAPI = new SpriteDataManager(level);
     this.customEventAPI = new CustomEventDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
-    this.spriteSheetAPI = new SpriteSheetDataManager(saverStrategy);
-    this.saverStrategy = DEFAULT_SAVE_STRATEGY;
+
+    this.fileConverterAPI = new EditorFileConverter();
+    this.spriteSheetSaver = new SpriteSheetSaver();
+    this.spriteSheetAPI = new SpriteSheetDataManager(spriteSheetSaver, saverStrategy);
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 

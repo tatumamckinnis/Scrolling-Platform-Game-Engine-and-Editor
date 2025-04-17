@@ -12,10 +12,12 @@ import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 public class SpriteSheetDataManager {
 
-  private static SaverStrategy saver;
+  private static SpriteSheetSaver saver;
+  private static SaverStrategy strategy;
 
-  public SpriteSheetDataManager(SaverStrategy saver) {
-    this.saver = saver;
+  public SpriteSheetDataManager(SpriteSheetSaver spriteSheetSaver, SaverStrategy saverStrategy) {
+    this.saver = spriteSheetSaver;
+    this.strategy = saverStrategy;
   }
 
   public void saveSpriteSheet(String sheetURL, int sheetWidth, int sheetHeight,
@@ -32,6 +34,6 @@ public class SpriteSheetDataManager {
               (int) bounds.getHeight()
           );
         }).collect(Collectors.toList());
-    SpriteSheetSaver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, saver);
+    saver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, strategy);
   }
 }
