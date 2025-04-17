@@ -23,7 +23,28 @@ import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * Builds the UI section for managing "Outcomes" in the game editor. This section allows users to:
+ * <ul>
+ *   <li>Select and add an outcome type</li>
+ *   <li>Assign outcome parameters using dynamic variables</li>
+ *   <li>Edit string and numeric (double) parameters for each outcome</li>
+ *   <li>Remove existing outcomes</li>
+ * </ul>
+ *
+ * <p>Integrates with logic through handler interfaces that enable custom behavior
+ * for adding, removing, and editing outcomes.</p>
+ *
+ * <p>Used primarily in the Event editing workflow to configure conditional outcomes
+ * triggered in the game logic.</p>
+ *
+ * <p>Relies on JavaFX for the UI and ResourceBundles for i18n string support.</p>
+ *
+ * <p>Each Outcome is visually represented using {@code OutcomeDisplayItem}, which wraps
+ * an {@code ExecutorData} object with an index for selection/editing.</p>
+ *
+ * @author Tatum McKinnis
+ */
 public class OutcomesSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(OutcomesSectionBuilder.class);
@@ -54,6 +75,17 @@ public class OutcomesSectionBuilder {
   private ListView<OutcomeDisplayItem> outcomesListView;
   private VBox parametersPane;
 
+  /**
+   * Constructs the OutcomesSectionBuilder with necessary data sources and handler callbacks.
+   *
+   * @param uiBundle                the resource bundle for internationalized UI text
+   * @param outcomeTypeSupplier     supplies available outcome types (e.g., "Move", "Attack")
+   * @param dynamicVariableSupplier supplies current dynamic variables available in the game
+   * @param addOutcomeHandler       handles creation of new outcomes
+   * @param removeOutcomeHandler    handles removal of selected outcome
+   * @param createParameterHandler  handles creation of a new dynamic parameter
+   * @param editOutcomeParamHandler handles edits to existing outcome parameters
+   */
   public OutcomesSectionBuilder(ResourceBundle uiBundle,
       Supplier<List<String>> outcomeTypeSupplier,
       Supplier<List<DynamicVariable>> dynamicVariableSupplier,
@@ -71,6 +103,11 @@ public class OutcomesSectionBuilder {
   }
 
 
+  /**
+   * Builds the full UI node representing the "Outcomes" section of the editor.
+   *
+   * @return a VBox node containing all outcome-related controls and displays
+   */
   public Node build() {
     VBox sectionPane = new VBox(DEFAULT_SPACING);
     sectionPane.getStyleClass().add("input-sub-section");
@@ -279,7 +316,12 @@ public class OutcomesSectionBuilder {
     }
   }
 
-
+  /**
+   * Updates the list view of outcomes shown in the UI with a new list of {@code ExecutorData}. Also
+   * clears the parameters pane until a new selection is made.
+   *
+   * @param outcomes list of executor data to display
+   */
   public void updateOutcomesListView(List<ExecutorData> outcomes) {
     ObservableList<OutcomeDisplayItem> displayItems = FXCollections.observableArrayList();
     if (outcomes != null) {
@@ -295,6 +337,10 @@ public class OutcomesSectionBuilder {
     LOG.trace("Outcomes list view updated with {} items.", displayItems.size());
   }
 
+  /**
+   * Updates the dynamic variable combo box with the latest variable names. This should be called
+   * whenever new variables are created or removed in the broader editor context.
+   */
   public void updateDynamicVariableComboBox() {
     List<DynamicVariable> variables = dynamicVariableSupplier.get();
     dynamicVariableComboBox.getItems().clear();
