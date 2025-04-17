@@ -56,15 +56,17 @@
           methods are no longer implicitly calling on other APIs within the method) but it also
           makes testing easier for developers since the method actually returns a map
 
-#### API #2
+#### API #2: File saver
 
-* Method changed:
+* Method changed: added new public API to save file
 
-    * Why was the change made?
+    * Why was the change made? Needed a new API to allow saving 
 
     * Major or Minor (how much they affected your team mate's code)
+      * major. Allowed saving of files into 
 
     * Better or Worse (and why)
+      * Better, the strategies allowed extension of exporting other files.
 
 
 * Method changed:
