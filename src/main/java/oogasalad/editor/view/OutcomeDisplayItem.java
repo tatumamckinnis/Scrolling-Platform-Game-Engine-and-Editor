@@ -7,6 +7,7 @@ import java.util.Objects;
  * Represents an item displayed in the outcomes ListView within {@link OutcomesSectionBuilder}.
  * Encapsulates the outcome index within the event's list, the underlying {@link ExecutorData},
  * and formats a display text string.
+ * @author Tatum McKinnis
  */
 class OutcomeDisplayItem {
   private final int index;
