@@ -3,6 +3,8 @@ package oogasalad.file;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -13,7 +15,7 @@ import java.util.Objects;
  * @author Aksel Bell
  */
 public class XmlMap {
-  private final HashMap<String, ArrayList<String>> xmlPathMap;
+  private final Map<String, List<String>> xmlPathMap;
 
   /**
    * Builds the mapping from XML file names to their paths.
@@ -49,7 +51,7 @@ public class XmlMap {
    * @param fileName The desire XML filename.
    * @return A list of relative paths to the file within the directory tree.
    */
-  public ArrayList<String> getPaths(String fileName) {
+  public List<String> getPaths(String fileName) {
     return xmlPathMap.getOrDefault(fileName, new ArrayList<>());
   }
 
@@ -58,7 +60,7 @@ public class XmlMap {
    *
    * @return Filenames as keys and lists of file paths as values.
    */
-  public HashMap<String, ArrayList<String>> getXmlPathMap() {
+  public Map<String, List<String>> getXmlPathMap() {
     return xmlPathMap;
   }
 }

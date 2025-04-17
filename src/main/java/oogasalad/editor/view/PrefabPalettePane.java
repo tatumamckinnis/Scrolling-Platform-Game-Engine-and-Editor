@@ -2,12 +2,10 @@ package oogasalad.editor.view;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
@@ -36,10 +34,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
- * JavaFX Pane to display available prefabs (Blueprints) loaded from game-specific
- * and global files. Allows users to select a prefab for placement.
- * Implements EditorViewListener to reload when prefabs are saved.
- *
+ * JavaFX Pane to display available prefabs (Blueprints) loaded from game-specific and global files.
+ * Allows users to select a prefab for placement. Implements EditorViewListener to reload when
+ * prefabs are saved.
  */
 public class PrefabPalettePane extends VBox implements EditorViewListener {
 
@@ -58,6 +55,12 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   private final Map<Integer, BlueprintData> loadedPrefabs = new HashMap<>();
   private Node selectedNode = null;
 
+  /**
+   * Constructs the PrefabPalettePane with access to the editor controller. Loads available prefabs
+   * and builds the UI layout.
+   *
+   * @param controller the main EditorController to interact with
+   */
   public PrefabPalettePane(EditorController controller) {
     this.controller = controller;
     this.uiResources = EditorResourceLoader.loadResourceBundle(UI_RESOURCES);
@@ -83,7 +86,6 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     scrollPane.setFitToHeight(true);
     scrollPane.getStyleClass().add("prefab-scroll-pane");
     scrollPane.setStyle("-fx-background-insets: 0; -fx-padding: 0;");
-
 
     getChildren().addAll(titleLabel, scrollPane);
 
@@ -146,8 +148,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   }
 
   /**
-   * Loads BlueprintData from a dedicated prefab XML file.
-   * Assumes the file structure is <prefabs><game name="..."><objectGroup name="..."><object .../></objectGroup></game></prefabs>
+   * Loads BlueprintData from a dedicated prefab XML file. Assumes the file structure is
+   * <prefabs><game name="..."><objectGroup name="..."><object .../></objectGroup></game></prefabs>
    * or simpler <prefabs><object .../></prefabs> if not grouped.
    */
   private Map<Integer, BlueprintData> loadPrefabsFromFile(String filePath) {
@@ -178,7 +180,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
     } catch (Exception e) {
       LOG.error("Failed to parse prefab file {}: {}", filePath, e.getMessage(), e);
-      controller.notifyErrorOccurred("Error loading prefabs from " + file.getName() + ": " + e.getMessage());
+      controller.notifyErrorOccurred(
+          "Error loading prefabs from " + file.getName() + ": " + e.getMessage());
     }
     return prefabs;
   }
@@ -211,7 +214,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     prefabContainer.setPadding(new Insets(5));
     prefabContainer.setUserData(prefab);
 
-    String tooltipText = String.format("%s\nGroup: %s\nGame: %s", prefab.type(), prefab.group(), prefab.gameName());
+    String tooltipText = String.format("%s\nGroup: %s\nGame: %s", prefab.type(), prefab.group(),
+        prefab.gameName());
     Tooltip.install(prefabContainer, new Tooltip(tooltipText));
 
     prefabContainer.setOnMouseClicked(event -> {
@@ -234,7 +238,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
    * Attempts to load the image for a prefab based on its SpriteData.
    */
   private Image loadPrefabImage(BlueprintData prefab) {
-    if (prefab.spriteData() == null || prefab.spriteData().spriteFile() == null || prefab.spriteData().spriteFile().getPath().isEmpty()) {
+    if (prefab.spriteData() == null || prefab.spriteData().spriteFile() == null
+        || prefab.spriteData().spriteFile().getPath().isEmpty()) {
       return null;
     }
 
@@ -259,30 +264,57 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     }
   }
 
+  /**
+   * Returns the JavaFX property representing the currently selected prefab.
+   */
   public ObjectProperty<BlueprintData> selectedPrefabProperty() {
     return selectedPrefab;
   }
 
+  /**
+   * Gets the currently selected prefab, or null if none is selected.
+   */
   public BlueprintData getSelectedPrefab() {
     return selectedPrefab.get();
   }
 
   // --- EditorViewListener Implementation ---
 
+  /**
+   * Called when the prefab list has changed. Reloads the grid.
+   */
   public void onPrefabsChanged() {
     LOG.info("PrefabPalettePane notified: Prefabs changed. Reloading palette.");
     loadAvailablePrefabs();
   }
 
-  @Override public void onObjectRemoved(UUID objectId) {}
-  @Override public void onObjectUpdated(UUID objectId) {}
-  @Override public void onSelectionChanged(UUID selectedObjectId) {}
+  @Override
+  public void onObjectRemoved(UUID objectId) {
+    //TODO: implement method
+  }
+
+  @Override
+  public void onObjectUpdated(UUID objectId) {
+    //TODO: implement method
+  }
+
+  @Override
+  public void onSelectionChanged(UUID selectedObjectId) {
+    //TODO: implement method
+  }
 
   @Override
   public void onObjectAdded(UUID objectId) {
-
+    //TODO: implement method
   }
 
-  @Override public void onDynamicVariablesChanged() {}
-  @Override public void onErrorOccurred(String errorMessage) {}
+  @Override
+  public void onDynamicVariablesChanged() {
+    //TODO: implement method
+  }
+
+  @Override
+  public void onErrorOccurred(String errorMessage) {
+    //TODO: implement method
+  }
 }
