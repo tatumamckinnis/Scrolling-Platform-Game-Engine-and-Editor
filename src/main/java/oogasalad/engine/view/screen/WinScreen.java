@@ -4,6 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ViewState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -106,4 +107,8 @@ public class WinScreen extends GameOverlayScreen {
         };
     }
 
+    @Override
+    public void removeGameObjectImage(ImmutableGameObject gameObject) {
+
+    }
 }

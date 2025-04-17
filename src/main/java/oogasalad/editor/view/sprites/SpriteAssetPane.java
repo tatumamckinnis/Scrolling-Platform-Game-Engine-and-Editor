@@ -25,7 +25,7 @@ public class SpriteAssetPane extends BorderPane {
     importBtn.getStyleClass().add("small-button");
     newBtn.getStyleClass().add("small-button");
 
-    importBtn.setOnAction(e -> new ProcessSpriteSheetComponent(ownerWindow).showAndWait());
+    importBtn.setOnAction(e -> new ProcessSpriteSheetComponent(getScene().getWindow()).show());
     newBtn.setOnAction(e    -> new CreateSpriteComponent(ownerWindow).showAndWait());
 
     HBox header = new HBox(BUTTON_SPACING, importBtn, newBtn);

@@ -40,13 +40,6 @@ public abstract class GameOverlayScreen extends Display {
     }
 
     /**
-     * Creates the screen with all the Text and Button components for an overlay screen, whether it be a win, pause,
-     * or a loss.
-     */
-    @Override
-    public abstract void initialRender();
-
-    /**
      * Creates a VBox containing explanatory text for the game overlay screen, such as "YOU WIN!" or "GAME OVER!"
      * following a win or a loss screen. The exact implementation depends based on what the user intends to show on
      * a screen-by-screen basis.
