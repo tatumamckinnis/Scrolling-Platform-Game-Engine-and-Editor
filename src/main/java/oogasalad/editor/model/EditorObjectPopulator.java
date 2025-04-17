@@ -21,10 +21,28 @@ import oogasalad.fileparser.records.SpriteData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Utility class that populates an {@link EditorObject} using data from a {@link BlueprintData}.
+ * This class handles the transfer of identity, sprite, hitbox, event, and custom property data from
+ * blueprint definitions into the editor's internal object format.
+ * <p>
+ * Designed to be used by the Editor when placing a prefab into the game world.
+ *
+ * @author Tatum McKinnis
+ */
 public class EditorObjectPopulator {
 
   private static final Logger LOG = LogManager.getLogger(EditorObjectPopulator.class);
 
+
+  /**
+   * Populates the given target {@link EditorObject} using the provided {@link BlueprintData}. Uses
+   * the supplied {@link EditorDataAPI} to apply values and store metadata.
+   *
+   * @param target the object to populate
+   * @param source the blueprint source containing prefab data
+   * @param api    the editor's data access API
+   */
   public static void populateFromBlueprint(EditorObject target, BlueprintData source,
       EditorDataAPI api) {
     if (target == null || source == null || api == null) {
@@ -83,7 +101,8 @@ public class EditorObjectPopulator {
     return (file != null) ? file.getPath() : "";
   }
 
-  private static void populateFrames(oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
+  private static void populateFrames(
+      oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
       List<oogasalad.fileparser.records.FrameData> sourceFrames) {
     targetSprite.getFrames().clear();
     if (sourceFrames != null) {
@@ -114,7 +133,8 @@ public class EditorObjectPopulator {
     }
   }
 
-  private static void setBaseFrame(oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
+  private static void setBaseFrame(
+      oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
       oogasalad.fileparser.records.FrameData sourceBaseFrame) {
     String baseFrameName = null;
     if (sourceBaseFrame != null) {
@@ -164,7 +184,8 @@ public class EditorObjectPopulator {
     target.getEventData().getEvents().clear();
   }
 
-  private static void processSingleSourceEvent(EditorObject target, UUID targetId, EventData sourceEvent, EditorDataAPI api) {
+  private static void processSingleSourceEvent(EditorObject target, UUID targetId,
+      EventData sourceEvent, EditorDataAPI api) {
     if (sourceEvent == null) {
       return;
     }

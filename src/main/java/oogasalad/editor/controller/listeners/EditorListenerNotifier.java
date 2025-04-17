@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Manages and notifies EditorViewListeners about changes in the editor state.
  * This class centralizes notification logic, decoupling it from the main controller.
+ *
+ * @author Tatum McKinnis
  */
 public class EditorListenerNotifier {
 
