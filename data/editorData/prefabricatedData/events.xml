@@ -16,11 +16,15 @@
   <event type="input" id="DINO_POWER_UP" description="A Power-up for the dino.">
     <conditions>
       <conditionSet>
-        <condition />
+        <condition name="P_KEY_PRESSED"/>
       </conditionSet>
     </conditions>
     <outcomes>
-      <outcome/>
+      <outcome name="SWITCH_SPRITES">
+        <stringParameters>
+          <parameter name="bluePrintId" value=""/>
+        </stringParameters>
+      </outcome>
     </outcomes>
   </event>
 

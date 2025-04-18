@@ -12,9 +12,11 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import oogasalad.Main;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
+import org.w3c.dom.css.Rect;
 
 /**
  * The {@code ViewObjectToImageConverter} class is responsible for converting
@@ -52,6 +54,7 @@ public class ViewObjectToImageConverter {
       if (UUIDToImageMap.containsKey(object.getUUID())) {
         UUIDToImageMap.get(object.getUUID())
             .updateImageLocation(object.getXPosition(), object.getYPosition());
+        moveImageViewToCurrentFrame(object,UUIDToImageMap.get(object.getUUID()).getImageView());
       } else {
         ObjectImage newViewObject = new ObjectImage(object);
         images.add(newViewObject);
@@ -82,6 +85,17 @@ public class ViewObjectToImageConverter {
     imageView.setFitHeight(viewport.getHeight());
     imageView.setViewOrder(viewObject.getLayer());
     return imageView;
+  }
+
+  public void moveImageViewToCurrentFrame(ImmutableGameObject viewObject, ImageView imageView) {
+    Rectangle2D viewport = new Rectangle2D(viewObject.getCurrentFrame().x(),
+        viewObject.getCurrentFrame().y(), viewObject.getCurrentFrame().width(),
+        viewObject.getCurrentFrame().height());
+
+    imageView.setViewport(viewport);
+    imageView.setFitWidth(viewport.getWidth());
+    imageView.setFitHeight(viewport.getHeight());
+    imageView.setViewOrder(viewObject.getLayer());
   }
 
   /**

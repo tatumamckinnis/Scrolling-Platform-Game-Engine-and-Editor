@@ -51,6 +51,7 @@ public class DefaultLevel implements LevelAPI {
   @Override
   public void selectGame(String filePath)
       throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    System.out.println("Selecting game " + filePath);
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }

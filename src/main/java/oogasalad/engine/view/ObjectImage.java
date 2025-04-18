@@ -100,5 +100,6 @@ public class ObjectImage {
     hitBox.setFill(Color.TRANSPARENT);  // Makes the center clear
     hitBox.setStroke(Color.RED);
   }
+
 }
 
