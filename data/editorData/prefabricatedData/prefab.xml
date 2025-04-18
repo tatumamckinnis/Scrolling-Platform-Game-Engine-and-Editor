@@ -1,81 +1,96 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <prefabs>
-  <game name="Platformer">
-    <objectGroup name="Entities">
-      <object id="1"
-        type="Player"
-        velocityX="0.00"
+  <game name="dinosaurgame">
+
+    <objectGroup name="enemy">
+
+      <object
+        id="1"
+        type="bird"
+        velocityX="-50.00"
         velocityY="0.00"
         rotation="0.00"
-        spriteName="player_idle"
-        spriteFile="sprites/player/player_sheet.xml"
-        hitBoxWidth="30"
-        hitBoxHeight="50"
+        spriteName="Bird"
+        spriteFile="dinosaurgame-sprites.xml"
+        hitBoxWidth="46"
+        hitBoxHeight="34"
         hitBoxShape="RECTANGLE"
         spriteDx="0"
         spriteDy="0"
-        eventIDs="EVT_JUMP,EVT_MOVE">
+        eventIDs="FlyPattern,EnemyCollision" >
         <properties>
           <stringProperties>
-            <property key="team" value="good"/>
-            <property key="character_name" value="Hero"/>
+            <property key="behavior" value="flying"/>
           </stringProperties>
           <doubleProperties>
-            <property key="health" value="100.00"/>
-            <property key="jump_force" value="-15.00"/>
+            <property key="flySpeed" value="50.00"/>
           </doubleProperties>
         </properties>
-        <displayedProperties propertyList="health,character_name"/>
       </object>
-    </objectGroup>
-    <objectGroup name="Enemies">
-      <object id="15"
-        type="Goomba"
-        velocityX="-1.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="goomba_walk"
-        spriteFile="sprites/enemies/goomba.xml"
-        hitBoxWidth="32"
-        hitBoxHeight="32"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs="EVT_PATROL,EVT_STOMPED">
-        <properties>
-          <stringProperties>
-            <property key="state" value="patrolling"/>
-          </stringProperties>
-          <doubleProperties>
-            <property key="speed" value="1.00"/>
-            <property key="stomp_points" value="100.00"/>
-          </doubleProperties>
-        </properties>
-        <displayedProperties propertyList="state,speed"/>
-      </object>
-    </objectGroup>
-    <objectGroup name="Items">
-      <object id="101"
-        type="Coin"
+
+      <object
+        id="2"
+        type="large_cactus"
         velocityX="0.00"
         velocityY="0.00"
         rotation="0.00"
-        spriteName="coin_spin"
-        spriteFile="sprites/items/coin.xml"
-        hitBoxWidth="20"
-        hitBoxHeight="20"
-        hitBoxShape="CIRCLE"
+        spriteName="LargeCactus1"
+        spriteFile="dinosaurgame-sprites.xml"
+        hitBoxWidth="24"
+        hitBoxHeight="47"
+        hitBoxShape="RECTANGLE"
         spriteDx="0"
         spriteDy="0"
-        eventIDs="EVT_COLLECTED">
+        eventIDs="EnemyCollision" >
         <properties>
-          <stringProperties/>
+          <stringProperties>
+            <property key="hazardType" value="obstacle"/>
+          </stringProperties>
           <doubleProperties>
-            <property key="value" value="10.00"/>
+            <property key="damage" value="1.00"/>
           </doubleProperties>
         </properties>
-        <displayedProperties propertyList="value"/>
       </object>
+
     </objectGroup>
+
+    <objectGroup name="player">
+
+      <object
+        id="10"
+        type="dinosaur"
+        velocityX="0.00"
+        velocityY="0.00"
+        rotation="0.00"
+        spriteName="Dino"
+        spriteFile="dinosaurgame-sprites.xml"
+        hitBoxWidth="44"
+        hitBoxHeight="47"
+        hitBoxShape="RECTANGLE"
+        spriteDx="0"
+        spriteDy="0"
+        eventIDs="DinoJump,DinoDuck,EnemyCollision,DINO_POWER_UP,Restart-Level" >
+        <properties>
+          <stringProperties>
+            <property key="state" value="running"/>
+          </stringProperties>
+          <doubleProperties>
+            <property key="jumpForce" value="250.00"/>
+            <property key="runSpeed" value="100.00"/>
+          </doubleProperties>
+        </properties>
+      </object>
+
+    </objectGroup>
+
+    <objectGroup name="global">
+      <object
+        id="99"
+        type="level_manager"
+        velocityX="0.00" velocityY="0.00" rotation="0.00"
+        spriteName="" spriteFile="" hitBoxWidth="0" hitBoxHeight="0" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
+        eventIDs="Restart-Level" >
+        <properties></properties> </object>
+    </objectGroup>
+
   </game>
 </prefabs>
