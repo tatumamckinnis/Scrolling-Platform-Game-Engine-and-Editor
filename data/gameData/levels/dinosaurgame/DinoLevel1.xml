@@ -47,7 +47,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25,69"
         velocityX="0" velocityY="0" rotation="0">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
@@ -92,8 +92,19 @@ interact with each other -->
     </objectGroup>
   </game>
   <events>
+    <event type="input" id="69">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RUN_OBJECT_ANIMATIONS">
+        </outcome>
+      </outcomes>
+    </event>
     <event type="input" id="20">
-      <!--     Enums for event type, condition, and outcome-->
       <conditions>
         <conditionSet>
           <condition name="W_KEY_PRESSED">
@@ -126,6 +137,11 @@ interact with each other -->
           <doubleParameters>
             <parameter name="amount" value="10" />
           </doubleParameters>
+        </outcome>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="walk"/>
+          </stringParameters>
         </outcome>
       </outcomes>
     </event>
@@ -189,9 +205,6 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-
-
-
     <event type="input" id="dinoPowerUp" description="A Power-up for the dino.">
       <conditions>
         <conditionSet>

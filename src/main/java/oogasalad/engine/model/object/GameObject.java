@@ -261,5 +261,18 @@ public abstract class GameObject implements ImmutableGameObject {
   public File getSpriteFile() {
     return spriteInfo.getSpriteFile();
   }
+
+  /**
+   *
+   *
+   * @return the sprite data for the game object.
+   */
+  public Sprite getSpriteInfo() {
+    return spriteInfo;
+  }
+
+  public void setCurrentFrame(FrameData currentFrame) {
+    spriteInfo.setCurrentSprite(currentFrame);
+  }
 }
 

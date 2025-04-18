@@ -37,6 +37,7 @@ public class Sprite {
   private String currAnimation;
   private int frameNumber;
   private int animationNumber;
+  private FrameData baseSprite;
 
 
   /**
@@ -54,6 +55,7 @@ public class Sprite {
     this.spriteDy = spriteDy;
     this.frameMap = frameMap;
     this.currentSprite = currentSprite;
+    this.baseSprite = currentSprite;
     this.animations = animations;
     this.spriteFile = spriteFile;
     this.frameNumber = 0;
@@ -118,17 +120,51 @@ public class Sprite {
     return spriteFile;
   }
 
+  /**
+   *
+   * @return the current animation the sprite is on
+   */
   public String getCurrAnimation() {
     return currAnimation;
   }
 
+  /**
+   *
+   * @return the current frame number in relation to framelen of the animation
+   */
   public int getFrameNumber() {
     return frameNumber;
   }
 
+  /**
+   *
+   *
+   * @return the current animation number in relation to the List of frames  in the animation data
+   */
   public int getAnimationNumber() {
     return animationNumber;
   }
+
+  /**
+   *
+   *
+   * @return all the animations that the sprite has.
+   */
+  public  Map<String, AnimationData> getAnimations() {
+    return animations;
+  }
+
+  /**
+   *
+   *
+   */
+    public FrameData getBaseSprite() {
+      return baseSprite;
+    }
+
+    public void setCurrentSprite(FrameData currentSprite) {
+      this.currentSprite = currentSprite;
+    }
 
 
 }
