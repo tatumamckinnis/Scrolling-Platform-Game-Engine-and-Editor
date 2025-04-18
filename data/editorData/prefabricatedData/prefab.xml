@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<prefabs>
+  <game name="Platformer">
+    <objectGroup name="Entities">
+      <object id="1"
+        type="Player"
+        velocityX="0.00"
+        velocityY="0.00"
+        rotation="0.00"
+        spriteName="player_idle"
+        spriteFile="sprites/player/player_sheet.xml"
+        hitBoxWidth="30"
+        hitBoxHeight="50"
+        hitBoxShape="RECTANGLE"
+        spriteDx="0"
+        spriteDy="0"
+        eventIDs="EVT_JUMP,EVT_MOVE">
+        <properties>
+          <stringProperties>
+            <property key="team" value="good"/>
+            <property key="character_name" value="Hero"/>
+          </stringProperties>
+          <doubleProperties>
+            <property key="health" value="100.00"/>
+            <property key="jump_force" value="-15.00"/>
+          </doubleProperties>
+        </properties>
+        <displayedProperties propertyList="health,character_name"/>
+      </object>
+    </objectGroup>
+    <objectGroup name="Enemies">
+      <object id="15"
+        type="Goomba"
+        velocityX="-1.00"
+        velocityY="0.00"
+        rotation="0.00"
+        spriteName="goomba_walk"
+        spriteFile="sprites/enemies/goomba.xml"
+        hitBoxWidth="32"
+        hitBoxHeight="32"
+        hitBoxShape="RECTANGLE"
+        spriteDx="0"
+        spriteDy="0"
+        eventIDs="EVT_PATROL,EVT_STOMPED">
+        <properties>
+          <stringProperties>
+            <property key="state" value="patrolling"/>
+          </stringProperties>
+          <doubleProperties>
+            <property key="speed" value="1.00"/>
+            <property key="stomp_points" value="100.00"/>
+          </doubleProperties>
+        </properties>
+        <displayedProperties propertyList="state,speed"/>
+      </object>
+    </objectGroup>
+    <objectGroup name="Items">
+      <object id="101"
+        type="Coin"
+        velocityX="0.00"
+        velocityY="0.00"
+        rotation="0.00"
+        spriteName="coin_spin"
+        spriteFile="sprites/items/coin.xml"
+        hitBoxWidth="20"
+        hitBoxHeight="20"
+        hitBoxShape="CIRCLE"
+        spriteDx="0"
+        spriteDy="0"
+        eventIDs="EVT_COLLECTED">
+        <properties>
+          <stringProperties/>
+          <doubleProperties>
+            <property key="value" value="10.00"/>
+          </doubleProperties>
+        </properties>
+        <displayedProperties propertyList="value"/>
+      </object>
+    </objectGroup>
+  </game>
+</prefabs>
