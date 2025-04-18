@@ -70,7 +70,7 @@ public class EditorObjectPopulator {
     api.getIdentityDataAPI().setGroup(targetId, source.group());
     api.getIdentityDataAPI().setType(targetId, source.type());
     if (api.getLevel() != null && !api.getLevel().getLayers().isEmpty()) {
-      api.getIdentityDataAPI().setLayer(targetId, api.getLevel().getLayers().get(0).getName());
+      api.getIdentityDataAPI().setLayer(targetId, api.getLayers().get(0).getName());
     } else {
       LOG.warn("Could not set layer for object {} from prefab: No layers found in level.",
           targetId);

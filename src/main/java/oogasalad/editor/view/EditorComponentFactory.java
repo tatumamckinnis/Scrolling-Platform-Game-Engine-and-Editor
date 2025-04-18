@@ -249,10 +249,7 @@ public class EditorComponentFactory {
     Tab prefabsTab = new Tab(uiBundle.getString(getId("key.prefabs.tab.title")), this.prefabPalettePane);
     prefabsTab.setId(getId("id.prefabs.tab"));
 
-    // Corrected Constructor Call: Pass controller and null for window
     SpriteAssetPane spriteAssetPane = new SpriteAssetPane(editorController, null);
-    // Removed listener registration as SpriteAssetPane does not implement EditorViewListener
-    // editorController.registerViewListener(spriteAssetPane);
     Tab spritesTab = new Tab(uiBundle.getString(getId("key.sprites.tab.title")), spriteAssetPane);
     spritesTab.setId(getId("id.sprites.tab"));
 

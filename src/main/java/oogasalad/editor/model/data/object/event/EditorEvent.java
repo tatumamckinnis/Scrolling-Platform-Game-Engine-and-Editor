@@ -3,8 +3,6 @@ package oogasalad.editor.model.data.object.event;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
 
 /**
  * Represents an event associated with an editor object, encapsulating its conditions, outcomes, and

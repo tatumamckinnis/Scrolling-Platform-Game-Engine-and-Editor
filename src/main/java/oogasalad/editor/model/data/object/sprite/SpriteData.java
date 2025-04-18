@@ -20,7 +20,7 @@ public class SpriteData {
   private Map<String, FrameData> frames;
   private Map<String, AnimationData> animations;
   private String spritePath;
-  private String baseFrame; // Added field
+  private FrameData baseFrame;
 
   /**
    * Constructs a new SpriteData instance with the specified properties.
@@ -42,6 +42,22 @@ public class SpriteData {
     this.frames = frames;
     this.animations = animations;
     this.spritePath = spritePath;
+    if (!frames.isEmpty()) {
+      this.baseFrame = frames.values().iterator().next();
+    }
+    else {
+      this.baseFrame = null;
+    }
+  }
+
+  /**
+   *
+   */
+  public void assignSpriteDefinition(SpriteTemplate spriteTemplate) {
+    this.name = spriteTemplate.getName();
+    this.frames = spriteTemplate.getFrames();
+    this.animations = spriteTemplate.getAnimations();
+    this.spritePath = spriteTemplate.getSpritePath();
   }
 
   /**
@@ -155,6 +171,15 @@ public class SpriteData {
    */
   public double getAnimationFrameLength(String animationName) {
     return animations.get(animationName).getFrameLength();
+  }
+
+  /**
+   * Retrieves the current base frame for the sprite
+   *
+   * @return the base frame of the sprite
+   */
+  public FrameData getBaseFrame() {
+    return baseFrame;
   }
 
   /**
@@ -303,12 +328,7 @@ public class SpriteData {
     this.spritePath = spritePath;
   }
 
-  /**
-   * Sets the base frame of the sprite.
-   *
-   * @param baseFrame the new base frame
-   */
-  public void setBaseFrame(String baseFrame) {
-    this.baseFrame = baseFrame;
+  public void setBaseFrame(String baseFrameName) {
+    this.baseFrame = frames.get(baseFrameName);
   }
 }

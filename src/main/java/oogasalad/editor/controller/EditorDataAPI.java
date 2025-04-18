@@ -1,12 +1,16 @@
 package oogasalad.editor.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
+import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.sprite.SpriteData;
+import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
@@ -47,8 +51,9 @@ public class EditorDataAPI {
    * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
    * all related data managers.
    *
+   * @author Jacob You
    */
-  public EditorDataAPI(){
+  public EditorDataAPI() {
     saverStrategy = DEFAULT_SAVE_STRATEGY;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
@@ -62,7 +67,7 @@ public class EditorDataAPI {
 
     this.fileConverterAPI = new EditorFileConverter();
     this.spriteSheetSaver = new SpriteSheetSaver();
-    this.spriteSheetAPI = new SpriteSheetDataManager(spriteSheetSaver, saverStrategy);
+    this.spriteSheetAPI = new SpriteSheetDataManager(level, spriteSheetSaver, saverStrategy);
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -279,6 +284,7 @@ public class EditorDataAPI {
 
   /**
    * Sets the current game directory path.
+   *
    * @param path The path to the current game directory.
    */
   public void setCurrentGameDirectoryPath(String path) {
@@ -287,6 +293,7 @@ public class EditorDataAPI {
 
   /**
    * Gets the current game directory path.
+   *
    * @return The path to the current game directory.
    */
   public String getCurrentGameDirectoryPath() {
@@ -295,6 +302,7 @@ public class EditorDataAPI {
 
   /**
    * Gets the CustomEventDataManager instance.
+   *
    * @return The CustomEventDataManager instance.
    */
   public CustomEventDataManager getCustomEventDataAPI() {
@@ -303,6 +311,7 @@ public class EditorDataAPI {
 
   /**
    * Gets the current SpriteSheetDataManager instance.
+   *
    * @return The current SpriteSheetDataManager instance
    */
   public SpriteSheetDataManager getSpriteSheetDataAPI() {
@@ -310,11 +319,34 @@ public class EditorDataAPI {
   }
 
   /**
-   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
+   * Notifies all registered view listeners that an error has occurred, providing a descriptive
+   * message.
    *
    * @param errorMessage the error message to be reported to the listeners.
    */
   public void notifyErrorOccurred(String errorMessage) {
     LOG.error("Error occurred in EditorDataAPI: {}", errorMessage);
+  }
+
+  /**
+   * Returns the current sprite library for the current level.
+   *
+   * @return the sprite library for the current level
+   */
+  public SpriteSheetLibrary getSpriteLibrary() {
+    return level.getSpriteLibrary();
+  }
+
+  /**
+   * Returns a list of all the EditorObject instances in the current data mapping for the level
+   *
+   * @return the map of object UUID to EditorObject
+   */
+  public Map<UUID, EditorObject> getObjectDataMap() {
+    return level.getObjectDataMap();
+  }
+
+  public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
+    level.addSpriteTemplate(spriteTemplate);
   }
 }

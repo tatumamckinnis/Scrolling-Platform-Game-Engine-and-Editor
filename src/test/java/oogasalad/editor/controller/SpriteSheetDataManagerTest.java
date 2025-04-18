@@ -34,7 +34,7 @@ class SpriteSheetDataManagerTest {
   void setUp() throws Exception {
     saverMock = mock(SpriteSheetSaver.class);
     strategyMock = mock(SaverStrategy.class);
-    manager = new SpriteSheetDataManager(saverMock, strategyMock);
+    manager = new SpriteSheetDataManager(null, saverMock, strategyMock);
     tempFile = File.createTempFile("sheet_test", ".xml");
     tempFile.deleteOnExit();
   }

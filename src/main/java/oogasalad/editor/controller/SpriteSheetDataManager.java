@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.geometry.Rectangle2D;
+import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
 import oogasalad.editor.view.sprites.SpriteRegion;
@@ -12,12 +14,15 @@ import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 public class SpriteSheetDataManager {
 
-  private static SpriteSheetSaver saver;
-  private static SaverStrategy strategy;
+  private final SpriteSheetSaver saver;
+  private final SaverStrategy strategy;
+  private final EditorLevelData levelData;
 
-  public SpriteSheetDataManager(SpriteSheetSaver spriteSheetSaver, SaverStrategy saverStrategy) {
+  public SpriteSheetDataManager(EditorLevelData levelData, SpriteSheetSaver spriteSheetSaver,
+      SaverStrategy saverStrategy) {
     this.saver = spriteSheetSaver;
     this.strategy = saverStrategy;
+    this.levelData = levelData;
   }
 
   public void saveSpriteSheet(String sheetURL, int sheetWidth, int sheetHeight,
@@ -34,6 +39,21 @@ public class SpriteSheetDataManager {
               (int) bounds.getHeight()
           );
         }).collect(Collectors.toList());
+
+    String filename = outputFile.getName();
+    String atlasName =
+        filename.contains(".") ? filename.substring(0, filename.lastIndexOf('.')) : filename;
+
+    SpriteSheetAtlas atlas = new SpriteSheetAtlas(
+        atlasName,
+        sheetURL,
+        sheetWidth,
+        sheetHeight,
+        frames
+    );
+
+    levelData.getSpriteLibrary().addAtlas(atlasName, atlas);
+
     saver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, strategy);
   }
 }

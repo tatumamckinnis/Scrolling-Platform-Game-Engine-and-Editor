@@ -2,15 +2,16 @@ package oogasalad.editor.view.sprites;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.SpriteSheetLibrary;
+import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 
 /**
- * UI that lives inside the “Sprites” tab.
+ * UI that lives inside the “Sprites” tab. Implements the buttons for the spritesheet editor and the
+ * sprite creation.
  *
  * @author Jacob You
  */
@@ -19,25 +20,37 @@ public class SpriteAssetPane extends BorderPane {
   private static final double BUTTON_SPACING = 5;
 
   public SpriteAssetPane(EditorController editorController, Window ownerWindow) {
+    Button importButton = new Button("Import Sheet");
+    Button newSpriteButton = new Button("New Sprite");
 
-    Button importBtn = new Button("Import Sheet");
-    Button newBtn = new Button("New Sprite");
+    importButton.getStyleClass().add("small-button");
+    newSpriteButton.getStyleClass().add("small-button");
 
-    importBtn.getStyleClass().add("small-button");
-    newBtn.getStyleClass().add("small-button");
+    // 1) Import a sprite‑sheet
+    importButton.setOnAction(e ->
+        new ProcessSpriteSheetComponent(editorController, ownerWindow).show()
+    );
 
-    importBtn.setOnAction(
-        e -> new ProcessSpriteSheetComponent(editorController, getScene().getWindow()).show());
-    newBtn.setOnAction(e -> new CreateSpriteComponent(ownerWindow).showAndWait());
+    // 2) Create a new SpriteTemplate
+    newSpriteButton.setOnAction(e -> {
+      // grab your library from the controller
+      SpriteSheetLibrary library =
+          editorController.getEditorDataAPI().getSpriteLibrary();
 
-    HBox header = new HBox(BUTTON_SPACING, importBtn, newBtn);
+      // open the SpriteTemplate dialog
+      SpriteTemplateComponent dialog =
+          new SpriteTemplateComponent(ownerWindow, library);
+
+      dialog.showAndWait();
+      SpriteTemplate result = dialog.getResult();
+
+      if (result != null) {
+        editorController.getEditorDataAPI().addSpriteTemplate(result);
+      }
+    });
+
+    HBox header = new HBox(BUTTON_SPACING, importButton, newSpriteButton);
     header.setPadding(new Insets(6));
-
-    ScrollPane centre = new ScrollPane(
-        new Label("No sprites loaded yet – import a sheet to begin."));
-    centre.setFitToWidth(true);
-
     setTop(header);
-    setCenter(centre);
   }
 }
