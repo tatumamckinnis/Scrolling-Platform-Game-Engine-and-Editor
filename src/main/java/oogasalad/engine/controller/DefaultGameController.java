@@ -17,6 +17,8 @@ import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.GameObjectProvider;
 import oogasalad.engine.controller.api.InputProvider;
+import oogasalad.engine.model.animation.AnimationHandlerApi;
+import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.CollisionHandler;
 import oogasalad.engine.model.event.DefaultCollisionHandler;
 import oogasalad.engine.model.event.DefaultEventHandler;
@@ -57,6 +59,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   private mapObject myMapObject;
   private Camera myCamera;
   private final GameManagerAPI myGameManager;
+  private final DefaultAnimationHandler myAnimationHandler;
 
   /**
    * Constructor for the default game controller
@@ -66,7 +69,9 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
    */
   public DefaultGameController(InputProvider inputProvider, GameManagerAPI gameManager) {
     this.collisionHandler = new DefaultCollisionHandler(this);
-    this.eventHandler = new DefaultEventHandler(inputProvider, collisionHandler, this);
+    this.myAnimationHandler = new DefaultAnimationHandler();
+    this.eventHandler = new DefaultEventHandler(inputProvider, collisionHandler, this,
+        myAnimationHandler);
     this.myGameObjects = new ArrayList<>();
     this.myGameManager = gameManager;
 

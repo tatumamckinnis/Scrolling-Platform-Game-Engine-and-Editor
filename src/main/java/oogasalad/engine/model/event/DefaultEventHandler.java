@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.InputProvider;
+import oogasalad.engine.model.animation.AnimationHandlerApi;
+import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.outcome.EventOutcome;
 import oogasalad.engine.model.object.GameObject;
@@ -34,8 +36,8 @@ public class DefaultEventHandler implements EventHandler {
    * @param gameExecutor interface that allows outcome updates to game state
    */
   public DefaultEventHandler(InputProvider inputProvider, CollisionHandler collisionHandler,
-      GameExecutor gameExecutor) {
-    outcomeExecutor = new OutcomeExecutor(collisionHandler, gameExecutor);
+      GameExecutor gameExecutor, DefaultAnimationHandler animationHandlerApi) {
+    outcomeExecutor = new OutcomeExecutor(collisionHandler, gameExecutor, animationHandlerApi);
     conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
   }
 
