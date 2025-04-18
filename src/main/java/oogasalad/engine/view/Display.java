@@ -23,6 +23,10 @@ public abstract class Display extends Group {
       throws RenderingException, FileNotFoundException {
   }
 
+  public void renderGameObjectHitBoxes(List<ImmutableGameObject> gameObjects) throws FileNotFoundException {
+    ;
+  }
+
   /**
    * Special implementation of javafx setTranslate() function such that some types of nodes can
    * implement the shift or choose not to. Default implementation chooses not to shift node. For

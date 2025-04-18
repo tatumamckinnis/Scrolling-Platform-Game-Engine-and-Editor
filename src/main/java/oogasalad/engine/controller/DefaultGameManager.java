@@ -15,7 +15,6 @@ import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
@@ -29,8 +28,6 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.fileparser.records.LevelData;
-import oogasalad.filesaver.FileSaver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +40,6 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
       DefaultGameManager.class.getPackageName() + "." + "GameManager");
   private final Timeline myGameLoop;
-  private List<GameObject> myGameObjects;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
   private DefaultView myView;

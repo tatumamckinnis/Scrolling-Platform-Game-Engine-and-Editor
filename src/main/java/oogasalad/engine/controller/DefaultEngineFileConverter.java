@@ -12,6 +12,7 @@ import java.util.zip.DataFormatException;
 import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.camerafactory.CameraFactory;
+import oogasalad.engine.controller.camerafactory.DefaultCameraFactory;
 import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
@@ -75,11 +76,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     try {
       CameraData cameraData = level.cameraData();
       String cameraType = cameraData.type();
-
-      String factoryClassName = CameraFactory.class.getPackageName() + "." + cameraType + ENGINE_FILE_RESOURCES.getString("CameraFactory");
-      Class<?> factoryClass = Class.forName(factoryClassName);
-      CameraFactory factory = (CameraFactory) factoryClass.getDeclaredConstructor().newInstance();
-      return factory.create(cameraData, gameObjectMap);
+      CameraFactory cameraFactory = new DefaultCameraFactory();
+      return cameraFactory.create(cameraType, cameraData, gameObjectMap);
 
     } catch (Exception e) {
       LOG.warning(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
