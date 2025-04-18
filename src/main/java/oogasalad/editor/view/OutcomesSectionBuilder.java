@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * Configuration values (identifiers, keys, layout hints) are loaded from external properties.
  * Layout and styling details (padding, spacing, heights, colors) are controlled via CSS.
  *
- * @author Tatum McKinnis (Refactored by Gemini)
+ * @author Tatum McKinnis
  */
 public class OutcomesSectionBuilder {
 
