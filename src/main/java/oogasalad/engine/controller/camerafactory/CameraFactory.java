@@ -1,5 +1,6 @@
 package oogasalad.engine.controller.camerafactory;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.view.camera.Camera;
@@ -27,6 +28,7 @@ public interface CameraFactory {
   /**
    * Creates a new {@link Camera} instance based on the provided data and game object context.
    *
+   * @param type the type of camera to create
    * @param data          the CameraData containing the type and any configuration for the camera
    * @param gameObjectMap a map of GameObject IDs to their corresponding GameObject instances (used,
    *                      for example, to find a tracked object)
@@ -34,6 +36,7 @@ public interface CameraFactory {
    * @throws IllegalArgumentException if the camera type is not recognized or invalid
    * @throws NullPointerException     if required parameters are missing in the configuration
    */
-  Camera create(CameraData data, Map<String, GameObject> gameObjectMap);
+  Camera create(String type, CameraData data, Map<String, GameObject> gameObjectMap)
+      throws NoSuchMethodException, InvocationTargetException, IllegalAccessException;
 
 }

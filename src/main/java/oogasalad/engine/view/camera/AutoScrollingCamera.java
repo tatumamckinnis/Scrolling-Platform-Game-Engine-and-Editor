@@ -10,6 +10,8 @@ import oogasalad.engine.view.LevelDisplay;
  * <p>
  * Every time updateCamera is called (e.g. once per frame in the game loop), the camera moves by a
  * fixed scroll speed. This is achieved by adjusting the translation of the game world.
+ *
+ * @author Alana Zinkin
  */
 public class AutoScrollingCamera implements Camera {
 
