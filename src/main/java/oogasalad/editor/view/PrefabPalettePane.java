@@ -1,9 +1,14 @@
 package oogasalad.editor.view;
 
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +18,22 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.FrameData;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -33,11 +43,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * JavaFX Pane to display available prefabs (Blueprints) loaded from a fixed editor prefab file.
- * Allows users to select a prefab for placement by clicking on its visual representation.
+ * Allows users to select a prefab for placement by clicking on its visual representation,
+ * or by dragging and dropping it onto the EditorGameView.
  * Implements EditorViewListener to reload the prefab list when notified of changes and log other events.
  * The prefabs are loaded exclusively from the path defined by {@code EDITOR_PREFAB_PATH}.
  *
- * @author Tatum McKinnis (Modified)
+ * @author Tatum McKinnis
  */
 public class PrefabPalettePane extends VBox implements EditorViewListener {
 
@@ -45,10 +56,10 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   private static final String UI_RESOURCES = "EditorUI";
   private static final int PREFAB_ICON_SIZE = 64;
   private static final String PLACEHOLDER_IMAGE_RESOURCE = "/oogasalad/editor/view/resources/images/placeholder_icon.png";
-  /**
-   * The fixed file path from which editor prefabs are loaded.
-   */
   private static final String EDITOR_PREFAB_PATH = "data/editorData/prefabricatedData/prefab.xml";
+
+  public static final DataFormat PREFAB_BLUEPRINT_ID = new DataFormat("oogasalad/prefab-blueprint-id");
+
 
   private final EditorController controller;
   private final TilePane prefabGrid;
@@ -196,8 +207,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
   /**
    * Creates and adds a visual representation (icon and label) of a single prefab
-   * to the {@code prefabGrid}. Sets up mouse click handling to select the prefab
-   * and activate the placement tool. Includes a tooltip showing prefab details.
+   * to the {@code prefabGrid}. Sets up mouse click handling for selection and
+   * drag detection for drag-and-drop placement.
    *
    * @param prefab The {@link BlueprintData} of the prefab to add to the grid.
    */
@@ -209,9 +220,13 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     imageView.setSmooth(true);
 
     Image prefabImage = loadPrefabImage(prefab);
+
     imageView.setImage(prefabImage != null ? prefabImage : placeholderImage);
-    if (prefabImage == null) {
+
+    if (prefabImage == null || prefabImage == placeholderImage) {
       imageView.getStyleClass().add("placeholder-prefab-icon");
+    } else {
+      imageView.getStyleClass().remove("placeholder-prefab-icon");
     }
 
     Label nameLabel = new Label(prefab.type());
@@ -242,48 +257,114 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       controller.setActiveTool("placePrefabTool");
     });
 
+    prefabContainer.setOnDragDetected(event -> {
+      LOG.debug("Drag detected on prefab: {}", prefab.type());
+      Dragboard db = prefabContainer.startDragAndDrop(TransferMode.COPY);
+
+      ClipboardContent content = new ClipboardContent();
+      content.put(PREFAB_BLUEPRINT_ID, String.valueOf(prefab.blueprintId()));
+      db.setContent(content);
+
+      db.setDragView(prefabImage != null ? prefabImage : placeholderImage,
+          event.getX(), event.getY());
+
+      event.consume();
+    });
+
     prefabGrid.getChildren().add(prefabContainer);
   }
 
   /**
    * Attempts to load the display image for a given prefab based on its {@link BlueprintData}.
-   * Constructs the image path using the {@code gameName} specified within the prefab's XML data
-   * (inside the {@code <game>} tag) and the {@code spriteFile} path from the sprite data.
-   * The expected base path for sprites is {@code data/gameData/<gameName>/sprites/}.
-   * Logs errors or warnings if the image cannot be loaded or found.
+   * Uses the baseFrame or first frame information from the SpriteData to display the correct
+   * portion of the sprite sheet by taking a snapshot of the relevant viewport.
    *
    * @param prefab The {@link BlueprintData} containing sprite and game name information.
-   * @return The loaded {@link Image} for the prefab, or null if loading fails or data is missing.
+   * @return The loaded {@link Image} for the prefab's specific frame, or placeholderImage if loading fails or data is missing.
    */
   private Image loadPrefabImage(BlueprintData prefab) {
     if (prefab.spriteData() == null || prefab.spriteData().spriteFile() == null
-        || prefab.spriteData().spriteFile().getPath().isEmpty() || prefab.gameName() == null || prefab.gameName().isEmpty()) {
-      LOG.trace("Cannot load image for prefab '{}': Missing sprite data or game name.", prefab.type());
-      return null;
+        || prefab.spriteData().spriteFile().getPath().isEmpty()
+        || (prefab.spriteData().baseImage() == null && (prefab.spriteData().frames() == null || prefab.spriteData().frames().isEmpty()))
+        || prefab.gameName() == null || prefab.gameName().isEmpty()) {
+      LOG.warn("Cannot load image for prefab '{}': Missing sprite data, game name, baseImage, or frames.", prefab.type());
+      return placeholderImage;
     }
 
     try {
-      String gameAssetBasePath = "data/gameData/" + prefab.gameName() + "/sprites/";
-      String relativeSpritePath = prefab.spriteData().spriteFile().getPath();
-      if (relativeSpritePath.startsWith("/") || relativeSpritePath.startsWith("\\")) {
-        relativeSpritePath = relativeSpritePath.substring(1);
-      }
-      File imageFile = Paths.get(gameAssetBasePath, relativeSpritePath).toFile();
+      File imageFile = prefab.spriteData().spriteFile();
 
       if (imageFile.exists() && imageFile.isFile()) {
+        Image sheetImage;
         try (FileInputStream fis = new FileInputStream(imageFile)) {
-          return new Image(fis, PREFAB_ICON_SIZE, PREFAB_ICON_SIZE, true, true);
+          sheetImage = new Image(fis);
+        } catch (FileNotFoundException e) {
+          LOG.warn("Prefab sprite file not found at expected path: {}", imageFile.getAbsolutePath());
+          return placeholderImage;
+        } catch (IOException e) {
+          LOG.error("IO Error loading image file {}", imageFile.getAbsolutePath(), e);
+          return placeholderImage;
         }
+
+        FrameData displayFrame = prefab.spriteData().baseImage();
+        if (displayFrame == null) {
+          if (prefab.spriteData().frames() != null && !prefab.spriteData().frames().isEmpty()) {
+            displayFrame = prefab.spriteData().frames().get(0);
+          } else {
+            LOG.warn("No baseImage or frames available for prefab '{}'. Using placeholder.", prefab.type());
+            return placeholderImage;
+          }
+        }
+
+        if (displayFrame.width() <= 0 || displayFrame.height() <= 0) {
+          LOG.warn("Invalid frame dimensions (w={}, h={}) for prefab '{}'. Using placeholder.",
+              displayFrame.width(), displayFrame.height(), prefab.type());
+          return placeholderImage;
+        }
+
+        ImageView tempImageView = new ImageView(sheetImage);
+        Rectangle2D viewportRect = new Rectangle2D(
+            displayFrame.x(),
+            displayFrame.y(),
+            displayFrame.width(),
+            displayFrame.height()
+        );
+
+        SnapshotParameters params = new SnapshotParameters();
+        params.setViewport(viewportRect);
+        params.setFill(Color.TRANSPARENT); // Ensure transparency is handled correctly
+
+        WritableImage frameImage = tempImageView.snapshot(params, null);
+
+        if (frameImage == null || frameImage.isError() || frameImage.getPixelReader() == null) {
+          LOG.error("Failed to create snapshot for prefab '{}'. Using placeholder. Error: {}", prefab.type(), frameImage != null ? frameImage.getException() : "null image");
+          return placeholderImage;
+        }
+        return frameImage;
+
       } else {
         LOG.warn("Prefab sprite file not found at expected path: {}", imageFile.getAbsolutePath());
-        return null;
+        return placeholderImage;
       }
     } catch (Exception e) {
-      LOG.error("Error loading image for prefab '{}' (Game: {}, Path: {}): {}",
-          prefab.type(), prefab.gameName(), prefab.spriteData().spriteFile().getPath(), e.getMessage());
-      return null;
+      LOG.error("Error processing image for prefab '{}' (File: {}): {}",
+          prefab.type(),
+          (prefab.spriteData() != null && prefab.spriteData().spriteFile() != null) ? prefab.spriteData().spriteFile().getPath() : "N/A",
+          e.getMessage(), e);
+      return placeholderImage;
     }
   }
+
+  /**
+   * Retrieves a loaded prefab blueprint by its ID.
+   *
+   * @param id The blueprint ID.
+   * @return The BlueprintData, or null if not found.
+   */
+  public BlueprintData getPrefabById(int id) {
+    return loadedPrefabs.get(id);
+  }
+
 
   /**
    * Returns the JavaFX property holding the currently selected prefab.
