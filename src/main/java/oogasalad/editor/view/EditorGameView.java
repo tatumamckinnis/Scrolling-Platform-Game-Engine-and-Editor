@@ -1,5 +1,9 @@
 package oogasalad.editor.view;
 
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.DragEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,7 +35,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Displays a grid where visual game elements are added/updated.
  * Implements EditorViewListener to react to model changes notified by the controller.
- * Handles drawing, basic object selection notification, and delegates placement actions.
+ * Handles drawing, basic object selection notification, delegates placement actions,
+ * and manages drag-and-drop operations for placing prefabs.
  * @author Tatum McKinnis
  */
 public class EditorGameView extends Pane implements EditorViewListener {
@@ -218,7 +223,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
   /**
    * Initializes the view by drawing the grid and setting up event handlers for mouse interactions,
-   * zooming, and panning. This is called internally by the constructor.
+   * zooming, panning, and drag-and-drop. This is called internally by the constructor.
    */
   private void initializeView() {
     setupEventHandlers();
@@ -259,12 +264,80 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up mouse event handlers for interaction on the object canvas, primarily for handling
-   * clicks related to object placement or selection via the current tool.
+   * Sets up mouse event handlers for interaction on the object canvas, including click handling
+   * and drag-and-drop target handling.
    */
   private void setupEventHandlers() {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
+
+    objectCanvas.setOnDragOver(event -> {
+      Dragboard db = event.getDragboard();
+      if (db.hasContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID)) {
+        event.acceptTransferModes(TransferMode.COPY);
+        LOG.trace("Drag over accepted for prefab ID");
+      }
+      event.consume();
+    });
+
+    objectCanvas.setOnDragDropped(event -> {
+      Dragboard db = event.getDragboard();
+      boolean success = false;
+      if (db.hasContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID)) {
+        LOG.debug("Prefab dropped onto game view");
+        try {
+          String blueprintIdStr = (String) db.getContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID);
+          int blueprintId = Integer.parseInt(blueprintIdStr);
+          BlueprintData prefabData = prefabPalettePane.getPrefabById(blueprintId);
+
+          if (prefabData != null) {
+            double screenX = event.getX();
+            double screenY = event.getY();
+            double[] worldCoords = screenToWorld(screenX, screenY);
+            double worldX = worldCoords[0];
+            double worldY = worldCoords[1];
+
+            LOG.info("Requesting placement for prefab ID {} ({}) at world coords ({}, {})",
+                blueprintId, prefabData.type(), worldX, worldY);
+
+            editorController.requestPrefabPlacement(prefabData, worldX, worldY);
+            success = true;
+          } else {
+            LOG.error("Dropped prefab ID {} not found in palette's loaded prefabs.", blueprintId);
+            editorController.notifyErrorOccurred("Could not find data for dropped prefab.");
+          }
+        } catch (NumberFormatException e) {
+          LOG.error("Failed to parse blueprint ID from dragboard: {}", db.getContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID), e);
+          editorController.notifyErrorOccurred("Invalid data format on drop.");
+        } catch (Exception e) {
+          LOG.error("Error handling prefab drop: {}", e.getMessage(), e);
+          editorController.notifyErrorOccurred("Error placing dropped prefab: " + e.getMessage());
+        }
+      }
+      event.setDropCompleted(success);
+      event.consume();
+    });
   }
+
+  /**
+   * Converts screen coordinates (e.g., from a mouse event) to world coordinates,
+   * applying camera translation, zoom, and grid snapping if enabled.
+   *
+   * @param screenX The x-coordinate in the view's screen space.
+   * @param screenY The y-coordinate in the view's screen space.
+   * @return A double array containing {worldX, worldY}.
+   */
+  private double[] screenToWorld(double screenX, double screenY) {
+    updateCameraCoordinates();
+    double worldX = cornerCameraX + (screenX / zoomScale);
+    double worldY = cornerCameraY + (screenY / zoomScale);
+
+    if (snapToGrid) {
+      worldX = Math.floor(worldX / cellSize) * cellSize;
+      worldY = Math.floor(worldY / cellSize) * cellSize;
+    }
+    return new double[]{worldX, worldY};
+  }
+
 
   /**
    * Sets up zoom behavior by adding a scroll listener to the pane.
@@ -388,13 +461,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double screenX = event.getX();
     double screenY = event.getY();
 
-    double worldX = cornerCameraX + (screenX / zoomScale);
-    double worldY = cornerCameraY + (screenY / zoomScale);
-
-    if (snapToGrid) {
-      worldX = Math.floor(worldX / cellSize) * cellSize;
-      worldY = Math.floor(worldY / cellSize) * cellSize;
-    }
+    double[] worldCoords = screenToWorld(screenX, screenY);
+    double worldX = worldCoords[0];
+    double worldY = worldCoords[1];
 
     LOG.debug("Click at screen=({},{}) => world=({},{}) (Snapped: {})",
         screenX, screenY, worldX, worldY, snapToGrid);
