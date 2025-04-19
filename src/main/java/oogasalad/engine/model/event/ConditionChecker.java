@@ -31,17 +31,17 @@ public class ConditionChecker {
   public ConditionChecker(InputProvider inputProvider, CollisionHandler collisionHandler) {
     this.conditionMap = new HashMap<>();
     conditionMap.put(EventCondition.ConditionType.SPACE_KEY_PRESSED,
-        new InputCondition(inputProvider, KeyCode.SPACE));
+        new InputCondition(inputProvider, KeyCode.SPACE, true));
     conditionMap.put(EventCondition.ConditionType.W_KEY_PRESSED,
-        new InputCondition(inputProvider, KeyCode.W));
+        new InputCondition(inputProvider, KeyCode.W, true));
     conditionMap.put(EventCondition.ConditionType.A_KEY_PRESSED,
-        new InputCondition(inputProvider, KeyCode.A));
+        new InputCondition(inputProvider, KeyCode.A, true));
     conditionMap.put(EventCondition.ConditionType.S_KEY_PRESSED,
-        new InputCondition(inputProvider, KeyCode.S));
+        new InputCondition(inputProvider, KeyCode.S, true));
     conditionMap.put(EventCondition.ConditionType.D_KEY_PRESSED,
-        new InputCondition(inputProvider, KeyCode.D));
+        new InputCondition(inputProvider, KeyCode.D, true));
     conditionMap.put(EventCondition.ConditionType.UP_ARROW_PRESSED,
-        new InputCondition(inputProvider, KeyCode.UP));
+        new InputCondition(inputProvider, KeyCode.UP,true));
     conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_ENEMY,
         new CollisionCondition(collisionHandler, "enemy"));
     conditionMap.put(EventCondition.ConditionType.TRUE,
@@ -51,12 +51,16 @@ public class ConditionChecker {
     conditionMap.put(EventCondition.ConditionType.COLLIDED_WITH_PLATFORM,
         new CollisionCondition(collisionHandler, "platforms"));
     conditionMap.put(EventCondition.ConditionType.RIGHT_ARROW_PRESSED,
-        new InputCondition(inputProvider, KeyCode.RIGHT));
+        new InputCondition(inputProvider, KeyCode.RIGHT,true));
     conditionMap.put(EventCondition.ConditionType.LEFT_ARROW_PRESSED,
-        new InputCondition(inputProvider, KeyCode.LEFT));
+        new InputCondition(inputProvider, KeyCode.LEFT,true));
     conditionMap.put(ConditionType.VARIABLE_THRESHOLD,
         new VariableThresholdCondition());
-
+    conditionMap.put(ConditionType.W_KEY_RELEASED, new
+        InputCondition(inputProvider, KeyCode.W, false));
+    conditionMap.put(ConditionType.D_KEY_RELEASED,
+        new InputCondition(inputProvider, KeyCode.D, false));
+    conditionMap.put(ConditionType.A_KEY_RELEASED, new InputCondition(inputProvider, KeyCode.A, false));
   }
 
   /**

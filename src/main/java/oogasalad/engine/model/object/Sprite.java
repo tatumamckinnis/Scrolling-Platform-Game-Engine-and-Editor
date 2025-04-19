@@ -166,6 +166,9 @@ public class Sprite {
       this.currentSprite = currentSprite;
     }
 
+    public void setBaseSprite(FrameData baseSprite) {
+      this.baseSprite = baseSprite;
+    }
 
 }
 

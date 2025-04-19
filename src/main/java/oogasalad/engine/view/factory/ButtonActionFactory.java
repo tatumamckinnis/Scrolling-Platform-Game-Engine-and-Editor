@@ -212,18 +212,21 @@ public class ButtonActionFactory {
    */
   private Runnable setCurrentInputs(Scene currentScene) throws ViewInitializationException {
     List<KeyCode> currentInputs = new ArrayList<>();
-    viewState.setCurrentInputs(currentInputs);
+    List<KeyCode> releasedKeys = new ArrayList<>();
+    viewState.setCurrentInputs(currentInputs, releasedKeys);
     return () -> {
       currentScene.setOnKeyPressed(event -> {
         KeyCode keyCode = event.getCode();
         if (!currentInputs.contains(keyCode)) {
           currentInputs.add(keyCode);
+
         }
       });
 
       currentScene.setOnKeyReleased(event -> {
         KeyCode keyCode = event.getCode();
         currentInputs.remove(keyCode);
+        releasedKeys.add(keyCode);
       });
     };
   }

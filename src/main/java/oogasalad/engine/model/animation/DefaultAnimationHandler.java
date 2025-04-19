@@ -65,4 +65,23 @@ public class DefaultAnimationHandler implements AnimationHandlerApi {
     AnimationState state = stateMap.computeIfAbsent(gameObject.getUUID(), k -> new AnimationState());
     state.clearAndPlay(animationName);
   }
+
+  /**
+   * Overrides the sprite's base frame to a different named frame,
+   * clears any queued animations, and resets the current frame.
+   *
+   * @param gameObject    the GameObject whose base you’re changing
+   * @param newBaseName   the key of the new base frame in the Sprite’s frameMap
+   * @throws IllegalArgumentException if no such frame exists
+   */
+  @Override
+  public void setBaseImage(GameObject gameObject, String newBaseName) {
+    Sprite spriteInfo = gameObject.getSpriteInfo();
+    FrameData frameData = spriteInfo.getFrameMap().get(newBaseName);
+    if (frameData == null) {
+      throw new IllegalArgumentException("Frame '" + newBaseName + "' not found");
+    }
+
+    spriteInfo.setBaseSprite(frameData);
+  }
 }

@@ -36,5 +36,12 @@ public interface AnimationHandlerApi{
    */
   public void clearAndAddToAnimationList(GameObject gameObject,String AnimationName);
 
+  /**
+   * Sets a new base image for the game object.
+   *
+   *
+   * @param gameObject the game object that contains the sprite info.
+   */
+  public void setBaseImage(GameObject gameObject, String newBaseImage);
 
 }

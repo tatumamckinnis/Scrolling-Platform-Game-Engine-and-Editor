@@ -30,7 +30,11 @@ public record EventCondition(EventCondition.ConditionType conditionType,
     A_KEY_PRESSED,
     S_KEY_PRESSED,
     D_KEY_PRESSED,
-    VARIABLE_THRESHOLD
+    VARIABLE_THRESHOLD,
+    W_KEY_RELEASED,
+    D_KEY_RELEASED,
+    A_KEY_RELEASED,
+
   }
 
 

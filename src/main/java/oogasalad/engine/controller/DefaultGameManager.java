@@ -44,6 +44,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
+  private List<KeyCode> currentKeysReleased;
 
   private String currentLevel;
 
@@ -100,6 +101,16 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     return currentKeysPressed.contains(keyCode);
   }
 
+  @Override
+  public boolean isKeyReleased(KeyCode keyCode) {
+    return currentKeysReleased.contains(keyCode);
+  }
+
+  @Override
+  public void clearReleased() {
+  currentKeysReleased.clear();
+  }
+
   /**
    * @see GameManagerAPI#displayGameObjects()
    */
@@ -127,10 +138,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     updateInputList();
     myGameController.updateGameState();
     myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
+    myView.clearReleasedInputs();
   }
 
   private void updateInputList() throws InputException {
-    currentKeysPressed = myView.getCurrentInputs();
+      currentKeysPressed  = myView.getCurrentInputs();
+      currentKeysReleased = myView.getReleasedInputs();
   }
 
   private void initializeMyView() throws ViewInitializationException {
