@@ -164,6 +164,10 @@ public class SpriteDataParser {
    * @return the full file path as a {@code String}.
    */
   private String buildFilePath(String gameName, String group, String type, String spriteFile) {
+    if (type == null || type.trim().isEmpty()) {
+      return pathToSpriteData + File.separator + gameName + File.separator + group
+           + File.separator + spriteFile;
+    }
     return pathToSpriteData + File.separator + gameName + File.separator + group
         + File.separator + type + File.separator + spriteFile;
   }
