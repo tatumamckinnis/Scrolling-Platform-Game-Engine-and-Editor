@@ -48,7 +48,7 @@ interact with each other -->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
         hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25,69"
-        velocityX="0" velocityY="0" rotation="0" flipped="true">
+        velocityX="0" velocityY="0" rotation="90" flipped="true">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <properties>
           <stringProperties>
@@ -68,7 +68,7 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
-        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="270" flipped="false">
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
       </object>
     </objectGroup>
     <objectGroup name="blocks">

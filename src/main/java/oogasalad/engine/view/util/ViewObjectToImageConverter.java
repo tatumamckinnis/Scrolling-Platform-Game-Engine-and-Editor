@@ -62,6 +62,9 @@ public class ViewObjectToImageConverter {
           flipImageView(UUIDToImageMap.get(object.getUUID()).getImageView());
           object.setNeedsFlipped(false);
         }
+        if(object.getRotation() > 0){
+          rotateAboutCenter(UUIDToImageMap.get(object.getUUID()).getImageView(), object.getRotation());
+        }
       } else {
         ObjectImage newViewObject = new ObjectImage(object);
         images.add(newViewObject);
@@ -122,19 +125,13 @@ public class ViewObjectToImageConverter {
    * @param imageView     the ImageView to rotate
    * @param angle  rotation angle in degrees
    */
-  public static void setImageViewRotation(ImageView imageView, double angle) {
-    Image img = imageView.getImage();
-    if (img == null) {
-      return;
-    }
-
-    double centerX = img.getWidth()  / 2.0;
-    double centerY = img.getHeight() / 2.0;
-
+  public static void rotateAboutCenter(ImageView imageView, double angle) {
+    // clear out any old Rotate transforms so we don't stack them
     imageView.getTransforms().removeIf(t -> t instanceof Rotate);
 
-    Rotate rotate = new Rotate(angle, centerX, centerY);
-    imageView.getTransforms().add(rotate);
+    // tell JavaFX to rotate around the centre of the node
+    imageView.setRotationAxis(Rotate.Z_AXIS);
+    imageView.setRotate(angle);
   }
 
   /**
