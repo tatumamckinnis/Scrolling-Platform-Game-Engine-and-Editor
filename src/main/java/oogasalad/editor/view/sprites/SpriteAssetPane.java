@@ -8,6 +8,8 @@ import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * UI that lives inside the “Sprites” tab. Implements the buttons for the spritesheet editor and the
@@ -16,6 +18,8 @@ import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
  * @author Jacob You
  */
 public class SpriteAssetPane extends BorderPane {
+
+  private static final Logger LOG = LogManager.getLogger(SpriteAssetPane.class);
 
   private static final double BUTTON_SPACING = 5;
 
@@ -26,26 +30,23 @@ public class SpriteAssetPane extends BorderPane {
     importButton.getStyleClass().add("small-button");
     newSpriteButton.getStyleClass().add("small-button");
 
-    // 1) Import a sprite‑sheet
     importButton.setOnAction(e ->
         new ProcessSpriteSheetComponent(editorController, ownerWindow).show()
     );
 
-    // 2) Create a new SpriteTemplate
     newSpriteButton.setOnAction(e -> {
-      // grab your library from the controller
       SpriteSheetLibrary library =
           editorController.getEditorDataAPI().getSpriteLibrary();
 
-      // open the SpriteTemplate dialog
       SpriteTemplateComponent dialog =
-          new SpriteTemplateComponent(ownerWindow, library);
+          new SpriteTemplateComponent(editorController, ownerWindow, library);
 
       dialog.showAndWait();
       SpriteTemplate result = dialog.getResult();
 
       if (result != null) {
         editorController.getEditorDataAPI().addSpriteTemplate(result);
+        LOG.info("Added new sprite template: {}", result.getName());
       }
     });
 

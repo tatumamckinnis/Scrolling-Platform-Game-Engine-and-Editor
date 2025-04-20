@@ -328,6 +328,11 @@ public class SpriteData {
     this.spritePath = spritePath;
   }
 
+  /**
+   * Sets the specific base frame for the sprite to default to.
+   *
+   * @param baseFrameName the name of the base frame to default to
+   */
   public void setBaseFrame(String baseFrameName) {
     this.baseFrame = frames.get(baseFrameName);
   }

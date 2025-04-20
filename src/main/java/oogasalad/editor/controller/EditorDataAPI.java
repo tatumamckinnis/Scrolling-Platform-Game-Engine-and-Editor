@@ -14,6 +14,8 @@ import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.fileparser.DefaultFileParser;
+import oogasalad.fileparser.FileParserApi;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorDataAPI {
 
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
-  private static final SaverStrategy DEFAULT_SAVE_STRATEGY = new XmlStrategy();
+  private static final FileParserApi DEFAULT_FILE_PARSER = new DefaultFileParser();
 
   private final IdentityDataManager identityAPI;
   private final HitboxDataManager hitboxAPI;
@@ -43,8 +45,7 @@ public class EditorDataAPI {
   private final CustomEventDataManager customEventAPI;
   private final SpriteSheetDataManager spriteSheetAPI;
   private final EditorFileConverterAPI fileConverterAPI;
-  private final SpriteSheetSaver spriteSheetSaver;
-  private SaverStrategy saverStrategy;
+  private final FileParserApi fileParserAPI;
   private String currentGameDirectoryPath;
 
   /**
@@ -54,7 +55,6 @@ public class EditorDataAPI {
    * @author Jacob You
    */
   public EditorDataAPI() {
-    saverStrategy = DEFAULT_SAVE_STRATEGY;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
@@ -64,10 +64,10 @@ public class EditorDataAPI {
     this.spriteAPI = new SpriteDataManager(level);
     this.customEventAPI = new CustomEventDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
+    this.spriteSheetAPI = new SpriteSheetDataManager(level);
 
     this.fileConverterAPI = new EditorFileConverter();
-    this.spriteSheetSaver = new SpriteSheetSaver();
-    this.spriteSheetAPI = new SpriteSheetDataManager(level, spriteSheetSaver, saverStrategy);
+    this.fileParserAPI = DEFAULT_FILE_PARSER;
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -346,6 +346,11 @@ public class EditorDataAPI {
     return level.getObjectDataMap();
   }
 
+  /**
+   * Adds a sprite template to the sprite template mapping for the current level.
+   *
+   * @param spriteTemplate The sprite template to add to the level mapping
+   */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
     level.addSpriteTemplate(spriteTemplate);
   }

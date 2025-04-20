@@ -47,7 +47,7 @@ class BlueprintBuilderTest {
     when(spriteMock.getFrames()).thenReturn(frameMap);
 
     Map<String, AnimationData> animMap = new LinkedHashMap<>();
-    animMap.put("walk", new AnimationData(0.1, List.of("idle")));
+    animMap.put("walk", new AnimationData("walk", 0.1, List.of("idle")));
     when(spriteMock.getAnimations()).thenReturn(animMap);
 
     // Hitbox mock

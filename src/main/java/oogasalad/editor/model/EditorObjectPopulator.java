@@ -126,7 +126,7 @@ public class EditorObjectPopulator {
         if (anim != null) {
           targetSprite.addAnimation(anim.name(),
               new AnimationData(
-                  anim.frameLength(), anim.frameNames()
+                  anim.name(), anim.frameLength(), anim.frameNames()
               ));
         }
       });

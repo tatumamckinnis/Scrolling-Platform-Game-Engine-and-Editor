@@ -1,11 +1,7 @@
 package oogasalad.editor.view.sprites;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,17 +9,20 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.SpriteSheetAtlas;
+import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
-import oogasalad.editor.model.data.SpriteSheetLibrary;
+import oogasalad.exceptions.SpriteSheetLoadException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Dialog for creating or editing a {@link SpriteTemplate}.
@@ -36,199 +35,140 @@ import oogasalad.editor.model.data.SpriteSheetLibrary;
  */
 public class SpriteTemplateComponent extends Stage {
 
-  // — UI controls —
-  private final TextField nameField      = new TextField();
-  private final TextField pathField      = new TextField();
-  private final Button    browseButton   = new Button("Browse…");
-  private final ComboBox<String> baseFrameBox = new ComboBox<>();
-  private final TableView<FrameRow> framesTable     = new TableView<>();
-  private final TableView<AnimationData> animationsTable = new TableView<>();
-  private final Button    addAnimation   = new Button("Add Animation");
-  private final Button    removeAnimation= new Button("Remove Animation");
-  private final Button    okButton       = new Button("OK");
-  private final Button    cancelButton   = new Button("Cancel");
+  private static final Logger LOG = LogManager.getLogger(SpriteTemplateComponent.class);
 
+  private static final double WINDOW_W  = 800;
+  private static final double WINDOW_H  = 600;
+  private static final double HGAP      = 10;
+  private static final double VGAP      = 8;
+  private static final double SPACING   = 5;
+  private static final double BOTTOM_SP = 10;
+
+  private final EditorController editorController;
   private final SpriteSheetLibrary library;
-  private List<FrameData> allFrames;
-  private SpriteTemplate result;
+  private       SpriteTemplate      result;
 
-  /**
-   * Wraps a FrameData and a BooleanProperty for selection.
-   */
-  private static class FrameRow {
-    private final FrameData frame;
-    private final BooleanProperty use = new SimpleBooleanProperty(true);
-    FrameRow(FrameData frame) { this.frame = frame; }
-    FrameData getFrame()   { return frame; }
-    BooleanProperty useProperty() { return use; }
-    boolean isUsed()       { return use.get(); }
-  }
+  private final TextField nameField        = new TextField();
+  private final TextField pathField        = new TextField();
+  private final Button    browseButton     = new Button("Browse…");
+  private final FrameSelectionPane framesPane   = new FrameSelectionPane();
+  private final TableView<AnimationData> animTable  = new TableView<>();
+  private final Button    addAnimButton    = new Button("Add Animation");
+  private final Button    removeAnimButton = new Button("Remove Animation");
+  private final Button    okButton         = new Button("OK");
+  private final Button    cancelButton     = new Button("Cancel");
 
-  /**
-   * Constructs the dialog.
-   *
-   * @param owner   the owning window
-   * @param library the loaded sprite‑sheet library
-   */
-  public SpriteTemplateComponent(Window owner, SpriteSheetLibrary library) {
+  public SpriteTemplateComponent(
+      EditorController editorController,
+      Window owner,
+      SpriteSheetLibrary library) {
+    this.editorController = editorController;
+    this.library          = library;
+
     initOwner(owner);
     initModality(Modality.APPLICATION_MODAL);
     setTitle("Sprite Template Editor");
-    this.library = library;
 
-    buildUI();
+    nameField.setPromptText("Enter sprite name…");
+    pathField.setEditable(false);
+
     wireEvents();
-    setScene(new Scene(createRoot(), 800, 600));
+    setScene(new Scene(createRoot(), WINDOW_W, WINDOW_H));
   }
 
-  /**
-   * Returns the created/edited template, or null if cancelled.
-   */
+  /** Returns the user’s chosen template, or null if cancelled. */
   public SpriteTemplate getResult() {
     return result;
   }
 
   private Parent createRoot() {
     BorderPane root = new BorderPane();
-    root.setPadding(new Insets(10));
+    root.setPadding(new Insets(VGAP));
 
-    // Top: name + path
+    // Top: name + sheet picker
     GridPane top = new GridPane();
-    top.setHgap(10);
-    top.setVgap(8);
-    top.add(new Label("Name:"),  0, 0);
-    top.add(nameField,           1, 0);
-    top.add(new Label("Sheet:"), 0, 1);
-    HBox picker = new HBox(5, pathField, browseButton);
+    top.setHgap(HGAP);
+    top.setVgap(VGAP);
+    top.add(new Label("Name:"),  0,0);
+    top.add(nameField,           1,0);
+    top.add(new Label("Sheet:"), 0,1);
+    HBox picker = new HBox(SPACING, pathField, browseButton);
     HBox.setHgrow(pathField, Priority.ALWAYS);
-    top.add(picker,              1, 1);
-    top.add(new Label("Base Frame:"), 0, 2);
-    top.add(baseFrameBox,        1, 2);
+    top.add(picker,              1,1);
     root.setTop(top);
 
-    // Center: two tabs
-    TabPane tabPane = new TabPane(
-        new Tab("Frames",     createFramesPane()),
-        new Tab("Animations", createAnimationsPane())
+    // Center: tabs for frames + animations
+    TabPane tabs = new TabPane(
+        new Tab("Frames",     framesPane),
+        new Tab("Animations", buildAnimationsPane())
     );
-    tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    root.setCenter(tabPane);
+    tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+    root.setCenter(tabs);
 
     // Bottom: OK / Cancel
-    HBox bottom = new HBox(10, okButton, cancelButton);
-    bottom.setPadding(new Insets(10,0,0,0));
+    HBox bottom = new HBox(BOTTOM_SP, okButton, cancelButton);
+    bottom.setPadding(new Insets(VGAP,0,0,0));
     root.setBottom(bottom);
 
     return root;
   }
 
-  private Parent createFramesPane() {
-    // "Use" checkbox column
-    TableColumn<FrameRow, Boolean> useCol = new TableColumn<>("Use");
-    useCol.setCellValueFactory(cd -> cd.getValue().useProperty());
-    useCol.setCellFactory(CheckBoxTableCell.forTableColumn(useCol));
-    useCol.setPrefWidth(60);
+  private Parent buildAnimationsPane() {
+    animTable.setEditable(true);
+    animTable.setPlaceholder(new Label("No animations defined"));
 
-    // Frame name column
-    TableColumn<FrameRow, String> nameCol = new TableColumn<>("Frame Name");
+    TableColumn<AnimationData, String> nameCol = new TableColumn<>("Name");
     nameCol.setCellValueFactory(cd ->
-        new SimpleStringProperty(cd.getValue().getFrame().name()));
-    nameCol.setPrefWidth(200);
+        new SimpleStringProperty(cd.getValue().getName()));
+    nameCol.setPrefWidth(260);
 
-    framesTable.getColumns().setAll(useCol, nameCol);
-    framesTable.setItems(FXCollections.observableArrayList());
-    framesTable.setPlaceholder(new Label("Load a sprite‑sheet first"));
-    return new VBox(framesTable);
-  }
-
-  private Parent createAnimationsPane() {
-    animationsTable.setEditable(true);
-    // your existing anim columns here...
-    TableColumn<AnimationData, String> animName = new TableColumn<>("Anim Name");
-    animName.setCellValueFactory(cd ->
-        new SimpleStringProperty(cd.getValue().getFrameNames().toString()));
-    animName.setPrefWidth(200);
-
-    TableColumn<AnimationData, Number> lengthCol = new TableColumn<>("Frame Length");
+    TableColumn<AnimationData, Number> lengthCol = new TableColumn<>("Length");
     lengthCol.setCellValueFactory(cd ->
         new SimpleDoubleProperty(cd.getValue().getFrameLength()));
     lengthCol.setPrefWidth(100);
 
-    animationsTable.getColumns().setAll(animName, lengthCol);
-    animationsTable.setItems(FXCollections.observableArrayList());
+    animTable.getColumns().setAll(nameCol, lengthCol);
+    animTable.setItems(FXCollections.observableArrayList());
 
-    HBox ctrls = new HBox(5, addAnimation, removeAnimation);
-    ctrls.setPadding(new Insets(5));
-    return new VBox(5, ctrls, animationsTable);
-  }
-
-  private void buildUI() {
-    pathField.setEditable(false);
-    baseFrameBox.setDisable(true);
-    nameField.setPromptText("Enter sprite name...");
+    HBox ctrls = new HBox(SPACING, addAnimButton, removeAnimButton);
+    ctrls.setPadding(new Insets(SPACING));
+    return new VBox(SPACING, ctrls, animTable);
   }
 
   private void wireEvents() {
-    browseButton.setOnAction(e -> {
-      FileChooser chooser = new FileChooser();
-      chooser.getExtensionFilters().add(
-          new FileChooser.ExtensionFilter("Sprite Atlas XML", "*.xml"));
-      File xml = chooser.showOpenDialog(getOwner());
-      if (xml == null) return;
-
-      // 1) store full path
-      pathField.setText(xml.getAbsolutePath());
-
-      // 2) load atlas frames
-      SpriteSheetAtlas atlas = library.getAtlas(xml.getName());
-      allFrames = atlas.frames();
-
-      // 3) populate frame rows
-      List<FrameRow> rows = allFrames.stream()
-          .map(FrameRow::new)
-          .collect(Collectors.toList());
-      framesTable.setItems(FXCollections.observableArrayList(rows));
-
-      // 4) base‑frame choices
-      baseFrameBox.setItems(FXCollections.observableArrayList(
-          allFrames.stream().map(FrameData::name).collect(Collectors.toList())
-      ));
-      baseFrameBox.setDisable(false);
+    browseButton.setOnAction(e -> loadAtlas());
+    addAnimButton.setOnAction(e -> {
+      var usedFrames = framesPane.getUsedMap().values().stream().toList();
+      if (usedFrames.isEmpty()) {
+        new Alert(Alert.AlertType.WARNING, "Select at least one frame first.").showAndWait();
+        return;
+      }
+      new AnimationDialog(usedFrames).showAndWait()
+          .ifPresent(animTable.getItems()::add);
     });
-
-    addAnimation.setOnAction(e -> {
-      // TODO: pop up a small dialog to enter:
-      //   * animation name
-      //   * frame length
-      //   * a multi‑select list of frames (FrameRow.getFrame().name())
-      // then animationsTable.getItems().add(new AnimationData(...))
-    });
-
-    removeAnimation.setOnAction(e -> {
-      AnimationData sel = animationsTable.getSelectionModel().getSelectedItem();
-      if (sel != null) animationsTable.getItems().remove(sel);
+    removeAnimButton.setOnAction(e -> {
+      var sel = animTable.getSelectionModel().getSelectedItem();
+      if (sel != null) animTable.getItems().remove(sel);
     });
 
     okButton.setOnAction(e -> {
-      // gather only those FrameRows with use==true
-      Map<String, FrameData> selected = framesTable.getItems().stream()
-          .filter(FrameRow::isUsed)
-          .map(FrameRow::getFrame)
-          .collect(Collectors.toMap(FrameData::name, f -> f));
-
-      FrameData base = selected.get(baseFrameBox.getValue());
-      Map<String, AnimationData> anims = animationsTable.getItems().stream()
-          .collect(Collectors.toMap(
-              a -> String.join("_", a.getFrameNames()),  // or your own key
-              a -> a
-          ));
-
+      var usedMap = framesPane.getUsedMap();
+      if (usedMap.isEmpty()) {
+        new Alert(Alert.AlertType.ERROR, "You must select at least one frame.").showAndWait();
+        return;
+      }
+      String base = framesPane.getSelectedBase();
+      if (base == null) {
+        new Alert(Alert.AlertType.ERROR, "You must choose a base frame.").showAndWait();
+        return;
+      }
       result = new SpriteTemplate(
           nameField.getText(),
           pathField.getText(),
-          base,
-          selected,
-          anims
+          usedMap.get(base),
+          usedMap,
+          animTable.getItems().stream()
+              .collect(Collectors.toMap(AnimationData::getName, a->a))
       );
       close();
     });
@@ -237,5 +177,33 @@ public class SpriteTemplateComponent extends Stage {
       result = null;
       close();
     });
+  }
+
+  private void loadAtlas() {
+    FileChooser chooser = new FileChooser();
+    chooser.getExtensionFilters().add(
+        new FileChooser.ExtensionFilter("Sprite Atlas XML", "*.xml"));
+    File xml = chooser.showOpenDialog(getOwner());
+    if (xml == null) return;
+
+    pathField.setText(xml.getAbsolutePath());
+    String fname = xml.getName();
+    String atlasId = fname.substring(0, fname.lastIndexOf('.'));
+
+    SpriteSheetAtlas atlas = library.getAtlas(atlasId);
+    if (atlas == null) {
+      try {
+        atlas = editorController.getEditorDataAPI()
+            .getSpriteSheetDataAPI()
+            .loadSpriteSheet(xml.getAbsolutePath());
+        library.addAtlas(atlas.atlasName(), atlas);
+      } catch (SpriteSheetLoadException ex) {
+        LOG.error("Load failed: {}", ex.getMessage());
+        new Alert(Alert.AlertType.ERROR, "Cannot load sheet").showAndWait();
+        return;
+      }
+    }
+
+    framesPane.setFrames(atlas.frames());
   }
 }

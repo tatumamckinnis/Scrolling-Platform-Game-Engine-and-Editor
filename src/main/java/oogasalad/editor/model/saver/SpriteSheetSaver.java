@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public final class SpriteSheetSaver {
 
-  private static final Logger LOG = LogManager.getLogger(EditorComponentFactory.class);
+  private static final Logger LOG = LogManager.getLogger(SpriteSheetSaver.class);
 
   /**
    * Converts editor sprite sheet data into file saving format to be saved into a file of the
@@ -36,23 +36,25 @@ public final class SpriteSheetSaver {
       List<oogasalad.editor.model.data.object.sprite.FrameData> frames, File outputFile,
       SaverStrategy saver)
       throws SpriteSheetSaveException {
-    List<FrameData> recordFrames = new ArrayList<>();
-    for (oogasalad.editor.model.data.object.sprite.FrameData frame : frames) {
-      recordFrames.add(convertFrameData(frame));
-    }
-    LOG.info("Saving {} frames into {}", recordFrames.size(), outputFile);
-    saver.saveSpriteSheet(new SpriteSheetData(imagePath, sheetWidth, sheetHeight, recordFrames),
+    LOG.info("Saving {} frames into {}", frames.size(), outputFile);
+    saver.saveSpriteSheet(
+        new SpriteSheetData(imagePath, sheetWidth, sheetHeight, convertFrameData(frames)),
         outputFile);
   }
 
-  private FrameData convertFrameData(
-      oogasalad.editor.model.data.object.sprite.FrameData frameData) {
-    return new FrameData(
-        frameData.name(),
-        frameData.x(),
-        frameData.y(),
-        frameData.width(),
-        frameData.height()
-    );
+  private List<FrameData> convertFrameData(
+      List<oogasalad.editor.model.data.object.sprite.FrameData> frameData) {
+
+    List<FrameData> recordFrames = new ArrayList<>();
+    for (oogasalad.editor.model.data.object.sprite.FrameData frame : frameData) {
+      recordFrames.add(new FrameData(
+          frame.name(),
+          frame.x(),
+          frame.y(),
+          frame.width(),
+          frame.height()
+      ));
+    }
+    return recordFrames;
   }
 }

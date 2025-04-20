@@ -7,21 +7,37 @@ import javafx.geometry.Rectangle2D;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.object.sprite.FrameData;
+import oogasalad.editor.model.loader.SpriteSheetLoader;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
+import oogasalad.editor.view.EditorComponentFactory;
 import oogasalad.editor.view.sprites.SpriteRegion;
+import oogasalad.exceptions.SpriteSheetLoadException;
 import oogasalad.exceptions.SpriteSheetSaveException;
+import oogasalad.fileparser.DefaultFileParser;
+import oogasalad.fileparser.FileParserApi;
+import oogasalad.fileparser.records.SpriteSheetData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
+import oogasalad.filesaver.savestrategy.XmlStrategy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SpriteSheetDataManager {
 
-  private final SpriteSheetSaver saver;
-  private final SaverStrategy strategy;
-  private final EditorLevelData levelData;
+  private static final SaverStrategy DEFAULT_SAVER_STRATEGY = new XmlStrategy();
+  private static final FileParserApi DEFAULT_FILE_PARSER = new DefaultFileParser();
+  private static final Logger LOG = LogManager.getLogger(SpriteSheetDataManager.class);
 
-  public SpriteSheetDataManager(EditorLevelData levelData, SpriteSheetSaver spriteSheetSaver,
-      SaverStrategy saverStrategy) {
-    this.saver = spriteSheetSaver;
-    this.strategy = saverStrategy;
+  private final EditorLevelData levelData;
+  private final SpriteSheetSaver saver;
+  private final SaverStrategy saverStrategy;
+  private final SpriteSheetLoader loader;
+  private final FileParserApi fileParser;
+
+  public SpriteSheetDataManager(EditorLevelData levelData) {
+    this.saver = new SpriteSheetSaver();
+    this.loader = new SpriteSheetLoader();
+    this.saverStrategy = DEFAULT_SAVER_STRATEGY;
+    this.fileParser = DEFAULT_FILE_PARSER;
     this.levelData = levelData;
   }
 
@@ -53,7 +69,17 @@ public class SpriteSheetDataManager {
     );
 
     levelData.getSpriteLibrary().addAtlas(atlasName, atlas);
+    LOG.info("Added sprite sheet {}", atlasName);
 
-    saver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, strategy);
+    saver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, saverStrategy);
+    LOG.info("Saved {} to {}", atlasName, outputFile.getAbsolutePath());
+  }
+
+  public SpriteSheetAtlas loadSpriteSheet(String sheetFile)
+      throws SpriteSheetLoadException {
+    SpriteSheetAtlas atlas = loader.load(sheetFile, fileParser);
+    levelData.getSpriteLibrary().addAtlas(atlas.atlasName(), atlas);
+    LOG.info("Loaded sprite sheet {}", sheetFile);
+    return atlas;
   }
 }
