@@ -16,6 +16,7 @@ import java.util.Objects;
  * @param velocityX           the horizontal velocity associated with the blueprint.
  * @param velocityY           the vertical velocity associated with the blueprint.
  * @param rotation            the rotation of the object (in degrees).
+ * @param isFlipped           whether the object should be flipped about its center.
  * @param gameName            the name of the game to which the blueprint belongs.
  * @param type                the type/category of the blueprint.
  * @param spriteData          the sprite data associated with the blueprint.
@@ -31,6 +32,7 @@ public record BlueprintData(
     double velocityX,
     double velocityY,
     double rotation,
+    boolean isFlipped,
     String gameName,
     String group, //entities, blocks, backgrounds
     String type,
@@ -97,7 +99,7 @@ public record BlueprintData(
   public BlueprintData withId(int newId) {
     return new BlueprintData(
         newId,
-        velocityX, velocityY, rotation,
+        velocityX, velocityY, rotation, isFlipped,
         gameName, group, type,
         spriteData, hitBoxData, eventDataList,
         stringProperties, doubleProperties, displayedProperties

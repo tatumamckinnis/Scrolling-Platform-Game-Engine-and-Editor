@@ -21,6 +21,7 @@ public class SpriteData {
   private Map<String, AnimationData> animations;
   private String spritePath;
   private String baseFrame; // Added field
+  private boolean isFlipped;
 
   /**
    * Constructs a new SpriteData instance with the specified properties.
@@ -29,15 +30,17 @@ public class SpriteData {
    * @param x          the x-coordinate of the sprite's position
    * @param y          the y-coordinate of the sprite's position
    * @param rotation   the rotation of the sprite
+   * @param isFlipped  a boolean of whether an object is flipped or not.
    * @param frames     a map of frame names to their corresponding {@link FrameData}
    * @param animations a map of animation names to their corresponding {@link AnimationData}
    * @param spritePath the file path to the sprite image
    */
-  public SpriteData(String name, int x, int y, double rotation, Map<String, FrameData> frames,
+  public SpriteData(String name, int x, int y, double rotation, boolean isFlipped, Map<String, FrameData> frames,
       Map<String, AnimationData> animations, String spritePath) {
     this.name = name;
     this.x = x;
     this.y = y;
+    this.isFlipped = isFlipped;
     this.rotation = rotation;
     this.frames = frames;
     this.animations = animations;
@@ -311,4 +314,17 @@ public class SpriteData {
   public void setBaseFrame(String baseFrame) {
     this.baseFrame = baseFrame;
   }
+
+  /**
+   *
+   *
+   */
+  public boolean getIsFlipped() {
+    return isFlipped;
+  }
+
+  public void setIsFlipped(boolean isFlipped) {
+    this.isFlipped = isFlipped;
+  }
+
 }

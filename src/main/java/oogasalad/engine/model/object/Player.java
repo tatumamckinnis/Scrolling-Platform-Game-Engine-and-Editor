@@ -89,5 +89,9 @@ public class Player extends GameObject implements ImmutablePlayer {
     currentPowerUps.add(powerUp);
   }
 
+  @Override
+  public void setNeedsFlipped(boolean needsFlipped) {
+    this.getSpriteInfo().setNeedsFlipped(needsFlipped);
+  }
 }
 

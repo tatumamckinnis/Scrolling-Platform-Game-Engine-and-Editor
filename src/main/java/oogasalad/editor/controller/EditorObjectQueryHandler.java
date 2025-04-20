@@ -73,7 +73,7 @@ public class EditorObjectQueryHandler {
    */
   private List<UUID> findHittingObjects(double worldX, double worldY) {
     List<UUID> hitCandidates = new ArrayList<>();
-    Map<UUID, EditorObject> objectMap = editorDataAPI.getLevel().getObjectDataMap();
+    Map<UUID, EditorObject> objectMap = editorDataAPI.getObjectDataMap();
     if (objectMap == null) {
       LOG.warn("Object data map is null, cannot find hitting objects.");
       return hitCandidates;

@@ -112,7 +112,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         blueprintData.hitBoxData().hitBoxWidth(),
         blueprintData.hitBoxData().hitBoxHeight());
     Sprite sprite = new Sprite(frameMap, blueprintData.spriteData().baseImage(), animationMap,
-        blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy(), blueprintData.spriteData().spriteFile());
+        blueprintData.hitBoxData().spriteDx(), blueprintData.hitBoxData().spriteDy(), blueprintData.spriteData().spriteFile(),
+        blueprintData.rotation(), blueprintData.isFlipped());
     List<Event> emptyEvents = new ArrayList<>();
     Map<String, String> stringParams = blueprintData.stringProperties();
     Map<String, Double> doubleParams = blueprintData.doubleProperties();

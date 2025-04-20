@@ -38,6 +38,8 @@ public class Sprite {
   private int frameNumber;
   private int animationNumber;
   private FrameData baseSprite;
+  private boolean needsFlipped;
+  private double rotation;
 
 
   /**
@@ -50,7 +52,7 @@ public class Sprite {
    * @param spriteDy      the vertical offset of the sprite relative to the hitbox
    */
   public Sprite(Map<String, FrameData> frameMap, FrameData currentSprite,
-      Map<String, AnimationData> animations, int spriteDx, int spriteDy, File spriteFile) {
+      Map<String, AnimationData> animations, int spriteDx, int spriteDy, File spriteFile, double rotation, boolean needsFlipped) {
     this.spriteDx = spriteDx;
     this.spriteDy = spriteDy;
     this.frameMap = frameMap;
@@ -61,6 +63,8 @@ public class Sprite {
     this.frameNumber = 0;
     this.animationNumber = 0;
     this.currAnimation = "base";
+    this.needsFlipped = needsFlipped;
+    this.rotation = rotation;
   }
 
   /**
@@ -168,6 +172,38 @@ public class Sprite {
 
     public void setBaseSprite(FrameData baseSprite) {
       this.baseSprite = baseSprite;
+    }
+
+
+    /**
+     *
+     *
+     * @return a boolean if the object is flipped by default for most objects flipping will have the object face left.
+     */
+    public boolean needsFlipped() {
+      return needsFlipped;
+    }
+
+
+    public void setNeedsFlipped(boolean needsFlipped) {
+      this.needsFlipped = needsFlipped;
+    }
+
+  /**
+   *
+   * @return the rotation of the object about its center.
+   */
+  public double getRotation() {
+      return rotation;
+    }
+
+  /**
+   *
+   *
+   * @param rotation the rotation of the sprite image.
+   */
+  public void setRotation(double rotation) {
+      this.rotation = rotation;
     }
 
 }

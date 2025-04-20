@@ -182,7 +182,7 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     );
 
     return new BlueprintData(
-        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(),
+        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(), prefab.isFlipped(),
         prefab.gameName(), prefab.group(), prefab.type(),
         emptySpriteData,
         prefab.hitBoxData(),
@@ -292,7 +292,7 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     );
 
     return new BlueprintData(
-        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(),
+        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(), prefab.isFlipped(),
         prefab.gameName(), prefab.group(), prefab.type(),
         newSpriteData,
         prefab.hitBoxData(),
