@@ -6,6 +6,7 @@ package oogasalad.engine.model.object.event;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javafx.scene.input.KeyCode;
 import net.bytebuddy.build.ToStringPlugin.Enhance;
@@ -18,11 +19,14 @@ import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.event.condition.Condition;
 import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
+import oogasalad.engine.model.object.Entity;
 import oogasalad.engine.model.object.GameObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConditionCheckerTest {
     private InputProvider inputProvider;
@@ -34,7 +38,7 @@ public class ConditionCheckerTest {
     public class mockInput implements InputProvider {
         @Override
         public boolean isKeyPressed(KeyCode keyCode) {
-            return false;
+            return true;
         }
 
         @Override
@@ -68,9 +72,29 @@ public class ConditionCheckerTest {
 
     @Test
     void TrueCondition() {
-
         assertEquals(checker.checkCondition(ConditionType.TRUE, null), true);
+    }
 
+    @Test
+    void InputCondition() {
+        assertEquals(checker.checkCondition(ConditionType.A_KEY_PRESSED, null), true);
+    }
+
+    @Test
+    void CollisionCondition() {
+        assertFalse(checker.checkCondition(ConditionType.COLLIDED_WITH_ENEMY, obj));
+    }
+
+    @Test
+    void VariableThresholdCondition() {
+        HashMap<String, String> stringParams = new HashMap<>();
+        HashMap<String, Double> doubleParams = new HashMap<>();
+        stringParams.put("variable", "score");
+        doubleParams.put("score", 15.0);
+        doubleParams.put("threshold", 10.0);
+
+        Entity gameObject = new Entity(null, null, 0, 0,0, null, null, null, stringParams, doubleParams);
+        assertTrue(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
     }
 
 
