@@ -52,7 +52,7 @@ public class XmlEventsWriterTest {
 
     BlueprintData blueprint = new BlueprintData(
         1,
-        3.5, -2.0, 0.0,
+        3.5, -2.0, 0.0, false,
         "platformer", "Enemies", "enemy",
         null,
         null,

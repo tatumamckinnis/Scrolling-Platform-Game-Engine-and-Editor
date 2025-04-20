@@ -54,7 +54,7 @@ public class XmlBlueprintsWriterTest {
     BlueprintData blueprint = new BlueprintData(
         1,
         3.5, -2.0, 0.0,
-        "platformer", "Enemies", "enemy",
+        false, "platformer", "Enemies", "enemy",
         sprite,
         hitbox,
         List.of(event),
