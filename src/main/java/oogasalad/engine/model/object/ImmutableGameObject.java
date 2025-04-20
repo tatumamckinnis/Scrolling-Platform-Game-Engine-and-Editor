@@ -77,9 +77,19 @@ public interface ImmutableGameObject {
   int getSpriteDy();
 
   /**
-   * @return file for the sprite sheet
+   * @return file for the sprite sheet.
    */
   File getSpriteFile();
 
+  /**
+   * @return whether the object needs to be flipped in the view or not.
+   */
+  boolean getNeedsFlipped();
 
+  void setNeedsFlipped(boolean didFlip);
+
+  /**
+   * @return the rotation for the object.
+   */
+  double getRotation();
 }

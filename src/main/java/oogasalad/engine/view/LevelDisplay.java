@@ -51,6 +51,7 @@ public class LevelDisplay extends Display {
     sprites = myConverter.convertObjectsToImages(gameObjects);
     for (ObjectImage sprite : sprites) {
       this.getChildren().add(sprite.getImageView());
+      this.getChildren().add(sprite.getHitBox());
     }
   }
 

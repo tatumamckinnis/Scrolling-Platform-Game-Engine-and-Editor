@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 import oogasalad.Main;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
@@ -55,6 +58,10 @@ public class ViewObjectToImageConverter {
         UUIDToImageMap.get(object.getUUID())
             .updateImageLocation(object.getXPosition(), object.getYPosition());
         moveImageViewToCurrentFrame(object,UUIDToImageMap.get(object.getUUID()).getImageView());
+        if(object.getNeedsFlipped()){
+          flipImageView(UUIDToImageMap.get(object.getUUID()).getImageView());
+          object.setNeedsFlipped(false);
+        }
       } else {
         ObjectImage newViewObject = new ObjectImage(object);
         images.add(newViewObject);
@@ -96,6 +103,38 @@ public class ViewObjectToImageConverter {
     imageView.setFitWidth(viewport.getWidth());
     imageView.setFitHeight(viewport.getHeight());
     imageView.setViewOrder(viewObject.getLayer());
+  }
+
+  public static void flipImageView(ImageView iv) {
+    Image img = iv.getImage();
+    if (img == null) return;
+
+    double w = iv.getBoundsInLocal().getWidth();
+
+    iv.setScaleX(iv.getScaleX() > 0 ? -1 : 1);
+
+  }
+
+  /**
+   * Rotates the given ImageView by the specified angle (in degrees)
+   * about the image’s center.
+   *
+   * @param imageView     the ImageView to rotate
+   * @param angle  rotation angle in degrees
+   */
+  public static void setImageViewRotation(ImageView imageView, double angle) {
+    Image img = imageView.getImage();
+    if (img == null) {
+      return;
+    }
+
+    double centerX = img.getWidth()  / 2.0;
+    double centerY = img.getHeight() / 2.0;
+
+    imageView.getTransforms().removeIf(t -> t instanceof Rotate);
+
+    Rotate rotate = new Rotate(angle, centerX, centerY);
+    imageView.getTransforms().add(rotate);
   }
 
   /**

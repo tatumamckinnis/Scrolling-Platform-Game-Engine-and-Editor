@@ -155,7 +155,7 @@ public class BlueprintDataParser {
   /**
    * Parses a single game object node into a {@link BlueprintData} record.
    * <p>
-   * This method extracts basic attributes (ID, velocityX, velocityY, rotation, shape, sprite name,
+   * This method extracts basic attributes (ID, velocityX, velocityY, rotation, isFlipped, shape, sprite name,
    * and sprite file), creates the corresponding {@link SpriteData} and {@link HitBoxData} objects,
    * processes event identifiers, and parses property nodes using the dedicated
    * {@link PropertyParser}.
@@ -175,6 +175,7 @@ public class BlueprintDataParser {
       double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
       double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
       double rotation = Double.parseDouble(gameObjectNode.getAttribute("rotation"));
+      boolean isFlipped = Boolean.parseBoolean(gameObjectNode.getAttribute("flipped"));
       String type = gameObjectNode.getAttribute("type");
       String spriteName = gameObjectNode.getAttribute("spriteName");
       String spriteFile = gameObjectNode.getAttribute("spriteFile");
@@ -200,6 +201,7 @@ public class BlueprintDataParser {
           velocityX,
           velocityY,
           rotation,
+          isFlipped,
           gameName,
           groupName,
           type,

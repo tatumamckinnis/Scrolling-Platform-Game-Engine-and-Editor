@@ -42,7 +42,7 @@ public class BlueprintBuilder {
     String group = "";  // placeholder, replace with actual grouping logic if needed
     String type = obj.getIdentityData().getType();
     double rotation = obj.getSpriteData().getRotation();
-
+    boolean isFlipped = obj.getSpriteData().getIsFlipped();
     SpriteData spriteData = toSpriteRecord(obj.getSpriteData());
     HitBoxData hitBoxData = toHitboxRecord(obj.getHitboxData(), obj.getSpriteData());
     List<EventData> eventData = toEventRecord(obj);
@@ -55,7 +55,7 @@ public class BlueprintBuilder {
 
     return new BlueprintData(
         BLUEPRINT_PLACEHOLDER_ID,
-        vX, vY, rotation,
+        vX, vY, rotation, isFlipped,
         gameName, group, type,
         spriteData,
         hitBoxData,
