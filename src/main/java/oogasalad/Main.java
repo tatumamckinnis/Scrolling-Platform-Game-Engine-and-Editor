@@ -1,10 +1,11 @@
 package oogasalad;
 
 
+import java.net.URISyntaxException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
-import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.server.GameWebSocketClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,7 @@ public class Main extends Application {
    *                     not be primary stages.
    */
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws URISyntaxException {
     try {
       new DefaultGameManager();
       LOG.info("Starting game...");
