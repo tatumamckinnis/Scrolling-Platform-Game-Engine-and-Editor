@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
@@ -51,5 +52,11 @@ public class NewGameComponents extends Display {
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
   }
+
+  @Override
+  public void renderPlayerStats(ImmutableGameObject player) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRenderPlayerStats"));
+  }
+
 
 }

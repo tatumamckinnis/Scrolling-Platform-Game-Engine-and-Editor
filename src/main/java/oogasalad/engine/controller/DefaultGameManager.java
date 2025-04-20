@@ -138,7 +138,14 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     updateInputList();
     myGameController.updateGameState();
     myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
+    renderPlayerStats();
     myView.clearReleasedInputs();
+  }
+
+  private void renderPlayerStats() {
+    for (ImmutableGameObject immutableGameObject : myGameController.getImmutablePlayers()) {
+      myView.renderPlayerStats(immutableGameObject);
+    }
   }
 
   private void updateInputList() throws InputException {

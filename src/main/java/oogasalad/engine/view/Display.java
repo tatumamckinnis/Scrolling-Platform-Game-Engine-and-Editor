@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.RenderingException;
 
@@ -58,6 +59,12 @@ public abstract class Display extends Group {
    * @param gameObject the game object that should be removed
    */
   public abstract void removeGameObjectImage(ImmutableGameObject gameObject);
+
+  /**
+   * renders the player's score, lives, and other displayed statistics
+   * @param player game objects of the player type
+   */
+  public abstract void renderPlayerStats(ImmutableGameObject player);
 
   /**
    * Creates the screen with all the Text and Button components for an overlay screen, whether it be a win, pause,
