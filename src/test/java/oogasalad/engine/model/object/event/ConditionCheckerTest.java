@@ -4,7 +4,6 @@
 package oogasalad.engine.model.object.event;
 
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,76 +27,94 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Testing expected return values for conditions using a condition checker
+ *
+ * @author Gage Garcia
+ */
 public class ConditionCheckerTest {
-    private InputProvider inputProvider;
-    private DefaultCollisionHandler defaultCollisionHandler;
-    private ConditionChecker checker;
-    private GameControllerAPI gameController;
-    private GameObject obj;
 
-    public class mockInput implements InputProvider {
-        @Override
-        public boolean isKeyPressed(KeyCode keyCode) {
-            return true;
-        }
+  private ConditionChecker checker;
+  private GameObject obj;
 
-        @Override
-        public boolean isKeyReleased(KeyCode keyCode) {
-            return false;
-        }
+  public class mockInput implements InputProvider {
 
-        @Override
-        public void clearReleased() {
+    @Override
+    public boolean isKeyPressed(KeyCode keyCode) {
+      return true;
+    }
 
-        }
+    @Override
+    public boolean isKeyReleased(KeyCode keyCode) {
+      return false;
+    }
+
+    @Override
+    public void clearReleased() {
 
     }
 
-    public class MockCollision implements CollisionHandler {
-        @Override
-        public void updateCollisions() {
+  }
 
-        }
-        @Override
-        public List<GameObject> getCollisions(GameObject gameObject) {
-            return new ArrayList<>();
-        }
-    }
+  public class MockCollision implements CollisionHandler {
 
-    @BeforeEach
-    void setUp() throws Exception {
-        checker = new ConditionChecker(new mockInput(), new MockCollision());
+    @Override
+    public void updateCollisions() {
 
     }
 
-    @Test
-    void TrueCondition() {
-        assertEquals(checker.checkCondition(ConditionType.TRUE, null), true);
+    @Override
+    public List<GameObject> getCollisions(GameObject gameObject) {
+      return new ArrayList<>();
     }
+  }
 
-    @Test
-    void InputCondition() {
-        assertEquals(checker.checkCondition(ConditionType.A_KEY_PRESSED, null), true);
-    }
+  @BeforeEach
+  void setUp() throws Exception {
+    checker = new ConditionChecker(new mockInput(), new MockCollision());
 
-    @Test
-    void CollisionCondition() {
-        assertFalse(checker.checkCondition(ConditionType.COLLIDED_WITH_ENEMY, obj));
-    }
+  }
 
-    @Test
-    void VariableThresholdCondition() {
-        HashMap<String, String> stringParams = new HashMap<>();
-        HashMap<String, Double> doubleParams = new HashMap<>();
-        stringParams.put("variable", "score");
-        doubleParams.put("score", 15.0);
-        doubleParams.put("threshold", 10.0);
+  @Test
+  void TrueCondition() {
+    assertEquals(checker.checkCondition(ConditionType.TRUE, null), true);
+  }
 
-        Entity gameObject = new Entity(null, null, 0, 0,0, null, null, null, stringParams, doubleParams);
-        assertTrue(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
-    }
+  @Test
+  void InputCondition() {
+    assertEquals(checker.checkCondition(ConditionType.A_KEY_PRESSED, null), true);
+  }
 
+  @Test
+  void CollisionCondition() {
+    assertFalse(checker.checkCondition(ConditionType.COLLIDED_WITH_ENEMY, obj));
+  }
 
+  @Test
+  void VariableThresholdCondition() {
+    HashMap<String, String> stringParams = new HashMap<>();
+    HashMap<String, Double> doubleParams = new HashMap<>();
+    stringParams.put("variable", "score");
+    doubleParams.put("score", 15.0);
+    doubleParams.put("threshold", 10.0);
+
+    Entity gameObject = new Entity(null, null, 0, 0, 0, null, null, null, stringParams,
+        doubleParams);
+    assertTrue(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
+  }
+
+  @Test
+  void VariableThresholdConditionFail() {
+    HashMap<String, String> stringParams = new HashMap<>();
+    HashMap<String, Double> doubleParams = new HashMap<>();
+    stringParams.put("variable", "score");
+    doubleParams.put("score", 15.0);
+    doubleParams.put("threshold", 20.0);
+
+    Entity gameObject = new Entity(null, null, 0, 0, 0, null, null, null, stringParams,
+        doubleParams);
+    assertFalse(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
+  }
 
 
 }
