@@ -17,7 +17,6 @@ import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.GameObjectProvider;
 import oogasalad.engine.controller.api.InputProvider;
-import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.CollisionHandler;
 import oogasalad.engine.model.event.DefaultCollisionHandler;
@@ -85,7 +84,18 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
   @Override
   public List<ImmutableGameObject> getImmutableObjects() {
-    return makeGameObjectsImmutable();
+    return makeGameObjectsImmutable(myGameObjects);
+  }
+
+  @Override
+  public List<ImmutableGameObject> getImmutablePlayers() {
+    List<GameObject> players = new ArrayList<>();
+    for (GameObject gameObject : myGameObjects) {
+      if (gameObject.getType().equals("player")) {
+        players.add(gameObject);
+      }
+    }
+    return makeGameObjectsImmutable(players);
   }
 
   @Override
@@ -165,13 +175,11 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
 
-  private List<ImmutableGameObject> makeGameObjectsImmutable() {
+  private List<ImmutableGameObject> makeGameObjectsImmutable(
+      List<GameObject> gameObjectsToConvert) {
     List<ImmutableGameObject> immutableObjects = new ArrayList<>();
-    for (GameObject gameObject : myGameObjects) {
-      // only gives objects to view if there's a real image
-      if (gameObject.getCurrentFrame() != null) {
-        immutableObjects.add(gameObject);
-      }
+    for (GameObject gameObject : gameObjectsToConvert) {
+      immutableObjects.add(gameObject);
     }
     return immutableObjects;
   }

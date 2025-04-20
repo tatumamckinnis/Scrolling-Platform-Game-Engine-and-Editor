@@ -118,7 +118,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     Map<String, Double> doubleParams = blueprintData.doubleProperties();
     Map<String, Double> displayedStats = makeDisplayedStatsMap(blueprintData, doubleParams);
 
-    if (blueprintData.type().equals("Player")) {
+    if (blueprintData.type().equals("player")) {
       newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
           emptyEvents, displayedStats, stringParams, doubleParams);
     } else {

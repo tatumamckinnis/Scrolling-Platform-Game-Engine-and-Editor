@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import oogasalad.engine.model.object.ImmutablePlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,6 +71,11 @@ public class SplashScreen extends Display {
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+  }
+
+  @Override
+  public void renderPlayerStats(ImmutableGameObject player) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRenderPlayerStats"));
   }
 
   /**

@@ -63,6 +63,15 @@ public class Player extends GameObject implements ImmutablePlayer {
   }
 
   /**
+   * sets the value of the current stat to the value provided
+   * @param stat stat to display
+   * @param value the value the stat is set to
+   */
+  public void setDisplayedStat(String stat, double value) {
+    displayedStats.put(stat, value);
+  }
+
+  /**
    * Returns a map of hidden stats used for internal calculations.
    *
    * @return a map of hidden stat names and values

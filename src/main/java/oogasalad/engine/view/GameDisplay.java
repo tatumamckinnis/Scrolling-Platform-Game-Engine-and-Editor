@@ -49,7 +49,7 @@ public class GameDisplay extends Display {
    * renders the Game Display
    */
   public void initialRender() {
-    this.getChildren().addAll(myHUD, myGameControlPanel, myLevelView, myNewGameComponents);
+    this.getChildren().addAll(myGameControlPanel, myLevelView, myNewGameComponents, myHUD);
     myGameControlPanel.initialRender();
     myLevelView.initialRender();
     myNewGameComponents.initialRender();
@@ -67,5 +67,10 @@ public class GameDisplay extends Display {
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     myLevelView.removeGameObjectImage(gameObject);
+  }
+
+  @Override
+  public void renderPlayerStats(ImmutableGameObject player) {
+    myHUD.renderPlayerStats(player);
   }
 }
