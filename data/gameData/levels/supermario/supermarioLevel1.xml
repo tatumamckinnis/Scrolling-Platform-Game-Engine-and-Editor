@@ -33,7 +33,7 @@ interact with each other -->
     <layer name="entities" width="4000" height="500" z="1">
       <data>
         <object id="12" coordinates="(319,300), (558,300), (829,300), (1030,300), (1316,300), (1597,300), (1886,300), (2159,300), (2404,300), (2639,300)" uid="8764685f-8329-4a9e-9329-aa1aa0dbff30, 7952dada-1d3c-4af6-a668-11f2688e005a, b9f907db-1fa4-4144-bdc4-f8c6c25dfa1b, f9fbde62-4b21-4e7e-ba0d-ca52027d68e5, 9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd, 80f45a6d-f145-4d73-a81b-57f91af8ce88, 3337c661-e1a1-46e1-b48b-082a74046d4c" />
-        <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+        <object id="145" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
         <object id="14" coordinates="(400,400), (616,400), (616,400), (891,400), (891,400), (1097,400), (1097,400), (1298,400), (1298,400), (1546,400)" uid="dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
       </data>
     </layer>
@@ -91,6 +91,11 @@ interact with each other -->
       <object type="" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0"/>
     </objectGroup>
   </game>
+  <game name="supermario">
+    <objectGroup name="entities">
+      <object type="player" id="145" spriteFile="supermario_mario.xml" spriteName="big-mario" eventIDs="20,22,23,36,37,38,39,69" hitBoxWidth="16" hitBoxHeight="32" spriteDy="0" spriteDx="0" velocityX="0" velocityY="0" rotation="0"/>
+    </objectGroup>
+  </game>
   <events>
     <event type="input" id="69">
       <conditions>
@@ -142,6 +147,81 @@ interact with each other -->
           <stringParameters>
             <parameter name="animationName" value="walk"/>
           </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="36">
+      <conditions>
+        <conditionSet>
+          <condition name="D_KEY_PRESSED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="walk-right"/>
+          </stringParameters>
+        </outcome>
+        <outcome name="SET_BASE_FRAME">
+          <stringParameters>
+            <parameter name="frameName" value="big-mario-stand-right"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="37">
+      <conditions>
+        <conditionSet>
+          <condition name="D_KEY_RELEASED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="STOP_OBJECT_ANIMATIONS">
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="38">
+      <conditions>
+        <conditionSet>
+          <condition name="A_KEY_PRESSED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <doubleParameters>
+            <parameter name="amount" value="-10"/>
+            <parameter name="angle" value="0"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="walk-left"/>
+          </stringParameters>
+        </outcome>
+        <outcome name="SET_BASE_FRAME">
+          <stringParameters>
+            <parameter name="frameName" value="big-mario-stand-left"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="39">
+      <conditions>
+        <conditionSet>
+          <condition name="A_KEY_RELEASED">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="STOP_OBJECT_ANIMATIONS">
         </outcome>
       </outcomes>
     </event>
@@ -220,16 +300,13 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-
     <event type="input" id="superMove" description="A faster movement for the dino.">
       <conditions>
         <conditionSet>
           <condition name="HAS_POWER_UP">
-
           </condition>
         </conditionSet>
       </conditions>
-
     </event>
   </events>
 </map>

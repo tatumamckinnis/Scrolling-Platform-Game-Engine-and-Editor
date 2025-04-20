@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prefabs>
+  <game name="dinosaurgame"> <objectGroup name="entities"> <object
+    id="1"
+    type="player" velocityX="0.00"
+    velocityY="0.00"
+    rotation="0.00"
+    spriteName="Dino" spriteFile="dinosaur.xml" hitBoxWidth="88"
+    hitBoxHeight="94"
+    hitBoxShape="RECTANGLE"
+    spriteDx="0"
+    spriteDy="0"
+    eventIDs=""
+  >
+    <properties>
+      <stringProperties>
+        <property key="initial_animation" value="walk"/>
+      </stringProperties>
+      <doubleProperties>
+        <property key="jump_force" value="15.00"/>
+        <property key="gravity" value="0.80"/>
+      </doubleProperties>
+    </properties>
+  </object>
+
+    <object
+      id="10"
+      type="enemy" velocityX="0.00"
+      velocityY="0.00"
+      rotation="0.00"
+      spriteName="LargeCactus1" spriteFile="cacti.xml" hitBoxWidth="48"
+      hitBoxHeight="95"
+      hitBoxShape="RECTANGLE"
+      spriteDx="0"
+      spriteDy="0"
+      eventIDs=""
+    >
+      <properties> <stringProperties/> <doubleProperties/> </properties>
+    </object>
+
+    <object
+      id="11"
+      type="enemy" velocityX="0.00"
+      velocityY="0.00"
+      rotation="0.00"
+      spriteName="LargeCactus2" spriteFile="cacti.xml" hitBoxWidth="99"
+      hitBoxHeight="95"
+      hitBoxShape="RECTANGLE"
+      spriteDx="0"
+      spriteDy="0"
+      eventIDs=""
+    >
+      <properties> <stringProperties/> <doubleProperties/> </properties>
+    </object>
+
+    <object
+      id="12"
+      type="enemy" velocityX="0.00"
+      velocityY="0.00"
+      rotation="0.00"
+      spriteName="SmallCactus1" spriteFile="cacti.xml" hitBoxWidth="40"
+      hitBoxHeight="71"
+      hitBoxShape="RECTANGLE"
+      spriteDx="0"
+      spriteDy="0"
+      eventIDs=""
+    >
+      <properties> <stringProperties/> <doubleProperties/> </properties>
+    </object>
+  </objectGroup>
+
+  </game>
+</prefabs>

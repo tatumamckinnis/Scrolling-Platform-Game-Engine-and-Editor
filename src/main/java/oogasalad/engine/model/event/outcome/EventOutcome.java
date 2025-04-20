@@ -25,7 +25,12 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     PLATFORM_PASS_THROUGH_BEHAVIOR,
     RESTART_LEVEL,
     CHANGE_VAR,
-    SELECT_LEVEL
+    SELECT_LEVEL,
+    ADD_ANIMATION,
+    RUN_OBJECT_ANIMATIONS,
+    STOP_OBJECT_ANIMATIONS,
+    MOVE,
+    SET_BASE_FRAME,
   }
 
   /**

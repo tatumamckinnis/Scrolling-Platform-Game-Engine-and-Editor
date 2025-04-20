@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.model.animation.DefaultAnimationHandler;
+import oogasalad.engine.model.event.outcome.AddToAnimationsOutcome;
 import oogasalad.engine.model.event.outcome.ChangeVarOutcome;
 import oogasalad.engine.model.event.outcome.DestroyObjectOutcome;
 import oogasalad.engine.model.event.outcome.EventOutcome;
@@ -14,12 +16,16 @@ import oogasalad.engine.model.event.outcome.GravityOutcome;
 import oogasalad.engine.model.event.outcome.JumpOutcome;
 import oogasalad.engine.model.event.outcome.LoseGameOutcome;
 import oogasalad.engine.model.event.outcome.MoveLeftOutcome;
+import oogasalad.engine.model.event.outcome.MoveOutcome;
 import oogasalad.engine.model.event.outcome.MoveRightOutcome;
 import oogasalad.engine.model.event.outcome.Outcome;
 import oogasalad.engine.model.event.outcome.PatrolOutcome;
 import oogasalad.engine.model.event.outcome.PlatformPassThroughOutcome;
 import oogasalad.engine.model.event.outcome.RestartLevelOutcome;
+import oogasalad.engine.model.event.outcome.RunObjectsAnimationsOutcome;
 import oogasalad.engine.model.event.outcome.SelectLevelOutcome;
+import oogasalad.engine.model.event.outcome.SetBaseFrameOutcome;
+import oogasalad.engine.model.event.outcome.stopObjectAnimationsOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -42,7 +48,7 @@ public class OutcomeExecutor {
    *
    * @param gameExecutor Initialize mapping of outcome enum to outcome interface
    */
-  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor) {
+  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor, DefaultAnimationHandler animationHandler) {
     this.outcomeMap = new HashMap<>();
     outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
         new MoveRightOutcome());
@@ -66,6 +72,14 @@ public class OutcomeExecutor {
         new SelectLevelOutcome(gameExecutor));
     outcomeMap.put(OutcomeType.CHANGE_VAR,
         new ChangeVarOutcome());
+    outcomeMap.put(OutcomeType.ADD_ANIMATION,
+        new AddToAnimationsOutcome(animationHandler));
+    outcomeMap.put(OutcomeType.RUN_OBJECT_ANIMATIONS,
+        new RunObjectsAnimationsOutcome(animationHandler));
+    outcomeMap.put(OutcomeType.STOP_OBJECT_ANIMATIONS,
+        new stopObjectAnimationsOutcome(animationHandler));
+    outcomeMap.put(OutcomeType.MOVE, new MoveOutcome());
+    outcomeMap.put(OutcomeType.SET_BASE_FRAME, new SetBaseFrameOutcome(animationHandler));
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;

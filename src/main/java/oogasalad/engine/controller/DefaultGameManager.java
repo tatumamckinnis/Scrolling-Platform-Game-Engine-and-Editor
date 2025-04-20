@@ -15,7 +15,6 @@ import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
@@ -29,8 +28,6 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
-import oogasalad.fileparser.records.LevelData;
-import oogasalad.filesaver.FileSaver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,11 +40,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
       DefaultGameManager.class.getPackageName() + "." + "GameManager");
   private final Timeline myGameLoop;
-  private List<GameObject> myGameObjects;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
+  private List<KeyCode> currentKeysReleased;
 
   private String currentLevel;
 
@@ -104,6 +101,16 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     return currentKeysPressed.contains(keyCode);
   }
 
+  @Override
+  public boolean isKeyReleased(KeyCode keyCode) {
+    return currentKeysReleased.contains(keyCode);
+  }
+
+  @Override
+  public void clearReleased() {
+  currentKeysReleased.clear();
+  }
+
   /**
    * @see GameManagerAPI#displayGameObjects()
    */
@@ -131,10 +138,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     updateInputList();
     myGameController.updateGameState();
     myView.renderGameObjects(myGameController.getImmutableObjects(), myGameController.getCamera());
+    myView.clearReleasedInputs();
   }
 
   private void updateInputList() throws InputException {
-    currentKeysPressed = myView.getCurrentInputs();
+      currentKeysPressed  = myView.getCurrentInputs();
+      currentKeysReleased = myView.getReleasedInputs();
   }
 
   private void initializeMyView() throws ViewInitializationException {

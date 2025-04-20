@@ -16,4 +16,10 @@ public interface InputProvider {
    * @return true or false depending on if the key was pressed
    */
   boolean isKeyPressed(KeyCode keyCode);
+
+  /** checks if the key was just released since last check */
+  boolean isKeyReleased(KeyCode keyCode);
+
+  /** call once per frame/tick to reset the released‐state */
+  void clearReleased();
 }

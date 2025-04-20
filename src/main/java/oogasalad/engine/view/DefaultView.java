@@ -42,6 +42,7 @@ public class DefaultView implements ViewAPI {
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
   private List<KeyCode> currentInputs;
+  private List<KeyCode> releasedInputs;
   private Camera myCamera;
 
   /**
@@ -90,6 +91,20 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
+   * @see ViewAPI@getReleasedInputs()
+   */
+  public List<KeyCode> getReleasedInputs() throws InputException {
+    return Collections.unmodifiableList(releasedInputs);
+  }
+
+  /**
+   * Clears the released‑keys list so each release only fires once.
+   */
+  public void clearReleasedInputs() {
+    releasedInputs.clear();
+  }
+
+  /**
    * @return the current game scene. Public method because the controller must call it to set the
    * scene initially.
    */
@@ -121,5 +136,14 @@ public class DefaultView implements ViewAPI {
    */
   void setCurrentInputs(List<KeyCode> currentInputs) {
     this.currentInputs = currentInputs;
+  }
+
+  /**
+   * Set the released inputs.
+   *
+   * @param releasedInputs an arraylist to point to.
+   */
+  void setReleasedInputs(List<KeyCode> releasedInputs) {
+    this.releasedInputs = releasedInputs;
   }
 }

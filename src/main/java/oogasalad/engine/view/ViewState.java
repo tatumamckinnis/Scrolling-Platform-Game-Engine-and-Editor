@@ -68,8 +68,9 @@ public class ViewState {
    *
    * @param currentInputs list of key codes to set the current inputs to.
    */
-  public void setCurrentInputs(List<KeyCode> currentInputs) {
+  public void setCurrentInputs(List<KeyCode> currentInputs, List<KeyCode> releasedInputs) {
     checkClassCaller();
+    myDefaultView.setReleasedInputs(releasedInputs);
     myDefaultView.setCurrentInputs(currentInputs);
   }
 

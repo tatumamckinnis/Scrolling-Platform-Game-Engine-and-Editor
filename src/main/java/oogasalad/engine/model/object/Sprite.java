@@ -34,6 +34,11 @@ public class Sprite {
   private Map<String, FrameData> frameMap;
   private Map<String, AnimationData> animations;
   private File spriteFile;
+  private String currAnimation;
+  private int frameNumber;
+  private int animationNumber;
+  private FrameData baseSprite;
+
 
   /**
    * Constructs a new {@code Sprite} with the provided frame data and rendering offsets.
@@ -50,9 +55,12 @@ public class Sprite {
     this.spriteDy = spriteDy;
     this.frameMap = frameMap;
     this.currentSprite = currentSprite;
+    this.baseSprite = currentSprite;
     this.animations = animations;
     this.spriteFile = spriteFile;
-
+    this.frameNumber = 0;
+    this.animationNumber = 0;
+    this.currAnimation = "base";
   }
 
   /**
@@ -111,5 +119,56 @@ public class Sprite {
   public File getSpriteFile() {
     return spriteFile;
   }
+
+  /**
+   *
+   * @return the current animation the sprite is on
+   */
+  public String getCurrAnimation() {
+    return currAnimation;
+  }
+
+  /**
+   *
+   * @return the current frame number in relation to framelen of the animation
+   */
+  public int getFrameNumber() {
+    return frameNumber;
+  }
+
+  /**
+   *
+   *
+   * @return the current animation number in relation to the List of frames  in the animation data
+   */
+  public int getAnimationNumber() {
+    return animationNumber;
+  }
+
+  /**
+   *
+   *
+   * @return all the animations that the sprite has.
+   */
+  public  Map<String, AnimationData> getAnimations() {
+    return animations;
+  }
+
+  /**
+   *
+   *
+   */
+    public FrameData getBaseSprite() {
+      return baseSprite;
+    }
+
+    public void setCurrentSprite(FrameData currentSprite) {
+      this.currentSprite = currentSprite;
+    }
+
+    public void setBaseSprite(FrameData baseSprite) {
+      this.baseSprite = baseSprite;
+    }
+
 }
 

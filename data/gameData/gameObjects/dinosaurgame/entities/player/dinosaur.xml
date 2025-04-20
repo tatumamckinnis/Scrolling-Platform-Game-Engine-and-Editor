@@ -19,9 +19,9 @@ height  => sprite height
     <frame name="DinoRun2" x="826" y="0" width="88" height="94"/>
   </frames>
   <animations>
-     <animation name="walk" frameLen="0.15" frames="DinoRun1,DinoRun2"/>
-     <animation name="jump" frameLen="0.15" frames="DinoJump"/>
-     <animation name="dead" frameLen="0.15" frames="DinoDead"/>
+     <animation name="walk" frameLen="5" frames="DinoRun1,DinoRun2"/>
+     <animation name="jump" frameLen="5" frames="DinoJump"/>
+     <animation name="dead" frameLen="5" frames="DinoDead"/>
     <animation  name="duck-walk"   frameLen="0.15" frames="DinoDuck1,DinoDuck2"/>
   </animations>
 </sprite>
