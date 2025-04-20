@@ -28,6 +28,16 @@ public class ConditionCheckerTest {
             return false;
         }
 
+        @Override
+        public boolean isKeyReleased(KeyCode keyCode) {
+            return false;
+        }
+
+        @Override
+        public void clearReleased() {
+
+        }
+
     }
 
     @BeforeEach

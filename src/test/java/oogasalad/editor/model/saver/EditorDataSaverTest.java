@@ -56,9 +56,9 @@ class EditorDataSaverTest {
     when(levelMock.getBounds()).thenReturn(new int[]{0, 0, 640, 480});
     when(levelMock.getLevelName()).thenReturn("TestLevel");
 
-    bpA = new BlueprintData(-1, 0, 0, 0, "A", "", "", null, null,
+    bpA = new BlueprintData(-1, 0, 0, 0, false, "A", "", "", null, null,
         List.of(), Map.of(), Map.of(), List.of());
-    bpB = new BlueprintData(-1, 0, 0, 0, "B", "", "", null, null,
+    bpB = new BlueprintData(-1, 0, 0, 0, false, "B", "", "", null, null,
         List.of(), Map.of(), Map.of(), List.of());
   }
 

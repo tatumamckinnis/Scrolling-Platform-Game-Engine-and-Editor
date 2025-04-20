@@ -29,7 +29,7 @@ class SpriteTest {
     Map<String, AnimationData> animations = new HashMap<>();
     spriteFile = new File("spritesheet.xml");
 
-    sprite = new Sprite(frameMap, defaultFrame, animations, 10, -5, spriteFile);
+    sprite = new Sprite(frameMap, defaultFrame, animations, 10, -5, spriteFile, 90.0, false);
   }
 
   @Test
