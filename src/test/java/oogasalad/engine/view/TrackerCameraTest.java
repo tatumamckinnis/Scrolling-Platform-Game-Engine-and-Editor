@@ -72,7 +72,7 @@ class TrackerCameraTest {
 
     // Construct Sprite object with offset (dx/dy) = 0
     Sprite sprite = new Sprite(frameMap, currentFrame, animationMap, 0, 0,
-        new File("DinoRun1.png"));
+        new File("DinoRun1.png"), 90.0, false);
 
     // Construct HitBox for the object
     HitBox hitBox = new HitBox(100, 100, 87, 94); // x, y, width, height

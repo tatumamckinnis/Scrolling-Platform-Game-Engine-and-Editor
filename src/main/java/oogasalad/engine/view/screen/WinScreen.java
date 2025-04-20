@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
+import java.util.ResourceBundle;
+import oogasalad.Main;
+import oogasalad.engine.model.object.ImmutablePlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +20,8 @@ import oogasalad.engine.view.ViewState;
 
 public class WinScreen extends GameOverlayScreen {
     private static final Logger LOG = LogManager.getLogger();
+    private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+        Main.class.getPackage().getName() + "." + "Exceptions");
     private static final String overlayPropertiesFilepath = "/oogasalad/screens/winScene.properties";
     private static final Properties overlayProperties = new Properties();
     private String overlayStylesheet;
@@ -113,6 +118,11 @@ public class WinScreen extends GameOverlayScreen {
         // No need to remove game objects from the win screen, as it is a static overlay
         // that doesn't support adding dynamic objects.
         // This method is intentionally left blank.
+    }
+
+    @Override
+    public void renderPlayerStats(ImmutableGameObject player) {
+        throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRenderPlayerStats"));
     }
 
 }

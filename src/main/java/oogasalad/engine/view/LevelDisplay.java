@@ -2,7 +2,10 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.ResourceBundle;
+import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.exceptions.RenderingException;
@@ -20,6 +23,8 @@ public class LevelDisplay extends Display {
   // need to store all the game objects and render all of them
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
   private static final Logger LOG = LogManager.getLogger();
   private final ViewObjectToImageConverter myConverter;
 
@@ -51,7 +56,6 @@ public class LevelDisplay extends Display {
     sprites = myConverter.convertObjectsToImages(gameObjects);
     for (ObjectImage sprite : sprites) {
       this.getChildren().add(sprite.getImageView());
-      this.getChildren().add(sprite.getHitBox());
     }
   }
 
@@ -75,6 +79,11 @@ public class LevelDisplay extends Display {
     ObjectImage imageToRemove = myConverter.retrieveImageObject(gameObject);
     this.getChildren().remove(imageToRemove.getImageView());
     this.getChildren().remove(imageToRemove.getHitBox());
+  }
+
+  @Override
+  public void renderPlayerStats(ImmutableGameObject player) {
+    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotDisplayPlayerStats"));
   }
 
 }

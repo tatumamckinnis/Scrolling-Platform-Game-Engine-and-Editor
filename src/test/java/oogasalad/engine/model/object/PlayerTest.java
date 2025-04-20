@@ -31,7 +31,7 @@ class PlayerTest {
     Map<String, FrameData> frameMap = new HashMap<>();
     frameMap.put("idle", frame);
 
-    sprite = new Sprite(frameMap, frame, new HashMap<>(), 0, 0, new File("sprite.xml"));
+    sprite = new Sprite(frameMap, frame, new HashMap<>(), 0, 0, new File("sprite.xml"), 90.0, false);
 
     events = new ArrayList<>();
     displayedStats = new HashMap<>();

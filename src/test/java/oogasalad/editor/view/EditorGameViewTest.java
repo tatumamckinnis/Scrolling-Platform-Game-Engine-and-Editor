@@ -41,7 +41,7 @@ class EditorGameViewTest {
   @Start
   private void start(Stage stage) {
     mockitoCloseable = MockitoAnnotations.openMocks(this);
-    gameView = new EditorGameView(CELL_SIZE, INITIAL_ZOOM, mockController, null); // TODO: Fix prefab pane
+    gameView = new EditorGameView(CELL_SIZE, INITIAL_ZOOM, mockController, null, null); // TODO: Fix prefab pane
     gameView.setPrefSize(VIEW_WIDTH, VIEW_HEIGHT);
     Scene scene = new Scene(gameView, VIEW_WIDTH, VIEW_HEIGHT);
     stage.setScene(scene);
@@ -114,10 +114,10 @@ class EditorGameViewTest {
   @Test
   void testConstructorWithInvalidCellSizeThrowsException() {
     assertThrows(IllegalArgumentException.class, () -> {
-      new EditorGameView(0, INITIAL_ZOOM, mockController, null);
+      new EditorGameView(0, INITIAL_ZOOM, mockController, null, null);
     });
     assertThrows(IllegalArgumentException.class, () -> {
-      new EditorGameView(-10, INITIAL_ZOOM, mockController, null);
+      new EditorGameView(-10, INITIAL_ZOOM, mockController, null, null);
     });
   }
   @Test
@@ -200,7 +200,7 @@ class EditorGameViewTest {
   @Test
   void testConstructorWithNullControllerThrowsException() {
     assertThrows(IllegalArgumentException.class, () -> {
-      new EditorGameView(CELL_SIZE, INITIAL_ZOOM, null, null);
+      new EditorGameView(CELL_SIZE, INITIAL_ZOOM, null, null, null);
     });
   }
   @Test
