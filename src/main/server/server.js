@@ -6,7 +6,7 @@
 const WebSocket = require("ws");
 
 class Server {
-  constructor(port = 3000) {
+  constructor(port) {
     this.port = port;
     this.clients = new Set();
     this.webserver = new WebSocket.Server({ port: this.port });
@@ -39,3 +39,6 @@ class Server {
     socket.on('close', () => this.handleDisconnect(socket));
   }
 }
+
+const PORT = process.argv[2];
+new Server(parseInt(PORT));
