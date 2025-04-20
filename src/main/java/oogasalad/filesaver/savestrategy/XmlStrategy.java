@@ -43,7 +43,7 @@ public class XmlStrategy implements SaverStrategy {
 
   @Override
   public void saveSpriteSheet(SpriteSheetData spriteSheetData, File outputFile) throws SpriteSheetSaveException {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+    try {
       new XmlSpriteSheetWriter(spriteSheetData, outputFile).write();
     } catch (IOException e) {
       LOG.warn("Could not save sprite sheet data.", e);

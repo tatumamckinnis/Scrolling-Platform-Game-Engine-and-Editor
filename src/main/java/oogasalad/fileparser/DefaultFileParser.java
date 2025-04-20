@@ -14,11 +14,13 @@ import oogasalad.exceptions.HitBoxParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.exceptions.SpriteSheetLoadException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
+import oogasalad.fileparser.records.SpriteSheetData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -32,11 +34,12 @@ import org.xml.sax.SAXException;
  *   <li>{@link LayerDataParser} to extract game object and layer information,</li>
  *   <li>{@link BlueprintDataParser} to extract blueprint data, and</li>
  *   <li>{@link EventDataParser} to extract event-related information.</li>
+ *   <li>{@link SpriteSheetDataParser} to extract sprite sheet information.</li>
  * </ul>
  * The parsed data is then bundled into a {@link LevelData} record.
  * </p>
  *
- * @author Billy McCune
+ * @author Billy McCune, Jacob You
  * @see FileParserApi
  * @see LevelData
  */
@@ -46,6 +49,7 @@ public class DefaultFileParser implements FileParserApi {
   private BlueprintDataParser myGameObjectParser;
   private EventDataParser myEventDataParser;
   private CameraDataParser myCameraDataParser;
+  private SpriteSheetDataParser mySpriteSheetDataParser;
 
   /**
    * Constructs a new {@code DefaultFileParser} and initializes the helper parsers.
@@ -63,6 +67,7 @@ public class DefaultFileParser implements FileParserApi {
     myGameObjectParser = new BlueprintDataParser();
     myEventDataParser = new EventDataParser();
     myCameraDataParser = new CameraDataParser();
+    mySpriteSheetDataParser = new SpriteSheetDataParser();
   }
 
   /**
@@ -121,6 +126,30 @@ public class DefaultFileParser implements FileParserApi {
           gameObjectDataList);
     } catch (SAXException | IOException | ParserConfigurationException e) {
       throw new LevelDataParseException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Parse the specified sprite sheet XML file and return the sprite data.
+   *
+   * @param filePath the path to the sprite sheet to be parsed
+   * @return the {@link SpriteSheetData} record representing the parsed sprite sheet data
+   * @throws SpriteSheetLoadException if an error occurs while parsing the sprite sheet
+   */
+  @Override
+  public SpriteSheetData parseSpriteSheet(String filePath) throws SpriteSheetLoadException {
+    File spriteSheetFile = new File(filePath);
+
+    try {
+      Document doc = DocumentBuilderFactory.newInstance()
+          .newDocumentBuilder()
+          .parse(spriteSheetFile);
+
+      Element root = doc.getDocumentElement();
+      return mySpriteSheetDataParser.getSpriteSheetData(root);
+
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new SpriteSheetLoadException("Failed to load spritesheet: " + e.getMessage(), e);
     }
   }
 }

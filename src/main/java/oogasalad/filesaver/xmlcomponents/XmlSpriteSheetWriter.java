@@ -61,11 +61,11 @@ public class XmlSpriteSheetWriter implements XmlComponentWriter {
 
       for (FrameData frame : frames) {
         Element e = doc.createElement("sprite");
-        e.setAttribute("name", frame.name());
+        e.setAttribute("n", frame.name());
         e.setAttribute("x", Integer.toString(frame.x()));
         e.setAttribute("y", Integer.toString(frame.y()));
-        e.setAttribute("width", Integer.toString(frame.width()));
-        e.setAttribute("height", Integer.toString(frame.height()));
+        e.setAttribute("w", Integer.toString(frame.width()));
+        e.setAttribute("h", Integer.toString(frame.height()));
         root.appendChild(e);
       }
 
