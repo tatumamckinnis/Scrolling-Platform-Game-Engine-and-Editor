@@ -10,7 +10,8 @@ import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
 import oogasalad.engine.model.event.condition.InputCondition;
 import oogasalad.engine.model.event.condition.TrueCondition;
-import oogasalad.engine.model.event.condition.VariableThresholdCondition;
+import oogasalad.engine.model.event.condition.VariableGreaterThanThresholdCondition;
+import oogasalad.engine.model.event.condition.VariableLessThanThresholdCondition;
 import oogasalad.engine.model.object.GameObject;
 
 /**
@@ -54,8 +55,10 @@ public class ConditionChecker {
         new InputCondition(inputProvider, KeyCode.RIGHT,true));
     conditionMap.put(EventCondition.ConditionType.LEFT_ARROW_PRESSED,
         new InputCondition(inputProvider, KeyCode.LEFT,true));
-    conditionMap.put(ConditionType.VARIABLE_THRESHOLD,
-        new VariableThresholdCondition());
+    conditionMap.put(ConditionType.LESS_THAN_VARIABLE_THRESHOLD,
+        new VariableLessThanThresholdCondition());
+    conditionMap.put(ConditionType.GREATER_VARIABLE_THRESHOLD,
+        new VariableGreaterThanThresholdCondition());
     conditionMap.put(ConditionType.W_KEY_RELEASED, new
         InputCondition(inputProvider, KeyCode.W, false));
     conditionMap.put(ConditionType.D_KEY_RELEASED,

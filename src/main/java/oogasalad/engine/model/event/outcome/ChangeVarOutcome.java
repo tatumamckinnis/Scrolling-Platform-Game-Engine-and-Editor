@@ -3,6 +3,7 @@ package oogasalad.engine.model.event.outcome;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.Player;
@@ -21,7 +22,7 @@ import oogasalad.exceptions.SpriteParseException;
  * @author Gage Garcia and Alana Zinkin
  */
 public class ChangeVarOutcome implements Outcome {
-
+  private Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)
