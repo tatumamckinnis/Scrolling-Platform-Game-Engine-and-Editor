@@ -210,4 +210,5 @@ public interface EditorController {
    * Notifies the view that the available prefab list has changed and should be refreshed.
    */
   void notifyPrefabsChanged();
+
 }
