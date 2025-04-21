@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
+import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
@@ -21,12 +22,12 @@ import oogasalad.exceptions.SpriteParseException;
  * to add it to the object's animation queue.
  */
 public class AddToAnimationsOutcome implements Outcome {
-  private final DefaultAnimationHandler animationHandler;
+  private final AnimationHandlerApi animationHandler;
 
   /**
    * @param animationHandler the handler responsible for managing animations
    */
-  public AddToAnimationsOutcome(DefaultAnimationHandler animationHandler) {
+  public AddToAnimationsOutcome(AnimationHandlerApi animationHandler) {
     this.animationHandler = animationHandler;
   }
 

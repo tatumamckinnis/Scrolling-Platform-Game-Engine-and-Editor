@@ -416,3 +416,33 @@
   /* Define specific styles for small buttons like '+' */
   -fx-padding: 2px 6px;
 }
+
+#chat-container {
+  -fx-background-color: white;
+  -fx-border-color: gray;
+  -fx-border-width: 1px;
+}
+
+#chat-label {
+  /* reuse your header style, or tweak as needed */
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-padding: 5px 0;
+}
+
+#chat-pane {
+  /* the inner BorderPane where the TextArea/Input live */
+  -fx-background-color: white;
+}
+
+/* Optional: match your toolbar buttons for the “Send” button */
+#chat-pane .button {
+  -fx-background-color: #eba743;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-background-radius: 6px;
+  -fx-cursor: hand;
+}
+#chat-pane .button:hover {
+  -fx-background-color: #f8d65c;
+}

@@ -17,11 +17,11 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 
 /**
- * changes a dynamic user-named double by a delta amount
+ * Sets a dynamic variable to a specified amount
  *
- * @author Gage Garcia and Alana Zinkin
+ * @author Gage Garcia
  */
-public class ChangeVarOutcome implements Outcome {
+public class SetVarOutcome implements Outcome {
 
   private Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
 
@@ -30,10 +30,7 @@ public class ChangeVarOutcome implements Outcome {
       Map<String, Double> doubleParameters)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     String variable = stringParameters.get("variable");
-    double delta = doubleParameters.getOrDefault("delta", 0.0);
-    LOG.info(variable);
-    Double curAmount = gameObject.getDoubleParams().getOrDefault(variable, 0.0);
-    double newAmount = curAmount + delta;
+    double newAmount = doubleParameters.getOrDefault("amount", 0.0);
     gameObject.getDoubleParams().put(variable, newAmount);
   }
 

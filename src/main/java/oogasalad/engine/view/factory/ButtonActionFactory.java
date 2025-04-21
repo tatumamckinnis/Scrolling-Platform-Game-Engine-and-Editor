@@ -15,6 +15,8 @@ import java.util.zip.DataFormatException;
 
 import javafx.scene.control.ComboBox;
 import oogasalad.Main;
+import oogasalad.editor.controller.EditorMaker;
+import oogasalad.editor.view.EditorApplication;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -293,6 +295,12 @@ public class ButtonActionFactory {
           LOG.error(EXCEPTIONS.getString("CannotSelectLevel"), e);
         }
       }
+    };
+  }
+
+  private Runnable openEditor() {
+    return () -> {
+      new EditorMaker(new Stage());
     };
   }
 }

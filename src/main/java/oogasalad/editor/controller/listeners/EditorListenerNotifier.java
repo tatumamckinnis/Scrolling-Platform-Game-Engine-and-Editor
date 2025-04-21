@@ -7,8 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manages and notifies EditorViewListeners about changes in the editor state.
- * This class centralizes notification logic, decoupling it from the main controller.
+ * Manages and notifies EditorViewListeners about changes in the editor state. This class
+ * centralizes notification logic, decoupling it from the main controller.
  *
  * @author Tatum McKinnis
  */
@@ -59,7 +59,9 @@ public class EditorListenerNotifier {
    */
   public void notifyObjectRemoved(UUID objectId) {
     LOG.debug("Notifying listeners: Object removed {}", objectId);
-    viewListeners.forEach(listener -> listener.onObjectRemoved(objectId));
+    viewListeners.forEach(listener -> {
+      listener.onObjectRemoved(objectId);
+    });
   }
 
   /**
@@ -75,7 +77,8 @@ public class EditorListenerNotifier {
   /**
    * Notifies all registered view listeners that the currently selected object has changed.
    *
-   * @param selectedObjectId the UUID of the newly selected object, or null if no object is selected.
+   * @param selectedObjectId the UUID of the newly selected object, or null if no object is
+   *                         selected.
    */
   public void notifySelectionChanged(UUID selectedObjectId) {
     LOG.debug("Notifying listeners: Selection changed {}", selectedObjectId);
@@ -83,7 +86,8 @@ public class EditorListenerNotifier {
   }
 
   /**
-   * Notifies all registered view listeners that the set of available dynamic variables has potentially changed.
+   * Notifies all registered view listeners that the set of available dynamic variables has
+   * potentially changed.
    */
   public void notifyDynamicVariablesChanged() {
     LOG.debug("Notifying listeners: Dynamic variables changed");

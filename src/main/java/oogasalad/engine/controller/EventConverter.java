@@ -13,6 +13,7 @@ import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.OutcomeData;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Utility class responsible for converting {@link EventData} from the file parser into fully
@@ -22,6 +23,8 @@ import oogasalad.fileparser.records.OutcomeData;
  */
 public class EventConverter {
 
+  private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(
+      EventConverter.class);
   private static Logger LOG = Logger.getLogger(EventConverter.class.getName());
 
   /**
@@ -74,6 +77,14 @@ public class EventConverter {
         EventCondition newCondition = new EventCondition(
             EventCondition.ConditionType.valueOf(condition.name()), condition.stringProperties(),
             condition.doubleProperties());
+
+        for (Map.Entry<String,String> e : condition.stringProperties().entrySet()) {
+          LOG.info("stringProperty: " + e.getKey() + " -> " + e.getValue());
+        }
+
+        for (Map.Entry<String,Double> e : condition.doubleProperties().entrySet()) {
+          LOG.info("doubleProperty: " + e.getKey() + " -> " + e.getValue());
+        }
         conditions.add(newCondition);
       }
       eventConditions.add(conditions);
@@ -91,7 +102,6 @@ public class EventConverter {
   private static List<EventOutcome> makeEventOutcomes(EventData eventData) {
     List<EventOutcome> eventOutcomes = new ArrayList<>();
     for (OutcomeData outcome : eventData.outcomes()) {
-      LOG.info(outcome.name());
       EventOutcome newOutcome = new EventOutcome(EventOutcome.OutcomeType.valueOf(outcome.name()),
           outcome.stringProperties(), outcome.doubleProperties());
       eventOutcomes.add(newOutcome);
