@@ -15,7 +15,7 @@ public class VariableGreaterThanThresholdCondition implements Condition {
   @Override
   public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     String variableName = stringParams.get("variable");
-    Double amount = doubleParams.get(variableName);
+    Double amount = gameObject.getDoubleParams().getOrDefault(variableName,0.0);
     Double threshold = doubleParams.get("threshold");
     return amount > threshold;
   }
