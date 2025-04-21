@@ -117,9 +117,9 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     List<Event> emptyEvents = new ArrayList<>();
     Map<String, String> stringParams = blueprintData.stringProperties();
     Map<String, Double> doubleParams = blueprintData.doubleProperties();
-    Map<String, Double> displayedStats = makeDisplayedStatsMap(blueprintData, doubleParams);
+    List<String> displayedStats = blueprintData.displayedProperties();
 
-    if (blueprintData.type().equals("Player")) {
+    if (blueprintData.type().equals("player")) {
       newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
           emptyEvents, displayedStats, stringParams, doubleParams);
     } else {
@@ -131,15 +131,6 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
         bluePrintMap);
     newGameObject.setEvents(events);
     return newGameObject;
-  }
-
-  private static Map<String, Double> makeDisplayedStatsMap(BlueprintData blueprintData,
-      Map<String, Double> doubleParams) {
-    Map<String, Double> displayedStats = new HashMap<>();
-    for (String stat : blueprintData.displayedProperties()) {
-      displayedStats.put(stat, doubleParams.getOrDefault(stat, 0.0));
-    }
-    return displayedStats;
   }
 
   private static Map<String, FrameData> makeFrameMap(BlueprintData blueprintData) {

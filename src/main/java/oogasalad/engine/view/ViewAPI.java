@@ -26,7 +26,7 @@ public interface ViewAPI {
    * @throws ViewInitializationException if the view cannot be initialized due to missing resources,
    *                                     hardware limitations, or window creation failures
    */
-  void initialize() throws ViewInitializationException;
+  void initialize() throws ViewInitializationException, FileNotFoundException;
 
   /**
    * Renders a list of game objects to the view. This method is typically called by the game engine

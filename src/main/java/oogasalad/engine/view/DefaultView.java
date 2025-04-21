@@ -60,7 +60,7 @@ public class DefaultView implements ViewAPI {
    * @see DefaultView#initialize()
    */
   @Override
-  public void initialize() throws ViewInitializationException {
+  public void initialize() throws ViewInitializationException, FileNotFoundException {
     ViewState currentState = new ViewState(currentStage, gameManager, this);
     SplashScreen splashScreen = new SplashScreen(currentState);
 
@@ -127,6 +127,14 @@ public class DefaultView implements ViewAPI {
    */
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     currentDisplay.removeGameObjectImage(gameObject);
+  }
+
+  /**
+   * renders a player's statistics within the HUD display
+   * @param player the player game object
+   */
+  public void renderPlayerStats(ImmutableGameObject player) {
+    currentDisplay.renderPlayerStats(player);
   }
 
   /**

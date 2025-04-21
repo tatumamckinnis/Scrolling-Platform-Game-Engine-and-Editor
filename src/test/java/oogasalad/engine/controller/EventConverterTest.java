@@ -60,10 +60,10 @@ class EventConverterTest {
 
     SpriteData spriteData1 = new SpriteData("player.png", new File("src/test/resources/sprites/sprite1.png"),
         new FrameData("moving", 1, 1, 10, 20), new ArrayList<>(), new ArrayList<>());
-    Sprite sprite = new Sprite(new HashMap<>(), new FrameData("moving", 1, 1, 10, 20), new HashMap<>(), 2, 4, new File("src/test/resources/sprites/sprite.png"));
+    Sprite sprite = new Sprite(new HashMap<>(), new FrameData("moving", 1, 1, 10, 20), new HashMap<>(), 2, 4, new File("src/test/resources/sprites/sprite.png"), 90.0, true);
     HitBoxData hitBoxData1 = new HitBoxData("Mario", 1, 1, 2, 4);
     HitBox hitbox = new HitBox(1, 1, 1, 1);
-    BlueprintData blueprintData1 = new BlueprintData(1, 0,0, 90,"Mario", "Player", "Player", spriteData1, hitBoxData1,
+    BlueprintData blueprintData1 = new BlueprintData(1, 0,0, 90, false,"Mario", "Player", "Player", spriteData1, hitBoxData1,
         eventDataList, new HashMap<>(), new HashMap<>(), new ArrayList<>());
     UUID uuid = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
     gameObjectData = new GameObjectData(
@@ -75,7 +75,7 @@ class EventConverterTest {
         ""
     );
 
-    expectedGameObject = new Player(uuid, "Player", 1, 0, 0, hitbox, sprite, new ArrayList<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+    expectedGameObject = new Player(uuid, "Player", 1, 0, 0, hitbox, sprite, new ArrayList<>(), new ArrayList<>(), new HashMap<>(), new HashMap<>());
     List<Event> expectedEvents = new ArrayList<>();
     List<List<EventCondition>> expectedConditions = new ArrayList<>();
     List<EventCondition> expectedConditionsList = new ArrayList<>();

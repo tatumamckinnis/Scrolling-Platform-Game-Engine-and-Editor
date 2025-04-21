@@ -30,6 +30,11 @@ public interface GameControllerAPI {
   List<ImmutableGameObject> getImmutableObjects();
 
   /**
+   * @return list of immutable player game objects
+   */
+  List<ImmutableGameObject> getImmutablePlayers();
+
+  /**
    * returns view object data using id
    *
    * @param uuid string version of uuid

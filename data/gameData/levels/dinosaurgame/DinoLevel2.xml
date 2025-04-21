@@ -38,8 +38,9 @@
   <game name="dinosaurgame">
     <objectGroup name="entities">
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="18,19,20,22,23"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="18,19,20,22,23,24"
         velocityX="0" velocityY="0" rotation="90">
+        <displayedProperties propertyList="score"/>
         <properties>
         <stringProperties>
         </stringProperties>
@@ -153,6 +154,24 @@
           </outcome>
         </outcomes>
       </event>
+    <event type="physics" id="24">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="score"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value=".1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
   </events>
 </map>
 
