@@ -53,7 +53,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
    * @throws ViewInitializationException if the view cannot render
    */
   public DefaultGameManager()
-      throws ViewInitializationException {
+      throws ViewInitializationException, FileNotFoundException {
     myGameLoop = initGameLoop();
     myGameController = new DefaultGameController(this, this);
     myLevelAPI = new DefaultLevel(myGameController);
@@ -153,7 +153,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       currentKeysReleased = myView.getReleasedInputs();
   }
 
-  private void initializeMyView() throws ViewInitializationException {
+  private void initializeMyView() throws ViewInitializationException, FileNotFoundException {
     Stage primaryStage = new Stage();
     myView = new DefaultView(primaryStage, this);
     myView.initialize();

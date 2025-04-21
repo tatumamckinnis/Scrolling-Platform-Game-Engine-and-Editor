@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Logger;
 import oogasalad.engine.model.event.Event;
 
 /**
@@ -21,6 +22,7 @@ import oogasalad.engine.model.event.Event;
  */
 public class Player extends GameObject implements ImmutablePlayer {
 
+  private static final Logger LOG = Logger.getLogger(Player.class.getName());
   private List<String> currentPowerUps;
 
   private List<String> displayedStats;
@@ -62,7 +64,7 @@ public class Player extends GameObject implements ImmutablePlayer {
     Map<String,String> displayedStatsMap = new HashMap<>();
     for (String stat : displayedStats) {
       if (getDoubleParams().containsKey(stat)) {
-        System.out.println("Displayed stat: " + stat + " = " + getDoubleParams().get(stat));
+        LOG.info("Displayed stat: " + stat + " = " + getDoubleParams().get(stat));
         displayedStatsMap.put(stat,String.valueOf(getDoubleParams().get(stat).intValue()));
       }
       else if (getStringParams().containsKey(stat)) {

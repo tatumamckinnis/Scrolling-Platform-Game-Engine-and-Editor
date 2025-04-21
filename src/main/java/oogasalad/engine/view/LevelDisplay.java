@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
 import oogasalad.exceptions.RenderingException;

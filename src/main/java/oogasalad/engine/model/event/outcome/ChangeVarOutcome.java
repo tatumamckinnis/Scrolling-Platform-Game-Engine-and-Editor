@@ -3,6 +3,7 @@ package oogasalad.engine.model.event.outcome;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.Player;
@@ -22,6 +23,8 @@ import oogasalad.exceptions.SpriteParseException;
  */
 public class ChangeVarOutcome implements Outcome {
 
+  private static final Logger LOG = Logger.getLogger(ChangeVarOutcome.class.getName());
+
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)
@@ -31,7 +34,7 @@ public class ChangeVarOutcome implements Outcome {
     Double curAmount = gameObject.getDoubleParams().getOrDefault(variable, 0.0);
     double newAmount = curAmount + delta;
     gameObject.getDoubleParams().put(variable, newAmount);
-    System.out.println("Variable " + variable + " changed to " + newAmount);
+    LOG.info("Variable " + variable + " changed to " + newAmount);
   }
 
   /**
