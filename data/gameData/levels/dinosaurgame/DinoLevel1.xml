@@ -47,7 +47,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,25,69"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,69"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
 
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
@@ -56,8 +56,9 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="100"/>
-            <property name="score" value="0"/>
+            <property name="lives" value="20"/>
+            <property name="score" value="100"/>
+            <property name="rocket_time_left" value="0"/>
           </doubleProperties>
         </properties>
       </object>
@@ -110,7 +111,10 @@ interact with each other -->
     <event type="input" id="20">
       <conditions>
         <conditionSet>
-          <condition name="W_KEY_PRESSED">
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="w"/>
+            </stringParameters>
             <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
             </doubleParameters>
@@ -174,7 +178,10 @@ interact with each other -->
     <event type="physics" id="23">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_PLATFORM">
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platforms"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -189,7 +196,10 @@ interact with each other -->
     <event type="physics" id="24">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_PLAYER">
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="enemy"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -199,12 +209,7 @@ interact with each other -->
             <parameter name="variable" value="lives"/>
           </stringParameters>
           <doubleParameters>
-            <parameter name="delta" value="-1"/>
-          </doubleParameters>
-        </outcome>
-        <outcome name="LOSE_GAME">
-          <doubleParameters>
-            <parameter name="placeholder" value="0.1"/>
+            <parameter name="delta" value="-10"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -212,7 +217,10 @@ interact with each other -->
     <event type="physics" id="25">
       <conditions>
         <conditionSet>
-          <condition name="S_KEY_PRESSED">
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="s"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -224,31 +232,24 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-    <event type="input" id="dinoPowerUp" description="A Power-up for the dino.">
+    <event type="input" id="26">
       <conditions>
         <conditionSet>
-          <condition name="P_KEY_PRESSED"/>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
         </conditionSet>
       </conditions>
       <outcomes>
-        <outcome name="SWITCH_SPRITES">
-          <stringParameters>
-            <parameter name="bluePrintId" value=""/>
-            <parameter name="powerUpName" value="superDino"/>
-          </stringParameters>
+        <outcome name="LOSE_GAME">
         </outcome>
       </outcomes>
     </event>
 
-    <event type="input" id="superMove" description="A faster movement for the dino.">
-      <conditions>
-        <conditionSet>
-          <condition name="HAS_POWER_UP">
-
-          </condition>
-        </conditionSet>
-      </conditions>
-
-    </event>
   </events>
 </map>

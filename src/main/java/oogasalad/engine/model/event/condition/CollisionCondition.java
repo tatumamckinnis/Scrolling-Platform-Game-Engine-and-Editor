@@ -1,6 +1,7 @@
 package oogasalad.engine.model.event.condition;
 
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.model.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
@@ -12,19 +13,17 @@ import oogasalad.engine.model.object.GameObject;
 public class CollisionCondition implements Condition {
 
   private final CollisionHandler collisionHandler;
-  private final String collidedGroup;
 
   /**
    * @param collisionHandler interface that gives access to currently colliding object
-   * @param collidedGroup    String name of group to check collisions for
    */
-  public CollisionCondition(CollisionHandler collisionHandler, String collidedGroup) {
+  public CollisionCondition(CollisionHandler collisionHandler) {
     this.collisionHandler = collisionHandler;
-    this.collidedGroup = collidedGroup;
   }
 
   @Override
-  public boolean isMet(GameObject gameObject) {
+  public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
+    String collidedGroup = stringParams.get("group");
     List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
     for (GameObject collidedObject : collidedObjects) {
       if (collidedObject.getType().equals(collidedGroup)) {

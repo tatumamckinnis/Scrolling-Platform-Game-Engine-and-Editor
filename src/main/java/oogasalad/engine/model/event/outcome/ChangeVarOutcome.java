@@ -23,7 +23,7 @@ import oogasalad.exceptions.SpriteParseException;
  */
 public class ChangeVarOutcome implements Outcome {
 
-  private static final Logger LOG = Logger.getLogger(ChangeVarOutcome.class.getName());
+  private Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
 
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
@@ -34,23 +34,6 @@ public class ChangeVarOutcome implements Outcome {
     Double curAmount = gameObject.getDoubleParams().getOrDefault(variable, 0.0);
     double newAmount = curAmount + delta;
     gameObject.getDoubleParams().put(variable, newAmount);
-    LOG.info("Variable " + variable + " changed to " + newAmount);
   }
 
-  /**
-   * updates the displayed stats of the player objects - only updates if the stat is already
-   * contained within the map
-   *
-   * @param gameObject game object to check
-   * @param variable   the variable to update
-   * @param newAmount  the new amount to update the variable to
-   */
-//  private static void updateDisplayedStats(GameObject gameObject, String variable,
-//      double newAmount) {
-//    if (gameObject.getType().equals("player") && ((Player) gameObject).getDisplayedStats()
-//        .containsKey(
-//            variable)) {
-//      ((Player) gameObject).setDisplayedStat(variable, newAmount);
-//    }
-//  }
 }

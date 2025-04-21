@@ -3,7 +3,6 @@ package oogasalad.editor.view.tools;
 import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.view.EditorGameView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

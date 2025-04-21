@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.outcome.AddToAnimationsOutcome;
 import oogasalad.engine.model.event.outcome.ChangeVarOutcome;
@@ -48,7 +49,7 @@ public class OutcomeExecutor {
    *
    * @param gameExecutor Initialize mapping of outcome enum to outcome interface
    */
-  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor, DefaultAnimationHandler animationHandler) {
+  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor, AnimationHandlerApi animationHandler) {
     this.outcomeMap = new HashMap<>();
     outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT,
         new MoveRightOutcome());

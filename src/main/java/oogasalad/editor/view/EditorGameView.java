@@ -33,10 +33,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Displays a grid where visual game elements are added/updated.
- * Implements EditorViewListener to react to model changes notified by the controller.
- * Handles drawing, basic object selection notification, delegates placement actions,
- * and manages drag-and-drop operations for placing prefabs.
+ * Displays a grid where visual game elements are added/updated. Implements EditorViewListener to
+ * react to model changes notified by the controller. Handles drawing, basic object selection
+ * notification, delegates placement actions, and manages drag-and-drop operations for placing
+ * prefabs.
+ *
  * @author Tatum McKinnis
  */
 public class EditorGameView extends Pane implements EditorViewListener {
@@ -98,19 +99,23 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * @param editorController  Controller for handling actions and state changes.
    * @param prefabPalettePane The palette pane for accessing selected prefabs.
    * @param uiBundle          ResourceBundle for localized UI text (errors).
-   * @throws IllegalArgumentException if controller, palette, or bundle is null or dimensions/cellSize are non-positive.
+   * @throws IllegalArgumentException if controller, palette, or bundle is null or
+   *                                  dimensions/cellSize are non-positive.
    * @throws RuntimeException         if identifier properties cannot be loaded.
    */
   public EditorGameView(int cellSize, double initialZoomScale, EditorController editorController,
       PrefabPalettePane prefabPalettePane, ResourceBundle uiBundle) {
 
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
-    this.prefabPalettePane = Objects.requireNonNull(prefabPalettePane, "PrefabPalettePane cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
+    this.prefabPalettePane = Objects.requireNonNull(prefabPalettePane,
+        "PrefabPalettePane cannot be null.");
     this.uiBundle = Objects.requireNonNull(uiBundle, "UI Bundle cannot be null.");
     this.identifierProps = loadIdentifierProperties();
 
     if (cellSize <= 0) {
-      String errorMsg = String.format(uiBundle.getString(getId("key.errorInvalidDimensions")), cellSize);
+      String errorMsg = String.format(uiBundle.getString(getId("key.errorInvalidDimensions")),
+          cellSize);
       LOG.error(errorMsg);
       throw new IllegalArgumentException(errorMsg);
     }
@@ -173,26 +178,33 @@ public class EditorGameView extends Pane implements EditorViewListener {
       gridMaxBound = Integer.parseInt(getId("grid.max.bound"));
 
     } catch (Exception e) {
-      LOG.fatal("Failed to load or parse one or more configuration values from identifier properties.", e);
+      LOG.fatal(
+          "Failed to load or parse one or more configuration values from identifier properties.",
+          e);
       throw new RuntimeException("Failed to load essential view configuration.", e);
     }
   }
 
   /**
    * Loads the identifier strings (keys, CSS classes, IDs, paths) from the properties file.
+   *
    * @return A Properties object containing the loaded identifiers.
    * @throws RuntimeException If the properties file cannot be found or read.
    */
   private Properties loadIdentifierProperties() {
     Properties props = new Properties();
-    try (InputStream input = EditorGameView.class.getResourceAsStream(IDENTIFIERS_PROPERTIES_PATH)) {
+    try (InputStream input = EditorGameView.class.getResourceAsStream(
+        IDENTIFIERS_PROPERTIES_PATH)) {
       if (input == null) {
-        LOG.error("CRITICAL: Unable to find identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH);
-        throw new RuntimeException("Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
+        LOG.error("CRITICAL: Unable to find identifiers properties file: {}",
+            IDENTIFIERS_PROPERTIES_PATH);
+        throw new RuntimeException(
+            "Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
       }
       props.load(input);
     } catch (IOException ex) {
-      LOG.error("CRITICAL: Error loading identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH, ex);
+      LOG.error("CRITICAL: Error loading identifiers properties file: {}",
+          IDENTIFIERS_PROPERTIES_PATH, ex);
       throw new RuntimeException("Error loading identifiers properties file", ex);
     }
     return props;
@@ -200,6 +212,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
   /**
    * Retrieves an identifier value from the loaded identifier properties.
+   *
    * @param key The key for the identifier.
    * @return The identifier string.
    * @throws RuntimeException If the key is not found.
@@ -215,6 +228,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
   /**
    * Gets the currently selected prefab from the associated palette pane.
+   *
    * @return The selected BlueprintData, or null if none is selected.
    */
   public BlueprintData getSelectedPrefab() {
@@ -233,7 +247,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Draws the background grid lines on the dedicated grid canvas using configured colors and widths.
+   * Draws the background grid lines on the dedicated grid canvas using configured colors and
+   * widths.
    */
   public void drawGrid() {
     double width = gridCanvas.getWidth();
@@ -264,8 +279,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Sets up mouse event handlers for interaction on the object canvas, including click handling
-   * and drag-and-drop target handling.
+   * Sets up mouse event handlers for interaction on the object canvas, including click handling and
+   * drag-and-drop target handling.
    */
   private void setupEventHandlers() {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
@@ -306,7 +321,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
             editorController.notifyErrorOccurred("Could not find data for dropped prefab.");
           }
         } catch (NumberFormatException e) {
-          LOG.error("Failed to parse blueprint ID from dragboard: {}", db.getContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID), e);
+          LOG.error("Failed to parse blueprint ID from dragboard: {}",
+              db.getContent(PrefabPalettePane.PREFAB_BLUEPRINT_ID), e);
           editorController.notifyErrorOccurred("Invalid data format on drop.");
         } catch (Exception e) {
           LOG.error("Error handling prefab drop: {}", e.getMessage(), e);
@@ -319,8 +335,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Converts screen coordinates (e.g., from a mouse event) to world coordinates,
-   * applying camera translation, zoom, and grid snapping if enabled.
+   * Converts screen coordinates (e.g., from a mouse event) to world coordinates, applying camera
+   * translation, zoom, and grid snapping if enabled.
    *
    * @param screenX The x-coordinate in the view's screen space.
    * @param screenY The y-coordinate in the view's screen space.
@@ -340,9 +356,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
 
   /**
-   * Sets up zoom behavior by adding a scroll listener to the pane.
-   * Zooming is triggered when the user scrolls (e.g., with a mouse wheel or trackpad).
-   * Assumes standard scroll delta interpretation.
+   * Sets up zoom behavior by adding a scroll listener to the pane. Zooming is triggered when the
+   * user scrolls (e.g., with a mouse wheel or trackpad). Assumes standard scroll delta
+   * interpretation.
    */
   private void setupZoom() {
     this.setOnScroll(event -> {
@@ -352,8 +368,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Handles the logic for zooming in or out based on the scroll delta.
-   * Updates the zoom scale, camera position, grid, and redraws all objects.
+   * Handles the logic for zooming in or out based on the scroll delta. Updates the zoom scale,
+   * camera position, grid, and redraws all objects.
    *
    * @param deltaY The amount of scroll (positive for zoom out, negative for zoom in typically).
    */
@@ -365,8 +381,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Calculates the new zoom scale based on the scroll delta and current zoom scale.
-   * Applies constraints to avoid zooming beyond the configured minimum limit.
+   * Calculates the new zoom scale based on the scroll delta and current zoom scale. Applies
+   * constraints to avoid zooming beyond the configured minimum limit.
    *
    * @param deltaY           The scroll delta indicating zoom direction.
    * @param currentZoomScale The current zoom scale before applying scroll.
@@ -378,13 +394,14 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
     newZoomScale = Math.max(minZoom, newZoomScale);
 
-    LOG.trace("Zoom updated: delta={}, factor={}, oldScale={}, newScale={}", deltaY, zoomFactor, currentZoomScale, newZoomScale);
+    LOG.trace("Zoom updated: delta={}, factor={}, oldScale={}, newScale={}", deltaY, zoomFactor,
+        currentZoomScale, newZoomScale);
     return newZoomScale;
   }
 
   /**
-   * Sets up keyboard event handlers for panning the view using WASD keys.
-   * Uses an {@link AnimationTimer} for smooth panning based on key presses.
+   * Sets up keyboard event handlers for panning the view using WASD keys. Uses an
+   * {@link AnimationTimer} for smooth panning based on key presses.
    */
   private void setupPanning() {
     this.setFocusTraversable(true);
@@ -395,7 +412,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
         case D -> panVelocityX = panSpeed;
         case W -> panVelocityY = -panSpeed;
         case S -> panVelocityY = panSpeed;
-        default -> { return; }
+        default -> {
+          return;
+        }
       }
       event.consume();
     });
@@ -404,7 +423,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
       switch (event.getCode()) {
         case A, D -> panVelocityX = 0;
         case W, S -> panVelocityY = 0;
-        default -> { return; }
+        default -> {
+          return;
+        }
       }
       event.consume();
     });
@@ -438,8 +459,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Updates the top-left corner coordinates of the camera view based on the current
-   * center coordinates, canvas dimensions, and zoom scale.
+   * Updates the top-left corner coordinates of the camera view based on the current center
+   * coordinates, canvas dimensions, and zoom scale.
    */
   private void updateCameraCoordinates() {
     double canvasWidth = gridCanvas.getWidth();
@@ -451,8 +472,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
   /**
    * Handles mouse click events on the object canvas. Requests focus, calculates world coordinates
-   * from screen coordinates (applying snapping if enabled), and delegates the interaction
-   * to the currently active {@link ObjectInteractionTool}.
+   * from screen coordinates (applying snapping if enabled), and delegates the interaction to the
+   * currently active {@link ObjectInteractionTool}.
    *
    * @param event The MouseEvent associated with the click.
    */
@@ -488,8 +509,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Initiates a redraw of all objects currently displayed on the object canvas.
-   * Ensures the drawing operations occur safely on the JavaFX Application Thread.
+   * Initiates a redraw of all objects currently displayed on the object canvas. Ensures the drawing
+   * operations occur safely on the JavaFX Application Thread.
    */
   private void redrawObjects() {
     if (!Platform.isFxApplicationThread()) {
@@ -500,10 +521,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Performs the actual drawing logic on the JavaFX Application Thread.
-   * Clears the object canvas and then iterates through the list of displayed object IDs,
-   * drawing each object's sprite (or placeholder) and hitbox (if enabled).
-   * Also draws the selection indicator for the currently selected object.
+   * Performs the actual drawing logic on the JavaFX Application Thread. Clears the object canvas
+   * and then iterates through the list of displayed object IDs, drawing each object's sprite (or
+   * placeholder) and hitbox (if enabled). Also draws the selection indicator for the currently
+   * selected object.
    */
   void redrawObjectsInternal() {
     double width = objectCanvas.getWidth();
@@ -533,7 +554,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
     if (selectedObjectId != null && displayedObjectIds.contains(selectedObjectId)) {
       EditorObject selectedObj = editorController.getEditorObject(selectedObjectId);
       if (selectedObj != null && selectedObj.getSpriteData() != null) {
-        drawSelectionIndicator(objectGraphicsContext, selectedObj.getSpriteData().getX(), selectedObj.getSpriteData().getY());
+        drawSelectionIndicator(objectGraphicsContext, selectedObj.getSpriteData().getX(),
+            selectedObj.getSpriteData().getY());
       }
     }
 
@@ -543,8 +565,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
 
   /**
-   * Draws a placeholder rectangle with configured text inside when an object's image is unavailable.
-   * Uses colors, font name, and font size loaded from identifier properties.
+   * Draws a placeholder rectangle with configured text inside when an object's image is
+   * unavailable. Uses colors, font name, and font size loaded from identifier properties.
    *
    * @param g      The GraphicsContext to draw on.
    * @param object The EditorObject (used potentially for type info, though currently unused).
@@ -561,8 +583,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Draws a visual indicator (a border) around the cell occupied by the selected object.
-   * Uses color and line width loaded from identifier properties.
+   * Draws a visual indicator (a border) around the cell occupied by the selected object. Uses color
+   * and line width loaded from identifier properties.
    *
    * @param g The GraphicsContext to draw on.
    * @param x The world x-coordinate of the selected object's top-left corner.
@@ -589,7 +611,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
       String imagePath = getObjectSpritePath(id);
       if (imagePath == null) {
         objectImages.remove(id);
-        LOG.trace("No valid sprite path found or object missing for ID {}. Removing image cache.", id);
+        LOG.trace("No valid sprite path found or object missing for ID {}. Removing image cache.",
+            id);
         return;
       }
 
@@ -625,9 +648,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Loads an image from the specified URL into the cache if it's not already present,
-   * has a different URL than the cached version, or if the cached image is marked as errored.
-   * Attaches listeners to handle loading progress and errors.
+   * Loads an image from the specified URL into the cache if it's not already present, has a
+   * different URL than the cached version, or if the cached image is marked as errored. Attaches
+   * listeners to handle loading progress and errors.
    *
    * @param id  The UUID of the object associated with the image.
    * @param url The resolved URL string from which to load the image.
@@ -649,8 +672,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Attaches listeners to an image's error and progress properties to handle
-   * asynchronous loading feedback and trigger UI updates (redraws).
+   * Attaches listeners to an image's error and progress properties to handle asynchronous loading
+   * feedback and trigger UI updates (redraws).
    *
    * @param image The JavaFX Image object being loaded.
    * @param url   The source URL of the image, used for logging purposes.
@@ -669,21 +692,22 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Handles the scenario where an image loading error occurs. Logs the error details
-   * and triggers a redraw, which will likely result in a placeholder being shown.
+   * Handles the scenario where an image loading error occurs. Logs the error details and triggers a
+   * redraw, which will likely result in a placeholder being shown.
    *
    * @param image The image that encountered an error.
    * @param url   The source URL of the image, for context in logging.
    */
   private void handleImageError(Image image, String url) {
-    String errorMessage = (image.getException() != null) ? image.getException().getMessage() : "Unknown image loading error";
+    String errorMessage = (image.getException() != null) ? image.getException().getMessage()
+        : "Unknown image loading error";
     LOG.error("Failed to load image from {}: {}", url, errorMessage);
     redrawObjects();
   }
 
   /**
-   * Handles the scenario when an image finishes loading (progress reaches 1.0).
-   * Checks if the load completed successfully or with an error and triggers a redraw.
+   * Handles the scenario when an image finishes loading (progress reaches 1.0). Checks if the load
+   * completed successfully or with an error and triggers a redraw.
    *
    * @param image The image whose loading has completed.
    * @param url   The source URL of the image, for context in logging.
@@ -699,9 +723,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
 
   /**
-   * Resolves a potentially relative image path into a full URL string suitable for loading.
-   * If the path is already absolute or a URL, it's returned directly. Otherwise, it attempts
-   * to find the path as a classpath resource.
+   * Resolves a potentially relative image path into a full URL string suitable for loading. If the
+   * path is already absolute or a URL, it's returned directly. Otherwise, it attempts to find the
+   * path as a classpath resource.
    *
    * @param path The image path string (can be relative, absolute, or a URL).
    * @return The resolved URL string, or null if the path is invalid or resolution fails.
@@ -719,8 +743,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Attempts to find a relative path as a resource within the application's classpath.
-   * Prepends "/" if not already present.
+   * Attempts to find a relative path as a resource within the application's classpath. Prepends "/"
+   * if not already present.
    *
    * @param relativePath The relative path string (e.g., "images/player.png").
    * @return The full URL string if the resource is found, or null otherwise.
@@ -744,9 +768,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
 
   /**
-   * Redraws the sprite visual for a specific object ID on the object canvas.
-   * Retrieves object data, checks for a loaded image, draws the image or a placeholder,
-   * and handles potential errors. Does not draw the selection indicator here.
+   * Redraws the sprite visual for a specific object ID on the object canvas. Retrieves object data,
+   * checks for a loaded image, draws the image or a placeholder, and handles potential errors. Does
+   * not draw the selection indicator here.
    *
    * @param id The UUID of the object whose sprite needs redrawing.
    */
@@ -769,8 +793,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Redraws the hitbox visualization for a specific object ID on the object canvas.
-   * Retrieves object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
+   * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
+   * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
    *
    * @param id The UUID of the object whose hitbox needs redrawing.
    */
@@ -790,8 +814,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Adds the object ID, preloads its image, and redraws. Ensures execution on the FX thread.
+   * {@inheritDoc} Adds the object ID, preloads its image, and redraws. Ensures execution on the FX
+   * thread.
    */
   @Override
   public void onObjectAdded(UUID objectId) {
@@ -809,26 +833,26 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Removes the object ID and its cached image, then redraws. Ensures execution on the FX thread.
+   * {@inheritDoc} Removes the object ID and its cached image, then redraws. Ensures execution on
+   * the FX thread.
    */
   @Override
   public void onObjectRemoved(UUID objectId) {
+    if (displayedObjectIds.remove(objectId)) {
+      objectImages.remove(objectId);
+    }
     Platform.runLater(() -> {
       LOG.debug("EditorGameView received: onObjectRemoved {}", objectId);
-      if (displayedObjectIds.remove(objectId)) {
-        objectImages.remove(objectId);
-        if (Objects.equals(selectedObjectId, objectId)) {
-          selectedObjectId = null;
-        }
-        redrawObjects();
+      if (Objects.equals(selectedObjectId, objectId)) {
+        selectedObjectId = null;
       }
+      redrawObjects();
     });
   }
 
   /**
-   * {@inheritDoc}
-   * Preloads the object's image (in case sprite changed) and redraws. Ensures execution on the FX thread.
+   * {@inheritDoc} Preloads the object's image (in case sprite changed) and redraws. Ensures
+   * execution on the FX thread.
    */
   @Override
   public void onObjectUpdated(UUID objectId) {
@@ -842,8 +866,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Updates the selected object ID and redraws to show/hide selection indicator. Ensures execution on the FX thread.
+   * {@inheritDoc} Updates the selected object ID and redraws to show/hide selection indicator.
+   * Ensures execution on the FX thread.
    */
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
@@ -857,8 +881,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Logs the event; currently no direct action needed in this view.
+   * {@inheritDoc} Logs the event; currently no direct action needed in this view.
    */
   @Override
   public void onDynamicVariablesChanged() {
@@ -866,8 +889,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Logs the error message received from the controller.
+   * {@inheritDoc} Logs the error message received from the controller.
    */
   @Override
   public void onErrorOccurred(String errorMessage) {
@@ -875,8 +897,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Logs the event; currently no direct action needed in this view regarding prefab list changes.
+   * {@inheritDoc} Logs the event; currently no direct action needed in this view regarding prefab
+   * list changes.
    */
   @Override
   public void onPrefabsChanged() {
@@ -909,4 +931,11 @@ public class EditorGameView extends Pane implements EditorViewListener {
   public double getGridHeight() {
     return gridCanvas.getHeight();
   }
+
+  public void removeAllObjects() {
+    displayedObjectIds.clear();
+    objectImages.clear();
+    redrawObjects();
+  }
+
 }

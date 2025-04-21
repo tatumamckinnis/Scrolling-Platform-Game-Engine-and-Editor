@@ -48,30 +48,33 @@ public class DefaultEventHandler implements EventHandler {
    */
   public void handleEvent(Event event)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
-    GameObject gameObject = event.getGameObject();
+
+    if (isValidEvent(event)) {
+      for (EventOutcome outcome : event.getOutcomes()) {
+        outcomeExecutor.executeOutcome(outcome, event.getGameObject());
+      }
+    }
+  }
+
+  private boolean isValidEvent(Event event) {
     boolean validEvent = true;
+    GameObject gameObject = event.getGameObject();
     List<List<EventCondition>> conditionGroups = event.getConditions();
 
     for (List<EventCondition> conditionGroup : conditionGroups) {
       boolean validGroup = false; // This group is false until proven true
 
       for (EventCondition eventCondition : conditionGroup) {
-        if (conditionChecker.checkCondition(eventCondition.conditionType(), gameObject)) {
+        if (conditionChecker.checkCondition(eventCondition, gameObject)) {
           validGroup = true; // One condition in this OR-group is true
           break; // No need to check further in this OR-group
         }
       }
 
       if (!validGroup) { // If the OR-group never became true, entire event is invalid
-        validEvent = false;
-        break; // No need to check further, we already know event fails
+        return false;
       }
     }
-
-    if (validEvent) {
-      for (EventOutcome outcome : event.getOutcomes()) {
-        outcomeExecutor.executeOutcome(outcome, gameObject);
-      }
-    }
+    return validEvent;
   }
 }
