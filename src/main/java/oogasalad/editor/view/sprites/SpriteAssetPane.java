@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * UI that lives inside the “Sprites” tab. Implements the buttons for the spritesheet editor and the
  * sprite creation.
+ * TODO: Remove duplicate instantiation and checking of sprites
  *
  * @author Jacob You
  */
@@ -125,10 +126,19 @@ public class SpriteAssetPane extends BorderPane {
     cell.setAlignment(Pos.CENTER);
     cell.setOnMouseClicked(evt -> {
       if (evt.getClickCount() == 2) {
-        var dialog = new SpriteTemplateComponent(editorController,
+        var dialog = new SpriteTemplateComponent(
+            editorController,
             getScene().getWindow(),
-            editorController.getEditorDataAPI().getSpriteLibrary());
+            editorController.getEditorDataAPI().getSpriteLibrary(),
+            template
+        );
         dialog.showAndWait();
+        SpriteTemplate updated = dialog.getResult();
+        if (updated != null) {
+          editorController.getEditorDataAPI().addSpriteTemplate(updated);
+          LOG.info("Added new sprite template: {}", updated.getName());
+          refreshGallery();
+        }
       }
     });
     LOG.info("Created thumbnail");

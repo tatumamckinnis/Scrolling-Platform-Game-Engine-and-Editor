@@ -13,7 +13,8 @@ import java.util.Map;
 public class SpriteTemplate {
 
   private String name;
-  private String spritePath;
+  private String spriteName;
+  private String atlasName;
   private FrameData baseFrame;
   private Map<String, FrameData> frames;
   private Map<String, AnimationData> animations;
@@ -22,20 +23,23 @@ public class SpriteTemplate {
    * Constructs a new SpriteDefinition.
    *
    * @param name        the identifier for this sprite definition
-   * @param spritePath  the file path to the sprite image
+   * @param spriteName  the file name of the sprite image
+   * @param atlasName   the file name of the atlas
    * @param baseFrame   the primary frame data (often used as the default)
    * @param frames      a map of frame names to their corresponding {@link FrameData}
    * @param animations  a map of animation names to their corresponding {@link AnimationData}
    */
   public SpriteTemplate(
       String name,
-      String spritePath,
+      String spriteName,
+      String atlasName,
       FrameData baseFrame,
       Map<String, FrameData> frames,
       Map<String, AnimationData> animations
   ) {
     this.name = name;
-    this.spritePath = spritePath;
+    this.spriteName = spriteName;
+    this.atlasName = atlasName;
     this.baseFrame = baseFrame;
     this.frames = frames;
     this.animations = animations;
@@ -56,7 +60,16 @@ public class SpriteTemplate {
    * @return the sprite image path
    */
   public String getSpriteFile() {
-    return spritePath;
+    return spriteName;
+  }
+
+  /**
+   * Returns the file path to the sprite atlas.
+   *
+   * @return the sprite image path
+   */
+  public String getAtlasFile() {
+    return atlasName;
   }
 
   /**
@@ -98,10 +111,19 @@ public class SpriteTemplate {
   /**
    * Sets the file path to the sprite image.
    *
-   * @param spritePath the new image path to assign
+   * @param spriteName the new image path to assign
    */
-  public void setSpritePath(String spritePath) {
-    this.spritePath = spritePath;
+  public void setSpriteName(String spriteName) {
+    this.spriteName = spriteName;
+  }
+
+  /**
+   * Sets the file path to the sprite atlas.
+   *
+   * @param atlasName the new atlas path to assign
+   */
+  public void setAtlasFile(String atlasName) {
+    this.atlasName = atlasName;
   }
 
   /**
