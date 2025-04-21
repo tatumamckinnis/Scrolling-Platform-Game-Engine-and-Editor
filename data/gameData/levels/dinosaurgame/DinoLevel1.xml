@@ -56,7 +56,8 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="1"/>
+            <property name="lives" value="100"/>
+            <property name="score" value="0"/>
           </doubleProperties>
         </properties>
       </object>

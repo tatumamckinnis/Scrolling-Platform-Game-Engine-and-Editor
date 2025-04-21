@@ -16,6 +16,6 @@ public interface ImmutablePlayer extends ImmutableGameObject {
    *
    * @return map of stat names to their double values
    */
-  Map<String, Double> getDisplayedStats();
+  Map<String, String> getDisplayedStatsMap();
 }
 
