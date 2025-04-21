@@ -350,6 +350,7 @@ public class SplashScreen extends Display {
     File levelFile = new File(gamesFilePath, game);
     File[] levels = levelFile.listFiles((dir, name) -> name.endsWith(".xml"));
     if (levels != null) {
+      levelComboBox.getItems().clear();
       for (File level : levels) {
         levelComboBox.getItems().add(level.getName());
       }

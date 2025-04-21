@@ -170,11 +170,11 @@ public class ConcreteEditorController implements EditorController {
     try {
       boolean removed = editorDataAPI.removeEditorObject(objectId);
       if (removed) {
-        LOG.debug("Successfully processed removal for object {}", objectId);
         listenerNotifier.notifyObjectRemoved(objectId);
         if (objectId.equals(currentSelectedObjectId)) {
           notifyObjectSelected(null);
         }
+        LOG.debug("Successfully processed removal for object {}", objectId);
       } else {
         LOG.warn("Removal request processed but object {} was not found or not removed by backend.", objectId);
         listenerNotifier.notifyErrorOccurred("Object with ID " + objectId + " could not be removed (not found).");

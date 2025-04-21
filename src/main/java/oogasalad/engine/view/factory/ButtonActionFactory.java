@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
@@ -17,6 +15,8 @@ import java.util.zip.DataFormatException;
 
 import javafx.scene.control.ComboBox;
 import oogasalad.Main;
+import oogasalad.editor.controller.EditorMaker;
+import oogasalad.editor.view.EditorApplication;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.JavaServer;
 import org.apache.logging.log4j.LogManager;
@@ -297,6 +297,12 @@ public class ButtonActionFactory {
           LOG.error(EXCEPTIONS.getString("CannotSelectLevel"), e);
         }
       }
+    };
+  }
+
+  private Runnable openEditor() {
+    return () -> {
+      new EditorMaker(new Stage());
     };
   }
 

@@ -135,7 +135,20 @@ public class SpriteDataParser {
         request.spriteFile()
     );
 
-    Document doc = loadDocument(filePath);
+    Document doc;
+    File spriteFile = new File(filePath);
+
+    if (!spriteFile.exists() || !spriteFile.isFile()) {
+
+      filePath = buildFilePath(request.gameName(), null, null, request.spriteFile());
+      doc = loadDocument(filePath);
+
+    } else {
+
+      doc = loadDocument(filePath);
+
+    }
+
     Element spriteFileElement = doc.getDocumentElement();
 
     File spriteSheetFile = getSpriteSheetFile(spriteFileElement, request.gameName());
@@ -164,9 +177,12 @@ public class SpriteDataParser {
    * @return the full file path as a {@code String}.
    */
   private String buildFilePath(String gameName, String group, String type, String spriteFile) {
+    if (type == null & group == null) {
+      return pathToSpriteData + File.separator + gameName + File.separator + spriteFile;
+    }
     if (type == null || type.trim().isEmpty()) {
       return pathToSpriteData + File.separator + gameName + File.separator + group
-           + File.separator + spriteFile;
+          + File.separator + spriteFile;
     }
     return pathToSpriteData + File.separator + gameName + File.separator + group
         + File.separator + type + File.separator + spriteFile;

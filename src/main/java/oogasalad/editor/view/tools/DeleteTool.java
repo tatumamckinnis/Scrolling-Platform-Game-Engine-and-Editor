@@ -1,9 +1,7 @@
 package oogasalad.editor.view.tools;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.UUID;
-import javafx.scene.paint.Color;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.EditorGameView;
 import org.apache.logging.log4j.LogManager;
