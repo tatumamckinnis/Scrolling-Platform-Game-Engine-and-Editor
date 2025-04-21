@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
@@ -23,9 +24,11 @@ import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.sprites.SpriteAssetPane;
+import oogasalad.editor.view.tools.ClearAllTool;
 import oogasalad.editor.view.tools.DeleteTool;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
+import oogasalad.editor.view.tools.OnClickTool;
 import oogasalad.editor.view.tools.SelectionTool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -293,7 +296,10 @@ public class EditorComponentFactory {
     ObjectInteractionTool deleteTool = new DeleteTool(gameView, editorController);
     ToggleButton deleteButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.delete.tool")), deleteTool, false);
 
-    toolbar.getChildren().addAll(entityButton, selectButton, deleteButton);
+    OnClickTool clearAllTool = new ClearAllTool(gameView, editorController);
+    Button clearAllObjectsButton = createOnClickToolToggleButton(uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
+
+    toolbar.getChildren().addAll(entityButton, selectButton, deleteButton, clearAllObjectsButton);
     gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
     return toolbar;
@@ -324,6 +330,17 @@ public class EditorComponentFactory {
             LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.deselected")), tool.getClass().getSimpleName()));
           }
         }
+      }
+    });
+    button.getStyleClass().add(getId("style.tool.button"));
+    return button;
+  }
+
+  private Button createOnClickToolToggleButton(String text, OnClickTool tool) {
+    Button button = new Button(text);
+    button.setOnAction(e -> {
+      if (gameView != null) {
+        tool.execute();
       }
     });
     button.getStyleClass().add(getId("style.tool.button"));
