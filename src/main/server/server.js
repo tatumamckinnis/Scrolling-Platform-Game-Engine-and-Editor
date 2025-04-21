@@ -4,26 +4,33 @@
  * @author Aksel Bell
  */
 const WebSocket = require("ws");
+const {parse} = require("node:url");
 
 class Server {
-  constructor(port) {
+  constructor(port, xmlFilepath) {
     this.port = port;
+    this.xmlPath = xmlFilepath;
     this.clients = new Set();
     this.webserver = new WebSocket.Server({ port: this.port });
 
     console.log("Server running on:", this.port);
 
-    this.webserver.on('connection', (socket) => this.handleConnection(socket));
-  }
+    this.webserver.on('connection', (socket, request) => {
+      const parsedUrl = parse(request.url, true);
+      const clientPath = parsedUrl.query.filepath;
+
+      this.handleConnection(socket, clientPath);
+    });  }
 
   handleMessage(socket, message) {
     console.log('Received: ' + message);
 
     for (const client of this.clients) {
       if (client !== socket && client.readyState === WebSocket.OPEN) {
-        client.send(message);
+        client.send("" + message);
       }
     }
+    socket.send("" + message);
   }
 
   handleDisconnect(socket) {
@@ -31,7 +38,17 @@ class Server {
     console.log('Client disconnected');
   }
 
-  handleConnection(socket) {
+  handleConnection(socket, filepath) {
+    if(filepath !== this.xmlPath) {
+      socket.send(JSON.stringify({
+        type: "error",
+        message: String("Attempting to join wrong game type.")
+      }));
+
+      socket.close();
+      return;
+    }
+
     console.log('Client connected!');
     this.clients.add(socket);
 
@@ -41,4 +58,5 @@ class Server {
 }
 
 const PORT = process.argv[2];
-new Server(parseInt(PORT));
+const gamePath = process.argv[3];
+new Server(parseInt(PORT), gamePath);

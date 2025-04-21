@@ -19,8 +19,8 @@ public class JavaServer {
    * Starts the javascript server.
    * @throws IOException if error calling javascript class.
    */
-  public JavaServer(int port) throws IOException {
-    ProcessBuilder builder = new ProcessBuilder("node", "src/main/server/server.js", String.valueOf(port));
+  public JavaServer(int port, String gamePath) throws IOException {
+    ProcessBuilder builder = new ProcessBuilder("node", "src/main/server/server.js", String.valueOf(port), gamePath);
     jsServerProcess = builder.start();
     logServerOutput();
   }

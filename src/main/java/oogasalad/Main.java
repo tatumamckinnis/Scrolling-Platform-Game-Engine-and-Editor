@@ -1,11 +1,14 @@
 package oogasalad;
 
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
-import oogasalad.server.GameWebSocketClient;
+import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.server.ClientSocket;
+import oogasalad.server.JavaServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,10 +25,18 @@ public class Main extends Application {
    *                     not be primary stages.
    */
   @Override
-  public void start(Stage primaryStage) throws URISyntaxException {
+  public void start(Stage primaryStage) throws URISyntaxException, IOException, InterruptedException {
     try {
-      new DefaultGameManager();
+      GameManagerAPI manager = new DefaultGameManager();
       LOG.info("Starting game...");
+
+      JavaServer gameServer = new JavaServer(1000, "data/gameData/levels/dinosaurgame/DinoLevel1.xml");
+      Thread.sleep(1000);
+      ClientSocket client = new ClientSocket(
+          "ws://localhost:1000?filepath=data/gameData/levels/dinosaurgame/DinoLevel1.xml",
+          manager
+          );
+      client.connect();
     } catch (Exception e) {
       LOG.warn("Error starting main");
     }
