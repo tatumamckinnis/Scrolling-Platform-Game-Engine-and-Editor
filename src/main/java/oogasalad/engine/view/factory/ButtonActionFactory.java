@@ -155,12 +155,7 @@ public class ButtonActionFactory {
   private Runnable restartGame() {
     return () -> {
       try {
-        viewState.getGameManager().restartGame();
-        GameDisplay game = new GameDisplay(viewState);
-        game.initialRender();
-        viewState.setDisplay(game);
-        viewState.getGameManager().displayGameObjects();
-        viewState.getGameManager().pauseGame();
+        restart();
       } catch (DataFormatException e) {
         LOG.error("Failed to restart game due to misformatted data", e);
       } catch (IOException e) {
@@ -195,6 +190,16 @@ public class ButtonActionFactory {
         LOG.error("Failed to render game", e);
       }
     };
+  }
+
+  private void restart()
+      throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
+    viewState.getGameManager().restartGame();
+    GameDisplay game = new GameDisplay(viewState);
+    game.initialRender();
+    viewState.setDisplay(game);
+    viewState.getGameManager().displayGameObjects();
+    viewState.getGameManager().pauseGame();
   }
 
   /**
