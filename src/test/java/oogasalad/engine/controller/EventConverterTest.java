@@ -75,7 +75,7 @@ class EventConverterTest {
         ""
     );
 
-    expectedGameObject = new Player(uuid, "Player", 1, 0, 0, hitbox, sprite, new ArrayList<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+    expectedGameObject = new Player(uuid, "Player", 1, 0, 0, hitbox, sprite, new ArrayList<>(), new ArrayList<>(), new HashMap<>(), new HashMap<>());
     List<Event> expectedEvents = new ArrayList<>();
     List<List<EventCondition>> expectedConditions = new ArrayList<>();
     List<EventCondition> expectedConditionsList = new ArrayList<>();

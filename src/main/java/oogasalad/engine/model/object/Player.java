@@ -23,7 +23,7 @@ public class Player extends GameObject implements ImmutablePlayer {
 
   private List<String> currentPowerUps;
 
-  private Map<String, Double> displayedStats;
+  private List<String> displayedStats;
 
   private Map<String, Double> hiddenStats;
 
@@ -43,7 +43,7 @@ public class Player extends GameObject implements ImmutablePlayer {
    * @param doubleParams   numeric parameters passed to the player (e.g., jump strength)
    */
   public Player(UUID uuid, String type, int layer, double xVelocity, double yVelocity,
-      HitBox hitBox, Sprite spriteInfo, List<Event> events, Map<String, Double> displayedStats,
+      HitBox hitBox, Sprite spriteInfo, List<Event> events, List<String> displayedStats,
       Map<String, String> stringParams, Map<String, Double> doubleParams) {
     super(uuid, type, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
         doubleParams);
@@ -58,7 +58,21 @@ public class Player extends GameObject implements ImmutablePlayer {
    * @return a map of visible stat names and values
    */
   @Override
-  public Map<String, Double> getDisplayedStats() {
+  public Map<String, String> getDisplayedStatsMap() {
+    Map<String,String> displayedStatsMap = new HashMap<>();
+    for (String stat : displayedStats) {
+      if (getDoubleParams().containsKey(stat)) {
+        System.out.println("Displayed stat: " + stat + " = " + getDoubleParams().get(stat));
+        displayedStatsMap.put(stat,String.valueOf(getDoubleParams().get(stat).intValue()));
+      }
+      else if (getStringParams().containsKey(stat)) {
+        displayedStatsMap.put(stat,getStringParams().get(stat));
+      }
+    }
+    return displayedStatsMap;
+  }
+
+  public List<String> getDisplayedStats() {
     return displayedStats;
   }
 
@@ -67,9 +81,9 @@ public class Player extends GameObject implements ImmutablePlayer {
    * @param stat stat to display
    * @param value the value the stat is set to
    */
-  public void setDisplayedStat(String stat, double value) {
-    displayedStats.put(stat, value);
-  }
+//  public void setDisplayedStat(String stat, double value) {
+//    displayedStats.put(stat, value);
+//  }
 
   /**
    * Returns a map of hidden stats used for internal calculations.

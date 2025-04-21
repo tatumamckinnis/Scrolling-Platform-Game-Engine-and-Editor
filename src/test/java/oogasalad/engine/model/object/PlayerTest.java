@@ -18,7 +18,7 @@ class PlayerTest {
   private HitBox hitBox;
   private Sprite sprite;
   private List<Event> events;
-  private Map<String, Double> displayedStats;
+  private List<String> displayedStats;
   private Map<String, String> stringParams;
   private Map<String, Double> doubleParams;
 
@@ -34,9 +34,9 @@ class PlayerTest {
     sprite = new Sprite(frameMap, frame, new HashMap<>(), 0, 0, new File("sprite.xml"), 90.0, false);
 
     events = new ArrayList<>();
-    displayedStats = new HashMap<>();
-    displayedStats.put("health", 100.0);
-    displayedStats.put("stamina", 50.0);
+    displayedStats = new ArrayList<>();
+    displayedStats.add("health");
+    displayedStats.add("stamina");
 
     stringParams = new HashMap<>();
     doubleParams = new HashMap<>();
@@ -48,10 +48,10 @@ class PlayerTest {
 
   @Test
   void getDisplayedStatsReturnsCorrectValues() {
-    Map<String, Double> stats = player.getDisplayedStats();
-    assertEquals(2, stats.size());
-    assertEquals(100.0, stats.get("health"));
-    assertEquals(50.0, stats.get("stamina"));
+    Map<String, String> stats = player.getDisplayedStatsMap();
+    assertEquals("2", stats.size());
+    assertEquals("100.0", stats.get("health"));
+    assertEquals("50.0", stats.get("stamina"));
   }
 
   @Test
