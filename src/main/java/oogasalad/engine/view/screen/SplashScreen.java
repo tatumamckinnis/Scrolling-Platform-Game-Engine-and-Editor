@@ -23,6 +23,7 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.server.ClientSocket;
+import oogasalad.server.MessageHandlerFactory;
 import oogasalad.server.ServerMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -266,7 +267,7 @@ public class SplashScreen extends Display {
     String gameXMLPath = "data/gameData/levels/dinosaurgame/DinoLevel1.xml";
     Button playOnline = new Button("playOnline!");
     playOnline.setOnAction(event -> {
-      ClientSocket host = ButtonActionFactory.startServer(gameXMLPath, viewState);
+      ClientSocket host = MessageHandlerFactory.startServer(gameXMLPath, viewState);
     });
 
     TextField portField = new TextField();
@@ -279,7 +280,7 @@ public class SplashScreen extends Display {
         ClientSocket p2 = new ClientSocket(port, gameXMLPath, viewState);
         p2.connect();
         Thread.sleep(1000);
-        ServerMessage startGameMessage = new ServerMessage("splashButtonStartEngine", "");
+        ServerMessage startGameMessage = new ServerMessage("startGame", "");
         Gson gson = new Gson();
         p2.send(gson.toJson(startGameMessage));
       } catch (URISyntaxException | InterruptedException e) {

@@ -305,30 +305,4 @@ public class ButtonActionFactory {
       new EditorMaker(new Stage());
     };
   }
-
-  /**
-   * Starts a javascript server.
-   * @param gamePath desired server game file path.
-   * @param viewState a viewState to allow changing of views.
-   * @return a client web socket connected to the server.
-   */
-  public static ClientSocket startServer(String gamePath, ViewState viewState) {
-    try {
-      int myPort = generateRandomPort();
-      new JavaServer(myPort, gamePath);
-      Thread.sleep(1000);
-      ClientSocket client = new ClientSocket(myPort, gamePath, viewState);
-      client.connect();
-
-      return client;
-    } catch (Exception e) {
-      LOG.error("Error starting server");
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static int generateRandomPort() {
-    Random random = new Random();
-    return random.nextInt(3000) + 3000;
-  }
 }

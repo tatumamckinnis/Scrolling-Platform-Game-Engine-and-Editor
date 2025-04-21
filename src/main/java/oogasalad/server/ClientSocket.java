@@ -72,10 +72,9 @@ public class ClientSocket extends WebSocketClient {
   private void handleServerMessages(ServerMessage serverMessage) {
     LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
 
-    if(Objects.equals(serverMessage.type, "splashButtonStartEngine")) {
+    if(Objects.equals(serverMessage.type, "startGame")) {
       Platform.runLater(() -> {
-        ButtonActionFactory f = new ButtonActionFactory(viewState);
-        f.getAction(serverMessage.type).run();
+        MessageHandlerFactory.startGame(viewState).run();
       });
     }
 
