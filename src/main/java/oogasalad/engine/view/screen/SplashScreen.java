@@ -61,7 +61,7 @@ public class SplashScreen extends Display {
    *
    * @param viewState the state of the view
    */
-  public SplashScreen(ViewState viewState) {
+  public SplashScreen(ViewState viewState) throws FileNotFoundException {
     try {
       InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
       splashComponentProperties.load(stream);
@@ -74,12 +74,7 @@ public class SplashScreen extends Display {
     splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
     splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
     this.viewState = viewState;
-  }
 
-  /**
-   * renders the SplashScreen
-   */
-  public void initialRender() throws FileNotFoundException {
     initializeSplashScreen();
   }
 
