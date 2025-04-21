@@ -320,6 +320,7 @@ public class SplashScreen extends Display {
       for (File level : levels) {
         levelComboBox.getItems().add(level.getName());
       }
+      levelComboBox.getItems().sort(Comparator.naturalOrder());
     }
   }
 

@@ -32,12 +32,55 @@ html {
     -fx-text-fill: white;
 }
 
-.type-button {
+.game-combobox {
     -fx-border-color: #ff746c;
 }
 
-.type-button:hover {
+.game-combobox:hover {
     -fx-background-color: #ff746c;
+    -fx-text-fill: white;
+}
+
+.game-combobox > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.game-combobox > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* Make prompt text white on hover (only when no item is selected) */
+.game-combobox:hover > .list-cell:empty {
+    -fx-text-fill: white;
+}
+
+/* Optional: also make selected text white on hover */
+.game-combobox:hover > .list-cell {
+    -fx-text-fill: white;
+}
+
+.level-combobox {
+    -fx-border-color: #b7f582;
+}
+
+.level-combobox:hover {
+    -fx-background-color: #b7f582;
+}
+
+.level-combobox > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* Make prompt text white on hover (only when no item is selected) */
+.level-combobox:hover > .list-cell:empty {
+    -fx-text-fill: white;
+}
+
+/* Optional: also make selected text white on hover */
+.level-combobox:hover > .list-cell {
     -fx-text-fill: white;
 }
 

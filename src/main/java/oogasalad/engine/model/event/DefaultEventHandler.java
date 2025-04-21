@@ -70,7 +70,6 @@ public class DefaultEventHandler implements EventHandler {
 
     if (validEvent) {
       for (EventOutcome outcome : event.getOutcomes()) {
-        // System.out.println("Executing Outcome: "+outcome.getOutcomeType().toString());
         outcomeExecutor.executeOutcome(outcome, gameObject);
       }
     }

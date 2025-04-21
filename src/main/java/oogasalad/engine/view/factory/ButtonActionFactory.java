@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
 import javafx.scene.control.ComboBox;
+import oogasalad.Main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,6 +46,8 @@ import oogasalad.exceptions.ViewInitializationException;
 public class ButtonActionFactory {
 
   private static final Logger LOG = LogManager.getLogger();
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
+      Main.class.getPackage().getName() + "." + "Exceptions");
   private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
   private static final String gamesFilePath = "data/gameData/levels/";
   private static final Properties buttonIDToActionProperties = new Properties();
@@ -262,18 +266,28 @@ public class ButtonActionFactory {
     };
   }
 
+  /**
+   * Returns a {@link Runnable} that attempts to load and initialize a game level based on the
+   * selected game and level names. This method constructs the path to the level file using the
+   * provided game and level names and delegates to the {@code GameManager} to load the level.
+   *
+   *
+   * @param game  the name of the game (i.e., the folder name under the game levels directory)
+   * @param level the name of the level file (typically with .xml extension) inside the game folder
+   * @return a {@code Runnable} that, when executed, loads the specified level into the game engine
+   */
   public Runnable selectLevel(String game, String level) {
     return () -> {
       if (game != null && level != null) {
         try {
           viewState.getGameManager()
-              .selectGame( gamesFilePath + game + "/" + level);
+              .selectGame(gamesFilePath + game + "/" + level);
         } catch (DataFormatException | IOException | ClassNotFoundException |
                  InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException | LayerParseException | LevelDataParseException |
                  PropertyParsingException | SpriteParseException | EventParseException |
                  HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
-          throw new RuntimeException(e);
+          LOG.error(EXCEPTIONS.getString("CannotSelectLevel"), e);
         }
       }
     };
