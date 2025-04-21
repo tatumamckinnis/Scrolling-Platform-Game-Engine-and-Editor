@@ -9,14 +9,12 @@ import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -28,9 +26,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
-import oogasalad.editor.view.tools.SelectionTool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +38,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.MockedStatic;
 import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.util.WaitForAsyncUtils;
 
 
 @ExtendWith(ApplicationExtension.class)

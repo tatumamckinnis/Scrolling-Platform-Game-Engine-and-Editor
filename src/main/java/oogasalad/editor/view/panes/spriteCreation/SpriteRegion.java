@@ -1,4 +1,4 @@
-package oogasalad.editor.view.sprites;
+package oogasalad.editor.view.panes.spriteCreation;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;

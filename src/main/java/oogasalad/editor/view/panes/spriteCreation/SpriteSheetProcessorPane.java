@@ -1,4 +1,4 @@
-package oogasalad.editor.view.sprites;
+package oogasalad.editor.view.panes.spriteCreation;
 
 import java.io.File;
 import java.util.EnumMap;
