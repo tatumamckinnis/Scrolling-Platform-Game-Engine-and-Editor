@@ -32,7 +32,7 @@ public class ChangeVarOutcome implements Outcome {
     Double curAmount = gameObject.getDoubleParams().getOrDefault(variable, 0.0);
     double newAmount = curAmount + delta;
     gameObject.getDoubleParams().put(variable, newAmount);
-    System.out.println("Variable " + variable + " changed to " + newAmount);
+    //System.out.println("Variable " + variable + " changed to " + newAmount);
   }
 
   /**

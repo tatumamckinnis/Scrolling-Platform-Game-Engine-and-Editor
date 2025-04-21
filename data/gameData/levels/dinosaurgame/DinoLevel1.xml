@@ -56,7 +56,7 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="100"/>
+            <property name="lives" value="20"/>
             <property name="score" value="100"/>
           </doubleProperties>
         </properties>
@@ -111,6 +111,9 @@ interact with each other -->
       <conditions>
         <conditionSet>
           <condition name="W_KEY_PRESSED">
+            <stringParameters>
+              <parameter name="TEST" value="TEST VALUE"/>
+            </stringParameters>
             <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
             </doubleParameters>
@@ -189,7 +192,6 @@ interact with each other -->
     <event type="physics" id="24">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_PLATFORM"/>
           <condition name="COLLIDED_WITH_ENEMY">
           </condition>
         </conditionSet>
@@ -200,7 +202,7 @@ interact with each other -->
             <parameter name="variable" value="lives"/>
           </stringParameters>
           <doubleParameters>
-            <parameter name="delta" value="-1"/>
+            <parameter name="delta" value="-10"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -220,46 +222,21 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-    <event type="input" id="dinoPowerUp" description="A Power-up for the dino.">
+    <event type="input" id="26">
       <conditions>
         <conditionSet>
-          <condition name="P_KEY_PRESSED"/>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="SWITCH_SPRITES">
-          <stringParameters>
-            <parameter name="bluePrintId" value=""/>
-            <parameter name="powerUpName" value="superDino"/>
-          </stringParameters>
-        </outcome>
-      </outcomes>
-    </event>
-
-    <event type="input" id="superMove" description="A faster movement for the dino.">
-      <conditions>
-        <conditionSet>
-          <condition name="HAS_POWER_UP">
-
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
           </condition>
         </conditionSet>
       </conditions>
-
-    </event>
-    <event type="input" id="26" description="result due to score reaching threshold">
-      <conditions>
-        <conditionSet>
-          <condition name="LESS_THAN_VARIABLE_THRESHOLD"/>
-          <stringParameters>
-            <parameter name="variable" value="lives"/>
-          </stringParameters>
-          <doubleParameters>
-            <parameter name="threshold" value="15"/>
-          </doubleParameters>
-        </conditionSet>
-      </conditions>
       <outcomes>
-        <outcome name="RESTART_LEVEL">
+        <outcome name="LOSE_GAME">
         </outcome>
       </outcomes>
     </event>

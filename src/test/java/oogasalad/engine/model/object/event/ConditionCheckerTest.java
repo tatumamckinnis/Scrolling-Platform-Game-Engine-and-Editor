@@ -77,17 +77,20 @@ public class ConditionCheckerTest {
 
   @Test
   void TrueCondition() {
-    assertEquals(checker.checkCondition(ConditionType.TRUE, null), true);
+    EventCondition ec = new EventCondition(ConditionType.TRUE, null, null);
+    assertEquals(checker.checkCondition(ec, null), true);
   }
 
   @Test
   void InputCondition() {
-    assertEquals(checker.checkCondition(ConditionType.A_KEY_PRESSED, null), true);
+    EventCondition ec = new EventCondition(ConditionType.A_KEY_PRESSED, null, null);
+    assertEquals(checker.checkCondition(ec, null), true);
   }
 
   @Test
   void CollisionCondition() {
-    assertFalse(checker.checkCondition(ConditionType.COLLIDED_WITH_ENEMY, obj));
+    EventCondition ec = new EventCondition(ConditionType.COLLIDED_WITH_ENEMY, null, null);
+    assertFalse(checker.checkCondition(ec, obj));
   }
 
   @Test
@@ -95,12 +98,14 @@ public class ConditionCheckerTest {
     HashMap<String, String> stringParams = new HashMap<>();
     HashMap<String, Double> doubleParams = new HashMap<>();
     stringParams.put("variable", "score");
-    doubleParams.put("score", 15.0);
+    doubleParams.put("score", 8.0);
     doubleParams.put("threshold", 10.0);
+    EventCondition ec = new EventCondition(ConditionType.LESS_THAN_VARIABLE_THRESHOLD, stringParams, doubleParams);
+
 
     Entity gameObject = new Entity(null, null, 0, 0, 0, null, null, null, stringParams,
         doubleParams);
-    assertTrue(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
+    assertTrue(checker.checkCondition(ec, gameObject));
   }
 
   @Test
@@ -109,11 +114,13 @@ public class ConditionCheckerTest {
     HashMap<String, Double> doubleParams = new HashMap<>();
     stringParams.put("variable", "score");
     doubleParams.put("score", 15.0);
-    doubleParams.put("threshold", 20.0);
+    doubleParams.put("threshold", 10.0);
+    EventCondition ec = new EventCondition(ConditionType.LESS_THAN_VARIABLE_THRESHOLD, stringParams, doubleParams);
+
 
     Entity gameObject = new Entity(null, null, 0, 0, 0, null, null, null, stringParams,
         doubleParams);
-    assertFalse(checker.checkCondition(ConditionType.VARIABLE_THRESHOLD, gameObject));
+    assertFalse(checker.checkCondition(ec, gameObject));
   }
 
 

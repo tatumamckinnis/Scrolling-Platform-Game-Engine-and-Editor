@@ -13,12 +13,10 @@ import oogasalad.engine.model.object.Player;
 public class VariableLessThanThresholdCondition implements Condition {
   private Logger LOG = Logger.getLogger(VariableLessThanThresholdCondition.class.getName());
   @Override
-  public boolean isMet(GameObject gameObject) {
-    Map<String, String> stringParams = gameObject.getStringParams();
-    Map<String, Double> doubleParams = gameObject.getDoubleParams();
+  public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     String variableName = stringParams.get("variable");
     LOG.info("Dynamic var name: " + variableName);
-    Double amount = doubleParams.get(variableName);
+    Double amount = gameObject.getDoubleParams().getOrDefault(variableName,0.0);
     Double threshold = doubleParams.get("threshold");
     return amount <= threshold;
   }

@@ -1,5 +1,6 @@
 package oogasalad.engine.model.event.condition;
 
+import java.util.Map;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.object.GameObject;
@@ -28,7 +29,7 @@ public class InputCondition implements Condition {
   }
 
   @Override
-  public boolean isMet(GameObject gameObject) {
+  public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     return wantPressed
         ? inputProvider.isKeyPressed(keyCode)
         : inputProvider.isKeyReleased(keyCode);

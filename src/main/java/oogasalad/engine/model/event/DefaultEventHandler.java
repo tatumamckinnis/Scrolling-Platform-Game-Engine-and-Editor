@@ -65,7 +65,7 @@ public class DefaultEventHandler implements EventHandler {
       boolean validGroup = false; // This group is false until proven true
 
       for (EventCondition eventCondition : conditionGroup) {
-        if (conditionChecker.checkCondition(eventCondition.conditionType(), gameObject)) {
+        if (conditionChecker.checkCondition(eventCondition, gameObject)) {
           validGroup = true; // One condition in this OR-group is true
           break; // No need to check further in this OR-group
         }

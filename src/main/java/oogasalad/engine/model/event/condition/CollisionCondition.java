@@ -1,6 +1,7 @@
 package oogasalad.engine.model.event.condition;
 
 import java.util.List;
+import java.util.Map;
 import oogasalad.engine.model.event.CollisionHandler;
 import oogasalad.engine.model.object.GameObject;
 
@@ -24,7 +25,7 @@ public class CollisionCondition implements Condition {
   }
 
   @Override
-  public boolean isMet(GameObject gameObject) {
+  public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     List<GameObject> collidedObjects = collisionHandler.getCollisions(gameObject);
     for (GameObject collidedObject : collidedObjects) {
       if (collidedObject.getType().equals(collidedGroup)) {

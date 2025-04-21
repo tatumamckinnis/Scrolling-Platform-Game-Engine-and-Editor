@@ -13,9 +13,7 @@ import oogasalad.engine.model.object.Player;
 public class VariableGreaterThanThresholdCondition implements Condition {
 
   @Override
-  public boolean isMet(GameObject gameObject) {
-    Map<String, String> stringParams = gameObject.getStringParams();
-    Map<String, Double> doubleParams = gameObject.getDoubleParams();
+  public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     String variableName = stringParams.get("variable");
     Double amount = doubleParams.get(variableName);
     Double threshold = doubleParams.get("threshold");

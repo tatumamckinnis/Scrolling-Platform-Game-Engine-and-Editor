@@ -73,9 +73,9 @@ public class ConditionChecker {
    * @param gameObject    requires use of predefined mapping of conditionType -> expected params
    * @return true or false
    */
-  public boolean checkCondition(EventCondition.ConditionType conditionType, GameObject gameObject) {
-    Condition condition = conditionMap.get(conditionType);
-    return condition.isMet(gameObject);
+  public boolean checkCondition(EventCondition eventCondition, GameObject gameObject) {
+    Condition condition = conditionMap.get(eventCondition.conditionType());
+    return condition.isMet(gameObject, eventCondition.stringProperties(), eventCondition.doubleProperties());
 
   }
 
