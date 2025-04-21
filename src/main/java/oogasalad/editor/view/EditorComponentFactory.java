@@ -141,34 +141,37 @@ public class EditorComponentFactory {
   public Scene createEditorScene() {
     SplitPane root = new SplitPane();
     root.setId(getId("id.editor.root"));
-    int editorWidth = getIntProperty(getId("prop.editor.width"), getDefaultInt("default.editor.width"));
+
+    int editorWidth  = getIntProperty(getId("prop.editor.width"), getDefaultInt("default.editor.width"));
     int editorHeight = getIntProperty(getId("prop.editor.height"), getDefaultInt("default.editor.height"));
 
-    SplitPane leftSplit = new SplitPane();
-    leftSplit.setOrientation(Orientation.VERTICAL);
-
-    Pane mapPane = createMapPane(editorHeight);
+    // Middle column: Map above Assets
+    SplitPane middleSplit = new SplitPane();
+    middleSplit.setOrientation(Orientation.VERTICAL);
+    Pane mapPane   = createMapPane(editorHeight);
     Pane assetPane = createAssetPane();
+    middleSplit.getItems().addAll(mapPane, assetPane);
+    middleSplit.setDividerPositions(
+        getDoubleProperty(getId("layout.left.split.divider"), 0.7)
+    );
 
-    leftSplit.getItems().addAll(mapPane, assetPane);
-    leftSplit.setDividerPositions(getDoubleProperty(getId("layout.left.split.divider"), 0.7));
+    // Left column: Chat
+    Pane chatContainer = createChatPane();
 
-    Pane componentsPane = createComponentPane(editorHeight);
+    // Right column: Components
+    Pane componentsContainer = createComponentPane(editorHeight);
 
-    root.getItems().addAll(leftSplit, componentsPane);
-    root.setDividerPositions(getDoubleProperty(getId("layout.root.split.divider"), 0.7));
+    // Assemble root: Chat | (Map/Assets) | Components
+    root.getItems().addAll(chatContainer, middleSplit, componentsContainer);
+    root.setDividerPositions(0.2, 0.8);
 
+    // Scene & CSS
     Scene scene = new Scene(root, editorWidth, editorHeight);
     String cssPath = getId("css.path");
-    try {
-      String css = Objects.requireNonNull(getClass().getResource(cssPath),
-              String.format(uiBundle.getString(getId("key.error.css.not.found")), cssPath))
-          .toExternalForm();
-      scene.getStylesheets().add(css);
-      LOG.info("Loaded stylesheet: {}", cssPath);
-    } catch (RuntimeException e) {
-      LOG.error(String.format(uiBundle.getString(getId("key.error.css.load.failed")), cssPath), e);
-    }
+    String css     = Objects.requireNonNull(
+        getClass().getResource(cssPath)
+    ).toExternalForm();
+    scene.getStylesheets().add(css);
 
     LOG.info("Editor scene created with dimensions {}x{}", editorWidth, editorHeight);
     return scene;
@@ -259,6 +262,29 @@ public class EditorComponentFactory {
     LOG.debug("Asset pane (Prefabs/Sprites) created.");
     return assetPane;
   }
+
+  private Pane createChatPane() {
+    // Header label
+    Label chatLabel = createStyledLabel(
+        uiBundle.getString(getId("key.chatbot.tab.title")),
+        getId("style.header.label")
+    );
+    chatLabel.setId(getId("id.chat.label"));
+
+    // Chat pane UI
+    ChatBotPane chatBotPane = new ChatBotPane(editorController, /* ownerWindow */ null);
+    chatBotPane.setId(getId("id.chat.pane"));
+    chatBotPane.setPrefHeight(
+        getDoubleProperty(getId("layout.chat.pane.height"), 200.0)
+    );
+
+    // Container VBox
+    VBox container = new VBox(5, chatLabel, chatBotPane);
+    container.setId(getId("id.chat.container"));
+    VBox.setVgrow(chatBotPane, Priority.ALWAYS);
+    return container;
+  }
+
 
 
   /**
