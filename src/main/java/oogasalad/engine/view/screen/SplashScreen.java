@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Properties;
@@ -326,19 +327,23 @@ public class SplashScreen extends Display {
 
   private void populateGameTypeComboBox(ComboBox<String> gameTypeComboBox)
       throws FileNotFoundException {
+    File[] gameFolders = getGameFolders();
+    gameTypeComboBox.getItems().setAll(
+        Arrays.stream(gameFolders)
+            .map(File::getName)
+            .sorted()
+            .toList()
+    );
+  }
+
+  private File[] getGameFolders() throws FileNotFoundException {
     File gamesDir = new File(gamesFilePath);
-    if (gamesDir.exists() && gamesDir.isDirectory()) {
-      File[] gameFolders = gamesDir.listFiles(File::isDirectory);
-      if (gameFolders != null) {
-        gameTypeComboBox.getItems().clear();
-        for (File folder : gameFolders) {
-          gameTypeComboBox.getItems().add(folder.getName());
-        }
-        gameTypeComboBox.getItems().sort(Comparator.naturalOrder());
-      }
-    } else {
-      throw new FileNotFoundException(EXCEPTIONS.getString("GameDirectoryNotFound") + " " + gamesDir.getAbsolutePath());
+    if (!gamesDir.exists() || !gamesDir.isDirectory()) {
+      throw new FileNotFoundException(
+          EXCEPTIONS.getString("GameDirectoryNotFound") + " " + gamesDir.getAbsolutePath());
     }
+    File[] folders = gamesDir.listFiles(File::isDirectory);
+    return folders != null ? folders : new File[0];
   }
 
 
