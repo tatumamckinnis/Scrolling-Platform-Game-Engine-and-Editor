@@ -70,5 +70,5 @@ public abstract class Display extends Group {
    * Creates the screen with all the Text and Button components for an overlay screen, whether it be a win, pause,
    * or a loss.
    */
-  public abstract void initialRender();
+  public abstract void initialRender() throws FileNotFoundException;
 }

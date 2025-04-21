@@ -1,15 +1,18 @@
 package oogasalad.engine.view.factory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.DataFormatException;
 
+import javafx.scene.control.ComboBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +45,7 @@ public class ButtonActionFactory {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
+  private static final String gamesFilePath = "data/gameData/levels/";
   private static final Properties buttonIDToActionProperties = new Properties();
   private final ViewState viewState;
 
@@ -119,6 +123,7 @@ public class ButtonActionFactory {
 
   /**
    * Returns a runnable that resumes the game
+   *
    * @return a runnable that resumes the game
    */
   private Runnable playGame() {
@@ -129,6 +134,7 @@ public class ButtonActionFactory {
 
   /**
    * Returns a runnable that pauses the game.
+   *
    * @return a runnable that pauses the game
    */
   private Runnable pauseGame() {
@@ -139,6 +145,7 @@ public class ButtonActionFactory {
 
   /**
    * Returns a runnable that restarts the game, or throws an exception given an error
+   *
    * @return a runnable that restarts the game
    */
   private Runnable restartGame() {
@@ -203,6 +210,8 @@ public class ButtonActionFactory {
         currentStage.setScene(view.getCurrentScene());
       } catch (ViewInitializationException e) {
         LOG.error("Error returning to home screen", e);
+      } catch (FileNotFoundException e) {
+        LOG.error("The levels for the game cannot be found", e);
       }
     };
   }
@@ -242,6 +251,23 @@ public class ButtonActionFactory {
       if (selectedFile != null) {
         try {
           viewState.getGameManager().selectGame(selectedFile.getAbsolutePath());
+        } catch (DataFormatException | IOException | ClassNotFoundException |
+                 InvocationTargetException | NoSuchMethodException | InstantiationException |
+                 IllegalAccessException | LayerParseException | LevelDataParseException |
+                 PropertyParsingException | SpriteParseException | EventParseException |
+                 HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+  }
+
+  public Runnable selectLevel(String game, String level) {
+    return () -> {
+      if (game != null && level != null) {
+        try {
+          viewState.getGameManager()
+              .selectGame( gamesFilePath + game + "/" + level);
         } catch (DataFormatException | IOException | ClassNotFoundException |
                  InvocationTargetException | NoSuchMethodException | InstantiationException |
                  IllegalAccessException | LayerParseException | LevelDataParseException |

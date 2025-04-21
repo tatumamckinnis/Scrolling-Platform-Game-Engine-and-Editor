@@ -61,7 +61,7 @@ public class DefaultView implements ViewAPI {
    * @see DefaultView#initialize()
    */
   @Override
-  public void initialize() throws ViewInitializationException {
+  public void initialize() throws ViewInitializationException, FileNotFoundException {
     ViewState currentState = new ViewState(currentStage, gameManager, this);
     SplashScreen splashScreen = new SplashScreen(currentState);
 
