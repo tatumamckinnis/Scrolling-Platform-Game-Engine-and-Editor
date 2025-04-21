@@ -57,14 +57,8 @@ public class ViewObjectToImageConverter {
       if (UUIDToImageMap.containsKey(object.getUUID())) {
         UUIDToImageMap.get(object.getUUID())
             .updateImageLocation(object.getXPosition(), object.getYPosition());
-        moveImageViewToCurrentFrame(object,UUIDToImageMap.get(object.getUUID()).getImageView());
-        if(object.getNeedsFlipped()){
-          flipImageView(UUIDToImageMap.get(object.getUUID()).getImageView());
-          object.setNeedsFlipped(false);
-        }
-        if(object.getRotation() > 0){
-          rotateAboutCenter(UUIDToImageMap.get(object.getUUID()).getImageView(), object.getRotation());
-        }
+        moveImageViewToCurrentFrame(object, UUIDToImageMap.get(object.getUUID()).getImageView());
+        rotateAndFlip(object);
       } else {
         ObjectImage newViewObject = new ObjectImage(object);
         images.add(newViewObject);
@@ -72,6 +66,21 @@ public class ViewObjectToImageConverter {
       }
     }
     return images;
+  }
+
+  /**
+   * rotates and/or flips the object
+   *
+   * @param object game object to rotate and/or flip
+   */
+  private void rotateAndFlip(ImmutableGameObject object) {
+    if (object.getNeedsFlipped()) {
+      flipImageView(UUIDToImageMap.get(object.getUUID()).getImageView());
+      object.setNeedsFlipped(false);
+    }
+    if (object.getRotation() > 0) {
+      rotateAboutCenter(UUIDToImageMap.get(object.getUUID()).getImageView(), object.getRotation());
+    }
   }
 
   /**
@@ -110,7 +119,9 @@ public class ViewObjectToImageConverter {
 
   public static void flipImageView(ImageView iv) {
     Image img = iv.getImage();
-    if (img == null) return;
+    if (img == null) {
+      return;
+    }
 
     double w = iv.getBoundsInLocal().getWidth();
 
@@ -119,11 +130,10 @@ public class ViewObjectToImageConverter {
   }
 
   /**
-   * Rotates the given ImageView by the specified angle (in degrees)
-   * about the image’s center.
+   * Rotates the given ImageView by the specified angle (in degrees) about the image’s center.
    *
-   * @param imageView     the ImageView to rotate
-   * @param angle  rotation angle in degrees
+   * @param imageView the ImageView to rotate
+   * @param angle     rotation angle in degrees
    */
   public static void rotateAboutCenter(ImageView imageView, double angle) {
     // clear out any old Rotate transforms so we don't stack them

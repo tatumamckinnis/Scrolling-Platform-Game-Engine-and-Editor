@@ -9,7 +9,6 @@ import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
-import oogasalad.engine.view.ViewState;
 
 public class HUD extends Display {
 
@@ -17,10 +16,14 @@ public class HUD extends Display {
       Main.class.getPackage().getName() + "." + "Exceptions");
   private Pane container;
 
+  public HUD() {
+    initialize();
+  }
+
   /**
    * renders the HUD view
    */
-  public void initialRender() {
+  private void initialize() {
     container = new VBox();
     container.setTranslateX(20);
     container.setLayoutX(100);
@@ -31,7 +34,6 @@ public class HUD extends Display {
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
   }
-
 
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {

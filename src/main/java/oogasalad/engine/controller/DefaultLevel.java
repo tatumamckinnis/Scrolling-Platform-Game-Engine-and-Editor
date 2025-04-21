@@ -28,6 +28,7 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultLevel implements LevelAPI {
 
+  private static final Logger LOG = Logger.getLogger(DefaultLevel.class.getName());
   private final FileParserApi myFileParser;
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
@@ -51,7 +52,7 @@ public class DefaultLevel implements LevelAPI {
   @Override
   public void selectGame(String filePath)
       throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-    System.out.println("Selecting game " + filePath);
+    LOG.info("Selecting game " + filePath);
     LevelData levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
   }

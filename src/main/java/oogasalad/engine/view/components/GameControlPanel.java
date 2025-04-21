@@ -56,12 +56,10 @@ public class GameControlPanel extends Display {
     this.viewState = viewState;
     this.setViewOrder(-1);
     initializeGameControlPanelButtons();
+    addButtonsToRoot();
   }
 
-  /**
-   * renders the Game Control Panel
-   */
-  public void initialRender() {
+  private void addButtonsToRoot() {
     HBox buttonContainer = new HBox();
     buttonContainer.getChildren().addAll(buttons);
     int containerSpacing = Integer.parseInt(

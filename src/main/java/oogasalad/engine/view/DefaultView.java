@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import oogasalad.engine.model.object.ImmutablePlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,11 +60,10 @@ public class DefaultView implements ViewAPI {
    * @see DefaultView#initialize()
    */
   @Override
-  public void initialize() throws ViewInitializationException {
+  public void initialize() throws ViewInitializationException, FileNotFoundException {
     ViewState currentState = new ViewState(currentStage, gameManager, this);
     SplashScreen splashScreen = new SplashScreen(currentState);
 
-    splashScreen.initialRender();
     int width = splashScreen.getSplashWidth();
     int height = splashScreen.getSplashHeight();
     currentDisplay = splashScreen;
