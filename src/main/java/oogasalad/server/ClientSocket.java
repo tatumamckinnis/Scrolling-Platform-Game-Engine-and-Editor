@@ -19,15 +19,13 @@ import java.net.URISyntaxException;
 public class ClientSocket extends WebSocketClient {
   private static final Logger LOG = LogManager.getLogger();
   private final Gson gson;
-  private final GameManagerAPI gameManager;
 
   /**
    * Instantiate a new socket.
    */
-  public ClientSocket(String serverUri, GameManagerAPI manager) throws URISyntaxException {
+  public ClientSocket(String serverUri) throws URISyntaxException {
     super(new URI(serverUri));
     gson = new Gson();
-    gameManager = manager;
   }
 
   /**
