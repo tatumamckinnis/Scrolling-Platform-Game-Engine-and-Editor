@@ -26,15 +26,6 @@ public class JavaServer {
   }
 
   /**
-   * Closes the javascript server connection.
-   */
-  public void stopJavaScriptServer() {
-    if (jsServerProcess != null && jsServerProcess.isAlive()) {
-      jsServerProcess.destroy();
-    }
-  }
-
-  /**
    * Method to send server outputs to the log.
    */
   private void logServerOutput() {

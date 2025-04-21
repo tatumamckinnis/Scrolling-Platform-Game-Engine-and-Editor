@@ -6,15 +6,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
 import javafx.scene.control.ComboBox;
 import oogasalad.Main;
+import oogasalad.server.ClientSocket;
+import oogasalad.server.JavaServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -294,5 +298,31 @@ public class ButtonActionFactory {
         }
       }
     };
+  }
+
+  /**
+   * Starts a javascript server.
+   * @param gamePath desired server game file path.
+   * @param viewState a viewState to allow changing of views.
+   * @return a client web socket connected to the server.
+   */
+  public static ClientSocket startServer(String gamePath, ViewState viewState) {
+    try {
+      int myPort = generateRandomPort();
+      new JavaServer(myPort, gamePath);
+      Thread.sleep(1000);
+      ClientSocket client = new ClientSocket(myPort, gamePath, viewState);
+      client.connect();
+
+      return client;
+    } catch (Exception e) {
+      LOG.error("Error starting server");
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static int generateRandomPort() {
+    Random random = new Random();
+    return random.nextInt(3000) + 3000;
   }
 }

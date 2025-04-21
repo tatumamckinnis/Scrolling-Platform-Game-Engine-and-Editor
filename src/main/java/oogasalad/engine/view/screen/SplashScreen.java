@@ -1,18 +1,19 @@
 package oogasalad.engine.view.screen;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import java.util.zip.DataFormatException;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -21,6 +22,8 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.server.ClientSocket;
+import oogasalad.server.ServerMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -247,10 +250,44 @@ public class SplashScreen extends Display {
       splashBox.getChildren().add(currButton);
     }
 
+    addOnlineButtons(splashBox);
+
     int buttonSpacing = Integer.parseInt(
         splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  /**
+   * Adds buttons needed for starting online games. Will need refactoring.
+   * @param splashBox
+   */
+  private void addOnlineButtons(VBox splashBox) {
+    String gameXMLPath = "data/gameData/levels/dinosaurgame/DinoLevel1.xml";
+    Button playOnline = new Button("playOnline!");
+    playOnline.setOnAction(event -> {
+      ClientSocket host = ButtonActionFactory.startServer(gameXMLPath, viewState);
+    });
+
+    TextField portField = new TextField();
+    portField.setPromptText("Enter port number");
+
+    Button joinServer = new Button("Join Server");
+    joinServer.setOnAction(event -> {
+      int port = Integer.parseInt(portField.getText());
+      try {
+        ClientSocket p2 = new ClientSocket(port, gameXMLPath, viewState);
+        p2.connect();
+        Thread.sleep(1000);
+        ServerMessage startGameMessage = new ServerMessage("splashButtonStartEngine", "");
+        Gson gson = new Gson();
+        p2.send(gson.toJson(startGameMessage));
+      } catch (URISyntaxException | InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    });
+
+    splashBox.getChildren().addAll(playOnline, joinServer, portField);
   }
 
   private ComboBox<String> createComboBox(String[] comboBoxTexts, int i, double buttonWidth,

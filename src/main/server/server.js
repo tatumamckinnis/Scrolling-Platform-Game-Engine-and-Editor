@@ -30,7 +30,6 @@ class Server {
         client.send("" + message);
       }
     }
-    socket.send("" + message);
   }
 
   handleDisconnect(socket) {

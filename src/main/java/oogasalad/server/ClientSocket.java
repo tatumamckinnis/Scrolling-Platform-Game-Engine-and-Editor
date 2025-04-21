@@ -2,7 +2,9 @@ package oogasalad.server;
 
 import com.google.gson.Gson;
 import java.util.Objects;
-import oogasalad.engine.controller.api.GameManagerAPI;
+import javafx.application.Platform;
+import oogasalad.engine.view.ViewState;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
@@ -19,13 +21,18 @@ import java.net.URISyntaxException;
 public class ClientSocket extends WebSocketClient {
   private static final Logger LOG = LogManager.getLogger();
   private final Gson gson;
+  private final ViewState viewState;
+  private final int myPort;
+  private static final String SERVER_URI = "ws://localhost:%d?filepath=%s";
 
   /**
    * Instantiate a new socket.
    */
-  public ClientSocket(String serverUri) throws URISyntaxException {
-    super(new URI(serverUri));
+  public ClientSocket(int port, String gamePath, ViewState viewState) throws URISyntaxException {
+    super(new URI(String.format(SERVER_URI, port, gamePath)));
     gson = new Gson();
+    this.viewState = viewState;
+    this.myPort = port;
   }
 
   /**
@@ -65,9 +72,22 @@ public class ClientSocket extends WebSocketClient {
   private void handleServerMessages(ServerMessage serverMessage) {
     LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
 
-    if(Objects.equals(serverMessage.type, "start")) {
-      // TODO: change constructor to take in a view state and then call button action factory
-      // TODO: then get action for start game
+    if(Objects.equals(serverMessage.type, "splashButtonStartEngine")) {
+      Platform.runLater(() -> {
+        ButtonActionFactory f = new ButtonActionFactory(viewState);
+        f.getAction(serverMessage.type).run();
+      });
     }
+
+    if (Objects.equals(serverMessage.type, "keyPressed")) {
+
+    }
+  }
+
+  /**
+   * Returns the port a socket is connected to.
+   */
+  public int getPort() {
+    return myPort;
   }
 }
