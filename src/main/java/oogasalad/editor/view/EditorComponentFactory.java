@@ -34,9 +34,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Factory class responsible for creating the main UI components of the Editor scene.
- * Uses external configuration for identifiers, properties, UI text, and styling.
- * Delegates actions to the EditorController and registers view components as listeners.
+ * Factory class responsible for creating the main UI components of the Editor scene. Uses external
+ * configuration for identifiers, properties, UI text, and styling. Delegates actions to the
+ * EditorController and registers view components as listeners.
+ *
  * @author Tatum McKinnis
  */
 public class EditorComponentFactory {
@@ -56,12 +57,13 @@ public class EditorComponentFactory {
   private PrefabPalettePane prefabPalettePane;
 
   /**
-   * Constructs the factory, loading necessary resources and initializing dependencies.
-   * Loads core editor properties and UI text using {@link EditorResourceLoader}.
-   * Loads internal identifiers (keys, IDs, paths) from its own properties file.
+   * Constructs the factory, loading necessary resources and initializing dependencies. Loads core
+   * editor properties and UI text using {@link EditorResourceLoader}. Loads internal identifiers
+   * (keys, IDs, paths) from its own properties file.
    *
    * @param editorController The main controller for editor actions.
-   * @throws RuntimeException if essential resources (editor properties, UI bundle, identifiers) cannot be loaded.
+   * @throws RuntimeException     if essential resources (editor properties, UI bundle, identifiers)
+   *                              cannot be loaded.
    * @throws NullPointerException if editorController is null.
    */
   public EditorComponentFactory(EditorController editorController) {
@@ -101,19 +103,24 @@ public class EditorComponentFactory {
 
   /**
    * Loads the identifier strings (keys, CSS classes, IDs, paths) from the properties file.
+   *
    * @return A Properties object containing the loaded identifiers.
    * @throws RuntimeException If the properties file cannot be found or read.
    */
   private Properties loadIdentifierProperties() {
     Properties props = new Properties();
-    try (InputStream input = EditorComponentFactory.class.getResourceAsStream(IDENTIFIERS_PROPERTIES_PATH)) {
+    try (InputStream input = EditorComponentFactory.class.getResourceAsStream(
+        IDENTIFIERS_PROPERTIES_PATH)) {
       if (input == null) {
-        LOG.error("CRITICAL: Unable to find identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH);
-        throw new RuntimeException("Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
+        LOG.error("CRITICAL: Unable to find identifiers properties file: {}",
+            IDENTIFIERS_PROPERTIES_PATH);
+        throw new RuntimeException(
+            "Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
       }
       props.load(input);
     } catch (IOException ex) {
-      LOG.error("CRITICAL: Error loading identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH, ex);
+      LOG.error("CRITICAL: Error loading identifiers properties file: {}",
+          IDENTIFIERS_PROPERTIES_PATH, ex);
       throw new RuntimeException("Error loading identifiers properties file", ex);
     }
     return props;
@@ -121,6 +128,7 @@ public class EditorComponentFactory {
 
   /**
    * Retrieves an identifier value from the loaded identifier properties.
+   *
    * @param key The key for the identifier.
    * @return The identifier string.
    * @throws RuntimeException If the key is not found.
@@ -144,8 +152,10 @@ public class EditorComponentFactory {
   public Scene createEditorScene() {
     SplitPane root = new SplitPane();
     root.setId(getId("id.editor.root"));
-    int editorWidth = getIntProperty(getId("prop.editor.width"), getDefaultInt("default.editor.width"));
-    int editorHeight = getIntProperty(getId("prop.editor.height"), getDefaultInt("default.editor.height"));
+    int editorWidth = getIntProperty(getId("prop.editor.width"),
+        getDefaultInt("default.editor.width"));
+    int editorHeight = getIntProperty(getId("prop.editor.height"),
+        getDefaultInt("default.editor.height"));
 
     SplitPane leftSplit = new SplitPane();
     leftSplit.setOrientation(Orientation.VERTICAL);
@@ -179,7 +189,8 @@ public class EditorComponentFactory {
 
 
   /**
-   * Creates the main map viewing and interaction area, including the title, toolbar, and the game view canvas.
+   * Creates the main map viewing and interaction area, including the title, toolbar, and the game
+   * view canvas.
    *
    * @param height The suggested initial height, primarily used for context if needed.
    * @return A Pane containing the map section components.
@@ -188,7 +199,8 @@ public class EditorComponentFactory {
     BorderPane mapPane = new BorderPane();
     mapPane.setId(getId("id.map.pane"));
 
-    Label mapLabel = createStyledLabel(uiBundle.getString(getId("key.map.title")), getId("style.header.label"));
+    Label mapLabel = createStyledLabel(uiBundle.getString(getId("key.map.title")),
+        getId("style.header.label"));
     mapLabel.setId(getId("id.map.label"));
 
     createGameView(uiBundle);
@@ -214,15 +226,17 @@ public class EditorComponentFactory {
    * values loaded from properties.
    */
   /**
-   * Creates and initializes the {@link EditorGameView} instance using configuration
-   * values loaded from properties and passes necessary dependencies.
+   * Creates and initializes the {@link EditorGameView} instance using configuration values loaded
+   * from properties and passes necessary dependencies.
    *
    * @param resourceBundle The UI ResourceBundle for localized text (e.g., error messages).
    */
   private void createGameView(ResourceBundle resourceBundle) { // Add parameter
     int cellSize = getIntProperty(getId("prop.cell.size"), getDefaultInt("default.cell.size"));
-    double zoomScale = getDoubleProperty(getId("prop.zoom.scale"), getDefaultDouble("default.zoom.scale"));
-    gameView = new EditorGameView(cellSize, zoomScale, editorController, prefabPalettePane, resourceBundle);
+    double zoomScale = getDoubleProperty(getId("prop.zoom.scale"),
+        getDefaultDouble("default.zoom.scale"));
+    gameView = new EditorGameView(cellSize, zoomScale, editorController, prefabPalettePane,
+        resourceBundle);
     LOG.debug("EditorGameView created with cell size {}", cellSize);
   }
 
@@ -249,7 +263,8 @@ public class EditorComponentFactory {
     assetTabs.setId(getId("id.asset.tabs"));
     assetTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-    Tab prefabsTab = new Tab(uiBundle.getString(getId("key.prefabs.tab.title")), this.prefabPalettePane);
+    Tab prefabsTab = new Tab(uiBundle.getString(getId("key.prefabs.tab.title")),
+        this.prefabPalettePane);
     prefabsTab.setId(getId("id.prefabs.tab"));
 
     SpriteAssetPane spriteAssetPane = new SpriteAssetPane(editorController, null);
@@ -265,8 +280,8 @@ public class EditorComponentFactory {
 
 
   /**
-   * Creates the toolbar HBox containing toggle buttons for selecting interaction tools (placement, selection, deletion).
-   * Relies on the {@code gameView} instance having been created previously.
+   * Creates the toolbar HBox containing toggle buttons for selecting interaction tools (placement,
+   * selection, deletion). Relies on the {@code gameView} instance having been created previously.
    *
    * @return HBox node representing the toolbar.
    * @throws IllegalStateException if {@code gameView} has not been initialized.
@@ -284,20 +299,27 @@ public class EditorComponentFactory {
 
     ToggleGroup toolGroup = new ToggleGroup();
 
-    String entityType = editorProperties.getProperty(getId("prop.entity.type"), getId("default.entity.type"));
-    String entityPrefix = editorProperties.getProperty(getId("prop.entity.prefix"), getId("default.entity.prefix"));
+    String entityType = editorProperties.getProperty(getId("prop.entity.type"),
+        getId("default.entity.type"));
+    String entityPrefix = editorProperties.getProperty(getId("prop.entity.prefix"),
+        getId("default.entity.prefix"));
 
-    ObjectInteractionTool entityTool = new GameObjectPlacementTool(gameView, editorController, entityType, entityPrefix);
-    ToggleButton entityButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.add.entity.tool")), entityTool, false);
+    ObjectInteractionTool entityTool = new GameObjectPlacementTool(gameView, editorController,
+        entityType, entityPrefix);
+    ToggleButton entityButton = createToolToggleButton(toolGroup,
+        uiBundle.getString(getId("key.add.entity.tool")), entityTool, false);
 
     ObjectInteractionTool selectTool = new SelectionTool(gameView, editorController);
-    ToggleButton selectButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.select.tool")), selectTool, false);
+    ToggleButton selectButton = createToolToggleButton(toolGroup,
+        uiBundle.getString(getId("key.select.tool")), selectTool, false);
 
     ObjectInteractionTool deleteTool = new DeleteTool(gameView, editorController);
-    ToggleButton deleteButton = createToolToggleButton(toolGroup, uiBundle.getString(getId("key.delete.tool")), deleteTool, false);
+    ToggleButton deleteButton = createToolToggleButton(toolGroup,
+        uiBundle.getString(getId("key.delete.tool")), deleteTool, false);
 
     OnClickTool clearAllTool = new ClearAllTool(gameView, editorController);
-    Button clearAllObjectsButton = createOnClickToolToggleButton(uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
+    Button clearAllObjectsButton = createOnClickToolToggleButton(
+        uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
 
     toolbar.getChildren().addAll(entityButton, selectButton, deleteButton, clearAllObjectsButton);
     gameView.updateCurrentTool(null);
@@ -307,15 +329,17 @@ public class EditorComponentFactory {
 
   /**
    * Helper method to create a styled ToggleButton for the toolbar, linking it to a specific tool
-   * and adding it to a ToggleGroup. Sets up the action to update the current tool in the game view.
+   * and adding it to a ToggleGroup. Sets up the action to update the current tool in the game
+   * view.
    *
-   * @param group     The ToggleGroup the button belongs to.
-   * @param text      The text label for the button.
-   * @param tool      The {@link ObjectInteractionTool} activated by this button.
-   * @param selected  Whether this button should be initially selected.
+   * @param group    The ToggleGroup the button belongs to.
+   * @param text     The text label for the button.
+   * @param tool     The {@link ObjectInteractionTool} activated by this button.
+   * @param selected Whether this button should be initially selected.
    * @return The configured ToggleButton.
    */
-  private ToggleButton createToolToggleButton(ToggleGroup group, String text, ObjectInteractionTool tool, boolean selected) {
+  private ToggleButton createToolToggleButton(ToggleGroup group, String text,
+      ObjectInteractionTool tool, boolean selected) {
     ToggleButton button = new ToggleButton(text);
     button.setToggleGroup(group);
     button.setSelected(selected);
@@ -323,11 +347,13 @@ public class EditorComponentFactory {
       if (gameView != null) {
         if (button.isSelected()) {
           gameView.updateCurrentTool(tool);
-          LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.selected")), tool.getClass().getSimpleName()));
+          LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.selected")),
+              tool.getClass().getSimpleName()));
         } else {
           if (group.getSelectedToggle() == null) {
             gameView.updateCurrentTool(null);
-            LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.deselected")), tool.getClass().getSimpleName()));
+            LOG.debug(String.format(uiBundle.getString(getId("key.log.tool.deselected")),
+                tool.getClass().getSimpleName()));
           }
         }
       }
@@ -336,6 +362,13 @@ public class EditorComponentFactory {
     return button;
   }
 
+  /**
+   * Helper method to create a styled Button for the toolbar, linking it to a specific tool
+   *
+   * @param text The text label for the button.
+   * @param tool The {@link OnClickTool} activated by this button.}
+   * @return a new Button
+   */
   private Button createOnClickToolToggleButton(String text, OnClickTool tool) {
     Button button = new Button(text);
     button.setOnAction(e -> {
@@ -357,7 +390,8 @@ public class EditorComponentFactory {
     BorderPane componentPane = new BorderPane();
     componentPane.setId(getId("id.component.pane"));
 
-    Label componentsLabel = createStyledLabel(uiBundle.getString(getId("key.properties.title")), getId("style.header.label"));
+    Label componentsLabel = createStyledLabel(uiBundle.getString(getId("key.properties.title")),
+        getId("style.header.label"));
     componentsLabel.setId(getId("id.components.label"));
 
     TabPane tabPane = new TabPane();
@@ -413,8 +447,8 @@ public class EditorComponentFactory {
 
 
   /**
-   * Safely retrieves an integer property value from the loaded editor properties file.
-   * Uses a default value if the key is not found or the value is not a valid integer.
+   * Safely retrieves an integer property value from the loaded editor properties file. Uses a
+   * default value if the key is not found or the value is not a valid integer.
    *
    * @param key          The property key (retrieved via getId).
    * @param defaultValue The default integer value to use if lookup or parsing fails.
@@ -426,7 +460,8 @@ public class EditorComponentFactory {
       try {
         return Integer.parseInt(value.trim());
       } catch (NumberFormatException e) {
-        LOG.warn("Invalid integer format for property key '{}': value='{}', using default {}", key, value, defaultValue);
+        LOG.warn("Invalid integer format for property key '{}': value='{}', using default {}", key,
+            value, defaultValue);
       }
     } else {
       LOG.warn("Property key '{}' not found, using default {}", key, defaultValue);
@@ -435,10 +470,10 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Safely retrieves an integer property value from the loaded identifier properties file.
-   * Used for default integer values originally defined as constants.
+   * Safely retrieves an integer property value from the loaded identifier properties file. Used for
+   * default integer values originally defined as constants.
    *
-   * @param idKey        The identifier key for the default value.
+   * @param idKey The identifier key for the default value.
    * @return The integer value from identifier properties.
    * @throws RuntimeException if the identifier key is not found or parsing fails.
    */
@@ -453,8 +488,8 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Safely retrieves a double property value from the loaded editor properties file.
-   * Uses a default value if the key is not found or the value is not a valid double.
+   * Safely retrieves a double property value from the loaded editor properties file. Uses a default
+   * value if the key is not found or the value is not a valid double.
    *
    * @param key          The property key (retrieved via getId).
    * @param defaultValue The default double value to use if lookup or parsing fails.
@@ -466,7 +501,8 @@ public class EditorComponentFactory {
       try {
         return Double.parseDouble(value.trim());
       } catch (NumberFormatException e) {
-        LOG.warn("Invalid double format for property key '{}': value='{}', using default {}", key, value, defaultValue);
+        LOG.warn("Invalid double format for property key '{}': value='{}', using default {}", key,
+            value, defaultValue);
       }
     } else {
       LOG.warn("Property key '{}' not found, using default {}", key, defaultValue);
@@ -475,10 +511,10 @@ public class EditorComponentFactory {
   }
 
   /**
-   * Safely retrieves a double property value from the loaded identifier properties file.
-   * Used for default double values originally defined as constants.
+   * Safely retrieves a double property value from the loaded identifier properties file. Used for
+   * default double values originally defined as constants.
    *
-   * @param idKey        The identifier key for the default value.
+   * @param idKey The identifier key for the default value.
    * @return The double value from identifier properties.
    * @throws RuntimeException if the identifier key is not found or parsing fails.
    */
