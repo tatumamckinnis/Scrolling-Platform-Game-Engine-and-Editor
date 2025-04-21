@@ -55,8 +55,6 @@ public class ConditionChecker {
    */
   public boolean checkCondition(EventCondition eventCondition, GameObject gameObject) {
     Condition condition = conditionMap.get(eventCondition.conditionType());
-    System.out.println(eventCondition.conditionType());
-    System.out.println(condition.toString());
     return condition.isMet(gameObject, eventCondition.stringProperties(), eventCondition.doubleProperties());
 
   }
