@@ -28,11 +28,11 @@ public class ChangeVarOutcome implements Outcome {
       Map<String, Double> doubleParameters)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     String variable = stringParameters.get("variable");
-    double delta = doubleParameters.get("delta");
-    Double curAmount = doubleParameters.getOrDefault(variable, 0.0);
+    double delta = doubleParameters.getOrDefault("delta", 0.0);
+    Double curAmount = gameObject.getDoubleParams().getOrDefault(variable, 0.0);
     double newAmount = curAmount + delta;
-    doubleParameters.put(variable, newAmount);
-    updateDisplayedStats(gameObject, variable, newAmount);
+    gameObject.getDoubleParams().put(variable, newAmount);
+    System.out.println("Variable " + variable + " changed to " + newAmount);
   }
 
   /**
@@ -43,12 +43,12 @@ public class ChangeVarOutcome implements Outcome {
    * @param variable   the variable to update
    * @param newAmount  the new amount to update the variable to
    */
-  private static void updateDisplayedStats(GameObject gameObject, String variable,
-      double newAmount) {
-    if (gameObject.getType().equals("player") && ((Player) gameObject).getDisplayedStats()
-        .containsKey(
-            variable)) {
-      ((Player) gameObject).setDisplayedStat(variable, newAmount);
-    }
-  }
+//  private static void updateDisplayedStats(GameObject gameObject, String variable,
+//      double newAmount) {
+//    if (gameObject.getType().equals("player") && ((Player) gameObject).getDisplayedStats()
+//        .containsKey(
+//            variable)) {
+//      ((Player) gameObject).setDisplayedStat(variable, newAmount);
+//    }
+//  }
 }
