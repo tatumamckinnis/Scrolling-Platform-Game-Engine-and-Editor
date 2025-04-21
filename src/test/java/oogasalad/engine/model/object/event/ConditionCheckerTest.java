@@ -89,7 +89,7 @@ public class ConditionCheckerTest {
 
   @Test
   void CollisionCondition() {
-    EventCondition ec = new EventCondition(ConditionType.COLLIDED_WITH_ENEMY, null, null);
+    EventCondition ec = new EventCondition(ConditionType.COLLIDED_WITH_GROUP, null, null);
     assertFalse(checker.checkCondition(ec, obj));
   }
 

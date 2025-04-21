@@ -58,6 +58,7 @@ interact with each other -->
           <doubleProperties>
             <property name="lives" value="20"/>
             <property name="score" value="100"/>
+            <property name="rocket_time_left" value="0"/>
           </doubleProperties>
         </properties>
       </object>
@@ -110,9 +111,9 @@ interact with each other -->
     <event type="input" id="20">
       <conditions>
         <conditionSet>
-          <condition name="W_KEY_PRESSED">
+          <condition name="KEY_PRESSED">
             <stringParameters>
-              <parameter name="TEST" value="TEST VALUE"/>
+              <parameter name="key" value="w"/>
             </stringParameters>
             <doubleParameters>
               <parameter name="Sensitivity" value="0.5"/>
@@ -177,7 +178,10 @@ interact with each other -->
     <event type="physics" id="23">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_PLATFORM">
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platforms"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -192,7 +196,10 @@ interact with each other -->
     <event type="physics" id="24">
       <conditions>
         <conditionSet>
-          <condition name="COLLIDED_WITH_ENEMY">
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="enemy"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -210,7 +217,10 @@ interact with each other -->
     <event type="physics" id="25">
       <conditions>
         <conditionSet>
-          <condition name="S_KEY_PRESSED">
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="s"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
@@ -240,5 +250,6 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
+
   </events>
 </map>
