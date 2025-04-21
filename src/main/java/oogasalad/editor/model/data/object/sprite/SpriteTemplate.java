@@ -55,7 +55,7 @@ public class SpriteTemplate {
    *
    * @return the sprite image path
    */
-  public String getSpritePath() {
+  public String getSpriteFile() {
     return spritePath;
   }
 

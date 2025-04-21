@@ -53,8 +53,7 @@ public class XmlSpriteSheetWriter implements XmlComponentWriter {
           .newDocument();
 
       Element root = doc.createElement("spriteFile");
-      root.setAttribute("imagePath",
-          imagePath.substring(imagePath.lastIndexOf('/') + 1));
+      root.setAttribute("imagePath", imagePath);
       root.setAttribute("width", Integer.toString(sheetWidth));
       root.setAttribute("height", Integer.toString(sheetHeight));
       doc.appendChild(root);

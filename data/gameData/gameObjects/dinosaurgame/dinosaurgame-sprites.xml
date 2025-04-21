@@ -6,7 +6,7 @@ y  => sprite y pos in texture
 width  => sprite width
 height  => sprite height
 -->
-<spriteFile imagePath="dinosaurgame/dinosaurgame-sprites.png" width="1770" height="101">
+<spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
     <sprite name="Bird1" x="0" y="0" width="97" height="68"/>
     <sprite name="Bird2" x="118" y="0" width="93" height="62"/>
     <sprite name="DinoDead" x="236" y="0" width="86" height="101"/>

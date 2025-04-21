@@ -1,6 +1,8 @@
 package oogasalad.editor.view.sprites;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -203,8 +205,7 @@ public class SpriteTemplateComponent extends Stage {
       }
     }
 
-    File pngFile = new File(atlas.imagePath());
-    pathField.setText(pngFile.getAbsolutePath());
+    pathField.setText(atlas.imagePath());
 
     framesPane.setFrames(atlas.frames());
   }

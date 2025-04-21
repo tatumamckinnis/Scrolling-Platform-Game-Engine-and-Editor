@@ -364,4 +364,8 @@ public class EditorDataAPI {
   public SpriteTemplateMap getSpriteTemplateMap() {
     return level.getSpriteTemplateMap();
   }
+
+  public String getGameName() {
+    return level.getGameName();
+  }
 }

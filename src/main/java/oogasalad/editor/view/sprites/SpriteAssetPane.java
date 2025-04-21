@@ -1,7 +1,8 @@
 package oogasalad.editor.view.sprites;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -17,7 +18,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.sprite.FrameData;
@@ -36,8 +36,8 @@ public class SpriteAssetPane extends BorderPane {
   private static final Logger LOG = LogManager.getLogger(SpriteAssetPane.class);
 
   private static final double BUTTON_SPACING = 5;
-  private static final double ICON_SIZE      = 64;
-  private static final double GAP            = 6;
+  private static final double ICON_SIZE = 64;
+  private static final double GAP = 6;
 
   private final EditorController editorController;
   private final SpriteTemplateMap spriteTemplateMap;
@@ -101,14 +101,16 @@ public class SpriteAssetPane extends BorderPane {
   }
 
   private Node createThumbnail(SpriteTemplate template) {
-    File file = new File(template.getSpritePath());
-    Image sheet = new Image(file.toURI().toString(), false);
-    System.out.println(template.getSpritePath());
-    System.out.println("Loaded sheet: " + sheet.getWidth() + "×" + sheet.getHeight());
+    String fileName = template.getSpriteFile();
+    String gameName = editorController.getEditorDataAPI().getGameName();
+    Path imageFile = Paths.get("data","graphicsData", gameName, fileName);
+
+    Image sheet = new Image(imageFile.toUri().toString());
 
     FrameData baseFrame = template.getBaseFrame();
     ImageView imageView = new ImageView(sheet);
-    imageView.setViewport(new Rectangle2D(baseFrame.x(), baseFrame.y(), baseFrame.width(), baseFrame.height()));
+    imageView.setViewport(
+        new Rectangle2D(baseFrame.x(), baseFrame.y(), baseFrame.width(), baseFrame.height()));
     imageView.setFitWidth(ICON_SIZE);
     imageView.setFitHeight(ICON_SIZE);
     imageView.setPreserveRatio(true);
