@@ -23,9 +23,11 @@ import oogasalad.engine.model.event.outcome.Outcome;
 import oogasalad.engine.model.event.outcome.PatrolOutcome;
 import oogasalad.engine.model.event.outcome.PlatformPassThroughOutcome;
 import oogasalad.engine.model.event.outcome.RestartLevelOutcome;
+import oogasalad.engine.model.event.outcome.RocketOutcome;
 import oogasalad.engine.model.event.outcome.RunObjectsAnimationsOutcome;
 import oogasalad.engine.model.event.outcome.SelectLevelOutcome;
 import oogasalad.engine.model.event.outcome.SetBaseFrameOutcome;
+import oogasalad.engine.model.event.outcome.SetVarOutcome;
 import oogasalad.engine.model.event.outcome.stopObjectAnimationsOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
@@ -55,6 +57,8 @@ public class OutcomeExecutor {
         new MoveRightOutcome());
     outcomeMap.put(EventOutcome.OutcomeType.JUMP,
         new JumpOutcome());
+    outcomeMap.put(EventOutcome.OutcomeType.ROCKET,
+        new RocketOutcome());
     outcomeMap.put(EventOutcome.OutcomeType.APPLY_GRAVITY,
         new GravityOutcome(collisionHandler));
     outcomeMap.put(EventOutcome.OutcomeType.PATROL,
@@ -73,6 +77,8 @@ public class OutcomeExecutor {
         new SelectLevelOutcome(gameExecutor));
     outcomeMap.put(OutcomeType.CHANGE_VAR,
         new ChangeVarOutcome());
+    outcomeMap.put(OutcomeType.SET_VAR,
+        new SetVarOutcome());
     outcomeMap.put(OutcomeType.ADD_ANIMATION,
         new AddToAnimationsOutcome(animationHandler));
     outcomeMap.put(OutcomeType.RUN_OBJECT_ANIMATIONS,
