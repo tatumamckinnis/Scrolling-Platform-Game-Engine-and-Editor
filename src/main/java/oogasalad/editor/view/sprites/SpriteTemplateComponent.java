@@ -186,7 +186,6 @@ public class SpriteTemplateComponent extends Stage {
     File xml = chooser.showOpenDialog(getOwner());
     if (xml == null) return;
 
-    pathField.setText(xml.getAbsolutePath());
     String fname = xml.getName();
     String atlasId = fname.substring(0, fname.lastIndexOf('.'));
 
@@ -203,6 +202,9 @@ public class SpriteTemplateComponent extends Stage {
         return;
       }
     }
+
+    File pngFile = new File(atlas.imagePath());
+    pathField.setText(pngFile.getAbsolutePath());
 
     framesPane.setFrames(atlas.frames());
   }

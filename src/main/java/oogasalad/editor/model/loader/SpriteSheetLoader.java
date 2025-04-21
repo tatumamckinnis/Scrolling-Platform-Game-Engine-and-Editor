@@ -29,6 +29,7 @@ public class SpriteSheetLoader {
 
     int dot = sheetFile.lastIndexOf('.');
     String atlasName = (dot > 0) ? sheetFile.substring(0, dot) : sheetFile;
+    System.out.println(recordSheetData.imagePath());
 
     return new SpriteSheetAtlas(
         atlasName,

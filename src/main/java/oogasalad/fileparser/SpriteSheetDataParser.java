@@ -34,11 +34,11 @@ public class SpriteSheetDataParser {
 
       for (int i = 0; i < nodes.getLength(); i++) {
         Element e = (Element) nodes.item(i);
-        String name = e.getAttribute("n");
+        String name = e.getAttribute("name");
         int x = Integer.parseInt(e.getAttribute("x"));
         int y = Integer.parseInt(e.getAttribute("y"));
-        int w = Integer.parseInt(e.getAttribute("w"));
-        int h = Integer.parseInt(e.getAttribute("h"));
+        int w = Integer.parseInt(e.getAttribute("width"));
+        int h = Integer.parseInt(e.getAttribute("height"));
         frames.add(new FrameData(name, x, y, w, h));
       }
 

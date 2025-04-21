@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Format:
-n  => name of the sprite
+name  => name of the sprite
 x  => sprite x pos in texture
 y  => sprite y pos in texture
-w  => sprite width (may be trimmed)
-h  => sprite height (may be trimmed)
-///Do Not Use for level data
+width  => sprite width
+height  => sprite height
 -->
-<TextureAtlas imagePath="dinosaurgame/dinosaurgame-sprites.png" width="1770" height="101">
-    <sprite n="Bird1" x="0" y="0" w="97" h="68"/>
-    <sprite n="Bird2" x="118" y="0" w="93" h="62"/>
-    <sprite n="DinoDead" x="236" y="0" w="86" h="101"/>
-    <sprite n="DinoDuck1" x="354" y="0" w="118" h="60"/>
-    <sprite n="DinoDuck2" x="472" y="0" w="116" h="60"/>
-    <sprite n="DinoJump" x="590" y="0" w="88" h="94"/>
-    <sprite n="DinoRun1" x="708" y="0" w="87" h="94"/>
-    <sprite n="DinoRun2" x="826" y="0" w="88" h="94"/>
-    <sprite n="DinoStart" x="944" y="0" w="97" h="101"/>
-    <sprite n="LargeCactus1" x="1062" y="0" w="48" h="95"/>
-    <sprite n="LargeCactus2" x="1180" y="0" w="99" h="95"/>
-    <sprite n="LargeCactus3" x="1298" y="0" w="102" h="95"/>
-    <sprite n="SmallCactus1" x="1416" y="0" w="40" h="71"/>
-    <sprite n="SmallCactus2" x="1534" y="0" w="68" h="71"/>
-    <sprite n="SmallCactus3" x="1652" y="0" w="105" h="71"/>
-</TextureAtlas>
+<spriteFile imagePath="dinosaurgame/dinosaurgame-sprites.png" width="1770" height="101">
+    <sprite name="Bird1" x="0" y="0" width="97" height="68"/>
+    <sprite name="Bird2" x="118" y="0" width="93" height="62"/>
+    <sprite name="DinoDead" x="236" y="0" width="86" height="101"/>
+    <sprite name="DinoDuck1" x="354" y="0" width="118" height="60"/>
+    <sprite name="DinoDuck2" x="472" y="0" width="116" height="60"/>
+    <sprite name="DinoJump" x="590" y="0" width="88" height="94"/>
+    <sprite name="DinoRun1" x="708" y="0" width="87" height="94"/>
+    <sprite name="DinoRun2" x="826" y="0" width="88" height="94"/>
+    <sprite name="DinoStart" x="944" y="0" width="97" height="101"/>
+    <sprite name="LargeCactus1" x="1062" y="0" width="48" height="95"/>
+    <sprite name="LargeCactus2" x="1180" y="0" width="99" height="95"/>
+    <sprite name="LargeCactus3" x="1298" y="0" width="102" height="95"/>
+    <sprite name="SmallCactus1" x="1416" y="0" width="40" height="71"/>
+    <sprite name="SmallCactus2" x="1534" y="0" width="68" height="71"/>
+    <sprite name="SmallCactus3" x="1652" y="0" width="105" height="71"/>
+</spriteFile>

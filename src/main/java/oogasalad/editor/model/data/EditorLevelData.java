@@ -296,6 +296,10 @@ public class EditorLevelData {
     spriteTemplateMap.addSpriteTemplate(spriteTemplate);
   }
 
+  public SpriteTemplateMap getSpriteTemplateMap() {
+    return spriteTemplateMap;
+  }
+
   /**
    * Retrieves the minimum and maximum dimensions of all objects.
    * TODO: Create a record class to use this
