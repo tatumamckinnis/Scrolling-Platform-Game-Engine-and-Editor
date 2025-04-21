@@ -34,12 +34,13 @@ public class NewGameComponents extends Display {
   public NewGameComponents(ViewState viewState) {
     this.viewState = viewState;
     highScore = new Text("High score: " + 0);
+    initialize();
   }
 
   /**
    * Renders the high score text on the game engine screen.
    */
-  public void initialRender() {
+  private void initialize() {
     VBox buttonContainer = new VBox();
     buttonContainer.getChildren().add(highScore);
     buttonContainer.setSpacing(20);

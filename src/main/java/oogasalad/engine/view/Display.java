@@ -65,10 +65,4 @@ public abstract class Display extends Group {
    * @param player game objects of the player type
    */
   public abstract void renderPlayerStats(ImmutableGameObject player);
-
-  /**
-   * Creates the screen with all the Text and Button components for an overlay screen, whether it be a win, pause,
-   * or a loss.
-   */
-  public abstract void initialRender() throws FileNotFoundException;
 }

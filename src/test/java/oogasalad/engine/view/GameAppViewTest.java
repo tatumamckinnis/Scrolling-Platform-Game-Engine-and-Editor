@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.FileNotFoundException;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
@@ -19,7 +20,7 @@ public class GameAppViewTest extends ApplicationTest {
   private Stage testStage;
 
   @Override
-  public void start(Stage stage) throws ViewInitializationException {
+  public void start(Stage stage) throws ViewInitializationException, FileNotFoundException {
     this.testStage = stage;
     gameAppView = new MockDefaultView(testStage, new DefaultGameManager());
     gameAppView.initialize();
@@ -60,10 +61,9 @@ public class GameAppViewTest extends ApplicationTest {
     }
 
     @Override
-    public void initialize() throws ViewInitializationException {
+    public void initialize() throws ViewInitializationException, FileNotFoundException {
       SplashScreen splashScreen = new SplashScreen(new ViewState());
 
-      splashScreen.initialRender();
       int width = splashScreen.getSplashWidth();
       int height = splashScreen.getSplashHeight();
       setCurrentDisplay(splashScreen);

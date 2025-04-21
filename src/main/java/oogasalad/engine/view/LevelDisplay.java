@@ -37,13 +37,6 @@ public class LevelDisplay extends Display {
   }
 
   /**
-   * renders the Level Display
-   */
-  public void initialRender() {
-    LOG.info("Rendering level...");
-  }
-
-  /**
    * Re-renders all game objects that have been updated in the backend.
    *
    * @param gameObjects a list of gameObjects with objects to be updated visually

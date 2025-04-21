@@ -39,10 +39,11 @@ public class WinScreen extends GameOverlayScreen {
         overlayStylesheet = Objects.requireNonNull(getClass().getResource(overlayStylesheetFilepath))
                 .toExternalForm();
         this.viewState = viewState;
+
+        initialize();
     }
 
-    @Override
-    public void initialRender() {
+    private void initialize() {
         VBox combinedBox = new VBox();
         VBox textBox = createOverlayTextBox();
         VBox buttonBox = createOverlayButtonBox();

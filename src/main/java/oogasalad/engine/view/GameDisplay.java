@@ -32,6 +32,8 @@ public class GameDisplay extends Display {
     this.myHUD = new HUD();
     this.myNewGameComponents = new NewGameComponents(viewState);
     this.myLevelView = new LevelDisplay(); //sets background and sets to pause
+
+    this.getChildren().addAll(myGameControlPanel, myLevelView, myNewGameComponents, myHUD);
   }
 
   /**
@@ -43,17 +45,6 @@ public class GameDisplay extends Display {
   public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
     myLevelView.renderGameObjects(gameObjects);
-  }
-
-  /**
-   * renders the Game Display
-   */
-  public void initialRender() {
-    this.getChildren().addAll(myGameControlPanel, myLevelView, myNewGameComponents, myHUD);
-    myGameControlPanel.initialRender();
-    myLevelView.initialRender();
-    myNewGameComponents.initialRender();
-    myHUD.initialRender();
   }
 
   /**

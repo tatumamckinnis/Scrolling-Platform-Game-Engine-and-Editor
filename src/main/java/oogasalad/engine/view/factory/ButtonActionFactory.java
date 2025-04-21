@@ -100,7 +100,6 @@ public class ButtonActionFactory {
         Stage currentStage = viewState.getStage();
 
         GameDisplay game = new GameDisplay(viewState);
-        game.initialRender();
         viewState.setDisplay(game);
 
         currentStage.setWidth(1000); // TODO set this to the game size
@@ -196,7 +195,6 @@ public class ButtonActionFactory {
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
     viewState.getGameManager().restartGame();
     GameDisplay game = new GameDisplay(viewState);
-    game.initialRender();
     viewState.setDisplay(game);
     viewState.getGameManager().displayGameObjects();
     viewState.getGameManager().pauseGame();
