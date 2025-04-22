@@ -51,7 +51,7 @@ public class EditorLevelData {
    * the object data mapping. The first layer is automatically added.
    */
   public EditorLevelData() {
-    gameName = "";
+    gameName = "dinosaurgame";
     levelName = "";
     myGroups = new ArrayList<>();
     myLayers = new ArrayList<>();
@@ -294,6 +294,10 @@ public class EditorLevelData {
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
     spriteTemplateMap.addSpriteTemplate(spriteTemplate);
+  }
+
+  public SpriteTemplateMap getSpriteTemplateMap() {
+    return spriteTemplateMap;
   }
 
   /**

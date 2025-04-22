@@ -1,4 +1,4 @@
-package oogasalad.editor.view.sprites;
+package oogasalad.editor.view.panes.spriteCreation;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,10 +6,8 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 

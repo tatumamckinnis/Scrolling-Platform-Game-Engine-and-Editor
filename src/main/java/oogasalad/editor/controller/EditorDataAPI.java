@@ -8,6 +8,7 @@ import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
+import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
@@ -353,5 +354,18 @@ public class EditorDataAPI {
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
     level.addSpriteTemplate(spriteTemplate);
+  }
+
+  /**
+   * Gets the sprite template map from the current level
+   *
+   * @return the {@link SpriteTemplateMap} for the current level
+   */
+  public SpriteTemplateMap getSpriteTemplateMap() {
+    return level.getSpriteTemplateMap();
+  }
+
+  public String getGameName() {
+    return level.getGameName();
   }
 }

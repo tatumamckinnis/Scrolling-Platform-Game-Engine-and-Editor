@@ -52,20 +52,19 @@ public class XmlSpriteSheetWriter implements XmlComponentWriter {
           .newDocumentBuilder()
           .newDocument();
 
-      Element root = doc.createElement("TextureAtlas");
-      root.setAttribute("imagePath",
-          imagePath.substring(imagePath.lastIndexOf('/') + 1));
+      Element root = doc.createElement("spriteFile");
+      root.setAttribute("imagePath", imagePath);
       root.setAttribute("width", Integer.toString(sheetWidth));
       root.setAttribute("height", Integer.toString(sheetHeight));
       doc.appendChild(root);
 
       for (FrameData frame : frames) {
         Element e = doc.createElement("sprite");
-        e.setAttribute("n", frame.name());
+        e.setAttribute("name", frame.name());
         e.setAttribute("x", Integer.toString(frame.x()));
         e.setAttribute("y", Integer.toString(frame.y()));
-        e.setAttribute("w", Integer.toString(frame.width()));
-        e.setAttribute("h", Integer.toString(frame.height()));
+        e.setAttribute("width", Integer.toString(frame.width()));
+        e.setAttribute("height", Integer.toString(frame.height()));
         root.appendChild(e);
       }
 

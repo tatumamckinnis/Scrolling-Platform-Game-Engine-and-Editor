@@ -1,12 +1,15 @@
-package oogasalad.editor.view.sprites;
+package oogasalad.editor.view.panes.spriteCreation;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -23,6 +26,8 @@ import oogasalad.editor.model.data.object.sprite.FrameData;
  */
 public class FrameSelectionPane extends VBox {
 
+  private final ObservableList<FrameData> allFrames = FXCollections.observableArrayList();
+  private final Map<String, FrameData> selectedMap = new HashMap<>();
   private final TableView<FrameRow> table = new TableView<>();
   private final ComboBox<String> baseBox = new ComboBox<>();
 
@@ -59,6 +64,14 @@ public class FrameSelectionPane extends VBox {
     // whenever a row's “use” toggles, update the base-frame combo
     rows.forEach(r -> r.useProperty().addListener((o, ov, nv) -> refreshBaseBox()));
     refreshBaseBox();
+  }
+
+  public void setFrames(List<FrameData> frames, Set<String> selected, String base) {
+    setFrames(frames);
+    table.getItems().forEach(row ->
+        row.useProperty().set(selected.contains(row.getFrame().name())));
+    refreshBaseBox();
+    baseBox.setValue(base);
   }
 
   private void refreshBaseBox() {

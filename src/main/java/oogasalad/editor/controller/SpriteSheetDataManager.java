@@ -1,6 +1,7 @@
 package oogasalad.editor.controller;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.geometry.Rectangle2D;
@@ -9,13 +10,11 @@ import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.loader.SpriteSheetLoader;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
-import oogasalad.editor.view.EditorComponentFactory;
-import oogasalad.editor.view.sprites.SpriteRegion;
+import oogasalad.editor.view.panes.spriteCreation.SpriteRegion;
 import oogasalad.exceptions.SpriteSheetLoadException;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
-import oogasalad.fileparser.records.SpriteSheetData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -60,9 +59,13 @@ public class SpriteSheetDataManager {
     String atlasName =
         filename.contains(".") ? filename.substring(0, filename.lastIndexOf('.')) : filename;
 
+    String pngFile = Paths.get(sheetURL)
+        .getFileName()
+        .toString();
+
     SpriteSheetAtlas atlas = new SpriteSheetAtlas(
         atlasName,
-        sheetURL,
+        pngFile,
         sheetWidth,
         sheetHeight,
         frames
@@ -71,7 +74,7 @@ public class SpriteSheetDataManager {
     levelData.getSpriteLibrary().addAtlas(atlasName, atlas);
     LOG.info("Added sprite sheet {}", atlasName);
 
-    saver.save(sheetURL, sheetWidth, sheetHeight, frames, outputFile, saverStrategy);
+    saver.save(pngFile, sheetWidth, sheetHeight, frames, outputFile, saverStrategy);
     LOG.info("Saved {} to {}", atlasName, outputFile.getAbsolutePath());
   }
 

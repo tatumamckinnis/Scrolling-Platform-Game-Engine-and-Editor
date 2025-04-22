@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.panes.chat;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;

@@ -9,7 +9,7 @@ import java.util.List;
 import javafx.geometry.Rectangle2D;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
-import oogasalad.editor.view.sprites.SpriteRegion;
+import oogasalad.editor.view.panes.spriteCreation.SpriteRegion;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import org.junit.jupiter.api.BeforeEach;

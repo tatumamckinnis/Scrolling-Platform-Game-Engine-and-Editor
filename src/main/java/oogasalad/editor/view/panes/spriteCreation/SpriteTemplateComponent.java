@@ -1,4 +1,4 @@
-package oogasalad.editor.view.sprites;
+package oogasalad.editor.view.panes.spriteCreation;
 
 import java.io.File;
 import java.util.stream.Collectors;
@@ -8,8 +8,19 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -18,7 +29,6 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
-import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.exceptions.SpriteSheetLoadException;
 import org.apache.logging.log4j.LogManager;
@@ -27,8 +37,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Dialog for creating or editing a {@link SpriteTemplate}.
  * <p>
- * Allows the user to choose a sprite‑sheet, select its base frame,
- * pick which frames to include, and define named animations.
+ * Allows the user to choose a sprite‑sheet, select its base frame, pick which frames to include,
+ * and define named animations.
  * </p>
  *
  * @author Jacob You
@@ -37,33 +47,37 @@ public class SpriteTemplateComponent extends Stage {
 
   private static final Logger LOG = LogManager.getLogger(SpriteTemplateComponent.class);
 
-  private static final double WINDOW_W  = 800;
-  private static final double WINDOW_H  = 600;
-  private static final double HGAP      = 10;
-  private static final double VGAP      = 8;
-  private static final double SPACING   = 5;
+  private static final double WINDOW_W = 800;
+  private static final double WINDOW_H = 600;
+  private static final double HGAP = 10;
+  private static final double VGAP = 8;
+  private static final double SPACING = 5;
   private static final double BOTTOM_SP = 10;
 
   private final EditorController editorController;
   private final SpriteSheetLibrary library;
-  private       SpriteTemplate      result;
+  private SpriteTemplate result;
+  private SpriteTemplate original;
+  private boolean editing = false;
+  private String currentAtlas;
 
-  private final TextField nameField        = new TextField();
-  private final TextField pathField        = new TextField();
-  private final Button    browseButton     = new Button("Browse…");
-  private final FrameSelectionPane framesPane   = new FrameSelectionPane();
-  private final TableView<AnimationData> animTable  = new TableView<>();
-  private final Button    addAnimButton    = new Button("Add Animation");
-  private final Button    removeAnimButton = new Button("Remove Animation");
-  private final Button    okButton         = new Button("OK");
-  private final Button    cancelButton     = new Button("Cancel");
+  private final TextField nameField = new TextField();
+  private final TextField pathField = new TextField();
+  private final Button browseButton = new Button("Browse…");
+  private final FrameSelectionPane framesPane = new FrameSelectionPane();
+  private final TableView<AnimationData> animTable = new TableView<>();
+  private final Button addAnimButton = new Button("Add Animation");
+  private final Button removeAnimButton = new Button("Remove Animation");
+  private final Button okButton = new Button("OK");
+  private final Button cancelButton = new Button("Cancel");
 
   public SpriteTemplateComponent(
       EditorController editorController,
       Window owner,
       SpriteSheetLibrary library) {
     this.editorController = editorController;
-    this.library          = library;
+    this.library = library;
+    this.original = null;
 
     initOwner(owner);
     initModality(Modality.APPLICATION_MODAL);
@@ -76,7 +90,31 @@ public class SpriteTemplateComponent extends Stage {
     setScene(new Scene(createRoot(), WINDOW_W, WINDOW_H));
   }
 
-  /** Returns the user’s chosen template, or null if cancelled. */
+  public SpriteTemplateComponent(EditorController editorController,
+      Window owner,
+      SpriteSheetLibrary library,
+      SpriteTemplate toEdit) {
+    this(editorController, owner, library);
+    this.original = toEdit;
+    this.editing = true;
+
+    nameField.setText(toEdit.getName());
+    pathField.setText(toEdit.getSpriteFile());
+
+    String spriteFile = toEdit.getAtlasFile();
+    String atlasId = spriteFile.contains(".") ? spriteFile.substring(0, spriteFile.lastIndexOf('.'))
+        : spriteFile;
+
+    System.out.println(atlasId);
+    SpriteSheetAtlas atlas = library.getAtlas(atlasId);
+
+    framesPane.setFrames(atlas.frames(), toEdit.getFrames().keySet(), toEdit.getBaseFrame().name());
+    animTable.getItems().setAll(toEdit.getAnimations().values());
+  }
+
+  /**
+   * Returns the user’s chosen template, or null if cancelled.
+   */
   public SpriteTemplate getResult() {
     return result;
   }
@@ -89,17 +127,17 @@ public class SpriteTemplateComponent extends Stage {
     GridPane top = new GridPane();
     top.setHgap(HGAP);
     top.setVgap(VGAP);
-    top.add(new Label("Name:"),  0,0);
-    top.add(nameField,           1,0);
-    top.add(new Label("Sheet:"), 0,1);
+    top.add(new Label("Name:"), 0, 0);
+    top.add(nameField, 1, 0);
+    top.add(new Label("Sheet:"), 0, 1);
     HBox picker = new HBox(SPACING, pathField, browseButton);
     HBox.setHgrow(pathField, Priority.ALWAYS);
-    top.add(picker,              1,1);
+    top.add(picker, 1, 1);
     root.setTop(top);
 
     // Center: tabs for frames + animations
     TabPane tabs = new TabPane(
-        new Tab("Frames",     framesPane),
+        new Tab("Frames", framesPane),
         new Tab("Animations", buildAnimationsPane())
     );
     tabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
@@ -107,7 +145,7 @@ public class SpriteTemplateComponent extends Stage {
 
     // Bottom: OK / Cancel
     HBox bottom = new HBox(BOTTOM_SP, okButton, cancelButton);
-    bottom.setPadding(new Insets(VGAP,0,0,0));
+    bottom.setPadding(new Insets(VGAP, 0, 0, 0));
     root.setBottom(bottom);
 
     return root;
@@ -148,7 +186,9 @@ public class SpriteTemplateComponent extends Stage {
     });
     removeAnimButton.setOnAction(e -> {
       var sel = animTable.getSelectionModel().getSelectedItem();
-      if (sel != null) animTable.getItems().remove(sel);
+      if (sel != null) {
+        animTable.getItems().remove(sel);
+      }
     });
 
     okButton.setOnAction(e -> {
@@ -162,14 +202,28 @@ public class SpriteTemplateComponent extends Stage {
         new Alert(Alert.AlertType.ERROR, "You must choose a base frame.").showAndWait();
         return;
       }
-      result = new SpriteTemplate(
-          nameField.getText(),
-          pathField.getText(),
-          usedMap.get(base),
-          usedMap,
-          animTable.getItems().stream()
-              .collect(Collectors.toMap(AnimationData::getName, a->a))
-      );
+
+      var anims = animTable.getItems().stream()
+          .collect(Collectors.toMap(AnimationData::getName, a -> a));
+
+      if (editing) {
+        original.setName(nameField.getText());
+        original.setSpriteName(pathField.getText());
+        original.setBaseFrame(usedMap.get(base));
+        original.setFrames(usedMap);
+        original.setAnimations(anims);
+        result = original;
+      } else {
+        result = new SpriteTemplate(
+            nameField.getText(),
+            pathField.getText(),
+            currentAtlas,
+            usedMap.get(base),
+            usedMap,
+            anims
+        );
+      }
+
       close();
     });
 
@@ -184,9 +238,10 @@ public class SpriteTemplateComponent extends Stage {
     chooser.getExtensionFilters().add(
         new FileChooser.ExtensionFilter("Sprite Atlas XML", "*.xml"));
     File xml = chooser.showOpenDialog(getOwner());
-    if (xml == null) return;
+    if (xml == null) {
+      return;
+    }
 
-    pathField.setText(xml.getAbsolutePath());
     String fname = xml.getName();
     String atlasId = fname.substring(0, fname.lastIndexOf('.'));
 
@@ -203,7 +258,9 @@ public class SpriteTemplateComponent extends Stage {
         return;
       }
     }
+    currentAtlas = atlas.atlasName();
 
+    pathField.setText(atlas.imagePath());
     framesPane.setFrames(atlas.frames());
   }
 }

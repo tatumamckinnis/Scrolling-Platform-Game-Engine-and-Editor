@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.panes.properties;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,6 +11,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.EditorViewListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
