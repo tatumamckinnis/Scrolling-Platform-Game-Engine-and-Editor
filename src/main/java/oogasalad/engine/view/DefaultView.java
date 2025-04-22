@@ -29,7 +29,6 @@ import oogasalad.exceptions.ViewInitializationException;
  */
 public class DefaultView implements ViewAPI {
 
-  private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(
       DefaultView.class.getPackage().getName() + "." + "Level");
   private static final int LEVEL_WIDTH = Integer.parseInt(
@@ -41,8 +40,8 @@ public class DefaultView implements ViewAPI {
   private Scene currentScene;
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
-  private List<KeyCode> currentInputs;
-  private List<KeyCode> releasedInputs;
+  private final List<KeyCode> currentInputs;
+  private final List<KeyCode> releasedInputs;
   private Camera myCamera;
 
   /**
