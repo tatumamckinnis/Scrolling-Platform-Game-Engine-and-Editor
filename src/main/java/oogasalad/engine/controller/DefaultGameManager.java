@@ -124,6 +124,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myView.removeGameObjectImage(gameObject);
   }
 
+  @Override
+  public String getCurrentLevel() {
+    return currentLevel;
+  }
+
   /**
    * @see GameManagerAPI#endGame() (String, GameObject)
    */
