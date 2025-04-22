@@ -17,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import oogasalad.Main;
 import oogasalad.editor.controller.EditorMaker;
 import oogasalad.editor.view.EditorApplication;
+import oogasalad.engine.controller.DefaultGameManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -301,6 +302,16 @@ public class ButtonActionFactory {
   private Runnable openEditor() {
     return () -> {
       new EditorMaker(new Stage());
+    };
+  }
+
+  private Runnable renderNewSplashScreen() {
+    return () -> {
+      try {
+        new DefaultGameManager();
+      } catch (ViewInitializationException | FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
     };
   }
 }
