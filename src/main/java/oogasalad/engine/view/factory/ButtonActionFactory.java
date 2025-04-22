@@ -15,6 +15,7 @@ import oogasalad.Main;
 import oogasalad.editor.controller.EditorMaker;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.ServerMessage;
+import oogasalad.engine.controller.DefaultGameManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -346,5 +347,15 @@ public class ButtonActionFactory {
       ServerMessage m = new ServerMessage(type, message);
       m.sendToSocket(viewState.getMySocket());
     }
+  }
+
+  private Runnable renderNewSplashScreen() {
+    return () -> {
+      try {
+        new DefaultGameManager();
+      } catch (ViewInitializationException | FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 }

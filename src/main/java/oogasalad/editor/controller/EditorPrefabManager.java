@@ -18,7 +18,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import oogasalad.editor.controller.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.saver.BlueprintBuilder;
@@ -26,7 +25,6 @@ import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.HitBoxParseException;
 import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
@@ -40,6 +38,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Manages the creation, saving, and loading of prefabs (Blueprints) to/from XML files.
+ * @author Tatum McKinnis
  */
 public class EditorPrefabManager {
 
@@ -155,7 +154,7 @@ public class EditorPrefabManager {
       prefabs = parser.getBlueprintData(rootElement, new ArrayList<>());
 
     } catch (ParserConfigurationException | SAXException | IOException | RuntimeException |
-             BlueprintParseException | SpriteParseException | HitBoxParseException |
+             BlueprintParseException| HitBoxParseException |
              PropertyParsingException | EventParseException e) {
       LOG.error("Failed to parse prefab file {}: {}", prefabFile.getPath(), e.getMessage(), e);
       notifier.notifyErrorOccurred("Error loading prefabs from " + prefabFile.getName() + ": " + e.getMessage());

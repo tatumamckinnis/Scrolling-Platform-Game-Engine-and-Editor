@@ -111,6 +111,15 @@ html {
     -fx-text-fill: white;
 }
 
+.play-another-game-button {
+    -fx-border-color: #ffc4df;
+}
+
+.play-another-game-button:hover {
+    -fx-background-color: #ffc4df;
+    -fx-text-fill: white;
+}
+
 body {
     font-family: 'Montserrat', 'Lato', serif;
     font-weight: bold;
