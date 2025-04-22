@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import oogasalad.engine.model.event.Event;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The {@code Player} class represents a user-controlled or central game character within the game.
@@ -22,7 +23,7 @@ import oogasalad.engine.model.event.Event;
  */
 public class Player extends GameObject implements ImmutablePlayer {
 
-  private static final Logger LOG = Logger.getLogger(Player.class.getName());
+  private static final Logger LOG = LogManager.getLogger();
   private List<String> currentPowerUps;
 
   private List<String> displayedStats;

@@ -4,7 +4,6 @@ package oogasalad.engine.model.event.outcome;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
@@ -16,6 +15,8 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Outcome that triggers a restart level
@@ -25,8 +26,7 @@ import oogasalad.exceptions.SpriteParseException;
 public class RestartLevelOutcome implements Outcome {
 
   private final GameExecutor executor;
-  private Logger LOG = Logger.getLogger(RestartLevelOutcome.class.getName());
-
+  private static final Logger LOG = LogManager.getLogger();
   /**
    * Outcome that the player has lost the game
    * @param executor allows for access to the game manager

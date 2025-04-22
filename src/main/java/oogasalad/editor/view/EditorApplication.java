@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class EditorApplication extends Application {
 
-  private static final Logger LOG = LogManager.getLogger(EditorApplication.class);
+  private static final Logger LOG = LogManager.getLogger();
   private String gameDirectoryPath;
 
   /**
