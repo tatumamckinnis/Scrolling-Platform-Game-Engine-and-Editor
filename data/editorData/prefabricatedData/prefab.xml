@@ -1,118 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <prefabs>
+
   <game name="dinosaurgame">
     <objectGroup name="entities">
-      <object
-        id="1"
-        type="player" velocityX="0.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="Dino" spriteFile="dinosaur.xml" hitBoxWidth="88"
-        hitBoxHeight="94"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs=""
-      >
-        <properties>
-          <stringProperties>
-            <property key="initial_animation" value="walk"/>
-          </stringProperties>
-          <doubleProperties>
-            <property key="jump_force" value="15.00"/>
-            <property key="gravity" value="0.80"/>
-          </doubleProperties>
-        </properties>
+      <object id="1" type="player" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="Dino" spriteFile="dinosaur.xml" hitBoxWidth="88" hitBoxHeight="94" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+        <properties><stringProperties><property key="initial_animation" value="walk"/></stringProperties><doubleProperties><property key="jump_force" value="15.00"/><property key="gravity" value="0.80"/></doubleProperties></properties>
       </object>
-
-      <object
-        id="10"
-        type="enemy" velocityX="0.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="LargeCactus1" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="48"
-        hitBoxHeight="95"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs=""
-      >
-        <properties> <stringProperties/> <doubleProperties/> </properties>
-      </object>
-
-      <object
-        id="11"
-        type="enemy" velocityX="0.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="LargeCactus2" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="99"
-        hitBoxHeight="95"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs=""
-      >
-        <properties> <stringProperties/> <doubleProperties/> </properties>
-      </object>
-
-      <object
-        id="12"
-        type="enemy" velocityX="0.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="SmallCactus1" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="40"
-        hitBoxHeight="71"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs=""
-      >
-        <properties> <stringProperties/> <doubleProperties/> </properties>
-      </object>
-
-      <object
-        id="13"
-        type="enemy"
-        velocityX="0.00"
-        velocityY="0.00"
-        rotation="0.00"
-        spriteName="Bird"
-        spriteFile="entities/enemy/bird.xml"
-        hitBoxWidth="97"
-        hitBoxHeight="68"
-        hitBoxShape="RECTANGLE"
-        spriteDx="0"
-        spriteDy="0"
-        eventIDs=""
-      >
-        <properties>
-          <stringProperties>
-            <property key="initial_animation" value="fly"/>
-          </stringProperties>
-          <doubleProperties/>
-        </properties>
+      <object id="10" type="enemy" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="LargeCactus1" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="48" hitBoxHeight="95" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="11" type="enemy" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="LargeCactus2" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="99" hitBoxHeight="95" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="12" type="enemy" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="SmallCactus1" spriteFile="entities/enemy/cacti.xml" hitBoxWidth="40" hitBoxHeight="71" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="13" type="enemy" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="Bird" spriteFile="entities/enemy/bird.xml" hitBoxWidth="97" hitBoxHeight="68" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+        <properties><stringProperties><property key="initial_animation" value="fly"/></stringProperties><doubleProperties/></properties>
       </object>
     </objectGroup>
+    <objectGroup name="blocks/tracks">
+      <object id="14" type="track" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="track-0" spriteFile="blocks/tracks/track.xml" hitBoxWidth="480" hitBoxHeight="28" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+  </game>
 
-        <objectGroup name="blocks/tracks"> <object
-          id="14"
-          type="track"
-          velocityX="0.00"
-          velocityY="0.00"
-          rotation="0.00"
-          spriteName="track-0"
-          spriteFile="track.xml" hitBoxWidth="480"
-          hitBoxHeight="28"
-          hitBoxShape="RECTANGLE"
-          spriteDx="0"
-          spriteDy="0"
-          eventIDs=""
-        >
-          <properties> <stringProperties/> <doubleProperties/> </properties>
-        </object>
-        </objectGroup>
+  <game name="doodlejump">
+    <objectGroup name="entities">
+      <object id="15" type="player" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="left.png" spriteFile="entities/player/doodlejump-player.xml" hitBoxWidth="62" hitBoxHeight="60" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+        <properties><stringProperties/><doubleProperties><property key="jump_force" value="18.0"/><property key="gravity" value="0.6"/></doubleProperties></properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="platforms">
+      <object id="16" type="platform" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="platform-green" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="17" type="platform" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="platform-light-blue" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="18" type="platform" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="platform-weak" spriteFile="doodlejump-tiles.xml" hitBoxWidth="60" hitBoxHeight="15" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="19" type="platform" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="platform-white" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+    <objectGroup name="items">
+      <object id="20" type="item" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="spring-loaded" spriteFile="doodlejump-tiles.xml" hitBoxWidth="18" hitBoxHeight="12" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="21" type="item" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-propeller-0.png" spriteFile="items/doodlejump-propeller.xml" hitBoxWidth="32" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="22" type="item" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-rocket-0.png" spriteFile="items/doodlejump-rocket.xml" hitBoxWidth="32" hitBoxHeight="64" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+  </game>
 
-
+  <game name="supermario">
+    <objectGroup name="entities">
+      <object id="23" type="player" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="big-mario" spriteFile="entities/player/supermario_mario.xml" hitBoxWidth="16" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+        <properties><stringProperties><property key="initial_animation" value="walk-right"/></stringProperties><doubleProperties><property key="jump_force" value="12.0"/><property key="gravity" value="0.9"/></doubleProperties></properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks">
+      <object id="26" type="block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="blocks/supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="27" type="block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="blocks/supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="28" type="block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="flash-1" spriteFile="blocks/supermario-block-random.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+    <objectGroup name="items">
+      <object id="31" type="item" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="mushroom-red.png" spriteFile="items/supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
 
   </game>
+
 </prefabs>
