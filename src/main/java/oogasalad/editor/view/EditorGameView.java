@@ -823,6 +823,12 @@ public class EditorGameView extends Pane implements EditorViewListener {
       Map<String, FrameData> frameMap = spriteData.getFrames();
 
       LOG.debug("[redrawSprites ID: {}] Trying to display frame.", id);
+      LOG.debug("[redrawSprites ID: {}] BaseFrame Name from SpriteData: '{}'", id, baseFrameName);
+      LOG.debug("[redrawSprites ID: {}] Frame Map Size: {}", id, frameMap != null ? frameMap.size() : "null map");
+      if (frameMap != null && baseFrameName != null) {
+        LOG.debug("[redrawSprites ID: {}] Frame Map Keys: {}", id, frameMap.keySet());
+        LOG.debug("[redrawSprites ID: {}] Does map contain key '{}'? {}", id, baseFrameName, frameMap.containsKey(baseFrameName));
+      }
 
       if (baseFrameName != null && frameMap != null && frameMap.containsKey(baseFrameName)) {
         displayFrame = frameMap.get(baseFrameName);
@@ -860,7 +866,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
       drawPlaceholder(objectGraphicsContext, object, dx, dy);
     }
   }
-
     /**
    * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
    * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
