@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
@@ -13,8 +12,6 @@ import java.util.ResourceBundle;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import oogasalad.server.ClientSocket;
-import oogasalad.server.ServerMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -258,16 +255,9 @@ public class SplashScreen extends Display {
     TextField lobbyField = new TextField();
     lobbyField.setPromptText("Enter lobby number");
 
-    Button joinServer = new Button("Create/join Lobby");
+    Button joinServer = new Button("Create/Join Lobby");
     joinServer.setOnAction(event -> {
-      int lobby = Integer.parseInt(lobbyField.getText());
-      try {
-        ClientSocket client = new ClientSocket(lobby, gameXMLPath, viewState);
-        client.connect();
-        viewState.setMySocket(client);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
+      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), gameXMLPath, viewState).run();
     });
 
     splashBox.getChildren().addAll(joinServer, lobbyField);

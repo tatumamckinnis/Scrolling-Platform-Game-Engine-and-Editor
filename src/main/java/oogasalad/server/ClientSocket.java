@@ -25,6 +25,7 @@ public class ClientSocket extends WebSocketClient {
   private static final String SERVER_DEV_LINK = "wss://4cd691cc-7596-4db3-90e2-1813a29146da-00-9jzri55f0sna.worf.replit.dev/";
   private static final String SERVER_URI = SERVER_DEV_LINK + "?filepath=%s&lobby=%s";
   private final int lobby;
+  private int players;
 
   /**
    * Instantiate a new socket.
@@ -44,12 +45,17 @@ public class ClientSocket extends WebSocketClient {
   }
 
   /**
+   * Returns number of players in a game.
+   */
+  public int getPlayers() {
+    return players;
+  }
+
+  /**
    * Callback function that runs when connections has successfully been established.
    */
   @Override
   public void onOpen(ServerHandshake handshake) {
-    ServerMessage serverMessage = new ServerMessage("echo", "Hello world!");
-    send(gson.toJson(serverMessage));
   }
 
   /**
@@ -80,19 +86,38 @@ public class ClientSocket extends WebSocketClient {
   private void handleServerMessages(ServerMessage serverMessage) {
     LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
 
-    // TODO use reflection.
+    // TODO use reflection and move inside statements into factory
     if (Objects.equals(serverMessage.type, "startGame")) {
-      Platform.runLater(() -> {
-        MessageHandlerFactory.startGame(viewState).run();
-      });
+      MessageHandlerFactory.startGame(viewState).run();
     }
-    // TODO move these into the factory
+
+    if (Objects.equals(serverMessage.type, "playGame")) {
+      MessageHandlerFactory.playGame(viewState).run();
+    }
+
+    if (Objects.equals(serverMessage.type, "pauseGame")) {
+      MessageHandlerFactory.pauseGame(viewState).run();
+    }
+
+    if (Objects.equals(serverMessage.type, "restart")) {
+      MessageHandlerFactory.restartGame(viewState).run();
+    }
+
+    if (Objects.equals(serverMessage.type, "goToHome")) {
+      MessageHandlerFactory.endGame(viewState).run();
+    }
+
     if (Objects.equals(serverMessage.type, "keyPressed")) {
-      viewState.pressKey(KeyCode.valueOf(serverMessage.message));
+      MessageHandlerFactory.pressKey(viewState, serverMessage.message).run();
     }
 
     if (Objects.equals(serverMessage.type, "keyReleased")) {
-      viewState.releaseKey(KeyCode.valueOf(serverMessage.message));
+      MessageHandlerFactory.releaseKey(viewState, serverMessage.message).run();
+    }
+
+    if (Objects.equals(serverMessage.type, "success")) {
+      players = Integer.parseInt(serverMessage.message);
+      MessageHandlerFactory.enterLobby(viewState).run();
     }
   }
 }

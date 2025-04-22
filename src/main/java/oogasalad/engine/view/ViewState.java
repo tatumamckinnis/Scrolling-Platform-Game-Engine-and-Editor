@@ -26,7 +26,7 @@ public class ViewState {
   private static final List<String> ALLOWED_CLASS_NAMES = List.of(
       "oogasalad.engine.view.factory.ButtonActionFactory",
       "oogasalad.engine.view.components.NewGameComponents",
-      "oogasalad.server.ClientSocket"
+      "oogasalad.server.MessageHandlerFactory"
   );
   private static final Logger LOG = LogManager.getLogger();
   private final Stage myStage;
@@ -110,6 +110,7 @@ public class ViewState {
    * @param socket client socket.
    */
   public void setMySocket(ClientSocket socket) {
+    checkClassCaller();
     mySocket = socket;
   }
 

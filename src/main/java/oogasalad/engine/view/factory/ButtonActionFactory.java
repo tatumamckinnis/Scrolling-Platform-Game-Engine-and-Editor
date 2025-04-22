@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
@@ -72,6 +73,24 @@ public class ButtonActionFactory {
    * @return runnable function for the button's onClick action
    */
   public Runnable getAction(String buttonID) {
+    return getMethod(buttonID);
+  }
+
+  /**
+   * Returns the corresponding runnable function and also sends message to server telling all other
+   * clients to do the same. All buttons in the game control panel should call this.
+   *
+   * @param buttonID the button's unique ID whose function to run.
+   * @return runnable function.
+   */
+  public Runnable getActionAndSendServerMessage(String buttonID) {
+    return () -> {
+      sendMessageToServer(buttonIDToActionProperties.getProperty(buttonID), "");
+      getMethod(buttonID).run();
+    };
+  }
+
+  private Runnable getMethod(String buttonID) {
     String methodName = buttonIDToActionProperties.getProperty(buttonID);
 
     try {
@@ -232,7 +251,7 @@ public class ButtonActionFactory {
         try {
           if (!viewState.getDefaultView().getCurrentInputs().contains(keyCode)) {
             viewState.pressKey(keyCode);
-            sendSocketMessage("keyPressed", keyCode);
+            sendMessageToServer("keyPressed", keyCode.toString());
           }
         } catch (InputException e) {
           LOG.warn("Could not get current inputs.");
@@ -243,17 +262,9 @@ public class ButtonActionFactory {
       currentScene.setOnKeyReleased(event -> {
         KeyCode keyCode = event.getCode();
         viewState.releaseKey(keyCode);
-        sendSocketMessage("keyReleased", keyCode);
+        sendMessageToServer("keyReleased", keyCode.toString());
       });
     };
-  }
-
-  private void sendSocketMessage(String type, KeyCode keyCode) {
-    ClientSocket socket = viewState.getMySocket();
-    if (socket != null) {
-      ServerMessage message = new ServerMessage(type, keyCode.toString());
-      message.sendToSocket(socket);
-    }
   }
 
   /**
@@ -309,5 +320,31 @@ public class ButtonActionFactory {
     return () -> {
       new EditorMaker(new Stage());
     };
+  }
+
+  /**
+   * This method attempts to establish a connection to the server.
+   * @param lobby a lobby to connect to.
+   * @param gameXMLPath a game to play.
+   * @param viewState the current view state.
+   * @return a runnable which executes this function.
+   */
+  public static Runnable joinLobby(int lobby, String gameXMLPath, ViewState viewState) {
+    return () -> {
+      try {
+        ClientSocket client = new ClientSocket(lobby, gameXMLPath, viewState);
+        client.connect();
+        viewState.setMySocket(client);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  private void sendMessageToServer(String type, String message) {
+    if (viewState.getMySocket() != null) {
+      ServerMessage m = new ServerMessage(type, message);
+      m.sendToSocket(viewState.getMySocket());
+    }
   }
 }
