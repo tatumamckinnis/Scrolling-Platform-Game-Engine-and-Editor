@@ -2,6 +2,7 @@ package oogasalad.engine.view;
 
 import java.util.List;
 
+import oogasalad.server.ClientSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +29,7 @@ public class ViewState {
   private final Stage myStage;
   private final GameManagerAPI myGameManager;
   private final DefaultView myDefaultView;
+  private ClientSocket mySocket;
 
   /**
    * No-arg constructor initializes all fields to null.
@@ -43,6 +45,7 @@ public class ViewState {
     this.myStage = stage;
     this.myGameManager = gameManager;
     this.myDefaultView = defaultView;
+    this.mySocket = null;
   }
 
   /**
@@ -91,7 +94,21 @@ public class ViewState {
   }
 
   /**
+   * If there is a client communicating with the server, set the socket here.
+   * @param socket client socket.
+   */
+  public void setMySocket(ClientSocket socket) {
+    mySocket = socket;
+  }
+
+  public ClientSocket getMySocket() {
+    checkClassCaller();
+    return mySocket;
+  }
+
+  /**
    * ChatGPT helped write the first two lines of the method to trace the stack thread.
+   * This method ensures that external classes cannot call certain methods.
    */
   private static void checkClassCaller() {
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -105,4 +122,5 @@ public class ViewState {
     throw new SecurityException(
         "Access denied: Only " + ALLOWED_CLASS_NAME_1 + " may call this method.");
   }
+
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import java.util.Objects;
 import javafx.application.Platform;
 import oogasalad.engine.view.ViewState;
-import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
@@ -22,7 +21,6 @@ public class ClientSocket extends WebSocketClient {
   private static final Logger LOG = LogManager.getLogger();
   private final Gson gson;
   private final ViewState viewState;
-  private final int myPort;
   private static final String SERVER_URI = "ws://localhost:%d?filepath=%s";
 
   /**
@@ -32,7 +30,6 @@ public class ClientSocket extends WebSocketClient {
     super(new URI(String.format(SERVER_URI, port, gamePath)));
     gson = new Gson();
     this.viewState = viewState;
-    this.myPort = port;
   }
 
   /**
@@ -79,14 +76,7 @@ public class ClientSocket extends WebSocketClient {
     }
 
     if (Objects.equals(serverMessage.type, "keyPressed")) {
-
+      // get the key code from the message, then add it to the game controls using the view state's game manager
     }
-  }
-
-  /**
-   * Returns the port a socket is connected to.
-   */
-  public int getPort() {
-    return myPort;
   }
 }

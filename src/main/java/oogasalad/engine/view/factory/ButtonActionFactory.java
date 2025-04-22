@@ -19,6 +19,7 @@ import oogasalad.editor.controller.EditorMaker;
 import oogasalad.editor.view.EditorApplication;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.JavaServer;
+import oogasalad.server.ServerMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -240,6 +241,10 @@ public class ButtonActionFactory {
         if (!currentInputs.contains(keyCode)) {
           currentInputs.add(keyCode);
 
+          if (viewState.getMySocket() != null) {
+            ServerMessage m = new ServerMessage("keyPressed", keyCode.toString());
+            m.sendToSocket(viewState.getMySocket());
+          }
         }
       });
 

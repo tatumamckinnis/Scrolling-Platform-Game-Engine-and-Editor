@@ -1,6 +1,5 @@
 package oogasalad.engine.view.screen;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,14 +13,6 @@ import java.util.ResourceBundle;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import oogasalad.exceptions.BlueprintParseException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
-import oogasalad.exceptions.LevelDataParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.MessageHandlerFactory;
 import oogasalad.server.ServerMessage;
@@ -264,12 +255,15 @@ public class SplashScreen extends Display {
    * @param splashBox
    */
   private void addOnlineButtons(VBox splashBox) {
+    // When a user wants to go online, start the server.
     String gameXMLPath = "data/gameData/levels/dinosaurgame/DinoLevel1.xml";
     Button playOnline = new Button("playOnline!");
     playOnline.setOnAction(event -> {
       ClientSocket host = MessageHandlerFactory.startServer(gameXMLPath, viewState);
+      viewState.setMySocket(host);
     });
 
+    // When a user wants to join a server, connect and set the socket.
     TextField portField = new TextField();
     portField.setPromptText("Enter port number");
 
@@ -280,9 +274,9 @@ public class SplashScreen extends Display {
         ClientSocket p2 = new ClientSocket(port, gameXMLPath, viewState);
         p2.connect();
         Thread.sleep(1000);
+        viewState.setMySocket(p2);
         ServerMessage startGameMessage = new ServerMessage("startGame", "");
-        Gson gson = new Gson();
-        p2.send(gson.toJson(startGameMessage));
+        startGameMessage.sendToSocket(p2);
       } catch (URISyntaxException | InterruptedException e) {
         throw new RuntimeException(e);
       }
