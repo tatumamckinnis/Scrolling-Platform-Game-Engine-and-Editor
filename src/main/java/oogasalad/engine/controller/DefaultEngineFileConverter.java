@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.logging.Logger;
 import java.util.zip.DataFormatException;
 import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
@@ -27,6 +26,8 @@ import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Default implementation of the EngineFileAPI Used for converting the level data to game objects
@@ -40,8 +41,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
       DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       Main.class.getPackageName() + "." + "Exceptions");
-  private static final Logger LOG = Logger.getLogger(DefaultEngineFileConverter.class.getName());
-
+  private static final Logger LOG = LogManager.getLogger();
 
   private Map<String, GameObject> gameObjectMap;
 
@@ -80,7 +80,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
       return cameraFactory.create(cameraType, cameraData, gameObjectMap);
 
     } catch (Exception e) {
-      LOG.warning(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
+      LOG.warn(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
       return new AutoScrollingCamera();
     }
   }

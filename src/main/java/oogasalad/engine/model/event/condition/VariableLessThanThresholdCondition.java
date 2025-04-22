@@ -1,9 +1,9 @@
 package oogasalad.engine.model.event.condition;
 
 import java.util.Map;
-import java.util.logging.Logger;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * returns whether a dynamic amount is <= a specified threshold
@@ -11,7 +11,8 @@ import oogasalad.engine.model.object.Player;
  * @author Gage Garcia
  */
 public class VariableLessThanThresholdCondition implements Condition {
-  private Logger LOG = Logger.getLogger(VariableLessThanThresholdCondition.class.getName());
+  private static final Logger LOG = LogManager.getLogger();
+
   @Override
   public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     String variableName = stringParams.get("variable");

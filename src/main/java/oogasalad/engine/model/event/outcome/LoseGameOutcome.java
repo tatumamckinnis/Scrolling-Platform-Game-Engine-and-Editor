@@ -13,9 +13,10 @@
 package oogasalad.engine.model.event.outcome;
 
 import java.util.Map;
-import java.util.logging.Logger;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.model.object.GameObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Represents an outcome that causes the game to end in a loss.
@@ -29,8 +30,7 @@ public class LoseGameOutcome implements Outcome {
   /**
    * Logger used to record loss events
    */
-  private Logger LOG = Logger.getLogger(LoseGameOutcome.class.getName());
-
+  private static final Logger LOG = LogManager.getLogger();
   /**
    * Outcome that the player has lost the game
    * @param executor allows for access to the game manager
