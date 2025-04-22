@@ -1,9 +1,6 @@
 package oogasalad.server;
 
 import com.google.gson.Gson;
-import java.util.Objects;
-import javafx.application.Platform;
-import javafx.scene.input.KeyCode;
 import oogasalad.engine.view.ViewState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +22,6 @@ public class ClientSocket extends WebSocketClient {
   private static final String SERVER_DEV_LINK = "wss://4cd691cc-7596-4db3-90e2-1813a29146da-00-9jzri55f0sna.worf.replit.dev/";
   private static final String SERVER_URI = SERVER_DEV_LINK + "?filepath=%s&lobby=%s";
   private final int lobby;
-  private int players;
 
   /**
    * Instantiate a new socket.
@@ -45,13 +41,6 @@ public class ClientSocket extends WebSocketClient {
   }
 
   /**
-   * Returns number of players in a game.
-   */
-  public int getPlayers() {
-    return players;
-  }
-
-  /**
    * Callback function that runs when connections has successfully been established.
    */
   @Override
@@ -64,7 +53,9 @@ public class ClientSocket extends WebSocketClient {
   @Override
   public void onMessage(String message) {
     ServerMessage serverMessage = gson.fromJson(message, ServerMessage.class);
-    handleServerMessages(serverMessage);
+    LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
+
+    MessageHandlerFactory.handleMessage(viewState, serverMessage).run();
   }
 
   /**
@@ -81,43 +72,5 @@ public class ClientSocket extends WebSocketClient {
   @Override
   public void onError(Exception ex) {
     LOG.warn("Connection error {}", ex.getMessage());
-  }
-
-  private void handleServerMessages(ServerMessage serverMessage) {
-    LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
-
-    // TODO use reflection and move inside statements into factory
-    if (Objects.equals(serverMessage.type, "startGame")) {
-      MessageHandlerFactory.startGame(viewState).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "playGame")) {
-      MessageHandlerFactory.playGame(viewState).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "pauseGame")) {
-      MessageHandlerFactory.pauseGame(viewState).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "restart")) {
-      MessageHandlerFactory.restartGame(viewState).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "goToHome")) {
-      MessageHandlerFactory.endGame(viewState).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "keyPressed")) {
-      MessageHandlerFactory.pressKey(viewState, serverMessage.message).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "keyReleased")) {
-      MessageHandlerFactory.releaseKey(viewState, serverMessage.message).run();
-    }
-
-    if (Objects.equals(serverMessage.type, "success")) {
-      players = Integer.parseInt(serverMessage.message);
-      MessageHandlerFactory.enterLobby(viewState).run();
-    }
   }
 }

@@ -110,7 +110,7 @@ public class ButtonActionFactory {
    * @throws ViewInitializationException thrown if error initializing the view.
    * @throws InputException              if error parsing user key inputs.
    */
-  private Runnable startGame() throws ViewInitializationException, InputException {
+  public Runnable startGame() throws ViewInitializationException, InputException {
     return () -> {
       try {
         DefaultView gameView = viewState.getDefaultView();
@@ -147,7 +147,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that resumes the game
    */
-  private Runnable playGame() {
+  public Runnable playGame() {
     return () -> {
       viewState.getGameManager().playGame();
     };
@@ -158,7 +158,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that pauses the game
    */
-  private Runnable pauseGame() {
+  public Runnable pauseGame() {
     return () -> {
       viewState.getGameManager().pauseGame();
     };
@@ -169,7 +169,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that restarts the game
    */
-  private Runnable restartGame() {
+  public Runnable restartGame() {
     return () -> {
       try {
         restart();
@@ -209,7 +209,7 @@ public class ButtonActionFactory {
     };
   }
 
-  private void restart()
+  public void restart()
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
     viewState.getGameManager().restartGame();
     GameDisplay game = new GameDisplay(viewState);
@@ -223,7 +223,7 @@ public class ButtonActionFactory {
    *
    * @throws ViewInitializationException thrown if error initializing the view.
    */
-  private Runnable goToHome() throws ViewInitializationException {
+  public Runnable goToHome() throws ViewInitializationException {
     return () -> {
       try {
         DefaultView view = viewState.getDefaultView();
@@ -251,7 +251,7 @@ public class ButtonActionFactory {
         try {
           if (!viewState.getDefaultView().getCurrentInputs().contains(keyCode)) {
             viewState.pressKey(keyCode);
-            sendMessageToServer("keyPressed", keyCode.toString());
+            sendMessageToServer("pressKey", keyCode.toString());
           }
         } catch (InputException e) {
           LOG.warn("Could not get current inputs.");
@@ -262,7 +262,7 @@ public class ButtonActionFactory {
       currentScene.setOnKeyReleased(event -> {
         KeyCode keyCode = event.getCode();
         viewState.releaseKey(keyCode);
-        sendMessageToServer("keyReleased", keyCode.toString());
+        sendMessageToServer("releaseKey", keyCode.toString());
       });
     };
   }
