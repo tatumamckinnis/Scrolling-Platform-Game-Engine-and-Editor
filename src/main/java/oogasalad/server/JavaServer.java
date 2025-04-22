@@ -33,7 +33,7 @@ public class JavaServer {
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(jsServerProcess.getInputStream()))) {
         String line;
         while ((line = reader.readLine()) != null) {
-          LOG.info("[JS Server] {}", line);
+          LOG.info(line);
         }
       } catch (IOException e) {
         LOG.warn("Error: {}", e.getMessage());

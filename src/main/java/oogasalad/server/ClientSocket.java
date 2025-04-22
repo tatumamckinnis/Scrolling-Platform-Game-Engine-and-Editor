@@ -69,7 +69,7 @@ public class ClientSocket extends WebSocketClient {
   private void handleServerMessages(ServerMessage serverMessage) {
     LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
 
-    if(Objects.equals(serverMessage.type, "startGame")) {
+    if (Objects.equals(serverMessage.type, "startGame")) {
       Platform.runLater(() -> {
         MessageHandlerFactory.startGame(viewState).run();
       });
@@ -77,6 +77,10 @@ public class ClientSocket extends WebSocketClient {
 
     if (Objects.equals(serverMessage.type, "keyPressed")) {
       // get the key code from the message, then add it to the game controls using the view state's game manager
+    }
+
+    if (Objects.equals(serverMessage.type, "keyReleased")) {
+
     }
   }
 }
