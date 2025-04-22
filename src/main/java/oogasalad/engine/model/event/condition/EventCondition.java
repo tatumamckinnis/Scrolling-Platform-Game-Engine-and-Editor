@@ -24,6 +24,8 @@ public record EventCondition(EventCondition.ConditionType conditionType,
     KEY_RELEASED,
     GREATER_VARIABLE_THRESHOLD,
     LESS_THAN_VARIABLE_THRESHOLD,
+    AT_OR_BEYOND_X,
+    AT_OR_BEYOND_Y,
   }
 
 
