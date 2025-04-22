@@ -364,7 +364,8 @@ public class SplashScreen extends Display {
     return new String[]{
         splashComponentProperties.getProperty("splash.button.startEngine.text"),
         splashComponentProperties.getProperty("splash.button.startEditor.text"),
-        splashComponentProperties.getProperty("splash.button.help.text")
+        splashComponentProperties.getProperty("splash.button.help.text"),
+        splashComponentProperties.getProperty("splash.button.play.another.game.text")
     };
   }
 
@@ -383,7 +384,8 @@ public class SplashScreen extends Display {
     return new String[]{
         splashComponentProperties.getProperty("splash.button.startEngine.id"),
         splashComponentProperties.getProperty("splash.button.startEditor.id"),
-        splashComponentProperties.getProperty("splash.button.help.id")
+        splashComponentProperties.getProperty("splash.button.help.id"),
+        splashComponentProperties.getProperty("splash.button.play.another.game.id")
     };
   }
 
@@ -402,7 +404,8 @@ public class SplashScreen extends Display {
     return new String[]{
         splashComponentProperties.getProperty("splash.button.startEngine.style"),
         splashComponentProperties.getProperty("splash.button.startEditor.style"),
-        splashComponentProperties.getProperty("splash.button.help.style")
+        splashComponentProperties.getProperty("splash.button.help.style"),
+        splashComponentProperties.getProperty("splash.button.play.another.game.style")
     };
   }
 
