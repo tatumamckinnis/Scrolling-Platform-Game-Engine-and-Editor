@@ -7,22 +7,22 @@ import oogasalad.engine.view.Display;
 import javafx.scene.control.Button;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
-import oogasalad.server.MessageHandlerFactory;
-import oogasalad.server.ServerMessage;
 
 /**
  * An online lobby screen with a start button and a text displaying the number of players.
  */
 public class OnlineLobby extends Display {
   private final int players;
+  private final int lobby;
   private final ViewState viewState;
 
   /**
    * Instantiate an online lobby.
    * @param players number of players in the lobby
    */
-  public OnlineLobby(int players, ViewState viewState) {
+  public OnlineLobby(int players, ViewState viewState, int lobby) {
     this.players = players;
+    this.lobby = lobby;
     this.viewState = viewState;
     initialize();
   }
@@ -34,10 +34,13 @@ public class OnlineLobby extends Display {
       factory.getActionAndSendServerMessage("splashButtonStartEngine").run();
     });
     Text playerCountText = new Text(String.format("Players in lobby: %s", players));
+    Text lobbyText = new Text(String.format("Lobby number: %s", lobby));
     playerCountText.setX(100);
-    playerCountText.setY(100);
+    playerCountText.setY(200);
+    lobbyText.setX(100);
+    lobbyText.setY(100);
 
-    this.getChildren().addAll(playerCountText, startButton);
+    this.getChildren().addAll(playerCountText, startButton, lobbyText);
   }
 
   @Override

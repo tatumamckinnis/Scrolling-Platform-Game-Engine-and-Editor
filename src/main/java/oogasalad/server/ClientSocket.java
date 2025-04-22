@@ -27,7 +27,7 @@ public class ClientSocket extends WebSocketClient {
    * Instantiate a new socket.
    */
   public ClientSocket(int lobby, String gamePath, ViewState viewState) throws URISyntaxException {
-    super(new URI(String.format(SERVER_URI, gamePath, Integer.toString(lobby))));
+    super(new URI(String.format(SERVER_URI, gamePath, lobby)));
     gson = new Gson();
     this.viewState = viewState;
     this.lobby = lobby;

@@ -119,7 +119,10 @@ public class MessageHandlerFactory {
   private static Runnable newConnection(ViewState viewState, ServerMessage message) {
     return () -> Platform.runLater(() -> {
       try {
-        OnlineLobby lobbyDisplay = new OnlineLobby(Integer.parseInt(message.message), viewState);
+        OnlineLobby lobbyDisplay = new OnlineLobby(
+            Integer.parseInt(message.message),
+            viewState,
+            viewState.getMySocket().getLobby());
         viewState.setDisplay(lobbyDisplay);
       } catch (Exception e) {
         LOG.error("Error entering lobby", e);
