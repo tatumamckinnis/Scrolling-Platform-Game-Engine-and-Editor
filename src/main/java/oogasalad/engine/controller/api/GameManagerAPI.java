@@ -76,5 +76,5 @@ public interface GameManagerAPI {
   /**
    * @return a String path to the current level file
    */
-  String getCurrentLevel();
+  String getCurrentLevel() throws NullPointerException;
 }
