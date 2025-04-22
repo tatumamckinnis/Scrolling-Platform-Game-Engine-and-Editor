@@ -23,8 +23,11 @@ import oogasalad.engine.controller.api.GameManagerAPI;
  */
 public class ViewState {
 
-  private static final String ALLOWED_CLASS_NAME_1 = "oogasalad.engine.view.factory.ButtonActionFactory";
-  private static final String ALLOWED_CLASS_NAME_2 = "oogasalad.engine.view.components.NewGameComponents"; // TODO add these to a list, or add play button in new game to the factory
+  private static final List<String> ALLOWED_CLASS_NAMES = List.of(
+      "oogasalad.engine.view.factory.ButtonActionFactory",
+      "oogasalad.engine.view.components.NewGameComponents",
+      "oogasalad.server.ClientSocket"
+  );
   private static final Logger LOG = LogManager.getLogger();
   private final Stage myStage;
   private final GameManagerAPI myGameManager;
@@ -122,14 +125,13 @@ public class ViewState {
   private static void checkClassCaller() {
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     for (StackTraceElement element : stackTrace) {
-      if (element.getClassName().equals(ALLOWED_CLASS_NAME_1) || element.getClassName()
-          .equals(ALLOWED_CLASS_NAME_2)) {
+      if (ALLOWED_CLASS_NAMES.contains(element.getClassName())) {
         return;
       }
     }
     LOG.warn("Class does not have access to variable bridge.");
     throw new SecurityException(
-        "Access denied: Only " + ALLOWED_CLASS_NAME_1 + " may call this method.");
+        "Access denied: Only allowed classes may call this method.");
   }
 
 }

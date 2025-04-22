@@ -3,6 +3,7 @@ package oogasalad.server;
 import com.google.gson.Gson;
 import java.util.Objects;
 import javafx.application.Platform;
+import javafx.scene.input.KeyCode;
 import oogasalad.engine.view.ViewState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,6 +70,7 @@ public class ClientSocket extends WebSocketClient {
   private void handleServerMessages(ServerMessage serverMessage) {
     LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
 
+    // TODO use reflection.
     if (Objects.equals(serverMessage.type, "startGame")) {
       Platform.runLater(() -> {
         MessageHandlerFactory.startGame(viewState).run();
@@ -76,11 +78,11 @@ public class ClientSocket extends WebSocketClient {
     }
 
     if (Objects.equals(serverMessage.type, "keyPressed")) {
-      // get the key code from the message, then add it to the game controls using the view state's game manager
+      viewState.pressKey(KeyCode.valueOf(serverMessage.message));
     }
 
     if (Objects.equals(serverMessage.type, "keyReleased")) {
-
+      viewState.releaseKey(KeyCode.valueOf(serverMessage.message));
     }
   }
 }
