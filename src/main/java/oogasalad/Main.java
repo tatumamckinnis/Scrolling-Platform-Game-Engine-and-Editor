@@ -7,8 +7,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.api.GameManagerAPI;
-import oogasalad.server.ClientSocket;
-import oogasalad.server.JavaServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

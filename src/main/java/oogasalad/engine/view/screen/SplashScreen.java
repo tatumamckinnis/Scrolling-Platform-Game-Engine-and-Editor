@@ -14,7 +14,6 @@ import java.util.ResourceBundle;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import oogasalad.server.ClientSocket;
-import oogasalad.server.MessageHandlerFactory;
 import oogasalad.server.ServerMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -252,37 +251,26 @@ public class SplashScreen extends Display {
 
   /**
    * Adds buttons needed for starting online games. Will need refactoring.
-   * @param splashBox
+   * @param splashBox box to add buttons to.
    */
   private void addOnlineButtons(VBox splashBox) {
-    // When a user wants to go online, start the server.
     String gameXMLPath = "data/gameData/levels/dinosaurgame/DinoLevel1.xml";
-    Button playOnline = new Button("playOnline!");
-    playOnline.setOnAction(event -> {
-      ClientSocket host = MessageHandlerFactory.startServer(gameXMLPath, viewState);
-      viewState.setMySocket(host);
-    });
+    TextField lobbyField = new TextField();
+    lobbyField.setPromptText("Enter lobby number");
 
-    // When a user wants to join a server, connect and set the socket.
-    TextField portField = new TextField();
-    portField.setPromptText("Enter port number");
-
-    Button joinServer = new Button("Join Server");
+    Button joinServer = new Button("Create/join Lobby");
     joinServer.setOnAction(event -> {
-      int port = Integer.parseInt(portField.getText());
+      int lobby = Integer.parseInt(lobbyField.getText());
       try {
-        ClientSocket p2 = new ClientSocket(port, gameXMLPath, viewState);
-        p2.connect();
-        Thread.sleep(1000);
-        viewState.setMySocket(p2);
-        ServerMessage startGameMessage = new ServerMessage("startGame", "");
-        startGameMessage.sendToSocket(p2);
-      } catch (URISyntaxException | InterruptedException e) {
+        ClientSocket client = new ClientSocket(lobby, gameXMLPath, viewState);
+        client.connect();
+        viewState.setMySocket(client);
+      } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
     });
 
-    splashBox.getChildren().addAll(playOnline, joinServer, portField);
+    splashBox.getChildren().addAll(joinServer, lobbyField);
   }
 
   private ComboBox<String> createComboBox(String[] comboBoxTexts, int i, double buttonWidth,
