@@ -54,6 +54,7 @@ public class DefaultView implements ViewAPI {
     this.myCamera = new TrackerCamera();
     currentScene = new Scene(new Group(), LEVEL_WIDTH, LEVEL_HEIGHT);
     currentInputs = new ArrayList<>();
+    releasedInputs = new ArrayList<>();
   }
 
   /**
@@ -137,20 +138,24 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
-   * Set the current inputs.
-   *
-   * @param currentInputs an arraylist to point to.
+   * Package protected method that allows frontend to trigger key pressed in input list.
+   * @param key pressed key.
    */
-  void setCurrentInputs(List<KeyCode> currentInputs) {
-    this.currentInputs = currentInputs;
+  void pressKey(KeyCode key) {
+    if (!currentInputs.contains(key)) {
+      currentInputs.add(key);
+    }
   }
 
   /**
-   * Set the released inputs.
-   *
-   * @param releasedInputs an arraylist to point to.
+   * Package protected method that allows frontend to trigger key released in input list.
+   * @param key released key.
    */
-  void setReleasedInputs(List<KeyCode> releasedInputs) {
-    this.releasedInputs = releasedInputs;
+  void releaseKey(KeyCode key) {
+    currentInputs.remove(key);
+    if (!releasedInputs.contains(key)) {
+      releasedInputs.add(key);
+    }
   }
+
 }

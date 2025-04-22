@@ -232,27 +232,26 @@ public class ButtonActionFactory {
    * Sets up input listeners when start is clicked.
    */
   private Runnable setCurrentInputs(Scene currentScene) throws ViewInitializationException {
-    List<KeyCode> currentInputs = new ArrayList<>();
-    List<KeyCode> releasedKeys = new ArrayList<>();
-    viewState.setCurrentInputs(currentInputs, releasedKeys);
-
     return () -> {
-      currentScene.setOnKeyPressed(event -> handleKeyPressed(event.getCode(), currentInputs));
-      currentScene.setOnKeyReleased(event -> handleKeyReleased(event.getCode(), currentInputs, releasedKeys));
+      currentScene.setOnKeyPressed(event -> {
+        KeyCode keyCode = event.getCode();
+        try {
+          if (!viewState.getDefaultView().getCurrentInputs().contains(keyCode)) {
+            viewState.pressKey(keyCode);
+            sendSocketMessage("keyPressed", keyCode);
+          }
+        } catch (InputException e) {
+          LOG.warn("Could not get current inputs.");
+          throw new RuntimeException(e);
+        }
+      });
+
+      currentScene.setOnKeyReleased(event -> {
+        KeyCode keyCode = event.getCode();
+        viewState.releaseKey(keyCode);
+        sendSocketMessage("keyReleased", keyCode);
+      });
     };
-  }
-
-  private void handleKeyPressed(KeyCode keyCode, List<KeyCode> currentInputs) {
-    if (!currentInputs.contains(keyCode)) {
-      currentInputs.add(keyCode);
-      sendSocketMessage("keyPressed", keyCode);
-    }
-  }
-
-  private void handleKeyReleased(KeyCode keyCode, List<KeyCode> currentInputs, List<KeyCode> releasedKeys) {
-    currentInputs.remove(keyCode);
-    releasedKeys.add(keyCode);
-    sendSocketMessage("keyReleased", keyCode);
   }
 
   private void sendSocketMessage(String type, KeyCode keyCode) {

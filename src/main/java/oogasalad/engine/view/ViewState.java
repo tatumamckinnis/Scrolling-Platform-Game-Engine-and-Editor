@@ -67,14 +67,23 @@ public class ViewState {
   }
 
   /**
-   * Sets the current inputs. Only accessible from the allowed class.
+   * Presses the inputted key. Only accessible from the allowed class.
    *
-   * @param currentInputs list of key codes to set the current inputs to.
+   * @param keyCode the key to press.
    */
-  public void setCurrentInputs(List<KeyCode> currentInputs, List<KeyCode> releasedInputs) {
+  public void pressKey(KeyCode keyCode) {
     checkClassCaller();
-    myDefaultView.setReleasedInputs(releasedInputs);
-    myDefaultView.setCurrentInputs(currentInputs);
+    myDefaultView.pressKey(keyCode);
+  }
+
+  /**
+   * Releases the inputted key. Only accessible from the allowed class.
+   *
+   * @param keyCode the key to release.
+   */
+  public void releaseKey(KeyCode keyCode) {
+    checkClassCaller();
+    myDefaultView.releaseKey(keyCode);
   }
 
   /**
