@@ -1,27 +1,18 @@
 package oogasalad.editor.view;
 
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.view.resources.EditorResourceLoader;
-import oogasalad.fileparser.BlueprintDataParser;
-import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.FrameData;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -31,9 +22,20 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.resources.EditorResourceLoader;
+import oogasalad.fileparser.BlueprintDataParser;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.FrameData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -99,7 +101,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     scrollPane.setFitToWidth(true);
     scrollPane.setFitToHeight(true);
     scrollPane.getStyleClass().add("prefab-scroll-pane");
-    scrollPane.setStyle("-fx-background-insets: 0; -fx-padding: 0;");
+    scrollPane.setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
+
 
     getChildren().addAll(titleLabel, scrollPane);
 
@@ -151,9 +154,12 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       LOG.warn("No prefabs found or loaded from {}", EDITOR_PREFAB_PATH);
       prefabGrid.getChildren().add(new Label(uiResources.getString("NoPrefabsFound")));
     } else {
-      loadedPrefabs.values().stream()
+      List<BlueprintData> sortedPrefabs = loadedPrefabs.values().stream()
           .sorted((p1, p2) -> p1.type().compareToIgnoreCase(p2.type()))
-          .forEach(this::addPrefabToGrid);
+          .toList();
+      for (BlueprintData prefab : sortedPrefabs) {
+        addPrefabToGrid(prefab);
+      }
     }
     LOG.info("Loaded {} unique prefabs from {}.", loadedPrefabs.size(), EDITOR_PREFAB_PATH);
   }
@@ -198,8 +204,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
     } catch (Exception e) {
       LOG.error("Failed to parse prefab file {}: {}", filePath, e.getMessage(), e);
-      controller.notifyErrorOccurred(
-          "Error loading prefabs from " + file.getName() + ": " + e.getMessage());
+
     }
     return prefabs;
   }
@@ -207,41 +212,40 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
   /**
    * Creates and adds a visual representation (icon and label) of a single prefab
-   * to the {@code prefabGrid}. Sets up mouse click handling for selection and
-   * drag detection for drag-and-drop placement.
+   * to the internal {@code prefabGrid}. Sets up mouse click and drag detection.
+   * Modified to make track icon visible (but distorted).
    *
    * @param prefab The {@link BlueprintData} of the prefab to add to the grid.
    */
   private void addPrefabToGrid(BlueprintData prefab) {
-    ImageView imageView = new ImageView();
+    Image prefabImg = loadPrefabImage(prefab);
+
+    ImageView imageView = new ImageView(prefabImg != null ? prefabImg : placeholderImage);
+
+    StackPane iconContainer = new StackPane();
+    iconContainer.setPrefSize(PREFAB_ICON_SIZE, PREFAB_ICON_SIZE);
+    iconContainer.setMinSize(PREFAB_ICON_SIZE, PREFAB_ICON_SIZE);
+    iconContainer.setMaxSize(PREFAB_ICON_SIZE, PREFAB_ICON_SIZE);
+    iconContainer.setAlignment(Pos.CENTER);
+
     imageView.setFitWidth(PREFAB_ICON_SIZE);
     imageView.setFitHeight(PREFAB_ICON_SIZE);
-    imageView.setPreserveRatio(true);
-    imageView.setSmooth(true);
 
-    Image prefabImage = loadPrefabImage(prefab);
-
-    imageView.setImage(prefabImage != null ? prefabImage : placeholderImage);
-
-    if (prefabImage == null || prefabImage == placeholderImage) {
-      imageView.getStyleClass().add("placeholder-prefab-icon");
-    } else {
-      imageView.getStyleClass().remove("placeholder-prefab-icon");
-    }
+    iconContainer.getChildren().add(imageView);
 
     Label nameLabel = new Label(prefab.type());
     nameLabel.setWrapText(true);
     nameLabel.setMaxWidth(PREFAB_ICON_SIZE);
     nameLabel.getStyleClass().add("prefab-name-label");
 
-    VBox prefabContainer = new VBox(imageView, nameLabel);
+    VBox prefabContainer = new VBox(iconContainer, nameLabel);
     prefabContainer.setSpacing(5);
     prefabContainer.getStyleClass().add("prefab-item");
+    prefabContainer.setAlignment(Pos.CENTER);
     prefabContainer.setPadding(new Insets(5));
     prefabContainer.setUserData(prefab);
 
-    String tooltipText = String.format("%s\nGroup: %s\nGame: %s", prefab.type(), prefab.group(),
-        prefab.gameName());
+    String tooltipText = String.format("%s\nGroup: %s\nGame: %s", prefab.type(), prefab.group(), prefab.gameName());
     Tooltip.install(prefabContainer, new Tooltip(tooltipText));
 
     prefabContainer.setOnMouseClicked(event -> {
@@ -257,64 +261,93 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       controller.setActiveTool("placePrefabTool");
     });
 
-    prefabContainer.setOnDragDetected(event -> {
+    setupDragDetectionForNode(prefabContainer, prefab, prefabImg);
+
+    prefabGrid.getChildren().add(prefabContainer);
+  }
+
+
+  /**
+   * Sets up drag detection for a specific prefab node.
+   * Uses PREFAB_BLUEPRINT_ID data format.
+   *
+   * @param node The node to attach drag detection to (e.g., the VBox container).
+   * @param prefab The BlueprintData associated with this node.
+   * @param dragViewImage The image to show during drag (can be placeholder or actual snapshot).
+   */
+  private void setupDragDetectionForNode(Node node, BlueprintData prefab, Image dragViewImage) {
+    node.setOnDragDetected((MouseEvent event) -> {
       LOG.debug("Drag detected on prefab: {}", prefab.type());
-      Dragboard db = prefabContainer.startDragAndDrop(TransferMode.COPY);
+      Dragboard db = node.startDragAndDrop(TransferMode.COPY);
 
       ClipboardContent content = new ClipboardContent();
       content.put(PREFAB_BLUEPRINT_ID, String.valueOf(prefab.blueprintId()));
       db.setContent(content);
 
-      db.setDragView(prefabImage != null ? prefabImage : placeholderImage,
-          event.getX(), event.getY());
+      Image imageToShow = (dragViewImage != null && !dragViewImage.isError()) ? dragViewImage : placeholderImage;
+      if (imageToShow != null) {
+        db.setDragView(imageToShow, -(imageToShow.getWidth() / 2), -(imageToShow.getHeight() / 2));
+      }
 
       event.consume();
     });
-
-    prefabGrid.getChildren().add(prefabContainer);
   }
+
 
   /**
    * Attempts to load the display image for a given prefab based on its {@link BlueprintData}.
-   * Uses the baseFrame or first frame information from the SpriteData to display the correct
-   * portion of the sprite sheet by taking a snapshot of the relevant viewport.
+   * Includes logging for diagnosis.
    *
    * @param prefab The {@link BlueprintData} containing sprite and game name information.
    * @return The loaded {@link Image} for the prefab's specific frame, or placeholderImage if loading fails or data is missing.
    */
   private Image loadPrefabImage(BlueprintData prefab) {
-    if (prefab.spriteData() == null || prefab.spriteData().spriteFile() == null
-        || prefab.spriteData().spriteFile().getPath().isEmpty()
-        || (prefab.spriteData().baseImage() == null && (prefab.spriteData().frames() == null || prefab.spriteData().frames().isEmpty()))
+    LOG.debug("Loading prefab image for type: {}", prefab.type());
+    oogasalad.fileparser.records.SpriteData spriteDataRecord = prefab.spriteData();
+
+    if (spriteDataRecord == null || spriteDataRecord.spriteFile() == null
+        || spriteDataRecord.spriteFile().getPath().isEmpty()
+        || (spriteDataRecord.baseImage() == null && (spriteDataRecord.frames() == null || spriteDataRecord.frames().isEmpty()))
         || prefab.gameName() == null || prefab.gameName().isEmpty()) {
-      LOG.warn("Cannot load image for prefab '{}': Missing sprite data, game name, baseImage, or frames.", prefab.type());
+      LOG.warn("Cannot load image for prefab '{}': Missing sprite path, baseImage/frames, or game name.", prefab.type());
       return placeholderImage;
     }
 
     try {
-      File imageFile = prefab.spriteData().spriteFile();
+      File imageFile = spriteDataRecord.spriteFile();
+      LOG.debug("Attempting to load image file reference from blueprint: '{}' (Exists: {}, IsFile: {})",
+          imageFile != null ? imageFile.getAbsolutePath() : "null",
+          imageFile != null && imageFile.exists(),
+          imageFile != null && imageFile.isFile());
 
-      if (imageFile.exists() && imageFile.isFile()) {
+      if (imageFile != null && imageFile.exists() && imageFile.isFile()) {
         Image sheetImage;
         try (FileInputStream fis = new FileInputStream(imageFile)) {
           sheetImage = new Image(fis);
-        } catch (FileNotFoundException e) {
-          LOG.warn("Prefab sprite file not found at expected path: {}", imageFile.getAbsolutePath());
-          return placeholderImage;
-        } catch (IOException e) {
-          LOG.error("IO Error loading image file {}", imageFile.getAbsolutePath(), e);
+        } catch (Exception e) {
+          LOG.error("Failed to load sheet image {} for prefab '{}': {}", imageFile.getPath(), prefab.type(), e.getMessage());
           return placeholderImage;
         }
 
-        FrameData displayFrame = prefab.spriteData().baseImage();
+        FrameData displayFrame = spriteDataRecord.baseImage();
         if (displayFrame == null) {
-          if (prefab.spriteData().frames() != null && !prefab.spriteData().frames().isEmpty()) {
-            displayFrame = prefab.spriteData().frames().get(0);
+          List<FrameData> framesList = spriteDataRecord.frames();
+          if (framesList != null && !framesList.isEmpty()) {
+            displayFrame = framesList.get(0);
+            LOG.trace("Using first frame '{}' as display frame for {}", displayFrame.name(), prefab.type());
           } else {
-            LOG.warn("No baseImage or frames available for prefab '{}'. Using placeholder.", prefab.type());
+            LOG.warn("No baseImage record or frames list available for prefab '{}'. Using placeholder.", prefab.type());
             return placeholderImage;
           }
+        } else {
+          LOG.trace("Using baseImage frame '{}' as display frame for {}", displayFrame.name(), prefab.type());
         }
+
+
+        LOG.debug("Display frame details for {}: Name='{}', x={}, y={}, w={}, h={}",
+            prefab.type(), displayFrame.name(), displayFrame.x(), displayFrame.y(),
+            displayFrame.width(), displayFrame.height());
+
 
         if (displayFrame.width() <= 0 || displayFrame.height() <= 0) {
           LOG.warn("Invalid frame dimensions (w={}, h={}) for prefab '{}'. Using placeholder.",
@@ -324,142 +357,62 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
         ImageView tempImageView = new ImageView(sheetImage);
         Rectangle2D viewportRect = new Rectangle2D(
-            displayFrame.x(),
-            displayFrame.y(),
-            displayFrame.width(),
-            displayFrame.height()
+            displayFrame.x(), displayFrame.y(), displayFrame.width(), displayFrame.height()
         );
-
         SnapshotParameters params = new SnapshotParameters();
         params.setViewport(viewportRect);
-        params.setFill(Color.TRANSPARENT); // Ensure transparency is handled correctly
+        params.setFill(Color.TRANSPARENT);
 
+        LOG.trace("Taking snapshot for {} with viewport: {}", prefab.type(), viewportRect);
         WritableImage frameImage = tempImageView.snapshot(params, null);
 
         if (frameImage == null || frameImage.isError() || frameImage.getPixelReader() == null) {
           LOG.error("Failed to create snapshot for prefab '{}'. Using placeholder. Error: {}", prefab.type(), frameImage != null ? frameImage.getException() : "null image");
           return placeholderImage;
         }
+        LOG.debug("Successfully created snapshot image for {}", prefab.type());
         return frameImage;
 
       } else {
-        LOG.warn("Prefab sprite file not found at expected path: {}", imageFile.getAbsolutePath());
+        LOG.warn("Prefab sprite file reference invalid or file not found: {}", imageFile != null ? imageFile.getAbsolutePath() : "null");
         return placeholderImage;
       }
     } catch (Exception e) {
-      LOG.error("Error processing image for prefab '{}' (File: {}): {}",
-          prefab.type(),
-          (prefab.spriteData() != null && prefab.spriteData().spriteFile() != null) ? prefab.spriteData().spriteFile().getPath() : "N/A",
-          e.getMessage(), e);
+      LOG.error("Error processing image for prefab '{}': {}", prefab.type(), e.getMessage(), e);
       return placeholderImage;
     }
   }
 
-  /**
-   * Retrieves a loaded prefab blueprint by its ID.
-   *
-   * @param id The blueprint ID.
-   * @return The BlueprintData, or null if not found.
-   */
+  /** Retrieves a loaded prefab blueprint by its ID. */
   public BlueprintData getPrefabById(int id) {
     return loadedPrefabs.get(id);
   }
 
-
-  /**
-   * Returns the JavaFX property holding the currently selected prefab.
-   * Allows other components to bind to or listen for changes in the selected prefab.
-   *
-   * @return The {@link ObjectProperty} wrapping the selected {@link BlueprintData}.
-   */
+  /** Returns the JavaFX property holding the currently selected prefab. */
   public ObjectProperty<BlueprintData> selectedPrefabProperty() {
     return selectedPrefab;
   }
 
-  /**
-   * Gets the currently selected prefab instance.
-   *
-   * @return The selected {@link BlueprintData}, or null if no prefab is currently selected.
-   */
+  /** Gets the currently selected prefab instance. */
   public BlueprintData getSelectedPrefab() {
     return selectedPrefab.get();
   }
 
-  /**
-   * Called by the {@link EditorController} when potential changes to prefabs
-   * (e.g., external file modification, saving prefabs) might have occurred.
-   * Triggers a reload of the prefabs from the fixed {@code EDITOR_PREFAB_PATH}.
-   */
   @Override
   public void onPrefabsChanged() {
     LOG.info("PrefabPalettePane notified: Potential prefab changes detected. Reloading palette from fixed path.");
     loadAvailablePrefabs();
   }
-
-  /**
-   * Called by the {@link EditorController} when an object is removed from the level data.
-   * This pane does not need to react to individual object removals in the level.
-   * Logs the event at TRACE level.
-   *
-   * @param objectId The UUID of the removed object.
-   */
   @Override
-  public void onObjectRemoved(UUID objectId) {
-    LOG.trace("PrefabPalettePane notified: Object removed (ID: {}). No action taken.", objectId);
-  }
-
-  /**
-   * Called by the {@link EditorController} when an object's data is updated in the level.
-   * This pane does not need to react to individual object updates in the level.
-   * Logs the event at TRACE level.
-   *
-   * @param objectId The UUID of the updated object.
-   */
+  public void onObjectRemoved(UUID objectId) { LOG.trace("PrefabPalettePane notified: Object removed (ID: {}). No action taken.", objectId); }
   @Override
-  public void onObjectUpdated(UUID objectId) {
-    LOG.trace("PrefabPalettePane notified: Object updated (ID: {}). No action taken.", objectId);
-  }
-
-  /**
-   * Called by the {@link EditorController} when the selected object in the level changes.
-   * This pane maintains its own prefab selection independent of the level selection.
-   * Logs the event at TRACE level.
-   *
-   * @param selectedObjectId The UUID of the newly selected object, or null if deselected.
-   */
+  public void onObjectUpdated(UUID objectId) { LOG.trace("PrefabPalettePane notified: Object updated (ID: {}). No action taken.", objectId); }
   @Override
-  public void onSelectionChanged(UUID selectedObjectId) {
-    LOG.trace("PrefabPalettePane notified: Level selection changed (ID: {}). No action taken.", selectedObjectId);
-  }
-
-  /**
-   * Called by the {@link EditorController} when an object is added to the level data.
-   * This pane does not need to react to individual object additions in the level.
-   * Logs the event at TRACE level.
-   *
-   * @param objectId The UUID of the added object.
-   */
+  public void onSelectionChanged(UUID selectedObjectId) { LOG.trace("PrefabPalettePane notified: Level selection changed (ID: {}). No action taken.", selectedObjectId); }
   @Override
-  public void onObjectAdded(UUID objectId) {
-    LOG.trace("PrefabPalettePane notified: Object added (ID: {}). No action taken.", objectId);
-  }
-
-  /**
-   * Called by the {@link EditorController} when global dynamic variables are changed.
-   * This pane does not currently depend on dynamic variables.
-   * Logs the event at TRACE level.
-   */
+  public void onObjectAdded(UUID objectId) { LOG.trace("PrefabPalettePane notified: Object added (ID: {}). No action taken.", objectId); }
   @Override
-  public void onDynamicVariablesChanged() {
-    LOG.trace("PrefabPalettePane notified: Dynamic variables changed. No action taken.");
-  }
-
-  /**
-   * Called by the {@link EditorController} when a general error occurs that views
-   * should be aware of. Logs the error message.
-   *
-   * @param errorMessage The error message describing the issue.
-   */
+  public void onDynamicVariablesChanged() { LOG.trace("PrefabPalettePane notified: Dynamic variables changed. No action taken."); }
   @Override
   public void onErrorOccurred(String errorMessage) {
     LOG.warn("PrefabPalettePane notified: An error occurred: {}", errorMessage);

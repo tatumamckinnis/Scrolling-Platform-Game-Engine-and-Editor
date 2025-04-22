@@ -1,9 +1,8 @@
 package oogasalad.editor.view;
 
+import java.io.File;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.DragEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.fileparser.records.BlueprintData;
@@ -600,30 +600,25 @@ public class EditorGameView extends Pane implements EditorViewListener {
     g.restore();
   }
 
-  /**
-   * Preloads the image associated with the given object ID if not already cached or if outdated.
-   * Retrieves the sprite path, resolves it, and initiates loading. Handles potential errors.
-   *
-   * @param id The UUID of the object whose image is to be preloaded.
-   */
+
   private void preloadObjectImage(UUID id) {
     try {
       String imagePath = getObjectSpritePath(id);
       if (imagePath == null) {
         objectImages.remove(id);
-        LOG.trace("No valid sprite path found or object missing for ID {}. Removing image cache.",
-            id);
+        LOG.trace("No valid sprite path found for ID {}. Removing image cache.", id);
         return;
       }
 
-      String url = resolveImagePath(imagePath);
-      if (url == null) {
-        LOG.error("Could not resolve image resource path: {}", imagePath);
+      String resolvedPathOrUrl = resolveImagePath(imagePath);
+      if (resolvedPathOrUrl == null) {
+        LOG.error("Could not resolve image path/URL for: {}", imagePath);
         objectImages.remove(id);
+        redrawObjects();
         return;
       }
 
-      loadImageIfNotCached(id, url);
+      loadImageIfNotCached(id, resolvedPathOrUrl);
 
     } catch (Exception e) {
       LOG.error("Failed during image preload process for object ID {}: {}", id, e.getMessage(), e);
@@ -631,6 +626,8 @@ public class EditorGameView extends Pane implements EditorViewListener {
       redrawObjects();
     }
   }
+
+
 
   /**
    * Retrieves the sprite path associated with an object from the controller.
@@ -648,28 +645,65 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Loads an image from the specified URL into the cache if it's not already present, has a
-   * different URL than the cached version, or if the cached image is marked as errored. Attaches
-   * listeners to handle loading progress and errors.
+   * Loads an image from the specified path string into the cache if it's not already present,
+   * has a different path than the cached version, or if the cached image is marked as errored.
+   * Handles converting absolute file paths to proper file URLs for JavaFX Image loading.
    *
-   * @param id  The UUID of the object associated with the image.
-   * @param url The resolved URL string from which to load the image.
+   * @param id   The UUID of the object associated with the image.
+   * @param path The path string (can be absolute file path or classpath resource).
    */
-  private void loadImageIfNotCached(UUID id, String url) {
+  private void loadImageIfNotCached(UUID id, String path) {
     Image cachedImage = objectImages.get(id);
+
+    String urlString = null;
+    try {
+      File file = new File(path);
+      if (file.isAbsolute() && file.exists()) {
+        urlString = file.toURI().toString();
+        LOG.trace("Converted absolute path '{}' to URL '{}'", path, urlString);
+      } else {
+        urlString = path;
+        LOG.trace("Assuming path '{}' is a classpath resource or URL", path);
+      }
+    } catch (Exception e) {
+      LOG.error("Error converting path '{}' to URL: {}", path, e.getMessage(), e);
+      objectImages.remove(id);
+      redrawObjects();
+      return;
+    }
+
+    if (urlString == null) {
+      LOG.error("Could not create a valid URL string from path: {}", path);
+      objectImages.remove(id);
+      redrawObjects();
+      return;
+    }
+
+
     boolean needsLoading = cachedImage == null
-        || !Objects.equals(cachedImage.getUrl(), url)
+        || !Objects.equals(cachedImage.getUrl(), urlString)
         || cachedImage.isError();
 
     if (needsLoading) {
-      LOG.debug("Loading image for object ID {} from resolved URL: {}", id, url);
-      Image newImage = new Image(url, true);
-      setupImageListeners(newImage, url);
-      objectImages.put(id, newImage);
+      LOG.debug("Loading image for object ID {} from resolved URL string: {}", id, urlString);
+      try {
+        Image newImage = new Image(urlString, true);
+        setupImageListeners(newImage, urlString);
+        objectImages.put(id, newImage);
+      } catch (IllegalArgumentException e) {
+        LOG.error("Failed to load image for {} - Invalid URL or resource not found: {}", id, urlString, e);
+        objectImages.remove(id);
+        redrawObjects();
+      } catch (Exception e) {
+        LOG.error("Unexpected error loading image for {} from URL {}: {}", id, urlString, e.getMessage(), e);
+        objectImages.remove(id);
+        redrawObjects();
+      }
     } else {
-      LOG.trace("Image for {} already cached and valid: {}", id, url);
+      LOG.trace("Image for {} already cached and valid: {}", id, urlString);
     }
   }
+
 
   /**
    * Attaches listeners to an image's error and progress properties to handle asynchronous loading
@@ -722,23 +756,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
-  /**
-   * Resolves a potentially relative image path into a full URL string suitable for loading. If the
-   * path is already absolute or a URL, it's returned directly. Otherwise, it attempts to find the
-   * path as a classpath resource.
-   *
-   * @param path The image path string (can be relative, absolute, or a URL).
-   * @return The resolved URL string, or null if the path is invalid or resolution fails.
-   */
   private String resolveImagePath(String path) {
     if (path == null || path.trim().isEmpty()) {
       return null;
     }
-
-    if (path.matches("^([a-zA-Z]+:.*|/).*")) {
+    File f = new File(path);
+    if (f.isAbsolute()) {
+      LOG.trace("Path '{}' identified as absolute.", path);
       return path;
     }
 
+    LOG.trace("Path '{}' not absolute, attempting classpath resolution.", path);
     return findResourcePath(path);
   }
 
@@ -767,32 +795,73 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
+
+
   /**
-   * Redraws the sprite visual for a specific object ID on the object canvas. Retrieves object data,
-   * checks for a loaded image, draws the image or a placeholder, and handles potential errors. Does
-   * not draw the selection indicator here.
+   * Redraws the sprite visual for a specific object ID on the object canvas.
+   * Retrieves object data, checks for a loaded image, finds the correct frame,
+   * and draws the specific frame using its original dimensions.
    *
    * @param id The UUID of the object whose sprite needs redrawing.
    */
   private void redrawSprites(UUID id) {
     EditorObject object = editorController.getEditorObject(id);
     if (object == null || object.getSpriteData() == null) {
-      LOG.warn("Object ID {} or its SpriteData not found during sprite redraw.", id);
+      LOG.warn("[redrawSprites] Object ID {} or its SpriteData not found.", id);
       return;
     }
+
     SpriteData spriteData = object.getSpriteData();
-    double x = spriteData.getX();
-    double y = spriteData.getY();
+    double dx = spriteData.getX();
+    double dy = spriteData.getY();
+
     Image image = objectImages.get(id);
 
     if (image != null && !image.isError() && image.getProgress() >= 1.0) {
-      objectGraphicsContext.drawImage(image, x, y, cellSize, cellSize);
+      FrameData displayFrame = null;
+      String baseFrameName = spriteData.getName();
+      Map<String, FrameData> frameMap = spriteData.getFrames();
+
+      LOG.debug("[redrawSprites ID: {}] Trying to display frame.", id);
+
+      if (baseFrameName != null && frameMap != null && frameMap.containsKey(baseFrameName)) {
+        displayFrame = frameMap.get(baseFrameName);
+        LOG.trace("[redrawSprites ID: {}] Using base frame '{}' retrieved from map.", id, baseFrameName);
+      } else if (frameMap != null && !frameMap.isEmpty()) {
+        displayFrame = frameMap.values().iterator().next();
+        LOG.warn("[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first available frame: {}",
+            id, baseFrameName, frameMap.keySet(), displayFrame.name());
+      }
+
+      if (displayFrame != null) {
+        double sx = displayFrame.x();
+        double sy = displayFrame.y();
+        double sw = displayFrame.width();
+        double sh = displayFrame.height();
+
+        double dw = sw;
+        double dh = sh;
+
+        if (sw > 0 && sh > 0) {
+          LOG.trace("[redrawSprites ID: {}] Drawing frame '{}' from [{},{},{},{}] to [{},{},{},{}] (Actual Size)",
+              id, displayFrame.name(), sx, sy, sw, sh, dx, dy, dw, dh);
+          objectGraphicsContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+        } else {
+          LOG.warn("[redrawSprites ID: {}] Frame '{}' has invalid dimensions (w={}, h={}). Drawing placeholder.", id, displayFrame.name(), sw, sh);
+          drawPlaceholder(objectGraphicsContext, object, dx, dy);
+        }
+      } else {
+        LOG.error("[redrawSprites ID: {}] Could not determine display frame (baseFrameName='{}', mapKeys={}). Drawing placeholder.",
+            id, baseFrameName, frameMap != null ? frameMap.keySet() : "null map");
+        drawPlaceholder(objectGraphicsContext, object, dx, dy);
+      }
     } else {
-      drawPlaceholder(objectGraphicsContext, object, x, y);
+      LOG.trace("[redrawSprites ID: {}] Image not ready or failed. Drawing placeholder.", id);
+      drawPlaceholder(objectGraphicsContext, object, dx, dy);
     }
   }
 
-  /**
+    /**
    * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
    * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
    *

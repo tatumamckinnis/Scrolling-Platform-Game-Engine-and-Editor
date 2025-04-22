@@ -2,296 +2,319 @@ package oogasalad.editor.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.object.event.EditorEvent;
-import oogasalad.editor.model.data.object.event.ExecutorData;
+import oogasalad.editor.model.data.Layer;
+import oogasalad.editor.model.data.object.HitboxData;
+import oogasalad.editor.model.data.object.IdentityData;
+import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
+import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.ConditionData;
-import oogasalad.fileparser.records.EventData;
-import oogasalad.fileparser.records.HitBoxData;
-import oogasalad.fileparser.records.OutcomeData;
-import oogasalad.fileparser.records.SpriteData;
+import oogasalad.fileparser.records.GameObjectData;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Utility class that populates an {@link EditorObject} using data from a {@link BlueprintData}.
- * This class handles the transfer of identity, sprite, hitbox, event, and custom property data from
- * blueprint definitions into the editor's internal object format.
- * <p>
- * Designed to be used by the Editor when placing a prefab into the game world.
+ * Utility class responsible for populating an EditorObject with data.
  *
  * @author Tatum McKinnis
  */
 public class EditorObjectPopulator {
 
   private static final Logger LOG = LogManager.getLogger(EditorObjectPopulator.class);
+  private final EditorLevelData levelData;
 
 
   /**
-   * Populates the given target {@link EditorObject} using the provided {@link BlueprintData}. Uses
-   * the supplied {@link EditorDataAPI} to apply values and store metadata.
-   *
-   * @param target the object to populate
-   * @param source the blueprint source containing prefab data
-   * @param api    the editor's data access API
+   * Constructs an EditorObjectPopulator associated with a specific level.
    */
-  public static void populateFromBlueprint(EditorObject target, BlueprintData source,
-      EditorDataAPI api) {
-    if (target == null || source == null || api == null) {
-      LOG.error("Cannot populate EditorObject from blueprint: null arguments provided.");
-      return;
+  public EditorObjectPopulator(EditorLevelData levelData) {
+    this.levelData = Objects.requireNonNull(levelData, "levelData cannot be null");
+    LOG.info("EditorObjectPopulator initialized.");
+  }
+
+  /**
+   * Creates a new default EditorObject and registers it.
+   */
+  public EditorObject createDefaultObject() {
+    LOG.debug("Creating default EditorObject.");
+    EditorObject newObject = new EditorObject(levelData);
+    levelData.getObjectDataMap().put(newObject.getId(), newObject);
+    levelData.getObjectLayerDataMap().computeIfAbsent(newObject.getIdentityData().getLayer(), k -> new ArrayList<>()).add(newObject);
+    LOG.info("Default EditorObject created and registered with ID: {}", newObject.getId());
+    return newObject;
+  }
+
+  /**
+   * Creates and populates an EditorObject from a BlueprintData record.
+   * Assumes the BlueprintData's spriteData record contains resolved image path and parsed frame/animation data.
+   * Registers the new object with EditorLevelData.
+   */
+  public EditorObject populateFromBlueprint(BlueprintData blueprint, double x, double y) {
+    LOG.debug("Populating EditorObject from blueprint ID: {}, Type: {}", blueprint.blueprintId(), blueprint.type());
+    EditorObject object = new EditorObject(levelData);
+
+    IdentityData identity = new IdentityData(
+        object.getId(), blueprint.type(), blueprint.group(), levelData.getFirstLayer()
+    );
+    object.setIdentityData(identity);
+
+
+    String resolvedImagePath = "";
+    oogasalad.fileparser.records.SpriteData recordSprite = blueprint.spriteData();
+    if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile().getPath().isEmpty()) {
+
+      resolvedImagePath = recordSprite.spriteFile().getPath();
+      LOG.debug("Using image path from blueprint record: {}", resolvedImagePath);
+      if (!new File(resolvedImagePath).exists()) {
+        LOG.warn("Image path from blueprint record does not exist: {}", resolvedImagePath);
+
+        resolvedImagePath = "";
+      }
+    } else {
+      LOG.warn("Blueprint {} spriteData or spriteFile is null/empty.", blueprint.blueprintId());
+    }
+    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertRecordToModelSpriteData(
+        recordSprite, resolvedImagePath, x, y, blueprint.rotation(), blueprint.isFlipped()
+    );
+    object.setSpriteData(modelSpriteData);
+
+
+    if (blueprint.hitBoxData() != null) {
+      oogasalad.fileparser.records.HitBoxData bpHD = blueprint.hitBoxData();
+      int hitboxX = (int) (x + bpHD.spriteDx());
+      int hitboxY = (int) (y + bpHD.spriteDy());
+      oogasalad.editor.model.data.object.HitboxData modelHitbox = new oogasalad.editor.model.data.object.HitboxData(
+          hitboxX, hitboxY, bpHD.hitBoxWidth(), bpHD.hitBoxHeight(), bpHD.shape()
+      );
+      object.setHitboxData(modelHitbox);
+    } else {
+      HitboxData defaultHitbox = object.getHitboxData();
+      defaultHitbox.setX((int) x);
+      defaultHitbox.setY((int) y);
+      LOG.warn("Blueprint {} has no HitBoxData, using default position for default hitbox.", blueprint.blueprintId());
     }
 
-    UUID targetId = target.getId();
-    LOG.debug("Populating EditorObject {} from Blueprint ID {}", targetId, source.blueprintId());
 
+    PhysicsData physics = object.getPhysicsData();
+    Map<String, Double> doubleProps = blueprint.doubleProperties();
+    if (doubleProps != null) {
+      physics.setVelocityX(blueprint.velocityX());
+      physics.setVelocityY(blueprint.velocityY());
+      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
+      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
+    }
+
+
+
+    LOG.info("Populated EditorObject {} from blueprint {}", object.getId(), blueprint.blueprintId());
+
+
+    levelData.getObjectDataMap().put(object.getId(), object);
+    levelData.getObjectLayerDataMap().computeIfAbsent(identity.getLayer(), k -> new ArrayList<>()).removeIf(obj -> obj.getId().equals(object.getId()));
+    levelData.getObjectLayerDataMap().computeIfAbsent(identity.getLayer(), k -> new ArrayList<>()).add(object);
+
+    return object;
+  }
+
+
+  private void trySetPhysicsProperty(PhysicsData physics, String propertyName, Double value) {
+    if (value == null) return;
     try {
-      populateIdentity(targetId, source, api);
-      populateSprite(target, source, api);
-      populateHitbox(targetId, source, api);
-      populateEvents(target, targetId, source, api);
-      populateProperties(target, source, api);
-
+      switch (propertyName) {
+        case "gravity": physics.setGravity(value); break;
+        case "jump_force": physics.setJumpForce(value); break;
+        default: LOG.trace("Physics property '{}' not handled.", propertyName); break;
+      }
     } catch (Exception e) {
-      LOG.error("Error populating EditorObject {} from blueprint: {}", targetId, e.getMessage(),
-          e);
+      LOG.warn("Could not set physics property '{}': {}", propertyName, e.getMessage());
     }
   }
 
-  private static void populateIdentity(UUID targetId, BlueprintData source, EditorDataAPI api) {
-    api.getIdentityDataAPI().setGroup(targetId, source.group());
-    api.getIdentityDataAPI().setType(targetId, source.type());
-    if (api.getLevel() != null && !api.getLevel().getLayers().isEmpty()) {
-      api.getIdentityDataAPI().setLayer(targetId, api.getLayers().get(0).getName());
-    } else {
-      LOG.warn("Could not set layer for object {} from prefab: No layers found in level.",
-          targetId);
-    }
-  }
+  /**
+   * Converts a SpriteData record into a SpriteData model object.
+   * Casts position to int and sets base frame name as String.
+   * Uses the explicitly provided imagePath. Attempts heuristic for base frame name if needed.
+   */
+  private oogasalad.editor.model.data.object.sprite.SpriteData convertRecordToModelSpriteData(
+      oogasalad.fileparser.records.SpriteData recordSprite, String imagePath,
+      double x, double y, double rotation, boolean isFlipped) {
 
-  private static void populateSprite(EditorObject target, BlueprintData source,
-      EditorDataAPI api) {
-    SpriteData sourceSprite = source.spriteData();
-    if (sourceSprite == null) {
-      LOG.warn("No sprite data found in blueprint {}. Skipping sprite population.",
-          source.blueprintId());
-      return;
+    if (recordSprite == null) {
+      LOG.warn("Input SpriteData record is null. Using default sprite data.");
+      return createDefaultModelSpriteData(x, y);
     }
 
-    UUID targetId = target.getId();
-    api.getSpriteDataAPI().setName(targetId, sourceSprite.name());
-    api.getSpriteDataAPI()
-        .setSpritePath(targetId, safeGetPath(sourceSprite.spriteFile()));
-    api.getSpriteDataAPI().setRotation(targetId, source.rotation());
+    FrameData baseFrameModel = convertRecordToModelFrame(recordSprite.baseFrame());
 
-    populateFrames(target.getSpriteData(), sourceSprite.frames());
-    populateAnimations(target.getSpriteData(), sourceSprite.animations());
-    setBaseFrame(target.getSpriteData(), sourceSprite.baseFrame());
-  }
+    Map<String, FrameData> frameMapModel = recordSprite.frames().stream()
+        .map(this::convertRecordToModelFrame)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toMap(FrameData::name, frame -> frame, (e, r) -> r));
 
-  private static String safeGetPath(File file) {
-    return (file != null) ? file.getPath() : "";
-  }
+    Map<String, AnimationData> animationMapModel = recordSprite.animations().stream()
+        .map(this::convertRecordToModelAnimation)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toMap(AnimationData::getName, anim -> anim, (e, r) -> r));
 
-  private static void populateFrames(
-      oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
-      List<oogasalad.fileparser.records.FrameData> sourceFrames) {
-    targetSprite.getFrames().clear();
-    if (sourceFrames != null) {
-      sourceFrames.forEach(frame -> {
-        if (frame != null) {
-          targetSprite.addFrame(frame.name(),
-              new oogasalad.editor.model.data.object.sprite.FrameData(
-                  frame.name(), frame.x(), frame.y(), frame.width(), frame.height()
-              ));
-        }
-      });
-    }
-  }
-
-  private static void populateAnimations(
-      oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
-      List<oogasalad.fileparser.records.AnimationData> sourceAnimations) {
-    targetSprite.getAnimations().clear();
-    if (sourceAnimations != null) {
-      sourceAnimations.forEach(anim -> {
-        if (anim != null) {
-          targetSprite.addAnimation(anim.name(),
-              new AnimationData(
-                  anim.name(), anim.frameLength(), anim.frameNames()
-              ));
-        }
-      });
-    }
-  }
-
-  private static void setBaseFrame(
-      oogasalad.editor.model.data.object.sprite.SpriteData targetSprite,
-      oogasalad.fileparser.records.FrameData sourceBaseFrame) {
-    String baseFrameName = null;
-    if (sourceBaseFrame != null) {
-      baseFrameName = sourceBaseFrame.name();
-    } else if (!targetSprite.getFrames().isEmpty()) {
-      baseFrameName = targetSprite.getFrames().keySet().iterator().next();
-    }
-
-    if (baseFrameName != null) {
-      targetSprite.setBaseFrame(baseFrameName);
-    } else {
-      LOG.warn("Could not determine a base frame for sprite.");
-    }
-  }
+    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = new oogasalad.editor.model.data.object.sprite.SpriteData(
+        recordSprite.name(), (int) x, (int) y, rotation, isFlipped,
+        frameMapModel, animationMapModel, imagePath
+    );
 
 
-  private static void populateHitbox(UUID targetId, BlueprintData source, EditorDataAPI api) {
-    HitBoxData sourceHitbox = source.hitBoxData();
-    if (sourceHitbox != null) {
-      api.getHitboxDataAPI().setShape(targetId, sourceHitbox.shape());
-      api.getHitboxDataAPI().setWidth(targetId, sourceHitbox.hitBoxWidth());
-      api.getHitboxDataAPI().setHeight(targetId, sourceHitbox.hitBoxHeight());
-    } else {
-      LOG.warn("No hitbox data found in blueprint {}. Skipping hitbox population.",
-          source.blueprintId());
-    }
-  }
-
-  private static void populateEvents(EditorObject target, UUID targetId, BlueprintData source,
-      EditorDataAPI api) {
-    clearTargetEvents(target);
-
-    if (source.eventDataList() == null) {
-      return;
-    }
-
-    for (EventData sourceEvent : source.eventDataList()) {
-      processSingleSourceEvent(target, targetId, sourceEvent, api);
-    }
-  }
-
-  private static void clearTargetEvents(EditorObject target) {
-    target.getInputData().getEvents().clear();
-    target.getCollisionData().getEvents().clear();
-    target.getPhysicsData().getEvents().clear();
-    target.getCustomEventData().getEvents().clear();
-    target.getEventData().getEvents().clear();
-  }
-
-  private static void processSingleSourceEvent(EditorObject target, UUID targetId,
-      EventData sourceEvent, EditorDataAPI api) {
-    if (sourceEvent == null) {
-      return;
-    }
-
-    EditorEvent editorEvent = convertToEditorEvent(sourceEvent);
-    String eventId = sourceEvent.eventId();
-    String eventType = sourceEvent.type();
-
-    if (eventId == null || eventType == null) {
-      LOG.warn("Skipping event with null ID or type from blueprint.");
-      return;
-    }
-
-    boolean eventAdded = addEventToCorrectManager(targetId, eventId, eventType, editorEvent, api);
-
-    if (eventAdded) {
-      target.getEventData().addEvent(eventId);
-    }
-  }
-
-  private static boolean addEventToCorrectManager(UUID targetId, String eventId, String eventType,
-      EditorEvent editorEvent, EditorDataAPI api) {
-    switch (eventType.toLowerCase()) {
-      case "input":
-        api.getInputDataAPI().setEvent(targetId, eventId, editorEvent);
-        return true;
-      case "collision":
-        api.getCollisionDataAPI().setEvent(targetId, eventId, editorEvent);
-        return true;
-      case "physics":
-        api.getPhysicsDataAPI().setEvent(targetId, eventId, editorEvent);
-        return true;
-      case "custom":
-        api.getCustomEventDataAPI().setEvent(targetId, eventId, editorEvent);
-        return true;
-      default:
-        LOG.warn("Unknown event type '{}' encountered for blueprint event '{}'", eventType,
-            eventId);
-        return false;
-    }
-  }
-
-
-  private static void populateProperties(EditorObject target, BlueprintData source,
-      EditorDataAPI api) {
-    if (source.stringProperties() != null) {
-      source.stringProperties().forEach((key, value) -> {
-        LOG.trace("Setting string property from blueprint: {} = {}", key, value);
-      });
-    }
-    if (source.doubleProperties() != null) {
-      source.doubleProperties().forEach((key, value) -> {
-        LOG.trace("Setting double property from blueprint: {} = {}", key, value);
-      });
-    }
-    if (source.stringProperties() == null && source.doubleProperties() == null) {
-      LOG.trace("No custom properties found in blueprint {}.", source.blueprintId());
-    } else {
-      LOG.warn(
-          "Setting custom string/double properties from blueprint {} requires target object methods.",
-          source.blueprintId());
-    }
-  }
-
-  private static EditorEvent convertToEditorEvent(EventData sourceEvent) {
-    EditorEvent editorEvent = new EditorEvent();
-    convertAndAddConditions(editorEvent, sourceEvent.conditionGroups());
-    convertAndAddOutcomes(editorEvent, sourceEvent.outcomes());
-    return editorEvent;
-  }
-
-  private static void convertAndAddConditions(EditorEvent editorEvent,
-      List<List<ConditionData>> sourceConditionGroups) {
-    if (sourceConditionGroups == null) {
-      return;
-    }
-    for (List<ConditionData> sourceGroup : sourceConditionGroups) {
-      if (sourceGroup == null) {
-        editorEvent.addConditionGroup(new ArrayList<>());
-        continue;
+    String baseFrameNameToSet = null;
+    if (baseFrameModel != null) {
+      baseFrameNameToSet = baseFrameModel.name();
+    } else if (!frameMapModel.isEmpty()) {
+      baseFrameNameToSet = recordSprite.name();
+      if (!frameMapModel.containsKey(baseFrameNameToSet)) {
+        baseFrameNameToSet = frameMapModel.values().iterator().next().name();
+        LOG.warn("Heuristic base frame name '{}' not found in frame map for sprite '{}'. Using first frame name '{}' instead.",
+            recordSprite.name(), recordSprite.name(), baseFrameNameToSet);
       }
-      List<ExecutorData> editorGroup = sourceGroup.stream()
-          .filter(Objects::nonNull)
-          .map(sourceCond -> new ExecutorData(
-              sourceCond.conditionType(),
-              new HashMap<>(sourceCond.stringParams()),
-              new HashMap<>(sourceCond.doubleParams())
-          ))
-          .collect(Collectors.toList());
-      editorEvent.addConditionGroup(editorGroup);
+      LOG.debug("Setting base frame name heuristically to '{}' for sprite '{}'", baseFrameNameToSet, recordSprite.name());
+    } else {
+
+      LOG.warn("No base frame record and no frames found for sprite record '{}'. Cannot set base frame name.", recordSprite.name());
     }
+    modelSpriteData.setBaseFrame(baseFrameNameToSet);
+
+
+    LOG.info("Converted sprite record '{}': Image='{}', BaseFrame='{}', Frames={}, Animations={}",
+        recordSprite.name(), imagePath, modelSpriteData.getFrame(recordSprite.name()),
+        frameMapModel.size(), animationMapModel.size());
+    return modelSpriteData;
   }
 
-  private static void convertAndAddOutcomes(EditorEvent editorEvent,
-      List<OutcomeData> sourceOutcomes) {
-    if (sourceOutcomes == null) {
-      return;
+  private FrameData convertRecordToModelFrame(oogasalad.fileparser.records.FrameData recordFrame) {
+    if (recordFrame == null) return null;
+    return new FrameData(recordFrame.name(), recordFrame.x(), recordFrame.y(), recordFrame.width(), recordFrame.height());
+  }
+
+  private AnimationData convertRecordToModelAnimation(oogasalad.fileparser.records.AnimationData recordAnimation) {
+    if (recordAnimation == null) return null;
+    List<String> frameNames = (recordAnimation.frameNames() != null) ? new ArrayList<>(recordAnimation.frameNames()) : new ArrayList<>();
+    return new AnimationData(recordAnimation.name(), recordAnimation.frameLen(), frameNames);
+  }
+
+  private oogasalad.editor.model.data.object.sprite.SpriteData createDefaultModelSpriteData(double x, double y) {
+    return new oogasalad.editor.model.data.object.sprite.SpriteData(
+        "Default", (int) x, (int) y, 0, false, Map.of(), Map.of(), ""
+    );
+  }
+
+
+  /**
+   * Creates and populates an EditorObject from a GameObjectData record, using a map
+   * of blueprints to retrieve template information. Correctly handles Layer assignment.
+   * Registers the loaded object with EditorLevelData.
+   */
+  public EditorObject populateFromGameObjectData(GameObjectData gameObjectData, Map<Integer, BlueprintData> blueprintMap) {
+    LOG.debug("Populating EditorObject from GameObjectData ID: {}, BlueprintID: {}", gameObjectData.uniqueId(), gameObjectData.blueprintId());
+    EditorObject object = new EditorObject(levelData);
+
+    BlueprintData blueprint = blueprintMap.get(gameObjectData.blueprintId());
+    if (blueprint == null) {
+      LOG.error("BlueprintData not found for blueprintId {} (GameObjectData {}). Creating minimal error object.",
+          gameObjectData.blueprintId(), gameObjectData.uniqueId());
+      Layer errorLayer = levelData.getFirstLayer();
+      String layerName = gameObjectData.layerName() != null ? gameObjectData.layerName() : errorLayer.getName();
+      Layer targetLayer = findLayerByName(layerName, errorLayer);
+      IdentityData errorIdentity = new IdentityData(gameObjectData.uniqueId(), "ERROR_NoBlueprint", "ERROR", targetLayer);
+      object.setIdentityData(errorIdentity);
+      object.setSpriteData(createDefaultModelSpriteData(gameObjectData.x(), gameObjectData.y()));
+
+      levelData.getObjectDataMap().put(object.getId(), object);
+      levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>()).add(object);
+      return object;
     }
-    for (OutcomeData sourceOutcome : sourceOutcomes) {
-      if (sourceOutcome != null) {
-        editorEvent.addOutcome(new ExecutorData(
-            sourceOutcome.outcomeType(),
-            new HashMap<>(sourceOutcome.stringParams()),
-            new HashMap<>(sourceOutcome.doubleParams())
-        ));
+
+
+    String layerName = gameObjectData.layerName();
+    Layer targetLayer = findLayerByName(layerName, levelData.getFirstLayer());
+    IdentityData identity = new IdentityData(
+        gameObjectData.uniqueId(), blueprint.type(), blueprint.group(), targetLayer
+    );
+    object.setIdentityData(identity);
+
+
+    String resolvedImagePath = "";
+    oogasalad.fileparser.records.SpriteData recordSprite = blueprint.spriteData();
+    if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile().getPath().isEmpty()) {
+      resolvedImagePath = recordSprite.spriteFile().getPath();
+      LOG.debug("Loading GameObject: Using image path from blueprint record: {}", resolvedImagePath);
+      if (!new File(resolvedImagePath).exists()) {
+        LOG.warn("Image path from blueprint record does not exist when loading GameObject: {}", resolvedImagePath);
+        resolvedImagePath = "";
+      }
+    } else {
+      LOG.warn("Blueprint {} for GameObject {} has no spriteData/spriteFile.", blueprint.blueprintId(), gameObjectData.uniqueId());
+    }
+    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertRecordToModelSpriteData(
+        recordSprite, resolvedImagePath,
+        gameObjectData.x(), gameObjectData.y(),
+        blueprint.rotation(), blueprint.isFlipped()
+    );
+    object.setSpriteData(modelSpriteData);
+
+
+
+    if (blueprint.hitBoxData() != null) {
+      oogasalad.fileparser.records.HitBoxData bpHitbox = blueprint.hitBoxData();
+      int hitboxX = gameObjectData.x() + bpHitbox.spriteDx();
+      int hitboxY = gameObjectData.y() + bpHitbox.spriteDy();
+      oogasalad.editor.model.data.object.HitboxData modelHitbox = new oogasalad.editor.model.data.object.HitboxData(
+          hitboxX, hitboxY, bpHitbox.hitBoxWidth(), bpHitbox.hitBoxHeight(), bpHitbox.shape()
+      );
+      object.setHitboxData(modelHitbox);
+    } else {
+      HitboxData defaultHitbox = object.getHitboxData();
+      defaultHitbox.setX(gameObjectData.x());
+      defaultHitbox.setY(gameObjectData.y());
+      LOG.warn("Blueprint {} (GameObject {}) has no HitBoxData.", blueprint.blueprintId(), gameObjectData.uniqueId());
+    }
+
+
+    PhysicsData physics = object.getPhysicsData();
+    Map<String, Double> doubleProps = blueprint.doubleProperties();
+    if (doubleProps != null) {
+      physics.setVelocityX(blueprint.velocityX());
+      physics.setVelocityY(blueprint.velocityY());
+      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
+      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
+    }
+
+
+    LOG.info("Populated EditorObject {} from GameObjectData {} using Blueprint {}",
+        gameObjectData.uniqueId(), gameObjectData.blueprintId(), blueprint.blueprintId());
+
+
+    levelData.getObjectDataMap().put(object.getId(), object);
+    levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>()).removeIf(obj -> obj.getId().equals(object.getId()));
+    levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>()).add(object);
+
+    return object;
+  }
+
+
+  private Layer findLayerByName(String name, Layer defaultLayer) {
+    if (name == null || name.trim().isEmpty()) {
+      LOG.warn("Layer name is null or empty, using default layer '{}'", defaultLayer.getName());
+      return defaultLayer;
+    }
+    for (Layer layer : levelData.getLayers()) {
+      if (layer.getName().equals(name)) {
+        return layer;
       }
     }
+    LOG.warn("Layer with name '{}' not found in EditorLevelData, using default layer '{}'", name, defaultLayer.getName());
+    return defaultLayer;
   }
 }
