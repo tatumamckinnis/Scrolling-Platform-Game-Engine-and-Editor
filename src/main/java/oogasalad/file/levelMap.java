@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Level Map returns a list of levels for a given game.
  */
 public class levelMap {
 
-  private static Logger LOG = Logger.getLogger(levelMap.class.getName());
-
+  private static final Logger LOG = LogManager.getLogger();
   /**
    * reads the levels directory and builds the nested map structure.
    *

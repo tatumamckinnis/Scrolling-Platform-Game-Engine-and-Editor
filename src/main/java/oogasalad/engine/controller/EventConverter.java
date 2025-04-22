@@ -3,7 +3,6 @@ package oogasalad.engine.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.outcome.EventOutcome;
@@ -14,6 +13,7 @@ import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.OutcomeData;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Utility class responsible for converting {@link EventData} from the file parser into fully
@@ -25,8 +25,7 @@ public class EventConverter {
 
   private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(
       EventConverter.class);
-  private static Logger LOG = Logger.getLogger(EventConverter.class.getName());
-
+  private static final Logger LOG = LogManager.getLogger();
   /**
    * Converts all event data associated with a {@link GameObjectData} instance into a list of
    * {@link Event} objects tied to the provided {@link GameObject}.

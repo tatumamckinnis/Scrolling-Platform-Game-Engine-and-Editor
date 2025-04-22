@@ -9,9 +9,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.logging.Logger;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Represents the level data used by the editor, including groups, layers, and mappings between
@@ -23,7 +24,7 @@ import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
  */
 public class EditorLevelData {
 
-  private static Logger LOG = Logger.getLogger(EditorLevelData.class.getName());
+  private static final Logger LOG = LogManager.getLogger();
 
   private String gameName;
   private String levelName;
