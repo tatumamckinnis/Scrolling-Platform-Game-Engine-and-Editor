@@ -33,6 +33,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     STOP_OBJECT_ANIMATIONS,
     MOVE,
     SET_BASE_FRAME,
+    TELEPORT_TO_POINT,
+    TELEPORT_TO_RANDOM_POINT,
   }
 
   /**
