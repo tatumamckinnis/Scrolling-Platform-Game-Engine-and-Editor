@@ -41,6 +41,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.loader.EditorBlueprintParser;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
@@ -242,11 +243,9 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
 
   /**
-   * Loads BlueprintData records from a specified XML file path.
-   * (Implementation remains the same)
+   * Loads BlueprintData records from a specified XML file path using the EditorBlueprintParser.
    */
   private Map<Integer, BlueprintData> loadPrefabsFromFile(String filePath) {
-
     Map<Integer, BlueprintData> prefabs = new HashMap<>();
     File file = new File(filePath);
     if (!file.exists()) {
@@ -260,24 +259,27 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
       Document doc = dBuilder.parse(file);
       doc.getDocumentElement().normalize();
-
       Element rootElement = doc.getDocumentElement();
       if (!rootElement.getNodeName().equalsIgnoreCase("prefabs")) {
         LOG.error("Invalid prefab file format: Root element must be <prefabs> in {}", filePath);
         return prefabs;
       }
 
-
-      BlueprintDataParser parser = new BlueprintDataParser();
+      // FIX: Use the editor's blueprint parser
+      EditorBlueprintParser parser = new EditorBlueprintParser();
+      // Provide an empty list for events, assuming prefabs don't rely on pre-loaded event data
       prefabs = parser.getBlueprintData(rootElement, new ArrayList<>());
 
-      LOG.info("Successfully parsed {} prefabs from {}", prefabs.size(), filePath);
+      LOG.info("Successfully parsed {} prefabs using EditorBlueprintParser from {}", prefabs.size(), filePath);
 
-    } catch (Exception e) {
-      LOG.error("Failed to parse prefab file {}: {}", filePath, e.getMessage(), e);
+    } catch (Exception e) { // Catch broader exceptions from parser or XML processing
+      LOG.error("Failed to parse prefab file {} using EditorBlueprintParser: {}", filePath, e.getMessage(), e);
+      // Optionally notify the user via controller
+      // controller.notifyErrorOccurred("Error loading prefabs: " + e.getMessage());
     }
     return prefabs;
   }
+
 
 
   /**
