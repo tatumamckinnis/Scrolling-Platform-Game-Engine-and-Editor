@@ -8,10 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.editor.controller.EditorMaker;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.ServerMessage;
@@ -46,24 +46,16 @@ import oogasalad.exceptions.ViewInitializationException;
  */
 public class ButtonActionFactory {
 
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
-  private static final String buttonIDToActionFilePath = "/oogasalad/config/engine/view/buttonAction.properties";
   private static final String gamesFilePath = "data/gameData/levels/";
-  private static final Properties buttonIDToActionProperties = new Properties();
   private final ViewState viewState;
 
   /**
    * Loads property file map of buttonIDs to Actions.
    */
   public ButtonActionFactory(ViewState state) {
-    try {
-      InputStream stream = getClass().getResourceAsStream(buttonIDToActionFilePath);
-      buttonIDToActionProperties.load(stream);
-    } catch (IOException e) {
-      LOG.warn("Unable to load button action properties");
-    }
     this.viewState = state;
   }
 
@@ -86,13 +78,13 @@ public class ButtonActionFactory {
    */
   public Runnable getActionAndSendServerMessage(String buttonID) {
     return () -> {
-      sendMessageToServer(buttonIDToActionProperties.getProperty(buttonID), "");
+      sendMessageToServer(resourceManager.getConfig("engine.view.buttonAction", buttonID), "");
       getMethod(buttonID).run();
     };
   }
 
   private Runnable getMethod(String buttonID) {
-    String methodName = buttonIDToActionProperties.getProperty(buttonID);
+    String methodName = resourceManager.getConfig("engine.view.buttonAction", buttonID);
 
     try {
       Method method = ButtonActionFactory.class.getDeclaredMethod(methodName);
@@ -311,7 +303,7 @@ public class ButtonActionFactory {
                  IllegalAccessException | LayerParseException | LevelDataParseException |
                  PropertyParsingException | SpriteParseException | EventParseException |
                  HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
-          LOG.error(EXCEPTIONS.getString("CannotSelectLevel"), e);
+          LOG.error(resourceManager.getText("exceptions", "CannotSelectLevel"), e);
         }
       }
     };

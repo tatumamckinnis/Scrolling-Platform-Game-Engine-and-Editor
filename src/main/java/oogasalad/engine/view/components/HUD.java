@@ -1,19 +1,18 @@
 package oogasalad.engine.view.components;
 
 import java.util.Map;
-import java.util.ResourceBundle;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
 
 public class HUD extends Display {
 
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private Pane container;
 
   public HUD() {
@@ -32,7 +31,7 @@ public class HUD extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
   }
 
   @Override

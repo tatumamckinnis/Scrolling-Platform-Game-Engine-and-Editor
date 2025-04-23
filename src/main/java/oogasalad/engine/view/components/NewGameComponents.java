@@ -1,12 +1,10 @@
 package oogasalad.engine.view.components;
 
-import java.util.ResourceBundle;
-import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 
@@ -17,8 +15,7 @@ import oogasalad.engine.view.ViewState;
  */
 public class NewGameComponents extends Display {
 
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   // contains a game over object if it is game ober
   // contains a play again
@@ -51,12 +48,12 @@ public class NewGameComponents extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRemoveGameObjectImage"));
   }
 
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRenderPlayerStats"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRenderPlayerStats"));
   }
 
 
