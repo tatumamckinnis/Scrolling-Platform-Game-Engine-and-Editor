@@ -25,6 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
+import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 
@@ -222,11 +223,13 @@ public class SplashScreen extends Display {
     double buttonHeight = Integer.parseInt(
         splashComponentProperties.getProperty("splash.button.height"));
 
-    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
+    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
         comboBoxIDs, comboBoxStyles, splashBox);
-
-
-    renderGameAndLevelSelectors(comboBoxTexts, buttonWidth, buttonHeight, comboBoxIDs, comboBoxStyles, splashBox);
+    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    populateGameTypeComboBox(gameTypeBox);
+    selectGameType(gameTypeBox, levelBox);
+    setComboBoxButtonAction(gameTypeBox, levelBox);
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
@@ -241,17 +244,6 @@ public class SplashScreen extends Display {
         splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
-  }
-
-  private void renderGameAndLevelSelectors(String[] comboBoxTexts, double buttonWidth, double buttonHeight,
-      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) throws FileNotFoundException {
-    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    populateGameTypeComboBox(gameTypeBox);
-    selectGameType(gameTypeBox, levelBox);
-    setGameSelectorComboBoxButtonAction(gameTypeBox, levelBox);
   }
 
   /**
@@ -307,15 +299,7 @@ public class SplashScreen extends Display {
     });
   }
 
-  private void setLanguageComboBoxAction(ComboBox<String> languageComboBox) {
-    ButtonActionFactory factory = new ButtonActionFactory(viewState);
-    languageComboBox.valueProperty().addListener((obs, oldValue, language) -> {
-      factory.selectLanguage(language).run();
-    });
-
-  }
-
-  private void setGameSelectorComboBoxButtonAction(ComboBox<String> gameBox, ComboBox<String> levelBox) {
+  private void setComboBoxButtonAction(ComboBox<String> gameBox, ComboBox<String> levelBox) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     levelBox.valueProperty().addListener((obs, oldValue, level) -> {
       String game = gameBox.getValue();

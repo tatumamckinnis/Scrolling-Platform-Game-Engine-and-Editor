@@ -50,6 +50,7 @@ public class DefaultView implements ViewAPI {
   public DefaultView(Stage stage, GameManagerAPI gameManager) throws ViewInitializationException {
     this.currentStage = stage;
     this.gameManager = gameManager;
+    this.myCamera = new TrackerCamera();
     currentScene = new Scene(new Group(), LEVEL_WIDTH, LEVEL_HEIGHT);
     currentInputs = new ArrayList<>();
     releasedInputs = new ArrayList<>();
