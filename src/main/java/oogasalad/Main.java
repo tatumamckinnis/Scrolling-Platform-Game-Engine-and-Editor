@@ -1,6 +1,8 @@
 package oogasalad;
 
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.DefaultGameManager;
@@ -21,12 +23,12 @@ public class Main extends Application {
    *                     not be primary stages.
    */
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws URISyntaxException, IOException, InterruptedException {
     try {
-      new DefaultGameManager();
+      GameManagerAPI manager = new DefaultGameManager();
       LOG.info("Starting game...");
     } catch (Exception e) {
-      LOG.warn("Error starting main");
+      LOG.warn("Error starting main.");
     }
   }
 

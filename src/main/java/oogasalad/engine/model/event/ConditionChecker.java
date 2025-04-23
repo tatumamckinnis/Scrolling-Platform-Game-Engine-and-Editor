@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
+import oogasalad.engine.model.event.condition.AtOrBeyondXCondition;
+import oogasalad.engine.model.event.condition.AtOrBeyondYCondition;
 import oogasalad.engine.model.event.condition.CollisionCondition;
 import oogasalad.engine.model.event.condition.Condition;
 import oogasalad.engine.model.event.condition.EventCondition;
@@ -43,7 +45,8 @@ public class ConditionChecker {
         new VariableLessThanThresholdCondition());
     conditionMap.put(ConditionType.GREATER_VARIABLE_THRESHOLD,
         new VariableGreaterThanThresholdCondition());
-
+    conditionMap.put(ConditionType.AT_OR_BEYOND_X, new AtOrBeyondXCondition());
+    conditionMap.put(ConditionType.AT_OR_BEYOND_Y, new AtOrBeyondYCondition());
   }
 
   /**

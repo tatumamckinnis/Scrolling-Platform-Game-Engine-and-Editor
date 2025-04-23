@@ -6,17 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
-import javafx.scene.control.ComboBox;
 import oogasalad.Main;
 import oogasalad.editor.controller.EditorMaker;
-import oogasalad.editor.view.EditorApplication;
+import oogasalad.server.ClientSocket;
+import oogasalad.server.ServerMessage;
 import oogasalad.engine.controller.DefaultGameManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,6 +74,24 @@ public class ButtonActionFactory {
    * @return runnable function for the button's onClick action
    */
   public Runnable getAction(String buttonID) {
+    return getMethod(buttonID);
+  }
+
+  /**
+   * Returns the corresponding runnable function and also sends message to server telling all other
+   * clients to do the same. All buttons in the game control panel should call this.
+   *
+   * @param buttonID the button's unique ID whose function to run.
+   * @return runnable function.
+   */
+  public Runnable getActionAndSendServerMessage(String buttonID) {
+    return () -> {
+      sendMessageToServer(buttonIDToActionProperties.getProperty(buttonID), "");
+      getMethod(buttonID).run();
+    };
+  }
+
+  private Runnable getMethod(String buttonID) {
     String methodName = buttonIDToActionProperties.getProperty(buttonID);
 
     try {
@@ -95,7 +111,7 @@ public class ButtonActionFactory {
    * @throws ViewInitializationException thrown if error initializing the view.
    * @throws InputException              if error parsing user key inputs.
    */
-  private Runnable startGame() throws ViewInitializationException, InputException {
+  public Runnable startGame() throws ViewInitializationException, InputException {
     return () -> {
       try {
         DefaultView gameView = viewState.getDefaultView();
@@ -132,7 +148,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that resumes the game
    */
-  private Runnable playGame() {
+  public Runnable playGame() {
     return () -> {
       viewState.getGameManager().playGame();
     };
@@ -143,7 +159,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that pauses the game
    */
-  private Runnable pauseGame() {
+  public Runnable pauseGame() {
     return () -> {
       viewState.getGameManager().pauseGame();
     };
@@ -154,7 +170,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that restarts the game
    */
-  private Runnable restartGame() {
+  public Runnable restartGame() {
     return () -> {
       try {
         restart();
@@ -194,7 +210,7 @@ public class ButtonActionFactory {
     };
   }
 
-  private void restart()
+  public void restart()
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
     viewState.getGameManager().restartGame();
     GameDisplay game = new GameDisplay(viewState);
@@ -208,7 +224,7 @@ public class ButtonActionFactory {
    *
    * @throws ViewInitializationException thrown if error initializing the view.
    */
-  private Runnable goToHome() throws ViewInitializationException {
+  public Runnable goToHome() throws ViewInitializationException {
     return () -> {
       try {
         DefaultView view = viewState.getDefaultView();
@@ -230,22 +246,24 @@ public class ButtonActionFactory {
    * Sets up input listeners when start is clicked.
    */
   private Runnable setCurrentInputs(Scene currentScene) throws ViewInitializationException {
-    List<KeyCode> currentInputs = new ArrayList<>();
-    List<KeyCode> releasedKeys = new ArrayList<>();
-    viewState.setCurrentInputs(currentInputs, releasedKeys);
     return () -> {
       currentScene.setOnKeyPressed(event -> {
         KeyCode keyCode = event.getCode();
-        if (!currentInputs.contains(keyCode)) {
-          currentInputs.add(keyCode);
-
+        try {
+          if (!viewState.getDefaultView().getCurrentInputs().contains(keyCode)) {
+            viewState.pressKey(keyCode);
+            sendMessageToServer("pressKey", keyCode.toString());
+          }
+        } catch (InputException e) {
+          LOG.warn("Could not get current inputs.");
+          throw new RuntimeException(e);
         }
       });
 
       currentScene.setOnKeyReleased(event -> {
         KeyCode keyCode = event.getCode();
-        currentInputs.remove(keyCode);
-        releasedKeys.add(keyCode);
+        viewState.releaseKey(keyCode);
+        sendMessageToServer("releaseKey", keyCode.toString());
       });
     };
   }
@@ -303,6 +321,31 @@ public class ButtonActionFactory {
     return () -> {
       new EditorMaker(new Stage());
     };
+  }
+
+  /**
+   * This method attempts to establish a connection to the server.
+   * @param lobby a lobby to connect to.
+   * @param viewState the current view state.
+   * @return a runnable which executes this function.
+   */
+  public static Runnable joinLobby(int lobby, ViewState viewState) {
+    return () -> {
+      try {
+        ClientSocket client = new ClientSocket(lobby, viewState.getGameManager().getCurrentLevel(), viewState);
+        client.connect();
+        viewState.setMySocket(client);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  private void sendMessageToServer(String type, String message) {
+    if (viewState.getMySocket() != null) {
+      ServerMessage m = new ServerMessage(type, message);
+      m.sendToSocket(viewState.getMySocket());
+    }
   }
 
   private Runnable renderNewSplashScreen() {
