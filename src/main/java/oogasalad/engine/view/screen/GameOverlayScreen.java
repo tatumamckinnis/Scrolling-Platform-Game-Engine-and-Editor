@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,9 +26,9 @@ import oogasalad.engine.view.ViewState;
  */
 public abstract class GameOverlayScreen extends Display {
 
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private static final Logger LOG = LogManager.getLogger();
-  private static final String overlayPropertiesFilepath = "/oogasalad/config/engine/view/overlayScene.properties";
-  private static final Properties overlayProperties = new Properties();
   private ViewState viewState;
 
   /**
@@ -36,12 +38,6 @@ public abstract class GameOverlayScreen extends Display {
    * @param viewState the state of the view
    */
   public GameOverlayScreen(ViewState viewState) {
-    try {
-      InputStream stream = getClass().getResourceAsStream(overlayPropertiesFilepath);
-      overlayProperties.load(stream);
-    } catch (IOException e) {
-      LOG.warn("Unable to load overlay screen properties");
-    }
     this.viewState = viewState;
   }
 

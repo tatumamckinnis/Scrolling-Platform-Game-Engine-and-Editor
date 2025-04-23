@@ -7,19 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
-import oogasalad.Main;
-import oogasalad.engine.model.object.GameObject;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ObjectImage;
 import oogasalad.fileparser.records.FrameData;
-import org.w3c.dom.css.Rect;
 
 /**
  * The {@code ViewObjectToImageConverter} class is responsible for converting
@@ -29,8 +25,7 @@ import org.w3c.dom.css.Rect;
  */
 public class ViewObjectToImageConverter {
 
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private final Map<String, ObjectImage> UUIDToImageMap;
 
@@ -156,6 +151,6 @@ public class ViewObjectToImageConverter {
     if (UUIDToImageMap.containsKey(gameObject.getUUID())) {
       return UUIDToImageMap.get(gameObject.getUUID());
     }
-    throw new NoSuchElementException(EXCEPTIONS.getString("NoImage"));
+    throw new NoSuchElementException(resourceManager.getText("Exceptions", "NoImage"));
   }
 }

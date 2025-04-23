@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.RenderingException;
 
