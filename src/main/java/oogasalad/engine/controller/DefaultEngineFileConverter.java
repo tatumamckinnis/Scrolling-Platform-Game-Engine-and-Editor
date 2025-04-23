@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
-  private static ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private static final Logger LOG = LogManager.getLogger();
 
   private Map<String, GameObject> gameObjectMap;

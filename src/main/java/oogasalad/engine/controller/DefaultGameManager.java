@@ -41,9 +41,8 @@ import org.apache.logging.log4j.Logger;
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
-      "oogasalad.config.engine.controller.gamemanager");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private final Timeline myGameLoop;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
@@ -133,7 +132,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     if (currentLevel != null) {
       return currentLevel;
     }
-    throw new NullPointerException(EXCEPTIONS.getString("currentLevelNull"));
+    throw new NullPointerException(resourceManager.getText("exceptions", "currentLevelNull"));
   }
 
   @Override
@@ -183,7 +182,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     Timeline gameLoop = new Timeline();
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
-        GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
+        resourceManager.getConfig("engine.controller.gamemanager", "framesPerSecond"));
     double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {

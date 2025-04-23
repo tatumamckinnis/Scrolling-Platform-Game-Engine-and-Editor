@@ -2,13 +2,9 @@ package oogasalad.engine.view.screen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -27,7 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
-import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 

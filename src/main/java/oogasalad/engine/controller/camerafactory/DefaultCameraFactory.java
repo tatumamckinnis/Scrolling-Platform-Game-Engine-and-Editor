@@ -4,31 +4,29 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
-import oogasalad.Main;
-import oogasalad.engine.controller.DefaultGameController;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.view.LevelDisplay;
 import oogasalad.engine.view.camera.AutoScrollingCamera;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.camera.TrackerCamera;
 import oogasalad.fileparser.records.CameraData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DefaultCameraFactory implements CameraFactory {
 
-  private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      "oogasalad.config.engine.controller.level");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
-  private static final ResourceBundle FACTORY_RESOURCES = ResourceBundle.getBundle(
-      "oogasalad.config.engine.controller.controller");
+  private static Logger LOG = LogManager.getLogger();
+  private static ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   @Override
   public Camera create(String type, CameraData data, Map<String, GameObject> gameObjectMap)
       throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
     String method =
-        FACTORY_RESOURCES.getString("Make") + type + FACTORY_RESOURCES.getString("Camera");
+        resourceManager.getConfig("engine.controller.controller", "Make") + type
+            + resourceManager.getConfig("engine.controller.controller", "Camera");
+    LOG.info(STR."Using \{method} for \{type}");
     Method creatorMethod = this.getClass().getDeclaredMethod(method, CameraData.class, Map.class);
     return (Camera) creatorMethod.invoke(this, data, gameObjectMap);
   }
@@ -51,10 +49,12 @@ public class DefaultCameraFactory implements CameraFactory {
         camera.setViewObjectToTrack(viewObjectToTrack);
         return camera;
       } catch (NullPointerException e) {
-        throw new NullPointerException(EXCEPTIONS.getString("CameraObjectNonexistent"));
+        throw new NullPointerException(
+            resourceManager.getText("exceptions", "CameraObjectNonexistent"));
       }
     } else {
-      throw new NoSuchElementException(EXCEPTIONS.getString("CameraObjectNotSpecified"));
+      throw new NoSuchElementException(
+          resourceManager.getText("exceptions", "CameraObjectNotSpecified"));
     }
   }
 
@@ -70,9 +70,9 @@ public class DefaultCameraFactory implements CameraFactory {
     AutoScrollingCamera camera = new AutoScrollingCamera();
     Map<String, Double> properties = cameraData.doubleProperties();
     camera.setScrollSpeedX(properties.getOrDefault("scrollSpeedX",
-        Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedX"))));
+        Double.parseDouble(resourceManager.getConfig("engine.controller.level", "ScrollSpeedX"))));
     camera.setScrollSpeedY(properties.getOrDefault("scrollSpeedY",
-        Double.parseDouble(LEVEL_RESOURCES.getString("ScrollSpeedY"))));
+        Double.parseDouble(resourceManager.getConfig("engine.controller.level", "ScrollSpeedY"))));
     return camera;
   }
 

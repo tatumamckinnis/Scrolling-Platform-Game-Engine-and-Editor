@@ -1,11 +1,10 @@
 package oogasalad.engine.view.camera;
 
 import java.util.NoSuchElementException;
-import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.view.LevelDisplay;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
@@ -16,23 +15,19 @@ import oogasalad.engine.view.LevelDisplay;
  */
 public class TrackerCamera implements Camera {
 
-  private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      "oogasalad.config.engine.controller.level");
-
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   /**
    * Horizontal offset to center the camera based on level width.
    */
   private static final double CAMERA_OFFSET_X = Double.parseDouble(
-      LEVEL_RESOURCES.getString("LevelWidth")) / 2.0;
+      resourceManager.getConfig("engine.controller.level","LevelWidth")) / 2.0;
 
   /**
    * Vertical offset to center the camera based on level height.
    */
   private static final double CAMERA_OFFSET_Y = Double.parseDouble(
-      LEVEL_RESOURCES.getString("LevelHeight")) / 2.0;
+      resourceManager.getConfig("engine.controller.level", "LevelHeight")) / 2.0;
 
   private ImmutableGameObject viewObjectToTrack;
 
@@ -46,13 +41,13 @@ public class TrackerCamera implements Camera {
   @Override
   public void updateCamera(Group gameWorld) {
     if (gameWorld == null) {
-      throw new NullPointerException(EXCEPTIONS.getString("GameWorldNull"));
+      throw new NullPointerException(resourceManager.getText("exceptions","GameWorldNull"));
     }
     try {
       gameWorld.setTranslateX(CAMERA_OFFSET_X - viewObjectToTrack.getXPosition());
       gameWorld.setTranslateY(CAMERA_OFFSET_Y - viewObjectToTrack.getYPosition());
     } catch (Exception e) {
-      throw new NoSuchElementException(EXCEPTIONS.getString("ObjectDoesntExist"));
+      throw new NoSuchElementException(resourceManager.getText("exceptions","ObjectDoesntExist"));
     }
   }
 
