@@ -137,7 +137,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   @Override
   public void setLanguage(String language) {
-    ResourceManager.getInstance().setLocale(Locale.of(language));
+    String i18nLanguageCode = language.substring(0, 2);
+    ResourceManager.getInstance().setLocale(Locale.of(i18nLanguageCode));
     LOG.info("Setting language to {}", language);
   }
 

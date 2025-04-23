@@ -40,6 +40,10 @@ public class HUD extends Display {
     Map<String, String> displayedStats = ((ImmutablePlayer) player).getDisplayedStatsMap();
     for (String stat: displayedStats.keySet()) {
       Text statText = new Text(String.format("%s: %s", stat, displayedStats.get(stat)));
+      //TODO: This line is usually going to cause problems. Fix it!
+      if (resourceManager.getText("displayedText", stat) != null) {
+          statText = new Text(String.format("%s: %s", resourceManager.getText("displayedText", stat), displayedStats.get(stat)));
+      }
       container.getChildren().add(statText);
     }
   }

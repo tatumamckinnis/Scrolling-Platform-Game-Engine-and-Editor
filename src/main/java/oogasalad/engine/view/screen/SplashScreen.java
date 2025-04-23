@@ -242,7 +242,6 @@ public class SplashScreen extends Display {
     for (String lang : languagesArray) {
       languageSelector.getItems().add(lang);
     }
-    //splashBox.getChildren().add(languageSelector);
     setLanguageComboBoxButtonAction(languageSelector);
   }
 
@@ -323,12 +322,8 @@ public class SplashScreen extends Display {
   private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     comboBox.valueProperty().addListener((obs, oldValue, language) -> {
-      Runnable action = factory.selectLanguage(language);
-      if (action != null) {
-        action.run();
-      } else {
-        LOG.warn("No action defined for language: {}", language);
-      }
+      LOG.info("Setting language to {}", language);
+      factory.selectLanguage(language).run();
     });
   }
 
