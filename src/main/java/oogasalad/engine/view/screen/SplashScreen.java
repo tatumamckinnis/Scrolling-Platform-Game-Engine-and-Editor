@@ -251,13 +251,12 @@ public class SplashScreen extends Display {
    * @param splashBox box to add buttons to.
    */
   private void addOnlineButtons(VBox splashBox) {
-    String gameXMLPath = "data/gameData/levels/dinosaurgame/DinoLevel1.xml";
     TextField lobbyField = new TextField();
     lobbyField.setPromptText("Enter lobby number");
 
     Button joinServer = new Button("Create/Join Lobby");
     joinServer.setOnAction(event -> {
-      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), gameXMLPath, viewState).run();
+      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
     });
 
     splashBox.getChildren().addAll(joinServer, lobbyField);

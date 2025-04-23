@@ -13,7 +13,7 @@ import oogasalad.engine.controller.api.GameManagerAPI;
 /**
  * Holds the internal state needed to manage the current view of the application, such as stage,
  * current display, input keys, and game manager reference. Allows for toggling between
- * screens/states by external classes such as the factory package.
+ * screens/states by external classes such as factories.
  * <p>
  * Acts as a central, mutable state object that can be shared across internal view components. Is
  * only accessible by the factory package to encapsulate the View's state from external view
@@ -25,7 +25,6 @@ public class ViewState {
 
   private static final List<String> ALLOWED_CLASS_NAMES = List.of(
       "oogasalad.engine.view.factory.ButtonActionFactory",
-      "oogasalad.engine.view.components.NewGameComponents",
       "oogasalad.server.MessageHandlerFactory"
   );
   private static final Logger LOG = LogManager.getLogger();
@@ -114,6 +113,9 @@ public class ViewState {
     mySocket = socket;
   }
 
+  /**
+   * Returns the client connected to the server.
+   */
   public ClientSocket getMySocket() {
     checkClassCaller();
     return mySocket;

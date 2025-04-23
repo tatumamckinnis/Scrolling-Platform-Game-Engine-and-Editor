@@ -28,7 +28,7 @@ public class Main extends Application {
       GameManagerAPI manager = new DefaultGameManager();
       LOG.info("Starting game...");
     } catch (Exception e) {
-      LOG.warn("Error starting main");
+      LOG.warn("Error starting main.");
     }
   }
 

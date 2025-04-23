@@ -326,14 +326,13 @@ public class ButtonActionFactory {
   /**
    * This method attempts to establish a connection to the server.
    * @param lobby a lobby to connect to.
-   * @param gameXMLPath a game to play.
    * @param viewState the current view state.
    * @return a runnable which executes this function.
    */
-  public static Runnable joinLobby(int lobby, String gameXMLPath, ViewState viewState) {
+  public static Runnable joinLobby(int lobby, ViewState viewState) {
     return () -> {
       try {
-        ClientSocket client = new ClientSocket(lobby, gameXMLPath, viewState);
+        ClientSocket client = new ClientSocket(lobby, viewState.getGameManager().getCurrentLevel(), viewState);
         client.connect();
         viewState.setMySocket(client);
       } catch (URISyntaxException e) {
