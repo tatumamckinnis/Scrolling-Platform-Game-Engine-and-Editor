@@ -50,7 +50,7 @@ public class EditorSpriteParser {
    * @throws SpriteParseException If configuration properties cannot be loaded.
    */
   public EditorSpriteParser() throws SpriteParseException {
-    fileStructureProperties = loadProperties("oogasalad/file/fileStructure.properties");
+    fileStructureProperties = loadProperties("oogasalad/config/file/fileStructure.properties");
     pathToSpriteData = trimSeparators(getRequiredProperty(fileStructureProperties, "path.to.game.data"));
     pathToGraphicsData = trimSeparators(getRequiredProperty(fileStructureProperties, "path.to.graphics.data"));
     LOG.debug("EditorSpriteParser initialized. SpriteData Path Root: '{}', Graphics Path Root: '{}'",
