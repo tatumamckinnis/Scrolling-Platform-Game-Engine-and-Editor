@@ -285,7 +285,6 @@ public class ButtonActionFactory {
    * selected game and level names. This method constructs the path to the level file using the
    * provided game and level names and delegates to the {@code GameManager} to load the level.
    *
-   *
    * @param game  the name of the game (i.e., the folder name under the game levels directory)
    * @param level the name of the level file (typically with .xml extension) inside the game folder
    * @return a {@code Runnable} that, when executed, loads the specified level into the game engine
@@ -315,14 +314,16 @@ public class ButtonActionFactory {
 
   /**
    * This method attempts to establish a connection to the server.
-   * @param lobby a lobby to connect to.
+   *
+   * @param lobby     a lobby to connect to.
    * @param viewState the current view state.
    * @return a runnable which executes this function.
    */
   public static Runnable joinLobby(int lobby, ViewState viewState) {
     return () -> {
       try {
-        ClientSocket client = new ClientSocket(lobby, viewState.getGameManager().getCurrentLevel(), viewState);
+        ClientSocket client = new ClientSocket(lobby, viewState.getGameManager().getCurrentLevel(),
+            viewState);
         client.connect();
         viewState.setMySocket(client);
       } catch (URISyntaxException e) {
@@ -348,6 +349,12 @@ public class ButtonActionFactory {
     };
   }
 
+  /**
+   * Allows a user to select a language
+   *
+   * @param language the new language to select
+   * @return a Runnable that allows the action to run
+   */
   public Runnable selectLanguage(String language) {
     return () -> {
       viewState.getGameManager().setLanguage(language);

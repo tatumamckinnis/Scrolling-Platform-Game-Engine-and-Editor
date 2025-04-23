@@ -69,6 +69,7 @@ public interface GameManagerAPI {
 
   /**
    * removes a game object image from the level view scene
+   *
    * @param gameObject the game object to remove from the view
    */
   void removeGameObjectImage(ImmutableGameObject gameObject);
@@ -78,5 +79,10 @@ public interface GameManagerAPI {
    */
   String getCurrentLevel() throws NullPointerException;
 
+  /**
+   * sets the language of the text for the Resource Manager
+   *
+   * @param language new language selected
+   */
   void setLanguage(String language);
 }
