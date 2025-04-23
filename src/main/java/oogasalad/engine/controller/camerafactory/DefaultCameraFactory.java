@@ -22,7 +22,7 @@ public class DefaultCameraFactory implements CameraFactory {
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
       "oogasalad.i18n.engine.exceptions");
   private static final ResourceBundle FACTORY_RESOURCES = ResourceBundle.getBundle(
-      "oogasala.config.engine.controller.controller");
+      "oogasalad.config.engine.controller.controller");
 
   @Override
   public Camera create(String type, CameraData data, Map<String, GameObject> gameObjectMap)

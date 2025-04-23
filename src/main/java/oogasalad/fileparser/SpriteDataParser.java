@@ -78,7 +78,7 @@ public class SpriteDataParser {
     Properties properties = new Properties();
     Map<String, String> fileStructureProperties = new HashMap<>();
     try (InputStream input = getClass().getClassLoader()
-        .getResourceAsStream("oogasalad/file/fileStructure.properties")) {
+        .getResourceAsStream("oogasalad/config/file/fileStructure.properties")) {
       if (input == null) {
         throw new SpriteParseException(
             "Properties file 'fileStructure.properties' not found in classpath.");

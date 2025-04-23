@@ -15,7 +15,7 @@ import oogasalad.engine.view.util.ViewObjectToImageConverter;
  */
 public class ObjectImage {
 
-  private static final ResourceBundle OBJECT_IMAGE_RESOURCES = ResourceBundle.getBundle("oogasalad.config.engine.view.object.image");
+  private static final ResourceBundle OBJECT_IMAGE_RESOURCES = ResourceBundle.getBundle("oogasalad.config.engine.view.objectimage");
 
   private final ViewObjectToImageConverter converter;
   private Rectangle hitBox;
