@@ -25,6 +25,7 @@ import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.HitBoxParseException;
 import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
@@ -130,7 +131,8 @@ public class EditorPrefabManager {
    * @param prefabFile The File object representing the prefabs XML.
    * @return A Map where keys are blueprint IDs and values are BlueprintData objects. Returns an empty map if the file doesn't exist or on parsing errors.
    */
-  public Map<Integer, BlueprintData> loadPrefabsFromFile(File prefabFile) {
+  public Map<Integer, BlueprintData> loadPrefabsFromFile(File prefabFile)
+      throws SpriteParseException {
     Map<Integer, BlueprintData> prefabs = new HashMap<>();
     if (!prefabFile.exists() || !prefabFile.isFile()) {
       LOG.info("Prefab file does not exist or is not a file, skipping: {}", prefabFile.getPath());

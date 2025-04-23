@@ -1,8 +1,6 @@
 package oogasalad.fileparser;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,94 +15,109 @@ import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
 import oogasalad.fileparser.records.SpriteRequest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
- * Parses blueprint data. Passes full relative path in SpriteRequest.
+ * The BlueprintDataParser class is responsible for parsing XML blueprint data into a map of
+ * {@link BlueprintData} records. It processes various XML elements such as game nodes, object
+ * groups, individual game objects, events, and property nodes (delegated to {@link PropertyParser})
+ * for both double and string properties.
+ * <p>
+ * Example usage:
+ * <pre>
+ *   Element root = ...; // obtain the XML root element
+ *   List&lt;EventData&gt; events = ...; // get event data list
+ *   BlueprintDataParser parser = new BlueprintDataParser();
+ *   Map&lt;Integer, BlueprintData&gt;
+ *   blueprintData = parser.getBlueprintData(root, events);
+ * </pre>
+ * </p>
+ *
+ * @author Billy
  */
 public class BlueprintDataParser {
 
-
-  private static final Logger LOG = LogManager.getLogger(BlueprintDataParser.class);
+  // Constants to avoid using literals directly in conditions.
   private static final String DISPLAYED_PROPERTIES_TAG = "displayedProperties";
   private static final String PROPERTY_LIST_ATTR = "propertyList";
+
   private String groupName = "";
   private String gameName = "";
-  private SpriteDataParser mySpriteDataParser = null;
-  private final HitBoxDataParser myHitBoxDataParser;
+  private SpriteDataParser mySpriteDataParser;
+  private HitBoxDataParser myHitBoxDataParser;
   private List<EventData> myEventDataList;
-  private final PropertyParser propertyParser;
+  private PropertyParser propertyParser;
 
-
-  /** Constructs a new BlueprintDataParser. */
+  /**
+   * Constructs a new BlueprintDataParser and initializes the required parsers.
+   */
   public BlueprintDataParser() {
     propertyParser = new PropertyParser();
     myHitBoxDataParser = new HitBoxDataParser();
   }
 
-  /** Lazily initializes the SpriteDataParser. */
-  private boolean ensureSpriteParserInitialized() {
-
-    if (mySpriteDataParser == null) {
-      try {
-        mySpriteDataParser = new SpriteDataParser();
-        LOG.info("SpriteDataParser initialized successfully.");
-      } catch (SpriteParseException e) {
-        LOG.fatal("Failed to initialize SpriteDataParser needed by BlueprintDataParser: {}", e.getMessage(), e);
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /** Extracts blueprint data from the root element. */
+  /**
+   * Extracts blueprint data from the provided XML root element.
+   *
+   * @param root      the root XML {@link Element} containing <code>&lt;game&gt;</code> nodes.
+   * @param eventList a list of {@link EventData} objects to be associated with blueprint event
+   *                  IDs.
+   * @return a {@link Map} of blueprint data, keyed by their blueprint ID.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
   public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
-      throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
-
-    if (!ensureSpriteParserInitialized()) {
-      LOG.error("SpriteDataParser could not be initialized. Sprite data will not be loaded for blueprints.");
-    }
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     myEventDataList = eventList;
     NodeList gameNodes = root.getElementsByTagName("game");
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
     for (int i = 0; i < gameNodes.getLength(); i++) {
       Node node = gameNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
+      if (!(node instanceof Element)) {
+        throw new BlueprintParseException("error.gameNode.notElement");
+      }
       Element gameElement = (Element) node;
       gameName = gameElement.getAttribute("name");
-      try {
-        gameObjectDataList.addAll(parseByGame(gameElement));
-      } catch (Exception e) {
-        LOG.error("Failed to parse game element '{}': {}", gameName, e.getMessage(), e);
-      }
+      gameObjectDataList.addAll(parseByGame(gameElement));
     }
     return createBlueprintDataMap(gameObjectDataList);
   }
 
-  /** Creates a map from a list of BlueprintData records. */
-  private Map<Integer, BlueprintData> createBlueprintDataMap(List<BlueprintData> blueprintDataList) {
-
+  /**
+   * Creates a map from a list of {@link BlueprintData} records using their blueprint IDs as keys.
+   *
+   * @param blueprintDataList the list of {@link BlueprintData} records.
+   * @return a {@link Map} where each key is a blueprint Id and the value is the corresponding
+   * {@link BlueprintData} record.
+   */
+  private Map<Integer, BlueprintData> createBlueprintDataMap(
+      List<BlueprintData> blueprintDataList) {
     Map<Integer, BlueprintData> blueprintDataMap = new HashMap<>();
     for (BlueprintData data : blueprintDataList) {
-      if(data!=null) blueprintDataMap.put(data.blueprintId(), data);
+      blueprintDataMap.put(data.blueprintId(), data);
     }
     return blueprintDataMap;
   }
 
-  /** Parses blueprint data within a <game> element. */
+  /**
+   * Parses the blueprint data contained within a <code>&lt;game&gt;</code> element.
+   *
+   * @param gameNode the XML {@link Element} representing a game.
+   * @return a {@link List} of {@link BlueprintData} records extracted from the game element.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
   private List<BlueprintData> parseByGame(Element gameNode)
-      throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
-
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
     for (int i = 0; i < objectGroupNodes.getLength(); i++) {
       Node node = objectGroupNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
+      if (!(node instanceof Element)) {
+        throw new BlueprintParseException("error.objectGroup.notElement");
+      }
       Element objectGroup = (Element) node;
       groupName = objectGroup.getAttribute("name");
       gameObjectsList.addAll(parseByObjectGroup(objectGroup));
@@ -112,162 +125,149 @@ public class BlueprintDataParser {
     return gameObjectsList;
   }
 
-  /** Parses blueprint data within an <objectGroup> element. */
+  /**
+   * Parses the blueprint data contained within an <code>&lt;objectGroup&gt;</code> element.
+   *
+   * @param objectGroupNode the XML {@link Element} representing an object group.
+   * @return a {@link List} of {@link BlueprintData} records extracted from the object group.
+   * @throws BlueprintParseException if any parsing error occurs.
+   */
   private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
-      throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
-
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException, EventParseException {
     List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
     NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
     for (int i = 0; i < gameObjectNodes.getLength(); i++) {
       Node node = gameObjectNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
-      Element gameObjectNode = (Element) node;
-      try {
-        BlueprintData bpData = parseGameObjectData(gameObjectNode);
-        if(bpData != null) gameObjectsGroupList.add(bpData);
-      } catch (Exception e) {
-        LOG.error("Skipping object due to parsing error within group '{}': {}", groupName, e.getMessage(), e);
+      // Skip text nodes that are only whitespace.
+      if (node.getNodeType() == Node.TEXT_NODE && node.getTextContent().trim().isEmpty()) {
+        continue;
       }
+      if (!(node instanceof Element)) {
+        continue;
+      }
+      Element gameObjectNode = (Element) node;
+      gameObjectsGroupList.add(parseGameObjectData(gameObjectNode));
     }
     return gameObjectsGroupList;
   }
 
   /**
-   * Parses a single game object node into a BlueprintData record.
-   * Uses the improved SpriteDataParser and passes the FULL relative path.
+   * Parses a single game object node into a {@link BlueprintData} record.
+   * <p>
+   * This method extracts basic attributes (ID, velocityX, velocityY, rotation, isFlipped, shape, sprite name,
+   * and sprite file), creates the corresponding {@link SpriteData} and {@link HitBoxData} objects,
+   * processes event identifiers, and parses property nodes using the dedicated
+   * {@link PropertyParser}.
+   * </p>
+   *
+   * @param gameObjectNode the XML {@link Element} representing a game object.
+   * @return the {@link BlueprintData} record constructed from the game object.
+   * @throws BlueprintParseException if a parsing error occurs or if a required attribute is not in
+   *                                 the correct format.
    */
   private BlueprintData parseGameObjectData(Element gameObjectNode)
-      throws BlueprintParseException, HitBoxParseException, PropertyParsingException {
-
-    int id = -1;
-    String originalType = "";
-    String spriteName = "";
-    String currentGroupName = this.groupName;
-
+      throws BlueprintParseException, SpriteParseException, HitBoxParseException,
+      PropertyParsingException {
+    mySpriteDataParser = new SpriteDataParser();
     try {
-      id = Integer.parseInt(gameObjectNode.getAttribute("id"));
+      int id = Integer.parseInt(gameObjectNode.getAttribute("id"));
       double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
       double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
       double rotation = Double.parseDouble(gameObjectNode.getAttribute("rotation"));
       boolean isFlipped = Boolean.parseBoolean(gameObjectNode.getAttribute("flipped"));
-      originalType = gameObjectNode.getAttribute("type");
-      spriteName = gameObjectNode.getAttribute("spriteName");
-      String spriteFileAttr = gameObjectNode.getAttribute("spriteFile");
-
+      String type = gameObjectNode.getAttribute("type");
+      String spriteName = gameObjectNode.getAttribute("spriteName");
+      String spriteFile = gameObjectNode.getAttribute("spriteFile");
 
       SpriteData spriteData = null;
-
-      if (mySpriteDataParser != null &&
-          gameName != null && !gameName.isEmpty() &&
-          spriteName != null && !spriteName.isEmpty() &&
-          spriteFileAttr != null && !spriteFileAttr.isEmpty()) {
-
-
-
-
-        SpriteRequest request = new SpriteRequest(gameName, currentGroupName, originalType, spriteName, spriteFileAttr);
-        LOG.debug("Attempting sprite request for blueprint {} with: {}", id, request);
-
-        try {
-
-          spriteData = mySpriteDataParser.getSpriteData(request);
-
-          if (spriteData == null || spriteData.baseFrame() == null || spriteData.spriteFile() == null || spriteData.spriteFile().getPath().isEmpty()) {
-            LOG.error("SpriteDataParser returned invalid/incomplete data for request {}. Creating default.", request);
-            spriteData = createDefaultSpriteData(spriteName);
-          }
-
-        } catch (SpriteParseException spe) {
-          LOG.error("Failed to parse sprite data for blueprint {} (Request: {}): {}", id, request, spe.getMessage());
-          spriteData = createDefaultSpriteData(spriteName);
-        } catch (Exception e) {
-          LOG.error("Unexpected error getting sprite data for blueprint {} (Request: {}): {}", id, request, e.getMessage(), e);
-          spriteData = createDefaultSpriteData(spriteName);
-        }
-      } else {
-
-        if (mySpriteDataParser == null) { LOG.error("Skipping sprite data parsing for blueprint {} because SpriteDataParser failed.", id);}
-        else { LOG.warn("Skipping sprite data parsing for blueprint {} due to missing info...", id); }
-        spriteData = createDefaultSpriteData(spriteName != null ? spriteName : "Unknown_" + id);
+      if (gameName != null && !gameName.isEmpty()) {
+        SpriteRequest request = new SpriteRequest(gameName, groupName, type, spriteName,
+            spriteFile);
+        spriteData = mySpriteDataParser.getSpriteData(request);
       }
 
-
       HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
-      List<EventData> eventDataList = getAssociatedEventData(gameObjectNode);
-      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode, "doubleProperties", "property");
-      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode, "stringProperties", "property");
+      List<EventData> eventDataList = getmyEventDataList(gameObjectNode);
+
+      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode,
+          "doubleProperties", "property");
+      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode,
+          "stringProperties", "property");
       List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
 
-
-      LOG.debug("Creating BlueprintData for id={}, type={}, sprite='{}', imageFile='{}', baseFrame={}, frames={}, animations={}",
-          id, originalType, spriteData.name(),
-          spriteData.spriteFile() != null ? spriteData.spriteFile().getPath() : "null",
-          spriteData.baseFrame() != null ? spriteData.baseFrame().name() : "null",
-          spriteData.frames().size(), spriteData.animations().size());
-
       return new BlueprintData(
-          id, velocityX, velocityY, rotation, isFlipped,
-          gameName, currentGroupName, originalType,
+          id,
+          velocityX,
+          velocityY,
+          rotation,
+          isFlipped,
+          gameName,
+          groupName,
+          type,
           spriteData,
-          hitBoxData, eventDataList,
-          stringProperties, doubleProperties, displayedProperties
+          hitBoxData,
+          eventDataList,
+          stringProperties,
+          doubleProperties,
+          displayedProperties
       );
     } catch (NumberFormatException e) {
-      throw new BlueprintParseException("Blueprint attribute has invalid number format for id=" + id + ": " + e.getMessage(), e);
-    } catch (HitBoxParseException | PropertyParsingException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new BlueprintParseException("Unexpected error parsing blueprint object id=" + id + ": " + e.getMessage(), e);
+      throw new BlueprintParseException("error.number", e);
     }
   }
 
-  /** Creates a default/empty SpriteData record for fallback */
-  private SpriteData createDefaultSpriteData(String name) {
-
-    String safeName = (name != null && !name.trim().isEmpty()) ? name : "Unknown";
-    return new SpriteData(safeName, new File(""), null, Collections.emptyList(), Collections.emptyList());
-  }
-
-  /** Creates the event data list... */
-  private List<EventData> getAssociatedEventData(Element gameObjectNode) {
-
+  /**
+   * Creates the event data list for the {@link BlueprintData} by retrieving events associated with
+   * the game object.
+   *
+   * @param gameObjectNode the node containing the comma separated eventIDs attribute.
+   * @return the full list of {@link EventData} objects, or an empty list if none are specified.
+   */
+  private List<EventData> getmyEventDataList(Element gameObjectNode) {
     String eventIds = gameObjectNode.getAttribute("eventIDs");
     List<EventData> eventDataList = new ArrayList<>();
-    if (eventIds != null && !eventIds.trim().isEmpty()) {
+    if (eventIds != null && !eventIds.isEmpty()) {
       String[] eventIdArray = eventIds.split(",");
       for (String eventId : eventIdArray) {
-        String trimmedId = eventId.trim();
-        if (!trimmedId.isEmpty()) {
-          EventData event = findEventById(trimmedId);
-          if (event != null) { eventDataList.add(event); }
-          else { LOG.warn("EventData not found for eventID: '{}' referenced in blueprint.", trimmedId); }
-        }
+        eventDataList.add(getEventById(eventId));
       }
     }
     return eventDataList;
   }
 
-  /** Retrieves the EventData matching the provided event ID... */
-  private EventData findEventById(String id) {
-
-    if (myEventDataList == null) return null;
+  /**
+   * Retrieves the {@link EventData} matching the provided event ID from the internal event list.
+   *
+   * @param id the event ID to look for.
+   * @return the matching {@link EventData} if found; otherwise, {@code null}.
+   */
+  private EventData getEventById(String id) {
     for (EventData eventData : myEventDataList) {
-      if (Objects.equals(id, eventData.eventId())) { return eventData; }
+      if (Objects.equals(id, eventData.eventId())) {
+        return eventData;
+      }
     }
     return null;
   }
 
-  /** Retrieves the displayed properties list... */
-  private List<String> getDisplayedProperties(Element gameObjectNode) {
-
-    NodeList nodes = gameObjectNode.getElementsByTagName(DISPLAYED_PROPERTIES_TAG);
-    if (nodes.getLength() > 0 && nodes.item(0) instanceof Element) {
-      Element displayedPropertiesElement = (Element) nodes.item(0);
-      if (displayedPropertiesElement.hasAttribute(PROPERTY_LIST_ATTR)) {
-        String list = displayedPropertiesElement.getAttribute(PROPERTY_LIST_ATTR);
-        if (list != null && !list.trim().isEmpty()) { return List.of(list.split(",")); }
+  /**
+   * Retrieves the displayed properties for the {@link BlueprintData}.
+   *
+   * @param gameObjectNode the XML node containing the displayed properties child element.
+   * @return a list of displayed property strings; if none exist, returns an empty list.
+   * @throws BlueprintParseException if the displayed properties element is malformed.
+   */
+  private List<String> getDisplayedProperties(Element gameObjectNode)
+      throws BlueprintParseException {
+    // Use explicit null checks rather than catching NullPointerException.
+    Node node = gameObjectNode.getElementsByTagName(DISPLAYED_PROPERTIES_TAG).item(0);
+    if (node != null && (node instanceof Element)) {
+      Element displayedProperties = (Element) node;
+      if (displayedProperties.hasAttribute(PROPERTY_LIST_ATTR)) {
+        return List.of(displayedProperties.getAttribute(PROPERTY_LIST_ATTR).split(","));
       }
     }
-    return Collections.emptyList();
+    return new ArrayList<>();
   }
 }
