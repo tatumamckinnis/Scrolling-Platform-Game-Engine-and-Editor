@@ -107,7 +107,7 @@ public class GameControlPanel extends Display {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     String buttonID = engineComponentProperties.getProperty(buttonKey + ".id");
     gameControlPanelButton.setOnAction(event -> {
-      factory.getAction(buttonID).run();
+      factory.getActionAndSendServerMessage(buttonID).run();
     });
 
     gameControlPanelButton.setFocusTraversable(false);

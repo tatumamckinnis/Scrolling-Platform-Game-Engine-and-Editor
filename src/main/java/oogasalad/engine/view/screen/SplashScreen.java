@@ -4,23 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import java.util.zip.DataFormatException;
 import javafx.scene.control.ComboBox;
-import oogasalad.exceptions.BlueprintParseException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
-import oogasalad.exceptions.LevelDataParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
+import javafx.scene.control.TextField;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -247,10 +238,28 @@ public class SplashScreen extends Display {
       splashBox.getChildren().add(currButton);
     }
 
+    addOnlineButtons(splashBox);
+
     int buttonSpacing = Integer.parseInt(
         splashComponentProperties.getProperty("splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  /**
+   * Adds buttons needed for starting online games. Will need refactoring.
+   * @param splashBox box to add buttons to.
+   */
+  private void addOnlineButtons(VBox splashBox) {
+    TextField lobbyField = new TextField();
+    lobbyField.setPromptText("Enter lobby number");
+
+    Button joinServer = new Button("Create/Join Lobby");
+    joinServer.setOnAction(event -> {
+      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
+    });
+
+    splashBox.getChildren().addAll(joinServer, lobbyField);
   }
 
   private ComboBox<String> createComboBox(String[] comboBoxTexts, int i, double buttonWidth,
