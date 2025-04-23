@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public class EventsSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(EventsSectionBuilder.class);
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/events_section_builder_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/events_section_builder_identifiers.properties";
 
   private final ResourceBundle uiBundle;
   private final Properties identifierProps;

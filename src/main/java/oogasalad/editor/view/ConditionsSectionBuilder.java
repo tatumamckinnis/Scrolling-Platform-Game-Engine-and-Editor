@@ -34,7 +34,7 @@ public class ConditionsSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(ConditionsSectionBuilder.class);
 
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/conditions_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/conditions_identifiers.properties";
 
   private final ResourceBundle uiBundle;
   private final Properties identifierProps;

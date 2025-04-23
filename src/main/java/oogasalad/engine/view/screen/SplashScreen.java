@@ -2,16 +2,14 @@ package oogasalad.engine.view.screen;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +23,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
-import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 
@@ -36,11 +33,8 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
  */
 public class SplashScreen extends Display {
 
+  private static ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private static final Logger LOG = LogManager.getLogger();
-  private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
-  private static final Properties splashComponentProperties = new Properties();
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
   private static final String gamesFilePath = "data/gameData/levels/";
   private String splashStylesheet;
   private int splashWidth;
@@ -53,17 +47,11 @@ public class SplashScreen extends Display {
    * @param viewState the state of the view
    */
   public SplashScreen(ViewState viewState) throws FileNotFoundException {
-    try {
-      InputStream stream = getClass().getResourceAsStream(splashComponentPropertiesFilepath);
-      splashComponentProperties.load(stream);
-    } catch (IOException e) {
-      LOG.warn("Unable to load splash screen properties");
-    }
-    String splashStylesheetFilepath = splashComponentProperties.getProperty("splash.stylesheet");
+    String splashStylesheetFilepath = resourceManager.getConfig("engine.view.splashScene","splash.stylesheet");
     splashStylesheet = Objects.requireNonNull(getClass().getResource(splashStylesheetFilepath))
         .toExternalForm();
-    splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.width"));
-    splashHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
+    splashWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.width"));
+    splashHeight = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.height"));
     this.viewState = viewState;
 
     initializeSplashScreen();
@@ -71,12 +59,12 @@ public class SplashScreen extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
   }
 
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRenderPlayerStats"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRenderPlayerStats"));
   }
 
   /**
@@ -114,8 +102,7 @@ public class SplashScreen extends Display {
    */
   private StackPane createLogoPane(int splashHeight) {
     StackPane logoPane = new StackPane();
-    int logoPaneWidth = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.leftPane.width"));
+    int logoPaneWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
     logoPane.getStyleClass().add("logo-pane");
     logoPane.getChildren().add(createSplashBackground());
@@ -131,8 +118,7 @@ public class SplashScreen extends Display {
    */
   private StackPane createOptionsPane(int splashHeight) throws FileNotFoundException {
     StackPane optionsPane = new StackPane();
-    int optionsPaneWidth = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.rightPane.width"));
+    int optionsPaneWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.rightPane.width"));
     optionsPane.setPrefSize(optionsPaneWidth, splashHeight);
     optionsPane.getStyleClass().add("options-pane");
     optionsPane.getChildren().add(createSplashButtonBox());
@@ -147,7 +133,7 @@ public class SplashScreen extends Display {
   private ImageView createSplashLogo() {
     ImageView splashLogo = new ImageView();
     try {
-      String logoFilepath = splashComponentProperties.getProperty("splash.logo.image");
+      String logoFilepath = resourceManager.getConfig("engine.view.splashScene","splash.logo.image");
       Image splashImage = new Image(getClass().getResourceAsStream(logoFilepath));
       scaleSplashLogo(splashLogo);
       splashLogo.setImage(splashImage);
@@ -164,9 +150,9 @@ public class SplashScreen extends Display {
    * @param splashLogo the logo we are expected to scale
    */
   private void scaleSplashLogo(ImageView splashLogo) {
-    int splashWidth = Integer.parseInt(splashComponentProperties.getProperty("splash.logo.width"));
+    int splashWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.logo.width"));
     int splashHeight = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.logo.height"));
+        resourceManager.getConfig("engine.view.splashScene","splash.logo.height"));
     splashLogo.setFitWidth(splashWidth);
     splashLogo.setFitHeight(splashHeight);
     splashLogo.setPickOnBounds(true);
@@ -182,7 +168,8 @@ public class SplashScreen extends Display {
   private ImageView createSplashBackground() {
     ImageView splashBackground = new ImageView();
     try {
-      String logoFilepath = splashComponentProperties.getProperty("splash.background");
+      String logoFilepath = resourceManager.getConfig("engine.view.splashScene",
+          "splash.background");
       Image splashImage = new Image(getClass().getResourceAsStream(logoFilepath));
       splashBackground.setImage(splashImage);
       scaleSplashBackground(splashBackground);
@@ -195,8 +182,9 @@ public class SplashScreen extends Display {
 
   private void scaleSplashBackground(ImageView splashLogo) {
     int backgroundWidth = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.leftPane.width"));
-    int backgroundHeight = Integer.parseInt(splashComponentProperties.getProperty("splash.height"));
+        resourceManager.getConfig("engine.view.splashScene", "splash.leftPane.width"));
+    int backgroundHeight = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.height"));
     splashLogo.setFitWidth(backgroundWidth);
     splashLogo.setFitHeight(backgroundHeight);
     splashLogo.setPickOnBounds(true);
@@ -219,17 +207,15 @@ public class SplashScreen extends Display {
     String[] comboBoxStyles = getSplashButtonStylesID();
 
     double buttonWidth = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.button.width"));
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.width"));
     double buttonHeight = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.button.height"));
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.height"));
 
-    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    populateGameTypeComboBox(gameTypeBox);
-    selectGameType(gameTypeBox, levelBox);
-    setComboBoxButtonAction(gameTypeBox, levelBox);
+    renderLanguageSelector(comboBoxTexts, buttonWidth, buttonHeight, comboBoxIDs, comboBoxStyles,
+        splashBox);
+
+    renderGameAndLevelSelectors(comboBoxTexts, buttonWidth, buttonHeight, comboBoxIDs,
+        comboBoxStyles, splashBox);
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
@@ -241,13 +227,39 @@ public class SplashScreen extends Display {
     addOnlineButtons(splashBox);
 
     int buttonSpacing = Integer.parseInt(
-        splashComponentProperties.getProperty("splash.button.spacing"));
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
   }
 
+  private void renderLanguageSelector(String[] comboBoxTexts, double buttonWidth,
+      double buttonHeight,
+      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) {
+    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    String languages = resourceManager.getConfig("engine.view.splashScene", "available.languages");
+    String[] languagesArray = languages.split(",");
+    for (String lang : languagesArray) {
+      languageSelector.getItems().add(lang);
+    }
+    setLanguageComboBoxButtonAction(languageSelector);
+  }
+
+  private void renderGameAndLevelSelectors(String[] comboBoxTexts, double buttonWidth,
+      double buttonHeight,
+      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) throws FileNotFoundException {
+    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    populateGameTypeComboBox(gameTypeBox);
+    selectGameType(gameTypeBox, levelBox);
+    setComboBoxButtonAction(gameTypeBox, levelBox);
+  }
+
   /**
    * Adds buttons needed for starting online games. Will need refactoring.
+   *
    * @param splashBox box to add buttons to.
    */
   private void addOnlineButtons(VBox splashBox) {
@@ -275,7 +287,7 @@ public class SplashScreen extends Display {
 
   private void setButtonStyle(Button currButton, String buttonID, String buttonStyle) {
     currButton.setId(buttonID);
-    String defaultButtonStyle = splashComponentProperties.getProperty(
+    String defaultButtonStyle = resourceManager.getConfig("engine.view.splashScene",
         "splash.button.default.style");
     currButton.getStyleClass().add(defaultButtonStyle);
     currButton.getStyleClass().add(buttonStyle);
@@ -285,7 +297,7 @@ public class SplashScreen extends Display {
 
   private void setComboBoxStyle(ComboBox<String> currBox, String comboBoxID, String comboBoxStyle) {
     currBox.setId(comboBoxID);
-    String defaultButtonStyle = splashComponentProperties.getProperty(
+    String defaultButtonStyle = resourceManager.getConfig("engine.view.splashScene",
         "splash.button.default.style");
     currBox.getStyleClass().add(defaultButtonStyle);
     currBox.getStyleClass().add(comboBoxStyle);
@@ -304,6 +316,14 @@ public class SplashScreen extends Display {
     levelBox.valueProperty().addListener((obs, oldValue, level) -> {
       String game = gameBox.getValue();
       factory.selectLevel(game, level).run();
+    });
+  }
+
+  private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
+    comboBox.valueProperty().addListener((obs, oldValue, language) -> {
+      LOG.info("Setting language to {}", language);
+      factory.selectLanguage(language).run();
     });
   }
 
@@ -344,8 +364,8 @@ public class SplashScreen extends Display {
   private File[] getGameFolders() throws FileNotFoundException {
     File gamesDir = new File(gamesFilePath);
     if (!gamesDir.exists() || !gamesDir.isDirectory()) {
-      throw new FileNotFoundException(
-          EXCEPTIONS.getString("GameDirectoryNotFound") + " " + gamesDir.getAbsolutePath());
+      throw new FileNotFoundException(resourceManager.getText("exceptions", "GameDirectoryNotFound")
+          + gamesDir.getAbsolutePath());
     }
     File[] folders = gamesDir.listFiles(File::isDirectory);
     return folders != null ? folders : new File[0];
@@ -371,16 +391,17 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonTexts() {
     return new String[]{
-        splashComponentProperties.getProperty("splash.button.startEngine.text"),
-        splashComponentProperties.getProperty("splash.button.startEditor.text"),
-        splashComponentProperties.getProperty("splash.button.help.text"),
-        splashComponentProperties.getProperty("splash.button.play.another.game.text")
+        resourceManager.getText("displayedText", "splash.button.startEngine.text"),
+        resourceManager.getText("displayedText", "splash.button.startEditor.text"),
+        resourceManager.getText("displayedText", "splash.button.help.text"),
+        resourceManager.getText("displayedText", "splash.button.play.another.game.text")
     };
   }
 
   private String[] getSplashComboBoxTexts() {
-    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.text"),
-        splashComponentProperties.getProperty("splash.button.gameLevel.text"),
+    return new String[]{resourceManager.getText("displayedText", "splash.button.gameType.text"),
+        resourceManager.getText("displayedText", "splash.button.gameLevel.text"),
+        resourceManager.getText("displayedText", "splash.button.select.language.text")
     };
   }
 
@@ -391,16 +412,19 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonIDs() {
     return new String[]{
-        splashComponentProperties.getProperty("splash.button.startEngine.id"),
-        splashComponentProperties.getProperty("splash.button.startEditor.id"),
-        splashComponentProperties.getProperty("splash.button.help.id"),
-        splashComponentProperties.getProperty("splash.button.play.another.game.id")
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.startEngine.id"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.startEditor.id"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.help.id"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.play.another.game.id")
     };
   }
 
   private String[] getSplashComboBoxIDs() {
-    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.id"),
-        splashComponentProperties.getProperty("splash.button.gameLevel.id")
+    return new String[]{
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.gameType.id"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.gameLevel.id"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.select.language.id")
+
     };
   }
 
@@ -411,15 +435,19 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonStyles() {
     return new String[]{
-        splashComponentProperties.getProperty("splash.button.startEngine.style"),
-        splashComponentProperties.getProperty("splash.button.startEditor.style"),
-        splashComponentProperties.getProperty("splash.button.help.style"),
-        splashComponentProperties.getProperty("splash.button.play.another.game.style")
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.startEngine.style"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.startEditor.style"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.help.style"),
+        resourceManager.getConfig("engine.view.splashScene",
+            "splash.button.play.another.game.style")
     };
   }
 
   private String[] getSplashButtonStylesID() {
-    return new String[]{splashComponentProperties.getProperty("splash.button.gameType.style"),
-        splashComponentProperties.getProperty("splash.button.gameLevel.style")};
+    return new String[]{
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.gameType.style"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.gameLevel.style"),
+        resourceManager.getConfig("engine.view.splashScene", "splash.button.select.language.style")
+    };
   }
 }

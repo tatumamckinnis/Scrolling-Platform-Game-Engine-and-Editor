@@ -1,9 +1,8 @@
 package oogasalad.engine.view.camera;
 
-import java.util.ResourceBundle;
 import javafx.scene.Group;
-import oogasalad.Main;
-import oogasalad.engine.view.LevelDisplay;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 
 /**
  * AutoScrollingCamera provides an automatic scrolling behavior for the game.
@@ -15,19 +14,15 @@ import oogasalad.engine.view.LevelDisplay;
  */
 public class AutoScrollingCamera implements Camera {
 
-  private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelDisplay.class.getPackage().getName() + ".Level");
-
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private double scrollSpeedX;
   private double scrollSpeedY; // Change if vertical scrolling is needed
 
   // Current accumulated offsets for the camera
-  private double currentOffsetX = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetX"));
+  private double currentOffsetX = Double.parseDouble(resourceManager.getConfig("engine.controller.level", "CurrentOffsetX"));
   ;
-  private double currentOffsetY = Double.parseDouble(LEVEL_RESOURCES.getString("CurrentOffsetY"));
+  private double currentOffsetY = Double.parseDouble(resourceManager.getConfig("engine.controller.level","CurrentOffsetY"));
   ;
 
   /**
@@ -40,7 +35,7 @@ public class AutoScrollingCamera implements Camera {
   @Override
   public void updateCamera(Group gameWorld) {
     if (gameWorld == null) {
-      throw new NullPointerException(EXCEPTIONS.getString("GameWorldNull"));
+      throw new NullPointerException(resourceManager.getText("exceptions", "GameWorldNull"));
     }
     // Increment the current offsets by the scroll speeds.
     currentOffsetX += scrollSpeedX;

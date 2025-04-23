@@ -1,19 +1,18 @@
 package oogasalad.engine.view.components;
 
 import java.util.Map;
-import java.util.ResourceBundle;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
 
 public class HUD extends Display {
 
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private Pane container;
 
   public HUD() {
@@ -32,7 +31,7 @@ public class HUD extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
   }
 
   @Override
@@ -41,6 +40,10 @@ public class HUD extends Display {
     Map<String, String> displayedStats = ((ImmutablePlayer) player).getDisplayedStatsMap();
     for (String stat: displayedStats.keySet()) {
       Text statText = new Text(String.format("%s: %s", stat, displayedStats.get(stat)));
+      //TODO: This line is usually going to cause problems. Fix it!
+      if (resourceManager.getText("displayedText", stat) != null) {
+          statText = new Text(String.format("%s: %s", resourceManager.getText("displayedText", stat), displayedStats.get(stat)));
+      }
       container.getChildren().add(statText);
     }
   }

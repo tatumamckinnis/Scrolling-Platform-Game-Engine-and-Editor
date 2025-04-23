@@ -4,8 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,13 +29,14 @@ import oogasalad.exceptions.ViewInitializationException;
  * @author Aksel Bell
  */
 public class DefaultView implements ViewAPI {
+  
+  private static final Logger LOG = LogManager.getLogger();
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
-  private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(
-      DefaultView.class.getPackage().getName() + "." + "Level");
   private static final int LEVEL_WIDTH = Integer.parseInt(
-      GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
+      resourceManager.getConfig("engine.controller.level", "LevelWidth"));
   private static final int LEVEL_HEIGHT = Integer.parseInt(
-      GAME_APP_VIEW_RESOURCES.getString("LevelHeight"));
+      resourceManager.getConfig("engine.controller.level","LevelHeight"));
 
   private Display currentDisplay;
   private Scene currentScene;
