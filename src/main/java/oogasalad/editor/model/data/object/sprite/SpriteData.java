@@ -22,6 +22,7 @@ public class SpriteData {
   private String spritePath;
   private String baseFrame; // Added field
   private boolean isFlipped;
+  private String templateName;
 
   /**
    * Constructs a new SpriteData instance with the specified properties.
@@ -158,6 +159,15 @@ public class SpriteData {
    */
   public double getAnimationFrameLength(String animationName) {
     return animations.get(animationName).getFrameLength();
+  }
+
+  /**
+   * Retrieves the name of the SpriteTemplate assigned to this object
+   *
+   * @return the name of the {@link SpriteTemplate} for this object
+   */
+  public String getTemplateName() {
+    return templateName;
   }
 
   /**
@@ -316,15 +326,29 @@ public class SpriteData {
   }
 
   /**
+   * Retrieves the current flip state of the sprite
    *
-   *
+   * @return the current flip state of the sprite
    */
   public boolean getIsFlipped() {
     return isFlipped;
   }
 
+  /**
+   * Sets the current flip state of the sprite
+   *
+   * @param isFlipped the state to set the flip state to
+   */
   public void setIsFlipped(boolean isFlipped) {
     this.isFlipped = isFlipped;
   }
 
+  /**
+   * Sets the current name of the SpriteTemplate to assign to the object
+   *
+   * @param templateName the name of the {@link SpriteTemplate} to assign to this object
+   */
+  public String setTemplateName(String templateName) {
+    return templateName;
+  }
 }

@@ -45,10 +45,9 @@ public class ConcreteEditorController implements EditorController {
    *
    * @param editorDataAPI The central API for accessing and modifying editor data. Cannot be null.
    */
-  public ConcreteEditorController(EditorDataAPI editorDataAPI) {
+  public ConcreteEditorController(EditorDataAPI editorDataAPI, EditorListenerNotifier listenerNotifier) {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null.");
-
-    this.listenerNotifier = new EditorListenerNotifier();
+    this.listenerNotifier = Objects.requireNonNull(listenerNotifier, "ListenerNotifier cannot be null.");
     this.objectPlacementHandler = new EditorObjectPlacementHandler(editorDataAPI, listenerNotifier);
     this.prefabManager = new EditorPrefabManager(editorDataAPI, listenerNotifier);
     this.eventHandler = new EditorEventHandler(editorDataAPI, listenerNotifier);

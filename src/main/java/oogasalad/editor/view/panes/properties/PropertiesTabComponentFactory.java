@@ -98,6 +98,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
+   * Called when a sprite template is changed
+   */
+  @Override
+  public void onSpriteTemplateChanged() {
+    LOG.debug("PropertiesTabComponentFactory onSpriteTemplateAdded.");
+  }
+
+  /**
    * Factory method for creating identity text fields (Name, Group).
    */
   private TextField createIdentityTextField(String prompt, BiConsumer<UUID, String> setter) {

@@ -980,6 +980,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
+   * Called when a sprite template is changed
+   */
+  @Override
+  public void onSpriteTemplateChanged() {
+  }
+
+  /**
    * Gets the size of each grid cell in pixels.
    *
    * @return The cell size used for drawing and snapping.

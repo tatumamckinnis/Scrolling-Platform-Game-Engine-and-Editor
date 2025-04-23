@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
  * Manages and notifies EditorViewListeners about changes in the editor state. This class
  * centralizes notification logic, decoupling it from the main controller.
  *
- * @author Tatum McKinnis
+ * @author Tatum McKinnis, Jacob You
  */
 public class EditorListenerNotifier {
 
@@ -110,5 +110,13 @@ public class EditorListenerNotifier {
   public void notifyErrorOccurred(String errorMessage) {
     LOG.debug("Notifying listeners: Error occurred - {}", errorMessage);
     viewListeners.forEach(listener -> listener.onErrorOccurred(errorMessage));
+  }
+
+  /**
+   * Notified all registered view listeners that the set of sprite templates has changed
+   */
+  public void notifySpriteTemplateChanged() {
+    LOG.debug("Notifying listeners: Sprite template changed");
+    viewListeners.forEach(EditorViewListener::onSpriteTemplateChanged);
   }
 }

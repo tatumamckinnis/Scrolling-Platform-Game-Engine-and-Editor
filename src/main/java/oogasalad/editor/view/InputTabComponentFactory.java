@@ -125,6 +125,14 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
+   * Called when a sprite template is changed
+   */
+  @Override
+  public void onSpriteTemplateChanged() {
+    LOG.debug("InputTabComponentFactory notified of sprite template");
+  }
+
+  /**
    * Initializes the builders for the Events, Conditions, and Outcomes UI sections,
    * passing them necessary resources and handler method references.
    */
