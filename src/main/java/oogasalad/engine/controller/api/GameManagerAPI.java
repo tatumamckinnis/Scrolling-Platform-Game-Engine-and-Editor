@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -73,4 +72,9 @@ public interface GameManagerAPI {
    * @param gameObject the game object to remove from the view
    */
   void removeGameObjectImage(ImmutableGameObject gameObject);
+
+  /**
+   * @return a String path to the current level file
+   */
+  String getCurrentLevel() throws NullPointerException;
 }

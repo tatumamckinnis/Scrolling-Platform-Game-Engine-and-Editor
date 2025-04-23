@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sprite imagePath="supermario-blocks.png">
-  <frames>
-    <frame name="flash-1" x="" y="" width="" height=""/>
-    <frame name="flash-2" x="" y="" width="" height=""/>
-    <frame name="flash-3" x="" y="" width="" height=""/>
-    <frame name="hit" x="" y="" width="" height=""/>
-  </frames>
-  <animations>
-    <animation name="flash" frameLen="0.15" frames="flash-1,flash-2,flash-3"/>
-    <animation name="hit" frameLen="0.15" frames="hit"/>
-  </animations>
+<sprite imagePath="supermario-blocks.png"> <frames>
+  <frame name="flash-1" x="0" y="0" width="16" height="16"/>
+  <frame name="flash-2" x="16" y="0" width="16" height="16"/>
+  <frame name="flash-3" x="32" y="0" width="16" height="16"/>
+  <frame name="hit" x="48" y="0" width="16" height="16"/>
+</frames>
+<animations>
+  <animation name="flash" frameLen="0.15" frames="flash-1,flash-2,flash-3"/>
+  <animation name="hit" frameLen="0.15" frames="hit"/>
+</animations>
 </sprite>
