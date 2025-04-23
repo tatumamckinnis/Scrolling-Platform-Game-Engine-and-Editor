@@ -48,7 +48,7 @@ public class ButtonActionFactory {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
   private static final String buttonIDToActionFilePath = "/oogasalad/config/engine/view/buttonAction.properties";
   private static final String gamesFilePath = "data/gameData/levels/";
   private static final Properties buttonIDToActionProperties = new Properties();
@@ -355,6 +355,12 @@ public class ButtonActionFactory {
       } catch (ViewInitializationException | FileNotFoundException e) {
         throw new RuntimeException(e);
       }
+    };
+  }
+
+  public Runnable selectLanguage(String language) {
+    return () -> {
+      viewState.getGameManager().setLanguage(language);
     };
   }
 }

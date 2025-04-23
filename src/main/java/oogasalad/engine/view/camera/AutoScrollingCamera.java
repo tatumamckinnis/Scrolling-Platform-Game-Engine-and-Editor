@@ -19,7 +19,7 @@ public class AutoScrollingCamera implements Camera {
       "oogasalad.config.engine.controller.level");
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
 
   private double scrollSpeedX;
   private double scrollSpeedY; // Change if vertical scrolling is needed

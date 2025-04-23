@@ -26,7 +26,7 @@ public class Sprite {
    * Exception messages loaded from resource bundle for consistent error handling
    */
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
 
   private int spriteDx;
   private int spriteDy;

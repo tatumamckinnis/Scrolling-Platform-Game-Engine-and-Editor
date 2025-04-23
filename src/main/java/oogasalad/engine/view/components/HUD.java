@@ -13,7 +13,7 @@ import oogasalad.engine.view.Display;
 public class HUD extends Display {
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
   private Pane container;
 
   public HUD() {

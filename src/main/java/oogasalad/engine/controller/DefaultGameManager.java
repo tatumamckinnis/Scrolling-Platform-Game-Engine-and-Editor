@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
@@ -12,6 +13,8 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
@@ -40,14 +43,13 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
       "oogasalad.config.engine.controller.gamemanager");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.engine.exceptions");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.exceptions");
   private final Timeline myGameLoop;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
   private List<KeyCode> currentKeysReleased;
-
   private String currentLevel;
 
   /**
@@ -132,6 +134,12 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       return currentLevel;
     }
     throw new NullPointerException(EXCEPTIONS.getString("currentLevelNull"));
+  }
+
+  @Override
+  public void setLanguage(String language) {
+    ResourceManager.getInstance().setLocale(Locale.of(language));
+    LOG.info("Setting language to {}", language);
   }
 
   /**

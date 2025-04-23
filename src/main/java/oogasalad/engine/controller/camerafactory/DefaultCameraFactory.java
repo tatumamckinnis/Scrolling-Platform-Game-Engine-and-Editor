@@ -20,7 +20,7 @@ public class DefaultCameraFactory implements CameraFactory {
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
       "oogasalad.config.engine.controller.level");
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
   private static final ResourceBundle FACTORY_RESOURCES = ResourceBundle.getBundle(
       "oogasalad.config.engine.controller.controller");
 

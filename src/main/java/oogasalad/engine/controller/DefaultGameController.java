@@ -50,7 +50,7 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultGameController implements GameControllerAPI, GameObjectProvider, GameExecutor {
 
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.engine.exceptions");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.exceptions");
   private final EventHandler eventHandler;
   private final CollisionHandler collisionHandler;
   private Map<String, GameObject> myGameObjectMap;

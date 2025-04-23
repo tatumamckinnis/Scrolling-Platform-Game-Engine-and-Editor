@@ -77,4 +77,6 @@ public interface GameManagerAPI {
    * @return a String path to the current level file
    */
   String getCurrentLevel() throws NullPointerException;
+
+  void setLanguage(String language);
 }

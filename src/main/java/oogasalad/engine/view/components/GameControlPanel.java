@@ -32,7 +32,7 @@ public class GameControlPanel extends Display {
   private static final Logger LOG = LogManager.getLogger();
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
 
   private List<Button> buttons;
   private String gameControlPanelStylesheet;

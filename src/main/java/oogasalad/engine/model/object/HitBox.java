@@ -15,7 +15,7 @@ import oogasalad.Main;
 public class HitBox {
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      "oogasalad.i18n.engine.exceptions");
+      "oogasalad.i18n.exceptions");
 
   private int x;
   private int y;
