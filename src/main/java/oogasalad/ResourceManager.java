@@ -5,6 +5,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * Default implementation of the Resource Mananger API Used to retrieve keys from resource bundles
+ * depending on if the key is considered displayed text - meaning it is displayed to the user or if
+ * it is part of the configuration
+ *
+ * @author Alana Zinkin
+ */
 public class ResourceManager implements ResourceManagerAPI {
 
   private static final ResourceManagerAPI instance = new ResourceManager();
