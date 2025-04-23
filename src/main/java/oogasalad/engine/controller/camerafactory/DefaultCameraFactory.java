@@ -15,6 +15,12 @@ import oogasalad.fileparser.records.CameraData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Default Camera Factory implementation - implements the Camera Factory API Used to create new
+ * camera types (ex: autoscrolling, tracker)
+ *
+ * @author Alana Zinkin
+ */
 public class DefaultCameraFactory implements CameraFactory {
 
   private static Logger LOG = LogManager.getLogger();
