@@ -18,7 +18,7 @@ import oogasalad.engine.view.ViewState;
 public class NewGameComponents extends Display {
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
 
   // contains a game over object if it is game ober
   // contains a play again

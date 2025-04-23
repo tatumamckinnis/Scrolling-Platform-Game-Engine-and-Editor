@@ -16,10 +16,10 @@ import oogasalad.engine.view.LevelDisplay;
 public class AutoScrollingCamera implements Camera {
 
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelDisplay.class.getPackage().getName() + ".Level");
+      "oogasalad.config.engine.controller.level");
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
 
   private double scrollSpeedX;
   private double scrollSpeedY; // Change if vertical scrolling is needed

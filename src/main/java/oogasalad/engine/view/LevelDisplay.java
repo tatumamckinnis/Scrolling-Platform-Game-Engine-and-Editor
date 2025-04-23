@@ -23,7 +23,7 @@ public class LevelDisplay extends Display {
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
   private static final Logger LOG = LogManager.getLogger();
   private final ViewObjectToImageConverter myConverter;
 

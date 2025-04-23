@@ -22,7 +22,7 @@ public class WinScreen extends GameOverlayScreen {
     private static final Logger LOG = LogManager.getLogger();
     private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
         Main.class.getPackage().getName() + "." + "Exceptions");
-    private static final String overlayPropertiesFilepath = "/oogasalad/screens/winScene.properties";
+    private static final String overlayPropertiesFilepath = "/oogasalad/config/engine/view/winScene.properties";
     private static final Properties overlayProperties = new Properties();
     private String overlayStylesheet;
     private ViewState viewState;

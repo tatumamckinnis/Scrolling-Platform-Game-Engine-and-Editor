@@ -46,10 +46,10 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
 public class SplashScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String splashComponentPropertiesFilepath = "/oogasalad/screens/splashScene.properties";
+  private static final String splashComponentPropertiesFilepath = "/oogasalad/config/engine/view/splashScene.properties";
   private static final Properties splashComponentProperties = new Properties();
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
   private static final String gamesFilePath = "data/gameData/levels/";
   private String splashStylesheet;
   private int splashWidth;

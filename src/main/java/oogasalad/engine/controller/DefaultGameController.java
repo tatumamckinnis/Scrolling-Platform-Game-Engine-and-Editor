@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
+import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameExecutor;
@@ -49,8 +50,7 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultGameController implements GameControllerAPI, GameObjectProvider, GameExecutor {
 
-  private static final ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameController.class.getPackageName() + "." + "Controller");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.engine.exceptions");
   private final EventHandler eventHandler;
   private final CollisionHandler collisionHandler;
   private Map<String, GameObject> myGameObjectMap;
@@ -126,7 +126,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     try {
       return myGameObjectMap.get(uuid);
     } catch (NullPointerException e) {
-      throw new NoSuchElementException(CONTROLLER_RESOURCES.getString("NoObjectWithUUID") + uuid);
+      throw new NoSuchElementException(EXCEPTIONS.getString("NoObjectWithUUID") + uuid);
     }
   }
 

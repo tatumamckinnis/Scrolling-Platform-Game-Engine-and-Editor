@@ -30,13 +30,15 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
 public class GameControlPanel extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
+
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
+
   private List<Button> buttons;
   private String gameControlPanelStylesheet;
   private ViewState viewState;
 
-  private static final String engineComponentPropertiesFilepath = "/oogasalad/screens/engineComponent.properties";
+  private static final String engineComponentPropertiesFilepath = "/oogasalad/config/engine/view/engineComponent.properties";
   private static final Properties engineComponentProperties = new Properties();
 
   /**
@@ -49,9 +51,10 @@ public class GameControlPanel extends Display {
     } catch (IOException e) {
       LOG.warn("Unable to load engine component properties");
     }
-    String gameControlPanelStylesheetFilepath = engineComponentProperties.getProperty("gameControlPanel.stylesheet");
+    String gameControlPanelStylesheetFilepath = engineComponentProperties.getProperty(
+        "gameControlPanel.stylesheet");
     gameControlPanelStylesheet = Objects.requireNonNull(getClass().getResource(
-      gameControlPanelStylesheetFilepath)).toExternalForm();
+        gameControlPanelStylesheetFilepath)).toExternalForm();
     buttons = new ArrayList<>();
     this.viewState = viewState;
     this.setViewOrder(-1);
@@ -87,7 +90,8 @@ public class GameControlPanel extends Display {
    * Initializes the game control panel buttons based on the properties file
    */
   public void initializeGameControlPanelButtons() {
-    String[] buttonKeys = engineComponentProperties.getProperty("gameControlPanel.buttons").split(",");
+    String[] buttonKeys = engineComponentProperties.getProperty("gameControlPanel.buttons")
+        .split(",");
     for (String buttonKey : buttonKeys) {
       String formattedButtonKey = "gameControlPanel.button." + buttonKey.trim();
       Button gameControlPanelButton = createGameControlPanelButton(formattedButtonKey);
@@ -96,8 +100,9 @@ public class GameControlPanel extends Display {
   }
 
   /**
-   * Creates a button for the game control panel, such as play, pause, restart, home, etc.
-   * The button is created using the properties file to get its image and dimensions.
+   * Creates a button for the game control panel, such as play, pause, restart, home, etc. The
+   * button is created using the properties file to get its image and dimensions.
+   *
    * @param buttonKey the properties key of the button to be created
    */
   private Button createGameControlPanelButton(String buttonKey) {
@@ -116,15 +121,18 @@ public class GameControlPanel extends Display {
 
   /**
    * Applies the image and preferred dimensions to the button.
-   * @param button the button object where we will apply the image and dimensions
+   *
+   * @param button    the button object where we will apply the image and dimensions
    * @param buttonKey the property key of the button to be modified
    */
   private void applyButtonDimensions(Button button, String buttonKey) {
-    int fitWidth = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.width"));
-    int fitHeight = Integer.parseInt(engineComponentProperties.getProperty("gameControlPanel.button.height"));
+    int fitWidth = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.width"));
+    int fitHeight = Integer.parseInt(
+        engineComponentProperties.getProperty("gameControlPanel.button.height"));
 
     Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(
-      engineComponentProperties.getProperty(buttonKey + ".image"))));
+        engineComponentProperties.getProperty(buttonKey + ".image"))));
     ImageView imageView = new ImageView(image);
 
     imageView.setFitWidth(fitWidth);

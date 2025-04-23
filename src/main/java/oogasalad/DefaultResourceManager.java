@@ -1,4 +1,63 @@
 package oogasalad;
 
-public class DefaultResourceManager {
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+public class DefaultResourceManager implements ResourceManagerAPI {
+  private static final ResourceManagerAPI instance = new DefaultResourceManager();
+  private final Map<String, ResourceBundle> bundles = new HashMap<>();
+  private Locale currentLocale = Locale.getDefault();
+
+  // Base paths for different resource types
+  private static final String I18N_BASE_PATH = "oogasalad.i18n.";
+  private static final String CONFIG_BASE_PATH = "oogasalad.config.";
+
+  private DefaultResourceManager() {
+    // Private constructor for singleton
+  }
+
+  public static ResourceManagerAPI getInstance() {
+    return instance;
+  }
+
+  public void setLocale(Locale locale) {
+    currentLocale = locale;
+    bundles.clear(); // Clear cache when changing locale
+  }
+
+  /**
+   * Get localized text from the i18n resources
+   * @param component The component (editor, engine, exceptions, common)
+   * @param key The resource key
+   * @return The localized text
+   */
+  public String getText(String component, String key) {
+    String bundleName = I18N_BASE_PATH + component + ".messages";
+    return getResourceBundle(bundleName).getString(key);
+  }
+
+  /**
+   * Get non-localized configuration value
+   * @param configFile The config file name without extension
+   * @param key The configuration key
+   * @return The configuration value
+   */
+  public String getConfig(String configFile, String key) {
+    String bundleName = CONFIG_BASE_PATH + configFile;
+    return getResourceBundle(bundleName).getString(key);
+  }
+
+  private ResourceBundle getResourceBundle(String bundleName) {
+    if (!bundles.containsKey(bundleName)) {
+      // For i18n resources, use locale; for config, use default locale
+      if (bundleName.startsWith(I18N_BASE_PATH)) {
+        bundles.put(bundleName, ResourceBundle.getBundle(bundleName, currentLocale));
+      } else {
+        bundles.put(bundleName, ResourceBundle.getBundle(bundleName));
+      }
+    }
+    return bundles.get(bundleName);
+  }
 }

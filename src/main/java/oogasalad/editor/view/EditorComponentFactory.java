@@ -46,7 +46,7 @@ public class EditorComponentFactory {
 
   private static final Logger LOG = LogManager.getLogger(EditorComponentFactory.class);
 
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/editor_component_factory_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/editor_component_factory_identifiers.properties";
 
   private final Properties editorProperties;
   private final Properties identifierProps;

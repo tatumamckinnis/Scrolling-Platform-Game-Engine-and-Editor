@@ -30,8 +30,7 @@ import oogasalad.exceptions.ViewInitializationException;
 public class DefaultView implements ViewAPI {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(
-      DefaultView.class.getPackage().getName() + "." + "Level");
+  private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle("oogasalad.config.engine.controller.level");
   private static final int LEVEL_WIDTH = Integer.parseInt(
       GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
   private static final int LEVEL_HEIGHT = Integer.parseInt(

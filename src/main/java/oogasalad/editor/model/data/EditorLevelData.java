@@ -36,7 +36,7 @@ public class EditorLevelData {
   private SpriteTemplateMap spriteTemplateMap;
 
   private static final Properties editorConfig = new Properties();
-  private static final String propertyFile = "oogasalad/config/editorConfig.properties";
+  private static final String propertyFile = "oogasalad/config/editor/resources/editorConfig.properties";
 
   static {
     try (InputStream is = Thread.currentThread().getContextClassLoader()

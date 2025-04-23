@@ -50,8 +50,8 @@ public class ButtonActionFactory {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
-  private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
+      "oogasalad.i18n.engine.exceptions");
+  private static final String buttonIDToActionFilePath = "/oogasalad/config/engine/view/buttonAction.properties";
   private static final String gamesFilePath = "data/gameData/levels/";
   private static final Properties buttonIDToActionProperties = new Properties();
   private final ViewState viewState;

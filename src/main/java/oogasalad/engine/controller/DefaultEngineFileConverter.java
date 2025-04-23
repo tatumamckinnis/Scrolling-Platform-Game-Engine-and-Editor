@@ -37,10 +37,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
-  private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.engine.exceptions");
   private static final Logger LOG = LogManager.getLogger();
 
   private Map<String, GameObject> gameObjectMap;

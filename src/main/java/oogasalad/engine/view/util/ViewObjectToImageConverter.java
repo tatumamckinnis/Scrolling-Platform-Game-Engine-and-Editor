@@ -30,7 +30,7 @@ import org.w3c.dom.css.Rect;
 public class ViewObjectToImageConverter {
 
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
 
   private final Map<String, ObjectImage> UUIDToImageMap;
 

@@ -18,11 +18,11 @@ import oogasalad.fileparser.records.CameraData;
 public class DefaultCameraFactory implements CameraFactory {
 
   private static final ResourceBundle LEVEL_RESOURCES = ResourceBundle.getBundle(
-      LevelDisplay.class.getPackage().getName() + ".Level");
+      "oogasalad.config.engine.controller.level");
   private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+      "oogasalad.i18n.engine.exceptions");
   private static final ResourceBundle FACTORY_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameController.class.getPackage().getName() + ".Controller");
+      "oogasala.config.engine.controller.controller");
 
   @Override
   public Camera create(String type, CameraData data, Map<String, GameObject> gameObjectMap)

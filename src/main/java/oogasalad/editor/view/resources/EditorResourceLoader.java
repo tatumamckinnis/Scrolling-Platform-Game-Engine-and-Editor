@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 public final class EditorResourceLoader {
 
   private static final Logger LOG = LogManager.getLogger(EditorResourceLoader.class);
-  private static final String DEFAULT_BUNDLE_BASE_PATH = "/oogasalad/editor/view/resources/";
+  private static final String DEFAULT_BUNDLE_BASE_PATH = "/oogasalad/config/editor/resources/";
 
   /**
    * Loads properties from a given classpath resource path. Logs errors if the file is not found or

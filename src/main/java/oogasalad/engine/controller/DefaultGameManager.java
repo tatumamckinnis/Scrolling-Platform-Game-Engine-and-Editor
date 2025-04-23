@@ -39,9 +39,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameManager.class.getPackageName() + "." + "GameManager");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+      "oogasalad.config.engine.controller.game.manager");
+  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle("oogasalad.i18n.engine.exceptions");
   private final Timeline myGameLoop;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;

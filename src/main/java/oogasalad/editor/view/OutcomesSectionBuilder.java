@@ -43,7 +43,7 @@ import org.apache.logging.log4j.Logger;
 public class OutcomesSectionBuilder {
 
   private static final Logger LOG = LogManager.getLogger(OutcomesSectionBuilder.class);
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/outcomes_section_builder_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/outcomes_section_builder_identifiers.properties";
 
   private final ResourceBundle uiBundle;
   private final Properties identifierProps;
