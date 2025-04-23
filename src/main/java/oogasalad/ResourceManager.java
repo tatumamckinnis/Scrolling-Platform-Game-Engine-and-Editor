@@ -5,8 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class DefaultResourceManager implements ResourceManagerAPI {
-  private static final ResourceManagerAPI instance = new DefaultResourceManager();
+public class ResourceManager implements ResourceManagerAPI {
+  private static final ResourceManagerAPI instance = new ResourceManager();
   private final Map<String, ResourceBundle> bundles = new HashMap<>();
   private Locale currentLocale = Locale.getDefault();
 
@@ -14,9 +14,6 @@ public class DefaultResourceManager implements ResourceManagerAPI {
   private static final String I18N_BASE_PATH = "oogasalad.i18n.";
   private static final String CONFIG_BASE_PATH = "oogasalad.config.";
 
-  private DefaultResourceManager() {
-    // Private constructor for singleton
-  }
 
   public static ResourceManagerAPI getInstance() {
     return instance;
