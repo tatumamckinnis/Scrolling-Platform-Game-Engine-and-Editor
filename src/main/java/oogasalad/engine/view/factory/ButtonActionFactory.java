@@ -11,7 +11,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
-import oogasalad.Main;
 import oogasalad.editor.controller.EditorMaker;
 import oogasalad.server.ClientSocket;
 import oogasalad.server.ServerMessage;
@@ -357,4 +356,11 @@ public class ButtonActionFactory {
       }
     };
   }
+
+  public Runnable selectLanguage(String language) {
+    return () -> {
+      viewState.getGameManager().selectLanguage(language);
+    };
+  }
+
 }

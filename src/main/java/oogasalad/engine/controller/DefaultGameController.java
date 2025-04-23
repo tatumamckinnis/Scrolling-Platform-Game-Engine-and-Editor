@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
-import oogasalad.Main;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameExecutor;
@@ -141,7 +140,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
       for (Event event : objectEvents) {
         eventHandler.handleEvent(event);
       }
-      gameObject.updatePosition(); //process y velocity/xvelocity from gravity/jump
+      gameObject.updatePosition(); //process y velocity and x velocity from gravity/jump
     }
 
   }
@@ -177,12 +176,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
   private List<ImmutableGameObject> makeGameObjectsImmutable(
       List<GameObject> gameObjectsToConvert) {
-    List<ImmutableGameObject> immutableObjects = new ArrayList<>();
-    for (GameObject gameObject : gameObjectsToConvert) {
-      immutableObjects.add(gameObject);
-    }
-    return immutableObjects;
+    return new ArrayList<>(gameObjectsToConvert);
   }
-
 
 }
