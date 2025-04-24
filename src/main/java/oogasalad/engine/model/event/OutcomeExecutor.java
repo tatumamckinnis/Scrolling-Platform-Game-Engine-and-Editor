@@ -29,6 +29,7 @@ import oogasalad.engine.model.event.outcome.SelectLevelOutcome;
 import oogasalad.engine.model.event.outcome.SetBaseFrameOutcome;
 import oogasalad.engine.model.event.outcome.SetVarOutcome;
 import oogasalad.engine.model.event.outcome.SpawnNewObjectOutcome;
+import oogasalad.engine.model.event.outcome.SpawnOnObjectOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToPointOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToRandomPointOutcome;
 import oogasalad.engine.model.event.outcome.stopObjectAnimationsOutcome;
@@ -93,6 +94,7 @@ public class OutcomeExecutor {
     outcomeMap.put(OutcomeType.TELEPORT_TO_POINT, new TeleportObjectToPointOutcome());
     outcomeMap.put(OutcomeType.TELEPORT_TO_RANDOM_POINT, new TeleportObjectToRandomPointOutcome());
     outcomeMap.put(OutcomeType.SPAWN_NEW_OBJECT, new SpawnNewObjectOutcome(gameExecutor));
+    outcomeMap.put(OutcomeType.SPAWN_ON_OBJECT, new SpawnOnObjectOutcome(gameExecutor));
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
