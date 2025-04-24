@@ -184,7 +184,7 @@ public class EditorObjectPopulator {
 
       LOG.warn("No base frame record and no frames found for sprite record '{}'. Cannot set base frame name.", recordSprite.name());
     }
-    modelSpriteData.setBaseFrame(baseFrameNameToSet);
+    modelSpriteData.setBaseFrameName(baseFrameNameToSet);
 
 
     LOG.info("Converted sprite record '{}': Image='{}', BaseFrame='{}', Frames={}, Animations={}",

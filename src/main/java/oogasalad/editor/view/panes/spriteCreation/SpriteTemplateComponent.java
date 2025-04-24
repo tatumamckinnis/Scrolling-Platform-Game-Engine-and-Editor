@@ -105,7 +105,6 @@ public class SpriteTemplateComponent extends Stage {
     String atlasId = spriteFile.contains(".") ? spriteFile.substring(0, spriteFile.lastIndexOf('.'))
         : spriteFile;
 
-    System.out.println(atlasId);
     SpriteSheetAtlas atlas = library.getAtlas(atlasId);
 
     framesPane.setFrames(atlas.frames(), toEdit.getFrames().keySet(), toEdit.getBaseFrame().name());

@@ -1,4 +1,4 @@
-package oogasalad.editor.controller;
+package oogasalad.editor.controller.object_data;
 
 import java.util.UUID;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
@@ -14,15 +14,18 @@ import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
  */
 public class SpriteDataManager {
 
+  private final EditorListenerNotifier listenerNotifier;
   private EditorLevelData level;
 
   /**
    * Constructs a SpriteDataManager with the specified EditorLevelData.
    *
-   * @param level the EditorLevelData instance that manages the EditorObjects.
+   * @param level            the EditorLevelData instance that manages the EditorObjects.
+   * @param listenerNotifier
    */
-  public SpriteDataManager(EditorLevelData level) {
+  public SpriteDataManager(EditorLevelData level, EditorListenerNotifier listenerNotifier) {
     this.level = level;
+    this.listenerNotifier = listenerNotifier;
   }
 
   public String getName(UUID id) {
@@ -59,6 +62,14 @@ public class SpriteDataManager {
 
   public String getTemplateName(UUID id) {
     return level.getEditorObject(id).getSpriteData().getTemplateName();
+  }
+
+  public String getBaseFrameName(UUID id) {
+    return level.getEditorObject(id).getSpriteData().getBaseFrameName();
+  }
+
+  public boolean getIsFlipped(UUID id) {
+    return level.getEditorObject(id).getSpriteData().getIsFlipped();
   }
 
   /**
@@ -127,15 +138,18 @@ public class SpriteDataManager {
    * @param id        The UUID of the object.
    * @param baseFrame The base frame to set.
    */
-  public void setBaseFrame(UUID id, String baseFrame) {
-    level.getEditorObject(id).getSpriteData().setBaseFrame(baseFrame);
+  public void setBaseFrameName(UUID id, String baseFrame) {
+    level.getEditorObject(id).getSpriteData().setBaseFrameName(baseFrame);
   }
 
   public void applyTemplateToSprite(UUID currentObjectId, SpriteTemplate template) {
     SpriteData spriteData = level.getEditorObject(currentObjectId).getSpriteData();
     spriteData.setFrames(template.getFrames());
     spriteData.setAnimations(template.getAnimations());
-    spriteData.setBaseFrame(template.getBaseFrame().name());
+    spriteData.setBaseFrameName(template.getBaseFrame().name());
     spriteData.setTemplateName(template.getName());
+    spriteData.setSpritePath(template.getSpriteFile());
+
+    listenerNotifier.notifyObjectUpdated(currentObjectId);
   }
 }

@@ -162,6 +162,24 @@ public class SpriteData {
   }
 
   /**
+   * Retrieves the name of the specified base frame for the current sprite
+   *
+   * @return the name of the base frame
+   */
+  public String getBaseFrameName() {
+    return baseFrame;
+  }
+
+  /**
+   * Retrieves the current status of the flip of the sprite
+   *
+   * @return whether the sprite is flipped or not
+   */
+  public boolean isFlipped() {
+    return isFlipped;
+  }
+
+  /**
    * Retrieves the name of the SpriteTemplate assigned to this object
    *
    * @return the name of the {@link SpriteTemplate} for this object
@@ -321,7 +339,7 @@ public class SpriteData {
    *
    * @param baseFrame the new base frame
    */
-  public void setBaseFrame(String baseFrame) {
+  public void setBaseFrameName(String baseFrame) {
     this.baseFrame = baseFrame;
   }
 
@@ -348,7 +366,7 @@ public class SpriteData {
    *
    * @param templateName the name of the {@link SpriteTemplate} to assign to this object
    */
-  public String setTemplateName(String templateName) {
-    return templateName;
+  public void setTemplateName(String templateName) {
+    this.templateName = templateName;
   }
 }

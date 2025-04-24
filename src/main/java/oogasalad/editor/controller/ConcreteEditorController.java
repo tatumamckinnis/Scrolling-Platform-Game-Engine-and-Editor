@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
+import oogasalad.editor.controller.object_data.EditorEventHandler;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
