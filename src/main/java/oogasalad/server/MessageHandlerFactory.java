@@ -22,12 +22,12 @@ public class MessageHandlerFactory {
 
   public static Runnable handleMessage(ViewState viewState, ServerMessage message) {
     try {
-      Method method = MessageHandlerFactory.class.getDeclaredMethod(message.type, ViewState.class, ServerMessage.class);
+      Method method = MessageHandlerFactory.class.getDeclaredMethod(message.getType(), ViewState.class, ServerMessage.class);
       method.setAccessible(true);
 
       return (Runnable) method.invoke(null, viewState, message);
     } catch (Exception e) {
-      LOG.info("No matching handler found for server message type: {}", message.type);
+      LOG.info("No matching handler found for server message type: {}", message.getType());
       return () -> {};
     }
   }
@@ -120,7 +120,7 @@ public class MessageHandlerFactory {
     return () -> Platform.runLater(() -> {
       try {
         OnlineLobby lobbyDisplay = new OnlineLobby(
-            Integer.parseInt(message.message),
+            Integer.parseInt(message.getMessage()),
             viewState,
             viewState.getMySocket().getLobby());
         viewState.setDisplay(lobbyDisplay);
@@ -138,7 +138,7 @@ public class MessageHandlerFactory {
    */
   private static Runnable pressKey(ViewState viewState, ServerMessage message) {
     return () -> Platform.runLater(() -> {
-      viewState.pressKey(KeyCode.valueOf(message.message));
+      viewState.pressKey(KeyCode.valueOf(message.getMessage()));
     });
   }
 
@@ -150,7 +150,7 @@ public class MessageHandlerFactory {
    */
   private static Runnable releaseKey(ViewState viewState, ServerMessage message) {
     return () -> Platform.runLater(() -> {
-      viewState.releaseKey(KeyCode.valueOf(message.message));
+      viewState.releaseKey(KeyCode.valueOf(message.getMessage()));
     });
   }
 }
