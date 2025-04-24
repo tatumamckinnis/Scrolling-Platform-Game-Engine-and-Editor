@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -227,6 +228,17 @@ public class SplashScreen extends Display {
     double buttonHeight = Integer.parseInt(
         resourceManager.getConfig(splashConfig, "splash.button.height"));
 
+    // Add language selector first
+    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    String languages = resourceManager.getConfig(splashConfig, "available.languages");
+    String[] languagesArray = languages.split(",");
+    for (String lang : languagesArray) {
+        languageSelector.getItems().add(lang);
+    }
+    setLanguageComboBoxButtonAction(languageSelector);
+
+    // Then add game and level selectors
     ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
         comboBoxIDs, comboBoxStyles, splashBox);
     ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
@@ -253,6 +265,8 @@ public class SplashScreen extends Display {
       setButtonStyle(currButton, buttonIDs[i], buttonStyles[i]);
       splashBox.getChildren().add(currButton);
     }
+
+    addOnlineButtons(splashBox);
 
     int buttonSpacing = Integer.parseInt(
         resourceManager.getConfig(splashConfig, "splash.button.spacing"));
@@ -376,8 +390,9 @@ public class SplashScreen extends Display {
 
   private String[] getSplashComboBoxTexts() {
     return new String[]{
-        resourceManager.getConfig(splashConfig, "splash.button.gameType.text"),
-        resourceManager.getConfig(splashConfig, "splash.button.gameLevel.text")
+        resourceManager.getText(displayedText, "splash.button.gameType.text"),
+        resourceManager.getText(displayedText, "splash.button.gameLevel.text"),
+        resourceManager.getText(displayedText, "splash.button.select.language.text")
     };
   }
 
@@ -398,7 +413,8 @@ public class SplashScreen extends Display {
   private String[] getSplashComboBoxIDs() {
     return new String[]{
         resourceManager.getConfig(splashConfig, "splash.button.gameType.id"),
-        resourceManager.getConfig(splashConfig, "splash.button.gameLevel.id")
+        resourceManager.getConfig(splashConfig, "splash.button.gameLevel.id"),
+        resourceManager.getConfig(splashConfig, "splash.button.select.language.id")
     };
   }
 
@@ -419,7 +435,55 @@ public class SplashScreen extends Display {
   private String[] getSplashButtonStylesID() {
     return new String[]{
         resourceManager.getConfig(splashConfig, "splash.button.gameType.style"),
-        resourceManager.getConfig(splashConfig, "splash.button.gameLevel.style")
+        resourceManager.getConfig(splashConfig, "splash.button.gameLevel.style"),
+        resourceManager.getConfig(splashConfig, "splash.button.select.language.style")
     };
+  }
+
+  private void renderLanguageSelector(String[] comboBoxTexts, double buttonWidth,
+      double buttonHeight,
+      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) {
+    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    String languages = resourceManager.getConfig(splashConfig, "available.languages");
+    String[] languagesArray = languages.split(",");
+    for (String lang : languagesArray) {
+        languageSelector.getItems().add(lang);
+    }
+    setLanguageComboBoxButtonAction(languageSelector);
+  }
+
+  private void renderGameAndLevelSelectors(String[] comboBoxTexts, double buttonWidth,
+      double buttonHeight,
+      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) throws FileNotFoundException {
+    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    populateGameTypeComboBox(gameTypeBox);
+    selectGameType(gameTypeBox, levelBox);
+    setComboBoxButtonAction(gameTypeBox, levelBox);
+  }
+
+  private void addOnlineButtons(VBox splashBox) {
+    TextField lobbyField = new TextField();
+    lobbyField.setPromptText(
+        resourceManager.getText(displayedText, "splash.enter.lobby.number.text"));
+
+    Button joinServer = new Button(
+        resourceManager.getText(displayedText, "splash.join.lobby.text"));
+    joinServer.setOnAction(event -> {
+        ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
+    });
+
+    splashBox.getChildren().addAll(joinServer, lobbyField);
+  }
+
+  private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
+    comboBox.valueProperty().addListener((obs, oldValue, language) -> {
+        LOG.info("Setting language to {}", language);
+        factory.selectLanguage(language).run();
+    });
   }
 }
