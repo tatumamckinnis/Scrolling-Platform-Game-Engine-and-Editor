@@ -47,11 +47,14 @@ public class SplashScreen extends Display {
    * @param viewState the state of the view
    */
   public SplashScreen(ViewState viewState) throws FileNotFoundException {
-    String splashStylesheetFilepath = resourceManager.getConfig("engine.view.splashScene","splash.stylesheet");
+    String splashStylesheetFilepath = resourceManager.getConfig("engine.view.splashScene",
+        "splash.stylesheet");
     splashStylesheet = Objects.requireNonNull(getClass().getResource(splashStylesheetFilepath))
         .toExternalForm();
-    splashWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.width"));
-    splashHeight = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.height"));
+    splashWidth = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.width"));
+    splashHeight = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.height"));
     this.viewState = viewState;
 
     initializeSplashScreen();
@@ -59,12 +62,14 @@ public class SplashScreen extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
   }
 
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
-    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotRenderPlayerStats"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotRenderPlayerStats"));
   }
 
   /**
@@ -102,7 +107,8 @@ public class SplashScreen extends Display {
    */
   private StackPane createLogoPane(int splashHeight) {
     StackPane logoPane = new StackPane();
-    int logoPaneWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.leftPane.width"));
+    int logoPaneWidth = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.leftPane.width"));
     logoPane.setPrefSize(logoPaneWidth, splashHeight);
     logoPane.getStyleClass().add("logo-pane");
     logoPane.getChildren().add(createSplashBackground());
@@ -118,7 +124,8 @@ public class SplashScreen extends Display {
    */
   private StackPane createOptionsPane(int splashHeight) throws FileNotFoundException {
     StackPane optionsPane = new StackPane();
-    int optionsPaneWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.rightPane.width"));
+    int optionsPaneWidth = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.rightPane.width"));
     optionsPane.setPrefSize(optionsPaneWidth, splashHeight);
     optionsPane.getStyleClass().add("options-pane");
     optionsPane.getChildren().add(createSplashButtonBox());
@@ -133,7 +140,8 @@ public class SplashScreen extends Display {
   private ImageView createSplashLogo() {
     ImageView splashLogo = new ImageView();
     try {
-      String logoFilepath = resourceManager.getConfig("engine.view.splashScene","splash.logo.image");
+      String logoFilepath = resourceManager.getConfig("engine.view.splashScene",
+          "splash.logo.image");
       Image splashImage = new Image(getClass().getResourceAsStream(logoFilepath));
       scaleSplashLogo(splashLogo);
       splashLogo.setImage(splashImage);
@@ -150,9 +158,10 @@ public class SplashScreen extends Display {
    * @param splashLogo the logo we are expected to scale
    */
   private void scaleSplashLogo(ImageView splashLogo) {
-    int splashWidth = Integer.parseInt(resourceManager.getConfig("engine.view.splashScene","splash.logo.width"));
+    int splashWidth = Integer.parseInt(
+        resourceManager.getConfig("engine.view.splashScene", "splash.logo.width"));
     int splashHeight = Integer.parseInt(
-        resourceManager.getConfig("engine.view.splashScene","splash.logo.height"));
+        resourceManager.getConfig("engine.view.splashScene", "splash.logo.height"));
     splashLogo.setFitWidth(splashWidth);
     splashLogo.setFitHeight(splashHeight);
     splashLogo.setPickOnBounds(true);
@@ -264,9 +273,11 @@ public class SplashScreen extends Display {
    */
   private void addOnlineButtons(VBox splashBox) {
     TextField lobbyField = new TextField();
-    lobbyField.setPromptText("Enter lobby number");
+    lobbyField.setPromptText(
+        resourceManager.getText("displayedText", "splash.enter.lobby.number.text"));
 
-    Button joinServer = new Button("Create/Join Lobby");
+    Button joinServer = new Button(
+        resourceManager.getText("displayedText", "splash.join.lobby.text"));
     joinServer.setOnAction(event -> {
       ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
     });

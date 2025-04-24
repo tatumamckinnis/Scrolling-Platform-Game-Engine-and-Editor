@@ -32,6 +32,35 @@ html {
     -fx-text-fill: white;
 }
 
+.select-language-combobox {
+    -fx-border-color: #87dbff;
+}
+
+
+.select-language-combobox:hover {
+    -fx-background-color: #87dbff;
+    -fx-text-fill: white;
+}
+
+.select-language-combobox > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.select-language-combobox > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.select-language-combobox:hover > .list-cell:empty {
+    -fx-text-fill: white;
+}
+
+/* Optional: also make selected text white on hover */
+.select-language-combobox:hover > .list-cell {
+    -fx-text-fill: white;
+}
+
 .game-combobox {
     -fx-border-color: #ff746c;
 }
