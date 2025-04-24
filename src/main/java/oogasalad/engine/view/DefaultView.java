@@ -4,8 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
 
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,21 +29,21 @@ import oogasalad.exceptions.ViewInitializationException;
  * @author Aksel Bell
  */
 public class DefaultView implements ViewAPI {
-
+  
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle GAME_APP_VIEW_RESOURCES = ResourceBundle.getBundle(
-      DefaultView.class.getPackage().getName() + "." + "Level");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private static final int LEVEL_WIDTH = Integer.parseInt(
-      GAME_APP_VIEW_RESOURCES.getString("LevelWidth"));
+      resourceManager.getConfig("engine.controller.level", "LevelWidth"));
   private static final int LEVEL_HEIGHT = Integer.parseInt(
-      GAME_APP_VIEW_RESOURCES.getString("LevelHeight"));
+      resourceManager.getConfig("engine.controller.level","LevelHeight"));
 
   private Display currentDisplay;
   private Scene currentScene;
   private final Stage currentStage;
   private final GameManagerAPI gameManager;
-  private List<KeyCode> currentInputs;
-  private List<KeyCode> releasedInputs;
+  private final List<KeyCode> currentInputs;
+  private final List<KeyCode> releasedInputs;
   private Camera myCamera;
 
   /**
@@ -54,6 +55,7 @@ public class DefaultView implements ViewAPI {
     this.myCamera = new TrackerCamera();
     currentScene = new Scene(new Group(), LEVEL_WIDTH, LEVEL_HEIGHT);
     currentInputs = new ArrayList<>();
+    releasedInputs = new ArrayList<>();
   }
 
   /**
@@ -137,20 +139,24 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
-   * Set the current inputs.
-   *
-   * @param currentInputs an arraylist to point to.
+   * Package protected method that allows frontend to trigger key pressed in input list.
+   * @param key pressed key.
    */
-  void setCurrentInputs(List<KeyCode> currentInputs) {
-    this.currentInputs = currentInputs;
+  void pressKey(KeyCode key) {
+    if (!currentInputs.contains(key)) {
+      currentInputs.add(key);
+    }
   }
 
   /**
-   * Set the released inputs.
-   *
-   * @param releasedInputs an arraylist to point to.
+   * Package protected method that allows frontend to trigger key released in input list.
+   * @param key released key.
    */
-  void setReleasedInputs(List<KeyCode> releasedInputs) {
-    this.releasedInputs = releasedInputs;
+  void releaseKey(KeyCode key) {
+    currentInputs.remove(key);
+    if (!releasedInputs.contains(key)) {
+      releasedInputs.add(key);
+    }
   }
+
 }

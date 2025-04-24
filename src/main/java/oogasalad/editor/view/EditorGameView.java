@@ -45,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorGameView extends Pane implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(EditorGameView.class);
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/editor_game_view_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/editor_game_view_identifiers.properties";
 
   private final Canvas gridCanvas;
   private final Canvas objectCanvas;

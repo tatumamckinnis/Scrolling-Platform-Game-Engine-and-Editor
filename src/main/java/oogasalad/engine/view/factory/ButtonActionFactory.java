@@ -3,20 +3,16 @@ package oogasalad.engine.view.factory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.net.URISyntaxException;
 import java.util.zip.DataFormatException;
 
-import javafx.scene.control.ComboBox;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.editor.controller.EditorMaker;
-import oogasalad.editor.view.EditorApplication;
+import oogasalad.server.ClientSocket;
+import oogasalad.server.ServerMessage;
 import oogasalad.engine.controller.DefaultGameManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,28 +40,20 @@ import oogasalad.exceptions.ViewInitializationException;
 /**
  * This class returns the desired function for a specific button.
  *
- * @author Aksel Bell
+ * @author Aksel Bell, Alana Zinkin
  */
 public class ButtonActionFactory {
 
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
-  private static final String buttonIDToActionFilePath = "/oogasalad/screens/buttonAction.properties";
   private static final String gamesFilePath = "data/gameData/levels/";
-  private static final Properties buttonIDToActionProperties = new Properties();
   private final ViewState viewState;
 
   /**
    * Loads property file map of buttonIDs to Actions.
    */
   public ButtonActionFactory(ViewState state) {
-    try {
-      InputStream stream = getClass().getResourceAsStream(buttonIDToActionFilePath);
-      buttonIDToActionProperties.load(stream);
-    } catch (IOException e) {
-      LOG.warn("Unable to load button action properties");
-    }
     this.viewState = state;
   }
 
@@ -76,7 +64,25 @@ public class ButtonActionFactory {
    * @return runnable function for the button's onClick action
    */
   public Runnable getAction(String buttonID) {
-    String methodName = buttonIDToActionProperties.getProperty(buttonID);
+    return getMethod(buttonID);
+  }
+
+  /**
+   * Returns the corresponding runnable function and also sends message to server telling all other
+   * clients to do the same. All buttons in the game control panel should call this.
+   *
+   * @param buttonID the button's unique ID whose function to run.
+   * @return runnable function.
+   */
+  public Runnable getActionAndSendServerMessage(String buttonID) {
+    return () -> {
+      sendMessageToServer(resourceManager.getConfig("engine.view.buttonAction", buttonID), "");
+      getMethod(buttonID).run();
+    };
+  }
+
+  private Runnable getMethod(String buttonID) {
+    String methodName = resourceManager.getConfig("engine.view.buttonAction", buttonID);
 
     try {
       Method method = ButtonActionFactory.class.getDeclaredMethod(methodName);
@@ -95,7 +101,7 @@ public class ButtonActionFactory {
    * @throws ViewInitializationException thrown if error initializing the view.
    * @throws InputException              if error parsing user key inputs.
    */
-  private Runnable startGame() throws ViewInitializationException, InputException {
+  public Runnable startGame() throws ViewInitializationException, InputException {
     return () -> {
       try {
         DefaultView gameView = viewState.getDefaultView();
@@ -132,7 +138,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that resumes the game
    */
-  private Runnable playGame() {
+  public Runnable playGame() {
     return () -> {
       viewState.getGameManager().playGame();
     };
@@ -143,7 +149,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that pauses the game
    */
-  private Runnable pauseGame() {
+  public Runnable pauseGame() {
     return () -> {
       viewState.getGameManager().pauseGame();
     };
@@ -154,7 +160,7 @@ public class ButtonActionFactory {
    *
    * @return a runnable that restarts the game
    */
-  private Runnable restartGame() {
+  public Runnable restartGame() {
     return () -> {
       try {
         restart();
@@ -194,7 +200,7 @@ public class ButtonActionFactory {
     };
   }
 
-  private void restart()
+  public void restart()
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
     viewState.getGameManager().restartGame();
     GameDisplay game = new GameDisplay(viewState);
@@ -208,7 +214,7 @@ public class ButtonActionFactory {
    *
    * @throws ViewInitializationException thrown if error initializing the view.
    */
-  private Runnable goToHome() throws ViewInitializationException {
+  public Runnable goToHome() throws ViewInitializationException {
     return () -> {
       try {
         DefaultView view = viewState.getDefaultView();
@@ -230,22 +236,24 @@ public class ButtonActionFactory {
    * Sets up input listeners when start is clicked.
    */
   private Runnable setCurrentInputs(Scene currentScene) throws ViewInitializationException {
-    List<KeyCode> currentInputs = new ArrayList<>();
-    List<KeyCode> releasedKeys = new ArrayList<>();
-    viewState.setCurrentInputs(currentInputs, releasedKeys);
     return () -> {
       currentScene.setOnKeyPressed(event -> {
         KeyCode keyCode = event.getCode();
-        if (!currentInputs.contains(keyCode)) {
-          currentInputs.add(keyCode);
-
+        try {
+          if (!viewState.getDefaultView().getCurrentInputs().contains(keyCode)) {
+            viewState.pressKey(keyCode);
+            sendMessageToServer("pressKey", keyCode.toString());
+          }
+        } catch (InputException e) {
+          LOG.warn("Could not get current inputs.");
+          throw new RuntimeException(e);
         }
       });
 
       currentScene.setOnKeyReleased(event -> {
         KeyCode keyCode = event.getCode();
-        currentInputs.remove(keyCode);
-        releasedKeys.add(keyCode);
+        viewState.releaseKey(keyCode);
+        sendMessageToServer("releaseKey", keyCode.toString());
       });
     };
   }
@@ -277,7 +285,6 @@ public class ButtonActionFactory {
    * selected game and level names. This method constructs the path to the level file using the
    * provided game and level names and delegates to the {@code GameManager} to load the level.
    *
-   *
    * @param game  the name of the game (i.e., the folder name under the game levels directory)
    * @param level the name of the level file (typically with .xml extension) inside the game folder
    * @return a {@code Runnable} that, when executed, loads the specified level into the game engine
@@ -293,7 +300,7 @@ public class ButtonActionFactory {
                  IllegalAccessException | LayerParseException | LevelDataParseException |
                  PropertyParsingException | SpriteParseException | EventParseException |
                  HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
-          LOG.error(EXCEPTIONS.getString("CannotSelectLevel"), e);
+          LOG.error(resourceManager.getText("exceptions", "CannotSelectLevel"), e);
         }
       }
     };
@@ -305,6 +312,33 @@ public class ButtonActionFactory {
     };
   }
 
+  /**
+   * This method attempts to establish a connection to the server.
+   *
+   * @param lobby     a lobby to connect to.
+   * @param viewState the current view state.
+   * @return a runnable which executes this function.
+   */
+  public static Runnable joinLobby(int lobby, ViewState viewState) {
+    return () -> {
+      try {
+        ClientSocket client = new ClientSocket(lobby, viewState.getGameManager().getCurrentLevel(),
+            viewState);
+        client.connect();
+        viewState.setMySocket(client);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+    };
+  }
+
+  private void sendMessageToServer(String type, String message) {
+    if (viewState.getMySocket() != null) {
+      ServerMessage m = new ServerMessage(type, message);
+      m.sendToSocket(viewState.getMySocket());
+    }
+  }
+
   private Runnable renderNewSplashScreen() {
     return () -> {
       try {
@@ -312,6 +346,18 @@ public class ButtonActionFactory {
       } catch (ViewInitializationException | FileNotFoundException e) {
         throw new RuntimeException(e);
       }
+    };
+  }
+
+  /**
+   * Allows a user to select a language
+   *
+   * @param language the new language to select
+   * @return a Runnable that allows the action to run
+   */
+  public Runnable selectLanguage(String language) {
+    return () -> {
+      viewState.getGameManager().setLanguage(language);
     };
   }
 }

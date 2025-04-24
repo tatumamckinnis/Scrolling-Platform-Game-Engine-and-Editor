@@ -86,6 +86,10 @@ public interface ImmutableGameObject {
    */
   boolean getNeedsFlipped();
 
+  /**
+   * sets an object to be flipped
+   * @param didFlip did the object flip?
+   */
   void setNeedsFlipped(boolean didFlip);
 
   /**

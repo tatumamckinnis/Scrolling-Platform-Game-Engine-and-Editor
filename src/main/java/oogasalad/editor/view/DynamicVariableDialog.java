@@ -33,7 +33,7 @@ public class DynamicVariableDialog extends Dialog<DynamicVariable> {
 
   private static final Logger LOG = LogManager.getLogger(DynamicVariableDialog.class);
 
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/dynamic_variable_dialog_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/dynamic_variable_dialog_identifiers.properties";
 
   private final ResourceBundle uiBundle;
   private final Properties identifierProps;

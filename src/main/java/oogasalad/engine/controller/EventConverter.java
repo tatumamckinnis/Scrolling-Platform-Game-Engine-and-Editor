@@ -23,8 +23,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class EventConverter {
 
-  private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(
-      EventConverter.class);
   private static final Logger LOG = LogManager.getLogger();
   /**
    * Converts all event data associated with a {@link GameObjectData} instance into a list of

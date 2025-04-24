@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
@@ -11,6 +12,9 @@ import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
@@ -37,15 +41,14 @@ import org.apache.logging.log4j.Logger;
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameManager.class.getPackageName() + "." + "GameManager");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private final Timeline myGameLoop;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
   private List<KeyCode> currentKeysReleased;
-
   private String currentLevel;
 
   /**
@@ -124,6 +127,21 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     myView.removeGameObjectImage(gameObject);
   }
 
+  @Override
+  public String getCurrentLevel() throws NullPointerException {
+    if (currentLevel != null) {
+      return currentLevel;
+    }
+    throw new NullPointerException(resourceManager.getText("exceptions", "currentLevelNull"));
+  }
+
+  @Override
+  public void setLanguage(String language) {
+    String i18nLanguageCode = language.substring(0, 2);
+    ResourceManager.getInstance().setLocale(Locale.of(i18nLanguageCode));
+    LOG.info("Setting language to {}", language);
+  }
+
   /**
    * @see GameManagerAPI#endGame() (String, GameObject)
    */
@@ -165,7 +183,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     Timeline gameLoop = new Timeline();
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
-        GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
+        resourceManager.getConfig("engine.controller.gamemanager", "framesPerSecond"));
     double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {

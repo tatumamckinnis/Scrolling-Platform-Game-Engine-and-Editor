@@ -23,7 +23,6 @@ import javafx.stage.Stage;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.panes.spriteCreation.SpriteRegion;
 import oogasalad.editor.view.panes.spriteCreation.SpriteSheetProcessorPane;
-import oogasalad.editor.view.panes.spriteCreation.SpriteSheetProcessorPane.SpriteSheetMode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -299,7 +298,7 @@ public class SpriteSheetProcessorPaneTest {
 
     Field modeBoxField = SpriteSheetProcessorPane.class.getDeclaredField("modeBox");
     modeBoxField.setAccessible(true);
-    @SuppressWarnings("unchecked")
+
     ChoiceBox<SpriteSheetMode> modeBox = (ChoiceBox<SpriteSheetMode>) modeBoxField.get(pane);
     Platform.runLater(() -> modeBox.setValue(SpriteSheetMode.MANUAL));
     WaitForAsyncUtils.waitForFxEvents();

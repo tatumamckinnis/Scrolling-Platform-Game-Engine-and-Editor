@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.Group;
 import oogasalad.engine.model.object.ImmutableGameObject;
-import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.exceptions.RenderingException;
 
@@ -22,10 +21,6 @@ public abstract class Display extends Group {
    */
   public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
-  }
-
-  public void renderGameObjectHitBoxes(List<ImmutableGameObject> gameObjects) throws FileNotFoundException {
-    ;
   }
 
   /**
@@ -62,6 +57,7 @@ public abstract class Display extends Group {
 
   /**
    * renders the player's score, lives, and other displayed statistics
+   *
    * @param player game objects of the player type
    */
   public abstract void renderPlayerStats(ImmutableGameObject player);
