@@ -108,7 +108,6 @@ public class OutcomeExecutor {
   public void executeOutcome(EventOutcome outcomeData, GameObject gameObject)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
    Outcome outcome = outcomeMap.get(outcomeData.outcomeType());
-   System.out.println(outcomeData.outcomeType());
     outcome.execute(gameObject, outcomeData.stringProperties(), outcomeData.doubleProperties());
   }
 
