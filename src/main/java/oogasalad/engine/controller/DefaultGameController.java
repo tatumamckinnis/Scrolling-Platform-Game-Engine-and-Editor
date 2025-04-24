@@ -169,6 +169,21 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
+  public Object getPlayer() {
+    return myGameManager.getPlayer();
+  }
+
+  @Override
+  public String getCurrentGameName() {
+    return myGameManager.getCurrentGameName();
+  }
+
+  @Override
+  public String getCurrentLevelName() {
+    return myGameManager.getCurrentLevelName();
+  }
+
+  @Override
   public void selectLevel(String filePath)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     myGameManager.selectGame(filePath);

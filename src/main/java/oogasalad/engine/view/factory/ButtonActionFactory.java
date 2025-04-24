@@ -7,17 +7,12 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 
-import javafx.scene.control.ComboBox;
-import oogasalad.Main;
-import oogasalad.editor.controller.EditorMaker;
-import oogasalad.editor.view.EditorApplication;
-import oogasalad.engine.controller.DefaultGameManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,10 +20,17 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import oogasalad.Main;
+import oogasalad.editor.controller.EditorMaker;
+import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.engine.view.GameDisplay;
 import oogasalad.engine.view.ViewState;
+import oogasalad.engine.view.screen.LoginScreen;
+import oogasalad.engine.view.screen.ProfileEditScreen;
+import oogasalad.engine.view.screen.UserDataScreen;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -40,6 +42,9 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.userData.SessionManager;
+import oogasalad.userData.UserDataApiDefault;
+import oogasalad.userData.records.UserData;
 
 /**
  * This class returns the desired function for a specific button.
@@ -55,6 +60,8 @@ public class ButtonActionFactory {
   private static final String gamesFilePath = "data/gameData/levels/";
   private static final Properties buttonIDToActionProperties = new Properties();
   private final ViewState viewState;
+  UserDataApiDefault userDataApi;
+
 
   /**
    * Loads property file map of buttonIDs to Actions.
@@ -63,6 +70,7 @@ public class ButtonActionFactory {
     try {
       InputStream stream = getClass().getResourceAsStream(buttonIDToActionFilePath);
       buttonIDToActionProperties.load(stream);
+      userDataApi = new UserDataApiDefault();
     } catch (IOException e) {
       LOG.warn("Unable to load button action properties");
     }
@@ -145,6 +153,7 @@ public class ButtonActionFactory {
    */
   private Runnable pauseGame() {
     return () -> {
+      savePlayerProgress().run();
       viewState.getGameManager().pauseGame();
     };
   }
@@ -196,6 +205,8 @@ public class ButtonActionFactory {
 
   private void restart()
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
+    savePlayerProgress().run();
+
     viewState.getGameManager().restartGame();
     GameDisplay game = new GameDisplay(viewState);
     viewState.setDisplay(game);
@@ -211,6 +222,8 @@ public class ButtonActionFactory {
   private Runnable goToHome() throws ViewInitializationException {
     return () -> {
       try {
+        savePlayerProgress().run();
+
         DefaultView view = viewState.getDefaultView();
         viewState.getGameManager().pauseGame();
         view.initialize();
@@ -311,6 +324,168 @@ public class ButtonActionFactory {
         new DefaultGameManager();
       } catch (ViewInitializationException | FileNotFoundException e) {
         throw new RuntimeException(e);
+      }
+    };
+  }
+
+   /* Action to navigate to the user profile screen.
+      */
+  private Runnable goToProfile() {
+    return () -> {
+      try {
+        // Check if data/userData directory exists
+        File userDataDir = new File("data/userData");
+        if (!userDataDir.exists()) {
+          userDataDir.mkdirs();
+        }
+        
+        // Create a session manager to check for login status
+        SessionManager sessionManager = new SessionManager();
+        
+        // Check if there's an active session
+        if (sessionManager.hasActiveSession()) {
+          String username = sessionManager.getSavedUsername();
+          String password = sessionManager.getSavedPassword();
+          
+          try {
+            // Try to load user with saved credentials
+            UserData user = userDataApi.parseUserData(username, password);
+            viewState.setDisplay(new UserDataScreen(viewState, user));
+            LOG.info("Automatically logged in user: " + username);
+          } catch (Exception e) {
+            // Saved credentials are invalid or expired
+            LOG.info("Saved credentials are invalid, showing login screen");
+            sessionManager.clearSession(); // Clear invalid session
+            viewState.setDisplay(new LoginScreen(viewState));
+          }
+        } else {
+          // No saved credentials, show login screen
+          viewState.setDisplay(new LoginScreen(viewState));
+        }
+      } catch (Exception e) {
+        LOG.error("Failed to load profile screen", e);
+      }
+    };
+  }
+
+  private Runnable savePlayerProgress() {
+    return () -> {
+      try {
+        // Check if GameManager has players before trying to get stats
+        GameManagerAPI gameManager = viewState.getGameManager();
+        if (gameManager == null) {
+          LOG.info("No game manager available, skipping player progress save");
+          return;
+        }
+        
+        // Check if there are any players
+        try {
+          ImmutablePlayer player = (ImmutablePlayer) gameManager.getPlayer();
+          if (player == null) {
+            LOG.info("No player object available, skipping player progress save");
+            return;
+          }
+          
+          // Get current stats
+          Map<String, String> currentStats = player.getDisplayedStatsMap();
+          
+          // Get current game and level information
+          String gameName = gameManager.getCurrentGameName();
+          String levelName = gameManager.getCurrentLevelName();
+          
+          // Use SessionManager to get current user credentials
+          SessionManager sessionManager = new SessionManager();
+          String username;
+          String password;
+          
+          if (sessionManager.hasActiveSession()) {
+            username = sessionManager.getSavedUsername();
+            password = sessionManager.getSavedPassword();
+          } else {
+            // If no session, use default account as fallback (ideally remove this in a real app)
+            username = "gamer123";
+            password = "bruh";
+          }
+          
+          // Parse user data
+          UserData userData = userDataApi.parseUserData(username, password);
+          
+          // Update stats in user data
+          userDataApi.updatePlayerLevelStats(username, gameName, levelName, currentStats);
+          
+          // Save to file
+          userDataApi.writeCurrentUserData();
+          
+          LOG.info("Successfully saved player progress for game: " + gameName +
+              ", level: " + levelName + " to file: " + userDataApi.getUserDataFilePath());
+        } catch (IndexOutOfBoundsException e) {
+          // This happens when no player is found
+          LOG.info("No player found (empty list), skipping player progress save");
+        }
+      } catch (Exception e) {
+        LOG.error("Failed to save player progress", e);
+      }
+    };
+  }
+
+  /**
+   * Navigate to the user profile/data screen with the specified user data
+   * @param userData The user data to display
+   * @return A runnable that navigates to the UserDataScreen
+   */
+  public Runnable navigateToUserProfile(UserData userData) {
+    return () -> {
+      try {
+        viewState.setDisplay(new UserDataScreen(viewState, userData));
+      } catch (Exception e) {
+        LOG.error("Failed to navigate to user profile screen", e);
+      }
+    };
+  }
+
+  /**
+   * Navigate to the profile edit screen for the specified user data
+   * @param userData The user data to edit
+   * @return A runnable that navigates to the ProfileEditScreen
+   */
+  public Runnable navigateToProfileEdit(UserData userData) {
+    return () -> {
+      try {
+        viewState.setDisplay(new ProfileEditScreen(viewState, userData));
+      } catch (Exception e) {
+        LOG.error("Failed to navigate to profile edit screen", e);
+      }
+    };
+  }
+
+  /**
+   * Opens a file chooser dialog and returns the selected file.
+   * This method exists to handle access to the stage, which is restricted for security reasons.
+   * 
+   * @param fileChooser The configured FileChooser to display
+   * @return The selected File, or null if no file was selected
+   */
+  public File openFileChooser(FileChooser fileChooser) {
+    return fileChooser.showOpenDialog(viewState.getStage());
+  }
+
+  /**
+   * Logs out the current user by clearing their session and redirecting to the login screen.
+   * 
+   * @return A runnable that handles the logout process
+   */
+  private Runnable logout() {
+    return () -> {
+      try {
+        // Create a session manager and clear the session
+        SessionManager sessionManager = new SessionManager();
+        sessionManager.clearSession();
+        
+        // Navigate to login screen
+        viewState.setDisplay(new LoginScreen(viewState));
+        LOG.info("User logged out successfully");
+      } catch (Exception e) {
+        LOG.error("Failed to logout", e);
       }
     };
   }
