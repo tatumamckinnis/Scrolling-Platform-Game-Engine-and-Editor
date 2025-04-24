@@ -29,6 +29,9 @@ public class ResourceManager implements ResourceManagerAPI {
   private ResourceManager() {
   }
 
+  /**
+   * @return the resource manager instance
+   */
   public static ResourceManagerAPI getInstance() {
     return instance;
   }
