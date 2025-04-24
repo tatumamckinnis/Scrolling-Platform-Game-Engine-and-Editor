@@ -40,7 +40,7 @@ import oogasalad.exceptions.ViewInitializationException;
 /**
  * This class returns the desired function for a specific button.
  *
- * @author Aksel Bell
+ * @author Aksel Bell, Alana Zinkin
  */
 public class ButtonActionFactory {
 

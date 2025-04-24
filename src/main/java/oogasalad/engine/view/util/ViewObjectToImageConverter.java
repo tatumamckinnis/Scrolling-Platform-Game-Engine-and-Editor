@@ -112,6 +112,11 @@ public class ViewObjectToImageConverter {
     imageView.setViewOrder(viewObject.getLayer());
   }
 
+  /**
+   * flips the image view
+   *
+   * @param iv the image view to flip
+   */
   public static void flipImageView(ImageView iv) {
     Image img = iv.getImage();
     if (img == null) {
