@@ -53,7 +53,7 @@ public class ClientSocket extends WebSocketClient {
   @Override
   public void onMessage(String message) {
     ServerMessage serverMessage = gson.fromJson(message, ServerMessage.class);
-    LOG.info("Received from server: {}, {}", serverMessage.type, serverMessage.message);
+    LOG.info("Received from server: {}, {}", serverMessage.getType(), serverMessage.getMessage());
 
     MessageHandlerFactory.handleMessage(viewState, serverMessage).run();
   }
