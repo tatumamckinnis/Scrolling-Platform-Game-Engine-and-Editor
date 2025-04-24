@@ -9,6 +9,7 @@ import oogasalad.Main;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 
 public class HUD extends Display {
 

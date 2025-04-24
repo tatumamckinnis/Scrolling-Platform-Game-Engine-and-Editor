@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+  <username>gamer123</username>
+  <displayName>ProGamer</displayName>
+  <email>gamer123@example.com</email>
+  <password>bruh</password>
+  <language>en</language>
+  <bio>Just a passionate player.</bio>
+  <userImage>data/userData/gamer123.png</userImage>
+  <userGameDataList>
+    <userGameData>
+      <gameName>SuperFunGame</gameName>
+      <lastPlayed>2025-04-20</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="highScore">98765.0</stat>
+        <stat name="longestCombo">150.0</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>Level1</levelName>
+        <lastPlayed>2025-04-18</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="bestTime">120.00</stat>
+            <stat name="coinsCollected">300</stat>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>BossBattle</levelName>
+        <lastPlayed>2025-04-19</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="damageDealt">2000</stat>
+            <stat name="survivedSeconds">45</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+    <userGameData>
+      <gameName>dinosaurgame</gameName>
+      <lastPlayed>Thu Apr 24 16:46:47 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>DinoLevel1</levelName>
+        <lastPlayed>Thu Apr 24 16:46:47 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="score">106</stat>
+            <stat name="lives">20</stat>
+            <stat name="rocket_duration">-13</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+  </userGameDataList>
+</user>

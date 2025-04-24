@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user>
+  <username>chuck</username>
+  <displayName>hermit</displayName>
+  <email>man@gmail.com</email>
+  <password>bruh</password>
+  <language>en</language>
+  <bio>New user</bio>
+  <userImage>data/userData/chuck-avatar.jpg</userImage>
+  <userGameDataList>
+    <userGameData>
+      <gameName>dinosaurgame</gameName>
+      <lastPlayed>Thu Apr 24 17:45:08 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>DinoLevel1</levelName>
+        <lastPlayed>Thu Apr 24 17:45:08 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="score">187</stat>
+            <stat name="lives">20</stat>
+            <stat name="rocket_duration">0</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+  </userGameDataList>
+</user>
+</users>

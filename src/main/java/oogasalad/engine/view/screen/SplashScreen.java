@@ -4,23 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import java.util.zip.DataFormatException;
 import javafx.scene.control.ComboBox;
-import oogasalad.exceptions.BlueprintParseException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
-import oogasalad.exceptions.LevelDataParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -239,6 +229,18 @@ public class SplashScreen extends Display {
     populateGameTypeComboBox(gameTypeBox);
     selectGameType(gameTypeBox, levelBox);
     setComboBoxButtonAction(gameTypeBox, levelBox);
+
+    String profileId    = splashComponentProperties.getProperty("splash.button.profile.id");
+    String profileText  = splashComponentProperties.getProperty("splash.button.profile.text");
+    String profileStyle = splashComponentProperties.getProperty("splash.button.profile.style");
+    Button profileBtn = new Button(profileText);
+    profileBtn.setId(profileId);
+    profileBtn.setPrefSize(buttonWidth, buttonHeight);
+    profileBtn.getStyleClass().add(
+        splashComponentProperties.getProperty("splash.button.default.style"));
+    profileBtn.getStyleClass().add(profileStyle);
+    splashBox.getChildren().add(profileBtn);
+    setButtonAction(profileId, profileBtn);
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
