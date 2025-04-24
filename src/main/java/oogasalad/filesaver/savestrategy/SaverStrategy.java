@@ -2,6 +2,7 @@ package oogasalad.filesaver.savestrategy;
 
 import java.io.File;
 import java.io.IOException;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.fileparser.records.SpriteSheetData;
@@ -19,7 +20,7 @@ public interface SaverStrategy {
    * @param levelData  the data to be saved
    * @param outputFile the file to write to.
    */
-  void save(LevelData levelData, File outputFile) throws IOException;
+  void save(LevelData levelData, File outputFile) throws EditorSaveException;
 
   /**
    * Saves the provided sprite sheet data into a file in the desired format

@@ -30,16 +30,6 @@ import org.apache.logging.log4j.Logger;
 public class SpriteSheetDataManager {
 
   /**
-   * Default strategy for saving sprite sheets (e.g., XML format).
-   */
-  private static final SaverStrategy DEFAULT_SAVER_STRATEGY = new XmlStrategy();
-
-  /**
-   * Default file parser used when loading sprite sheet data.
-   */
-  private static final FileParserApi DEFAULT_FILE_PARSER = new DefaultFileParser();
-
-  /**
    * Logger for internal status and error messages.
    */
   private static final Logger LOG = LogManager.getLogger(SpriteSheetDataManager.class);
@@ -55,11 +45,12 @@ public class SpriteSheetDataManager {
    *
    * @param levelData the editor level data object used to update sprite library contents
    */
-  public SpriteSheetDataManager(EditorLevelData levelData) {
+  public SpriteSheetDataManager(EditorLevelData levelData, SaverStrategy saverStrategy,
+      FileParserApi fileParser) {
     this.saver = new SpriteSheetSaver();
     this.loader = new SpriteSheetLoader();
-    this.saverStrategy = DEFAULT_SAVER_STRATEGY;
-    this.fileParser = DEFAULT_FILE_PARSER;
+    this.saverStrategy = saverStrategy;
+    this.fileParser = fileParser;
     this.levelData = levelData;
   }
 

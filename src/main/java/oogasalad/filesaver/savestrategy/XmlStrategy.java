@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.fileparser.records.SpriteSheetData;
@@ -25,7 +26,7 @@ public class XmlStrategy implements SaverStrategy {
   private static final Logger LOG = LogManager.getLogger();
 
   @Override
-  public void save(LevelData levelData, File outputFile) throws IOException {
+  public void save(LevelData levelData, File outputFile) throws EditorSaveException {
 
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -37,7 +38,7 @@ public class XmlStrategy implements SaverStrategy {
       writer.write("</map>\n");
     } catch (IOException e) {
       LOG.warn("Could not save level data.", e);
-      throw e;
+      throw new EditorSaveException("Could not save level data.", e);
     }
   }
 

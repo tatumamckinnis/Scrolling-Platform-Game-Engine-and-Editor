@@ -1,9 +1,11 @@
 package oogasalad.editor.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.zip.DataFormatException;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.controller.object_data.CollisionDataManager;
 import oogasalad.editor.controller.object_data.CustomEventDataManager;
@@ -21,8 +23,11 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
+import oogasalad.filesaver.savestrategy.SaverStrategy;
+import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +43,8 @@ public class EditorDataAPI {
 
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
   private static final FileParserApi DEFAULT_FILE_PARSER = new DefaultFileParser();
+  private static final SaverStrategy DEFAULT_SAVER_STRATEGY = new XmlStrategy();
+
 
   private final IdentityDataManager identityAPI;
   private final HitboxDataManager hitboxAPI;
@@ -51,6 +58,7 @@ public class EditorDataAPI {
   private final SpriteSheetDataManager spriteSheetAPI;
   private final EditorFileConverterAPI fileConverterAPI;
   private final FileParserApi fileParserAPI;
+  private final SaverStrategy saverStrategy;
   private final EditorListenerNotifier listenerNotifier;
   private String currentGameDirectoryPath;
 
@@ -61,6 +69,9 @@ public class EditorDataAPI {
    * @author Jacob You
    */
   public EditorDataAPI(EditorListenerNotifier listenerNotifier) {
+    this.fileParserAPI = DEFAULT_FILE_PARSER;
+    this.saverStrategy = DEFAULT_SAVER_STRATEGY;
+
     this.listenerNotifier = listenerNotifier;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
@@ -71,10 +82,9 @@ public class EditorDataAPI {
     this.spriteAPI = new SpriteDataManager(level, listenerNotifier);
     this.customEventAPI = new CustomEventDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
-    this.spriteSheetAPI = new SpriteSheetDataManager(level);
+    this.spriteSheetAPI = new SpriteSheetDataManager(level, saverStrategy, fileParserAPI);
 
     this.fileConverterAPI = new EditorFileConverter();
-    this.fileParserAPI = DEFAULT_FILE_PARSER;
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -374,5 +384,9 @@ public class EditorDataAPI {
 
   public String getGameName() {
     return level.getGameName();
+  }
+
+  public void saveLevelData(String fileName) throws EditorSaveException {
+    fileConverterAPI.saveEditorDataToFile(level, fileName, saverStrategy);
   }
 }

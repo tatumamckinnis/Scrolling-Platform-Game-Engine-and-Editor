@@ -1,5 +1,6 @@
 package oogasalad.editor.view;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -21,12 +22,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
+import oogasalad.editor.view.panes.spriteCreation.SpriteAssetPane;
 import oogasalad.editor.view.panes.spriteProperties.SpriteTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
-import oogasalad.editor.view.panes.spriteCreation.SpriteAssetPane;
 import oogasalad.editor.view.tools.ClearAllTool;
 import oogasalad.editor.view.tools.DeleteTool;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
@@ -109,6 +112,7 @@ public class EditorComponentFactory {
 
   /**
    * Loads the identifier strings (keys, CSS classes, IDs, paths) from the properties file.
+   *
    * @return A Properties object containing the loaded identifiers.
    * @throws RuntimeException If the properties file cannot be found or read.
    */
@@ -165,7 +169,7 @@ public class EditorComponentFactory {
     // Middle column: Map above Assets
     SplitPane middleSplit = new SplitPane();
     middleSplit.setOrientation(Orientation.VERTICAL);
-    Pane mapPane   = createMapPane(editorHeight);
+    Pane mapPane = createMapPane(editorHeight);
     Pane assetPane = createAssetPane();
     middleSplit.getItems().addAll(mapPane, assetPane);
     middleSplit.setDividerPositions(
@@ -185,7 +189,7 @@ public class EditorComponentFactory {
     // Scene & CSS
     Scene scene = new Scene(root, editorWidth, editorHeight);
     String cssPath = getId("css.path");
-    String css     = Objects.requireNonNull(
+    String css = Objects.requireNonNull(
         getClass().getResource(cssPath)
     ).toExternalForm();
     scene.getStylesheets().add(css);
@@ -304,7 +308,6 @@ public class EditorComponentFactory {
   }
 
 
-
   /**
    * Creates the toolbar HBox containing toggle buttons for selecting interaction tools (placement,
    * selection, deletion). Relies on the {@code gameView} instance having been created previously.
@@ -347,10 +350,42 @@ public class EditorComponentFactory {
     Button clearAllObjectsButton = createOnClickToolToggleButton(
         uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
 
-    toolbar.getChildren().addAll(entityButton, selectButton, deleteButton, clearAllObjectsButton);
+    Button saveButton = createSaveButton();
+
+    toolbar.getChildren()
+        .addAll(entityButton, selectButton, deleteButton, clearAllObjectsButton, saveButton);
     gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
     return toolbar;
+  }
+
+  /**
+   * Helper method to create the save button in the toolbar.
+   *
+   * @return the save button
+   */
+  private Button createSaveButton() {
+    Button save = new Button("Save");
+    save.setOnAction(evt -> {
+      FileChooser chooser = new FileChooser();
+      chooser.setTitle("Save Level As…");
+      chooser.getExtensionFilters().add(
+          new FileChooser.ExtensionFilter("Level Files", "*.xml")
+      );
+      Window win = save.getScene().getWindow();
+      File file = chooser.showSaveDialog(win);
+      if (file == null) {
+        return;
+      }
+      try {
+        editorController.saveLevelData(file.getAbsolutePath());
+        LOG.info("Level data saved to {}", file);
+      } catch (Exception ex) {
+        LOG.error("Failed to save level data: {}", ex.getMessage(), ex);
+        editorController.notifyErrorOccurred("Save failed: " + ex.getMessage());
+      }
+    });
+    return save;
   }
 
   /**
