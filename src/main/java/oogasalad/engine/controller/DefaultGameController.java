@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameExecutor;
@@ -35,6 +37,7 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -49,8 +52,8 @@ import oogasalad.fileparser.records.LevelData;
  */
 public class DefaultGameController implements GameControllerAPI, GameObjectProvider, GameExecutor {
 
-  private static final ResourceBundle CONTROLLER_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameController.class.getPackageName() + "." + "Controller");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private final EventHandler eventHandler;
   private final CollisionHandler collisionHandler;
   private Map<String, GameObject> myGameObjectMap;
@@ -126,7 +129,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     try {
       return myGameObjectMap.get(uuid);
     } catch (NullPointerException e) {
-      throw new NoSuchElementException(CONTROLLER_RESOURCES.getString("NoObjectWithUUID") + uuid);
+      throw new NoSuchElementException(resourceManager.getText("exceptions","NoObjectWithUUID") + uuid);
     }
   }
 
@@ -147,8 +150,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
-  public void setLevelData(LevelData data)
-      throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+  public void setLevelData(LevelData data) {
     DefaultEngineFileConverter converter = new DefaultEngineFileConverter();
     myGameObjectMap = converter.loadFileToEngine(data);
     myCamera = converter.loadCamera(data);
@@ -161,6 +163,15 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
     myGameObjects.remove(gameObject);
     myGameObjectMap.remove(gameObject.getUUID());
     myGameManager.removeGameObjectImage(gameObject);
+  }
+
+  @Override
+  public void addGameObject(GameObjectData gameObjectData) {
+    //get gameObject from level data map
+    GameObject gameObject = myGameManager.makeObjectFromData(gameObjectData);
+    myGameObjects.add(gameObject);
+    myGameObjectMap.put(gameObject.getUUID(), gameObject);
+    myGameManager.addGameObjectImage(gameObject);
   }
 
   @Override
@@ -192,11 +203,7 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
 
   private List<ImmutableGameObject> makeGameObjectsImmutable(
       List<GameObject> gameObjectsToConvert) {
-    List<ImmutableGameObject> immutableObjects = new ArrayList<>();
-    for (GameObject gameObject : gameObjectsToConvert) {
-      immutableObjects.add(gameObject);
-    }
-    return immutableObjects;
+    return new ArrayList<>(gameObjectsToConvert);
   }
 
 

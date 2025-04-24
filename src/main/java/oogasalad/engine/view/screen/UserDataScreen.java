@@ -200,6 +200,12 @@ public class UserDataScreen extends Display {
   }
 
   @Override public void removeGameObjectImage(ImmutableGameObject gameObject) { }
+
+  @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+
+  }
+
   @Override public void renderPlayerStats(ImmutableGameObject player)      { }
   
   /**

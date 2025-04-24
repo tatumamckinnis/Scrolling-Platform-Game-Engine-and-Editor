@@ -1,4 +1,4 @@
-package oogasalad.editor.controller;
+package oogasalad.editor.controller.object_data;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
@@ -7,37 +7,35 @@ import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 
 /**
- * Manages the Physics Event related data of a specific object. Implements EditorEventDataManager
- * for methods pertaining to event, outcome, and condition lists and classes.
- *
- * @author Jacob You
+ * Manages the Custom Event related data of a specific object.
  */
-public class PhysicsDataManager extends EditorEventDataManager {
+public class CustomEventDataManager extends EditorEventDataManager {
 
   @Override
   protected AbstractEventMapData createDataIfAbsent(EditorObject object) {
-    return object.getPhysicsData();
+    return object.getCustomEventData();
   }
 
   /**
-   * Creates a CollisionDataManager on a specific level object.
+   * constructor for custom event data manager
    *
-   * @param level The level object to create a CollisionDataManager for
+   * @param level the level to be created within the editor
    */
-  public PhysicsDataManager(EditorLevelData level) {
+  public CustomEventDataManager(EditorLevelData level) {
     super(level);
   }
 
   /**
    * Sets an event for the specified object.
+   *
    * @param objectId The UUID of the object.
-   * @param eventId The ID of the event.
-   * @param event The event to set.
+   * @param eventId  The ID of the event.
+   * @param event    The event to set.
    */
   public void setEvent(UUID objectId, String eventId, EditorEvent event) {
     EditorObject object = getObjectById(objectId);
     if (object != null) {
-      object.getPhysicsData().setEvent(eventId, event);
+      object.getCustomEventData().setEvent(eventId, event);
     }
   }
 }

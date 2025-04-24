@@ -61,6 +61,11 @@ public class GameDisplay extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    myLevelView.addGameObjectImage(gameObject);
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     myHUD.renderPlayerStats(player);
 

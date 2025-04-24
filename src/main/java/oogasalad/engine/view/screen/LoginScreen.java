@@ -316,6 +316,11 @@ public class LoginScreen extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     // Not applicable for login screen
   }

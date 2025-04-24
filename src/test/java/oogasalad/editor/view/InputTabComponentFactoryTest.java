@@ -18,7 +18,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.controller.EditorDataAPI;
-import oogasalad.editor.controller.InputDataManager;
+import oogasalad.editor.controller.object_data.InputDataManager;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;

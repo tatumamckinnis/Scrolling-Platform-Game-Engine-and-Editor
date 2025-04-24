@@ -3,6 +3,7 @@ package oogasalad.editor.controller;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.view.EditorComponentFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,11 +47,13 @@ public class EditorMaker {
       // --- Dependency Setup ---
 
       // 1. Instantiate the backend data manager
-      EditorDataAPI editorDataAPI = new EditorDataAPI();
+      EditorListenerNotifier listenerNotifier = new EditorListenerNotifier();
+
+      EditorDataAPI editorDataAPI = new EditorDataAPI(listenerNotifier);
       LOG.debug("EditorDataAPI instance created.");
 
       // 2. Create the editor controller
-      EditorController editorController = new ConcreteEditorController(editorDataAPI);
+      EditorController editorController = new ConcreteEditorController(editorDataAPI, listenerNotifier);
       LOG.info("ConcreteEditorController created.");
 
       // Set the game directory path

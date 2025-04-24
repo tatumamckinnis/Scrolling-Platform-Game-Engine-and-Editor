@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
+import oogasalad.editor.controller.object_data.EditorEventHandler;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
@@ -45,10 +46,9 @@ public class ConcreteEditorController implements EditorController {
    *
    * @param editorDataAPI The central API for accessing and modifying editor data. Cannot be null.
    */
-  public ConcreteEditorController(EditorDataAPI editorDataAPI) {
+  public ConcreteEditorController(EditorDataAPI editorDataAPI, EditorListenerNotifier listenerNotifier) {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null.");
-
-    this.listenerNotifier = new EditorListenerNotifier();
+    this.listenerNotifier = Objects.requireNonNull(listenerNotifier, "ListenerNotifier cannot be null.");
     this.objectPlacementHandler = new EditorObjectPlacementHandler(editorDataAPI, listenerNotifier);
     this.prefabManager = new EditorPrefabManager(editorDataAPI, listenerNotifier);
     this.eventHandler = new EditorEventHandler(editorDataAPI, listenerNotifier);

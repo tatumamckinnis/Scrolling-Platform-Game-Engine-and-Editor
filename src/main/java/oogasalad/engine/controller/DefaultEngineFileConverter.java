@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.zip.DataFormatException;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.camerafactory.CameraFactory;
 import oogasalad.engine.controller.camerafactory.DefaultCameraFactory;
@@ -37,10 +37,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
-  private static final ResourceBundle ENGINE_FILE_RESOURCES = ResourceBundle.getBundle(
-      DefaultEngineFileConverter.class.getPackageName() + "." + "Controller");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private static final Logger LOG = LogManager.getLogger();
 
   private Map<String, GameObject> gameObjectMap;
@@ -77,10 +74,11 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
       CameraData cameraData = level.cameraData();
       String cameraType = cameraData.type();
       CameraFactory cameraFactory = new DefaultCameraFactory();
+      LOG.info("Camera Type Created:" + cameraType);
       return cameraFactory.create(cameraType, cameraData, gameObjectMap);
 
     } catch (Exception e) {
-      LOG.warn(EXCEPTIONS.getString("FailToLoadCameraType") + ": " + e.getMessage());
+      LOG.warn(resourceManager.getText("exceptions","FailToLoadCameraType") + ": " + e.getMessage());
       return new AutoScrollingCamera();
     }
   }
@@ -96,7 +94,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     return gameObjectMap;
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData,
+  @Override
+  public GameObject makeGameObject(GameObjectData gameObjectData,
       Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);

@@ -11,6 +11,11 @@ public class UserLoginScreen extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
 
   }

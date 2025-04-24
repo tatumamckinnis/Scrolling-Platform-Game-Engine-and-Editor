@@ -60,4 +60,9 @@ public interface EditorViewListener {
    * Called when prefabs are changed
    */
   void onPrefabsChanged();
+
+  /**
+   * Called when a sprite template is changed
+   */
+  void onSpriteTemplateChanged();
 }

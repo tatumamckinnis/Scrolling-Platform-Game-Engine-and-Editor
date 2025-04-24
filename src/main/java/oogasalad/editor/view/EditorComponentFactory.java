@@ -24,6 +24,7 @@ import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
+import oogasalad.editor.view.panes.spriteProperties.SpriteTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.panes.spriteCreation.SpriteAssetPane;
 import oogasalad.editor.view.tools.ClearAllTool;
@@ -46,7 +47,7 @@ public class EditorComponentFactory {
 
   private static final Logger LOG = LogManager.getLogger(EditorComponentFactory.class);
 
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/editor_component_factory_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/editor_component_factory_identifiers.properties";
 
   private final Properties editorProperties;
   private final Properties identifierProps;
@@ -54,6 +55,7 @@ public class EditorComponentFactory {
   private final EditorController editorController;
   private final InputTabComponentFactory inputTabFactory;
   private final PropertiesTabComponentFactory propertiesTabFactory;
+  private final SpriteTabComponentFactory spriteTabFactory;
 
   private EditorGameView gameView;
   private PrefabPalettePane prefabPalettePane;
@@ -94,6 +96,8 @@ public class EditorComponentFactory {
     editorController.registerViewListener(inputTabFactory);
     this.propertiesTabFactory = new PropertiesTabComponentFactory(editorController);
     editorController.registerViewListener(propertiesTabFactory);
+    this.spriteTabFactory = new SpriteTabComponentFactory(editorController);
+    editorController.registerViewListener(spriteTabFactory);
     LOG.info("TabComponentFactories created and registered as listeners.");
 
     this.prefabPalettePane = createPrefabPalettePane();
@@ -224,10 +228,6 @@ public class EditorComponentFactory {
     return mapPane;
   }
 
-  /**
-   * Creates and initializes the {@link EditorGameView} instance using configuration
-   * values loaded from properties.
-   */
   /**
    * Creates and initializes the {@link EditorGameView} instance using configuration values loaded
    * from properties and passes necessary dependencies.
@@ -426,7 +426,8 @@ public class EditorComponentFactory {
 
     Tab propertiesTab = createPropertiesTab();
     Tab inputTab = createInputTab();
-    tabPane.getTabs().addAll(propertiesTab, inputTab);
+    Tab spriteTab = createSpriteTab();
+    tabPane.getTabs().addAll(propertiesTab, inputTab, spriteTab);
 
     VBox componentContent = new VBox();
     componentContent.setId(getId("id.component.content.vbox"));
@@ -469,6 +470,22 @@ public class EditorComponentFactory {
     inputTab.setContent(inputPane);
     LOG.debug("Input tab created.");
     return inputTab;
+  }
+
+  /**
+   * Creates the "Sprites" tab using the {@link SpriteTabComponentFactory}.
+   *
+   * @return The configured Sprite Tab
+   */
+  private Tab createSpriteTab() {
+    Tab spriteTab = new Tab(uiBundle.getString(getId("key.spriteProperty.tab")));
+    spriteTab.setId(getId("id.spriteProperty.tab"));
+    spriteTab.setClosable(false);
+
+    ScrollPane spritePane = spriteTabFactory.createSpritePane();
+    spriteTab.setContent(spritePane);
+    LOG.debug("Sprite tab created.");
+    return spriteTab;
   }
 
 

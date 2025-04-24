@@ -278,14 +278,16 @@ public abstract class GameObject implements ImmutableGameObject{
   }
 
   /**
-   *
-   *
    * @return the sprite data for the game object.
    */
   public Sprite getSpriteInfo() {
     return spriteInfo;
   }
 
+  /**
+   * sets the current frame of the animation
+   * @param currentFrame the frame to set the sprite to
+   */
   public void setCurrentFrame(FrameData currentFrame) {
     spriteInfo.setCurrentSprite(currentFrame);
   }

@@ -14,6 +14,7 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.records.GameObjectData;
 
 /**
  * Interface that outcomes use to update game state
@@ -28,6 +29,12 @@ public interface GameExecutor {
    * @param gameObject to remove
    */
   void destroyGameObject(GameObject gameObject);
+
+  /**
+   * Adds game object to the level
+   *
+   */
+  void addGameObject(GameObjectData gameObjectData);
 
   /**
    * returns level dimensions through a map object

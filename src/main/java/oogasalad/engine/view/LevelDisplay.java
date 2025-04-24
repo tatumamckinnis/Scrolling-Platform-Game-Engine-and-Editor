@@ -2,8 +2,8 @@ package oogasalad.engine.view;
 
 import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.ResourceBundle;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.util.ViewObjectToImageConverter;
@@ -18,12 +18,12 @@ import org.apache.logging.log4j.Logger;
  */
 public class LevelDisplay extends Display {
 
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   // has a background and foreground
   // need to store all the game objects and render all of them
   // talks to the camera API to show a certain part of the screen
   // upon update will rerender any objects with the IDs specified
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackage().getName() + "." + "Exceptions");
   private static final Logger LOG = LogManager.getLogger();
   private final ViewObjectToImageConverter myConverter;
 
@@ -74,8 +74,15 @@ public class LevelDisplay extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    ObjectImage imageToAdd = myConverter.retrieveImageObject(gameObject);
+    this.getChildren().add(imageToAdd.getImageView());
+    this.getChildren().add(imageToAdd.getHitBox());
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
-    throw new UnsupportedOperationException(EXCEPTIONS.getString("CannotDisplayPlayerStats"));
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayPlayerStats"));
   }
 
 }

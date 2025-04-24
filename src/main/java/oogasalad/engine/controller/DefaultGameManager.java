@@ -4,14 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.ResourceBundle;
+import java.util.Locale;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import oogasalad.Main;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
@@ -31,6 +32,7 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.fileparser.records.GameObjectData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,10 +42,8 @@ import org.apache.logging.log4j.Logger;
 public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final ResourceBundle GAME_MANAGER_RESOURCES = ResourceBundle.getBundle(
-      DefaultGameManager.class.getPackageName() + "." + "GameManager");
-  private static final ResourceBundle EXCEPTIONS = ResourceBundle.getBundle(
-      Main.class.getPackageName() + "." + "Exceptions");
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
+
   private final Timeline myGameLoop;
   private final GameControllerAPI myGameController;
   private final LevelAPI myLevelAPI;
@@ -131,11 +131,28 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    myView.addGameObjectImage(gameObject);
+  }
+
+  @Override
+  public GameObject makeObjectFromData(GameObjectData gameObjectData) {
+    return myLevelAPI.makeObjectFromData(gameObjectData);
+  }
+
+  @Override
   public String getCurrentLevel() throws NullPointerException {
     if (currentLevel != null) {
       return currentLevel;
     }
-    throw new NullPointerException(EXCEPTIONS.getString("currentLevelNull"));
+    throw new NullPointerException(resourceManager.getText("exceptions", "currentLevelNull"));
+  }
+
+  @Override
+  public void setLanguage(String language) {
+    String i18nLanguageCode = language.substring(0, 2);
+    ResourceManager.getInstance().setLocale(Locale.of(i18nLanguageCode));
+    LOG.info("Setting language to {}", language);
   }
 
   @Override
@@ -214,7 +231,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     Timeline gameLoop = new Timeline();
     gameLoop.setCycleCount(Timeline.INDEFINITE);
     double framesPerSecond = Double.parseDouble(
-        GAME_MANAGER_RESOURCES.getString("framesPerSecond"));
+        resourceManager.getConfig("engine.controller.gamemanager", "framesPerSecond"));
     double secondDelay = 1.0 / (framesPerSecond);
     gameLoop.getKeyFrames().add(new KeyFrame(Duration.seconds(secondDelay), e -> {
       try {

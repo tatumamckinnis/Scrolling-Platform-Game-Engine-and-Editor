@@ -2,6 +2,7 @@ package oogasalad.engine.view;
 
 import java.util.List;
 
+import oogasalad.server.ClientSocket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +13,7 @@ import oogasalad.engine.controller.api.GameManagerAPI;
 /**
  * Holds the internal state needed to manage the current view of the application, such as stage,
  * current display, input keys, and game manager reference. Allows for toggling between
- * screens/states by external classes such as the factory package.
+ * screens/states by external classes such as factories.
  * <p>
  * Acts as a central, mutable state object that can be shared across internal view components. Is
  * only accessible by the factory package to encapsulate the View's state from external view
@@ -22,12 +23,15 @@ import oogasalad.engine.controller.api.GameManagerAPI;
  */
 public class ViewState {
 
-  private static final String ALLOWED_CLASS_NAME_1 = "oogasalad.engine.view.factory.ButtonActionFactory";
-  private static final String ALLOWED_CLASS_NAME_2 = "oogasalad.engine.view.components.NewGameComponents"; // TODO add these to a list, or add play button in new game to the factory
+  private static final List<String> ALLOWED_CLASS_NAMES = List.of(
+      "oogasalad.engine.view.factory.ButtonActionFactory",
+      "oogasalad.server.MessageHandlerFactory"
+  );
   private static final Logger LOG = LogManager.getLogger();
   private final Stage myStage;
   private final GameManagerAPI myGameManager;
   private final DefaultView myDefaultView;
+  private ClientSocket mySocket;
 
   /**
    * No-arg constructor initializes all fields to null.
@@ -43,6 +47,7 @@ public class ViewState {
     this.myStage = stage;
     this.myGameManager = gameManager;
     this.myDefaultView = defaultView;
+    this.mySocket = null;
   }
 
   /**
@@ -64,14 +69,23 @@ public class ViewState {
   }
 
   /**
-   * Sets the current inputs. Only accessible from the allowed class.
+   * Presses the inputted key. Only accessible from the allowed class.
    *
-   * @param currentInputs list of key codes to set the current inputs to.
+   * @param keyCode the key to press.
    */
-  public void setCurrentInputs(List<KeyCode> currentInputs, List<KeyCode> releasedInputs) {
+  public void pressKey(KeyCode keyCode) {
     checkClassCaller();
-    myDefaultView.setReleasedInputs(releasedInputs);
-    myDefaultView.setCurrentInputs(currentInputs);
+    myDefaultView.pressKey(keyCode);
+  }
+
+  /**
+   * Releases the inputted key. Only accessible from the allowed class.
+   *
+   * @param keyCode the key to release.
+   */
+  public void releaseKey(KeyCode keyCode) {
+    checkClassCaller();
+    myDefaultView.releaseKey(keyCode);
   }
 
   /**
@@ -91,18 +105,36 @@ public class ViewState {
   }
 
   /**
+   * If there is a client communicating with the server, set the socket here.
+   * @param socket client socket.
+   */
+  public void setMySocket(ClientSocket socket) {
+    checkClassCaller();
+    mySocket = socket;
+  }
+
+  /**
+   * Returns the client connected to the server.
+   */
+  public ClientSocket getMySocket() {
+    checkClassCaller();
+    return mySocket;
+  }
+
+  /**
    * ChatGPT helped write the first two lines of the method to trace the stack thread.
+   * This method ensures that external classes cannot call certain methods.
    */
   private static void checkClassCaller() {
     StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
     for (StackTraceElement element : stackTrace) {
-      if (element.getClassName().equals(ALLOWED_CLASS_NAME_1) || element.getClassName()
-          .equals(ALLOWED_CLASS_NAME_2)) {
+      if (ALLOWED_CLASS_NAMES.contains(element.getClassName())) {
         return;
       }
     }
     LOG.warn("Class does not have access to variable bridge.");
     throw new SecurityException(
-        "Access denied: Only " + ALLOWED_CLASS_NAME_1 + " may call this method.");
+        "Access denied: Only allowed classes may call this method.");
   }
+
 }

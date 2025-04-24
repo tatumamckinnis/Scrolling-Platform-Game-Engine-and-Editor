@@ -339,6 +339,11 @@ public class ProfileEditScreen extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     // Not applicable for profile edit screen
   }

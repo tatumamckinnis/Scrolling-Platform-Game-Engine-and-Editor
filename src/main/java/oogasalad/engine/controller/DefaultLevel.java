@@ -4,9 +4,12 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import oogasalad.engine.controller.api.EngineFileConverterAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -17,6 +20,8 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -33,6 +38,7 @@ public class DefaultLevel implements LevelAPI {
   private final GameControllerAPI myGameController;
   private static final String LEVEL_FILE_PATH =
       System.getProperty("user.dir") + "/data/gameData/levels/";
+  private static LevelData levelData;
 
   /**
    * Default level constructor
@@ -53,8 +59,19 @@ public class DefaultLevel implements LevelAPI {
   public void selectGame(String filePath)
       throws LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
     LOG.info("Selecting game " + filePath);
-    LevelData levelData = myFileParser.parseLevelFile(filePath);
+    levelData = myFileParser.parseLevelFile(filePath);
     myGameController.setLevelData(levelData);
+  }
+
+  /**
+   * Converts GameObjectData to GameObject
+   *
+   */
+  @Override
+  public GameObject makeObjectFromData(GameObjectData gameObjectData) {
+    Map<Integer, BlueprintData> gameBluePrintData = levelData.gameBluePrintData();
+    EngineFileConverterAPI fileConverter = new DefaultEngineFileConverter();
+    return fileConverter.makeGameObject(gameObjectData,gameBluePrintData);
   }
 
   /**

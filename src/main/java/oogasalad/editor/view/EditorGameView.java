@@ -1,6 +1,8 @@
 package oogasalad.editor.view;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import java.io.IOException;
@@ -43,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorGameView extends Pane implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(EditorGameView.class);
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/editor_game_view_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/editor_game_view_identifiers.properties";
 
   private final Canvas gridCanvas;
   private final Canvas objectCanvas;
@@ -784,10 +786,19 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
       if (resourceUrl != null) {
         return resourceUrl.toExternalForm();
-      } else {
-        LOG.warn("Classpath resource not found for relative path: {}", resourcePath);
-        return null;
       }
+
+      String gameName = editorController
+          .getEditorDataAPI()
+          .getGameName();
+      Path assetPath = Paths.get("data", "graphicsData", gameName, relativePath);
+      File assetFile = assetPath.toFile();
+      if (assetFile.exists() && assetFile.isFile()) {
+        return assetFile.toURI().toString();
+      }
+
+      LOG.warn("Classpath resource not found for relative path: {}", resourcePath);
+      return null;
     } catch (Exception e) {
       LOG.warn("Could not resolve relative resource path '{}': {}", relativePath, e.getMessage());
       return null;
@@ -977,6 +988,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onPrefabsChanged() {
     LOG.debug("EditorGameView notified of prefab changes (no direct action taken).");
+  }
+
+  /**
+   * Called when a sprite template is changed
+   */
+  @Override
+  public void onSpriteTemplateChanged() {
   }
 
   /**

@@ -4,21 +4,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import oogasalad.editor.controller.listeners.EditorListenerNotifier;
+import oogasalad.editor.controller.object_data.CollisionDataManager;
+import oogasalad.editor.controller.object_data.CustomEventDataManager;
+import oogasalad.editor.controller.object_data.HitboxDataManager;
+import oogasalad.editor.controller.object_data.IdentityDataManager;
+import oogasalad.editor.controller.object_data.InputDataManager;
+import oogasalad.editor.controller.object_data.PhysicsDataManager;
+import oogasalad.editor.controller.object_data.SpriteDataManager;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
-import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
-import oogasalad.editor.model.saver.SpriteSheetSaver;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
-import oogasalad.filesaver.savestrategy.SaverStrategy;
-import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +51,7 @@ public class EditorDataAPI {
   private final SpriteSheetDataManager spriteSheetAPI;
   private final EditorFileConverterAPI fileConverterAPI;
   private final FileParserApi fileParserAPI;
+  private final EditorListenerNotifier listenerNotifier;
   private String currentGameDirectoryPath;
 
   /**
@@ -55,14 +60,15 @@ public class EditorDataAPI {
    *
    * @author Jacob You
    */
-  public EditorDataAPI() {
+  public EditorDataAPI(EditorListenerNotifier listenerNotifier) {
+    this.listenerNotifier = listenerNotifier;
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level);
     this.hitboxAPI = new HitboxDataManager(level);
     this.inputAPI = new InputDataManager(level);
     this.physicsAPI = new PhysicsDataManager(level);
     this.collisionAPI = new CollisionDataManager(level);
-    this.spriteAPI = new SpriteDataManager(level);
+    this.spriteAPI = new SpriteDataManager(level, listenerNotifier);
     this.customEventAPI = new CustomEventDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
     this.spriteSheetAPI = new SpriteSheetDataManager(level);
@@ -354,6 +360,7 @@ public class EditorDataAPI {
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
     level.addSpriteTemplate(spriteTemplate);
+    listenerNotifier.notifySpriteTemplateChanged();
   }
 
   /**

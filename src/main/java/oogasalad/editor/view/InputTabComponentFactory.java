@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class InputTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(InputTabComponentFactory.class);
-  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/editor/view/resources/input_tab_component_factory_identifiers.properties";
+  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/input_tab_component_factory_identifiers.properties";
 
 
   private final EditorController editorController;
@@ -122,6 +122,14 @@ public class InputTabComponentFactory implements EditorViewListener {
   @Override
   public void onPrefabsChanged() {
     LOG.debug("InputTabComponentFactory notified of prefab changes.");
+  }
+
+  /**
+   * Called when a sprite template is changed
+   */
+  @Override
+  public void onSpriteTemplateChanged() {
+    LOG.debug("InputTabComponentFactory notified of sprite template");
   }
 
   /**
