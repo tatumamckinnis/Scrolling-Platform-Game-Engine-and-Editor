@@ -126,6 +126,11 @@ public class WinScreen extends GameOverlayScreen {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRemoveAddObjectImage"));
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     throw new UnsupportedOperationException(
         resourceManager.getText("exceptions", "CannotRenderPlayerStats"));

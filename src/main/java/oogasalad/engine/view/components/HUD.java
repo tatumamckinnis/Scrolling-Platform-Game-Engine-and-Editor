@@ -60,6 +60,12 @@ public class HUD extends Display {
         resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
   }
 
+  @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotAddGameObjectImage"));
+  }
+
   /**
    * Renders the statistics of the given player to the HUD. It attempts to localize the stat labels
    * using the resource manager.

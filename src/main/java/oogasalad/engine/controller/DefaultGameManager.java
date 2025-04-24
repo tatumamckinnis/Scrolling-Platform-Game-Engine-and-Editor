@@ -5,20 +5,19 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import oogasalad.Main;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
@@ -32,6 +31,7 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.fileparser.records.GameObjectData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -125,6 +125,16 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     myView.removeGameObjectImage(gameObject);
+  }
+
+  @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    myView.addGameObjectImage(gameObject);
+  }
+
+  @Override
+  public GameObject makeObjectFromData(GameObjectData gameObjectData) {
+    return myLevelAPI.makeObjectFromData(gameObjectData);
   }
 
   @Override

@@ -70,6 +70,12 @@ public class SplashScreen extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(
+        resourceManager.getText(exceptions, "CannotAddGameObjectImage"));
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     throw new UnsupportedOperationException(
         resourceManager.getText(exceptions, "CannotRenderPlayerStats"));

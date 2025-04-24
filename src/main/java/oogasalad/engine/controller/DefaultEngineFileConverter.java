@@ -94,7 +94,8 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     return gameObjectMap;
   }
 
-  private GameObject makeGameObject(GameObjectData gameObjectData,
+  @Override
+  public GameObject makeGameObject(GameObjectData gameObjectData,
       Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);

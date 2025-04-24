@@ -29,14 +29,14 @@ import oogasalad.exceptions.ViewInitializationException;
  * @author Aksel Bell
  */
 public class DefaultView implements ViewAPI {
-  
+
   private static final Logger LOG = LogManager.getLogger();
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private static final int LEVEL_WIDTH = Integer.parseInt(
       resourceManager.getConfig("engine.controller.level", "LevelWidth"));
   private static final int LEVEL_HEIGHT = Integer.parseInt(
-      resourceManager.getConfig("engine.controller.level","LevelHeight"));
+      resourceManager.getConfig("engine.controller.level", "LevelHeight"));
 
   private Display currentDisplay;
   private Scene currentScene;
@@ -131,7 +131,17 @@ public class DefaultView implements ViewAPI {
   }
 
   /**
+   * adds object image to the level display scene
+   *
+   * @param gameObject
+   */
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    currentDisplay.addGameObjectImage(gameObject);
+  }
+
+  /**
    * renders a player's statistics within the HUD display
+   *
    * @param player the player game object
    */
   public void renderPlayerStats(ImmutableGameObject player) {
@@ -140,6 +150,7 @@ public class DefaultView implements ViewAPI {
 
   /**
    * Package protected method that allows frontend to trigger key pressed in input list.
+   *
    * @param key pressed key.
    */
   void pressKey(KeyCode key) {
@@ -150,6 +161,7 @@ public class DefaultView implements ViewAPI {
 
   /**
    * Package protected method that allows frontend to trigger key released in input list.
+   *
    * @param key released key.
    */
   void releaseKey(KeyCode key) {
