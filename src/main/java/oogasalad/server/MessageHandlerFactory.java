@@ -18,17 +18,27 @@ import org.apache.logging.log4j.Logger;
  * @author Aksel Bell
  */
 public class MessageHandlerFactory {
+
   private static final Logger LOG = LogManager.getLogger();
 
+  /**
+   * Handles the server message
+   *
+   * @param viewState current viewstate object
+   * @param message   the message to send
+   * @return a new Runnable function
+   */
   public static Runnable handleMessage(ViewState viewState, ServerMessage message) {
     try {
-      Method method = MessageHandlerFactory.class.getDeclaredMethod(message.getType(), ViewState.class, ServerMessage.class);
+      Method method = MessageHandlerFactory.class.getDeclaredMethod(message.getType(),
+          ViewState.class, ServerMessage.class);
       method.setAccessible(true);
 
       return (Runnable) method.invoke(null, viewState, message);
     } catch (Exception e) {
       LOG.info("No matching handler found for server message type: {}", message.getType());
-      return () -> {};
+      return () -> {
+      };
     }
   }
 
@@ -37,7 +47,7 @@ public class MessageHandlerFactory {
    * start method.
    *
    * @param viewState a current viewState to change the scene.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return a runnable that starts the game.
    */
   private static Runnable startGame(ViewState viewState, ServerMessage message) {
@@ -54,8 +64,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggered when a client receives a play game message from the server.
+   *
    * @param viewState the current view state to change the scene.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return a runnable that plays the game.
    */
   private static Runnable playGame(ViewState viewState, ServerMessage message) {
@@ -67,8 +78,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggered when a client receives a pause game message from the server.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return a runnable that pauses the game.
    */
   private static Runnable pauseGame(ViewState viewState, ServerMessage message) {
@@ -80,8 +92,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggered when a client receives a restart game message from the server.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return a runnable that restarts the game.
    */
   private static Runnable restartGame(ViewState viewState, ServerMessage message) {
@@ -93,8 +106,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggered when a client receives an end game message from the server.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return a runnable that ends the game.
    */
   private static Runnable goToHome(ViewState viewState, ServerMessage message) {
@@ -110,10 +124,11 @@ public class MessageHandlerFactory {
   }
 
   /**
-   * Triggered when a client's connection is approved. Switches the screen to an updated lobby screen
-   * with number of players.
+   * Triggered when a client's connection is approved. Switches the screen to an updated lobby
+   * screen with number of players.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return runnable that enters the lobby.
    */
   private static Runnable newConnection(ViewState viewState, ServerMessage message) {
@@ -132,8 +147,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggers a press key based on the key a server sends it to press.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return runnable function.
    */
   private static Runnable pressKey(ViewState viewState, ServerMessage message) {
@@ -144,8 +160,9 @@ public class MessageHandlerFactory {
 
   /**
    * Triggers a released key based on the key a server sends it to press.
+   *
    * @param viewState the current view state.
-   * @param message a server message to interpret.
+   * @param message   a server message to interpret.
    * @return runnable function.
    */
   private static Runnable releaseKey(ViewState viewState, ServerMessage message) {

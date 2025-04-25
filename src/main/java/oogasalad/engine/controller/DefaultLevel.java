@@ -30,6 +30,8 @@ import oogasalad.fileparser.records.LevelData;
  * <p>This class is responsible for selecting and loading a specific level from a given game,
  * category, and level name. It uses a {@link FileParserApi} to parse the level file and delegates
  * to the {@link GameControllerAPI} to update the engine with the parsed data.
+ *
+ * @author Gage Garcia, Billy McCune
  */
 public class DefaultLevel implements LevelAPI {
 
@@ -65,13 +67,12 @@ public class DefaultLevel implements LevelAPI {
 
   /**
    * Converts GameObjectData to GameObject
-   *
    */
   @Override
   public GameObject makeObjectFromData(GameObjectData gameObjectData) {
     Map<Integer, BlueprintData> gameBluePrintData = levelData.gameBluePrintData();
     EngineFileConverterAPI fileConverter = new DefaultEngineFileConverter();
-    return fileConverter.makeGameObject(gameObjectData,gameBluePrintData);
+    return fileConverter.makeGameObject(gameObjectData, gameBluePrintData);
   }
 
   /**

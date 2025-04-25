@@ -82,5 +82,4 @@ public class DefaultCameraFactory implements CameraFactory {
     return camera;
   }
 
-
 }

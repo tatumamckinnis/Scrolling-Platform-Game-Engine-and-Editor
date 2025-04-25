@@ -9,6 +9,8 @@ import oogasalad.engine.model.object.GameObject;
  * <p>
  * The threshold is supplied in {@code doubleParams} under the key {@code "y"}.
  * </p>
+ *
+ * @author Billy McCune
  */
 public class AtOrBeyondYCondition implements Condition {
 

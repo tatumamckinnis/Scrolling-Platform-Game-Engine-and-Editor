@@ -15,6 +15,11 @@ import javafx.scene.text.Text;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ViewState;
 
+/**
+ * Win Screen is displayed when a user winds a given level
+ *
+ * @author Luke Nam
+ */
 public class WinScreen extends GameOverlayScreen {
 
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
@@ -127,7 +132,8 @@ public class WinScreen extends GameOverlayScreen {
 
   @Override
   public void addGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRemoveAddObjectImage"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotRemoveAddObjectImage"));
   }
 
   @Override

@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Main class of application
+ *
+ * @author Alana Zinkin, Billy McCune, Jacob You, Tatum McKinnis, Aksel Bell, Gage Garcia, Luke Nam
  */
 public class Main extends Application {
 
@@ -23,7 +25,8 @@ public class Main extends Application {
    *                     not be primary stages.
    */
   @Override
-  public void start(Stage primaryStage) throws URISyntaxException, IOException, InterruptedException {
+  public void start(Stage primaryStage)
+      throws URISyntaxException, IOException, InterruptedException {
     try {
       GameManagerAPI manager = new DefaultGameManager();
       LOG.info("Starting game...");

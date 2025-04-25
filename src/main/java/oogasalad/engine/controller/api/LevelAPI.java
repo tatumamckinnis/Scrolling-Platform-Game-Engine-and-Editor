@@ -17,6 +17,8 @@ import oogasalad.fileparser.records.GameObjectData;
 
 /**
  * Interface used for selecting a new Game or new Level of a Game
+ *
+ * @author Alana Zinkin
  */
 public interface LevelAPI {
 

@@ -22,6 +22,8 @@ import oogasalad.fileparser.records.FrameData;
  * {@link ImmutableGameObject} instances into {@link ObjectImage} representations that can be
  * rendered in the game view. It also provides utility methods to convert a single {@link FrameData}
  * into an {@link ImageView}.
+ *
+ * @author Alana Zinkin, Billy McCune
  */
 public class ViewObjectToImageConverter {
 
@@ -89,19 +91,11 @@ public class ViewObjectToImageConverter {
   public ImageView convertFrameToView(ImmutableGameObject viewObject) throws FileNotFoundException {
     Image sprite = new Image(new FileInputStream(viewObject.getSpriteFile()));
     ImageView imageView = new ImageView(sprite);
-
-    Rectangle2D viewport = new Rectangle2D(viewObject.getCurrentFrame().x(),
-        viewObject.getCurrentFrame().y(), viewObject.getCurrentFrame().width(),
-        viewObject.getCurrentFrame().height());
-
-    imageView.setViewport(viewport);
-    imageView.setFitWidth(viewport.getWidth());
-    imageView.setFitHeight(viewport.getHeight());
-    imageView.setViewOrder(viewObject.getLayer());
+    makeViewport(viewObject, imageView);
     return imageView;
   }
 
-  public void moveImageViewToCurrentFrame(ImmutableGameObject viewObject, ImageView imageView) {
+  private static void makeViewport(ImmutableGameObject viewObject, ImageView imageView) {
     Rectangle2D viewport = new Rectangle2D(viewObject.getCurrentFrame().x(),
         viewObject.getCurrentFrame().y(), viewObject.getCurrentFrame().width(),
         viewObject.getCurrentFrame().height());
@@ -110,6 +104,10 @@ public class ViewObjectToImageConverter {
     imageView.setFitWidth(viewport.getWidth());
     imageView.setFitHeight(viewport.getHeight());
     imageView.setViewOrder(viewObject.getLayer());
+  }
+
+  public void moveImageViewToCurrentFrame(ImmutableGameObject viewObject, ImageView imageView) {
+    makeViewport(viewObject, imageView);
   }
 
   /**
