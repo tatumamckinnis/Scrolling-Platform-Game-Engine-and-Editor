@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,23 +16,36 @@ import javafx.scene.text.Text;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ViewState;
 
-public class WinScreen extends GameOverlayScreen {
+/**
+ * Win Screen is displayed when a user winds a given level
+ *
+ * @author Luke Nam
+ */
+public class EndGameScreen extends GameOverlayScreen {
 
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
-  private final String winScreenResource = "engine.view.winScene";
+  private final String generalOverlayResource = "engine.view.overlayScene";
 
   private static final Logger LOG = LogManager.getLogger();
+  private String endGameScreenResource;
   private String overlayStylesheet;
   private ViewState viewState;
 
-  public WinScreen(ViewState viewState) {
+  public EndGameScreen(ViewState viewState) {
     super(viewState);
-    String overlayStylesheetFilepath = resourceManager.getConfig(winScreenResource,
-        "win.stylesheet");
+    this.viewState = viewState;
+  }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    String key;
+    key = gameWon ? "win" : "lose";
+    String overlayStylesheetFilepath = resourceManager.getConfig(generalOverlayResource,
+        key + ".stylesheet");
     overlayStylesheet = Objects.requireNonNull(getClass().getResource(overlayStylesheetFilepath))
         .toExternalForm();
-    this.viewState = viewState;
-
+    endGameScreenResource = "engine.view." + key + "GameScreen";
+    LOG.info(endGameScreenResource);
     initialize();
   }
 
@@ -41,9 +55,12 @@ public class WinScreen extends GameOverlayScreen {
     VBox buttonBox = createOverlayButtonBox();
     combinedBox.getChildren().addAll(textBox, buttonBox);
     combinedBox.getStyleClass()
-        .add(resourceManager.getConfig(winScreenResource, "win.background.style"));
+        .add(resourceManager.getConfig(endGameScreenResource, "background.style"));
     alignBox(combinedBox,
-        Integer.parseInt(resourceManager.getConfig(winScreenResource, "win.boxSpacing")));
+        Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "boxSpacing")));
+    combinedBox.setPrefSize(Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "screen.width")),
+        Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "screen.height"))
+    );
     this.getChildren().add(combinedBox);
     this.getStylesheets().add(overlayStylesheet);
   }
@@ -52,44 +69,48 @@ public class WinScreen extends GameOverlayScreen {
   public VBox createOverlayTextBox() {
     VBox textBox = new VBox();
     int wrappingWidth = Integer.parseInt(
-        resourceManager.getConfig(winScreenResource, "win.wrappingWidth"));
+        resourceManager.getConfig(endGameScreenResource, "wrappingWidth"));
 
     // First, extract the "win message" from the properties file
-    String winMessage = resourceManager.getConfig(winScreenResource, "win.message");
+    String winMessage = resourceManager.getConfig(endGameScreenResource, "message");
     int winFont = Integer.parseInt(
-        resourceManager.getConfig(winScreenResource, "win.primaryFont"));
+        resourceManager.getConfig(endGameScreenResource, "primaryFont"));
     Text winText = createStyledText(winMessage, new Font(winFont), wrappingWidth);
 
-    // Then, extract the score message
-    String scoreMessage = resourceManager.getConfig(winScreenResource, "win.score");
-    int scoreFont = Integer.parseInt(
-        resourceManager.getConfig(winScreenResource, "win.secondaryFont"));
-    Text scoreText = createStyledText(scoreMessage, new Font(scoreFont), wrappingWidth);
 
     // Finally, combine both text messages together
-    textBox.getChildren().addAll(winText, scoreText);
+    textBox.getChildren().addAll(winText);
     alignBox(textBox,
-        Integer.parseInt(resourceManager.getConfig(winScreenResource, "win.defaultSpacing")));
+        Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "defaultSpacing")));
     return textBox;
   }
 
   @Override
   public VBox createOverlayButtonBox() {
     VBox buttonBox = new VBox();
-    String[] buttonTexts = getWinButtonTexts();
-    String[] buttonIDs = getWinButtonIDs();
+    String[] buttonTexts = getButtonTexts();
+    String[] buttonIDs = getButtonIDs();
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
       currButton.getStyleClass()
-          .add(resourceManager.getConfig(winScreenResource, "win.button.style"));
+          .add(resourceManager.getConfig(endGameScreenResource, "button.style"));
+      LOG.info(buttonIDs[i]);
+      setButtonAction(buttonIDs[i], currButton);
       buttonBox.getChildren().add(currButton);
     }
 
     int buttonSpacing = Integer.parseInt(
-        resourceManager.getConfig(winScreenResource, "win.defaultSpacing"));
+        resourceManager.getConfig(endGameScreenResource, "defaultSpacing"));
     alignBox(buttonBox, buttonSpacing);
     return buttonBox;
+  }
+
+  private void setButtonAction(String buttonID, Button currButton) {
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
+    currButton.setOnAction(event -> {
+      factory.getAction(buttonID).run();
+    });
   }
 
   /**
@@ -97,11 +118,10 @@ public class WinScreen extends GameOverlayScreen {
    *
    * @return array of strings for button strings
    */
-  private String[] getWinButtonTexts() {
+  private String[] getButtonTexts() {
     return new String[]{
-        resourceManager.getConfig(winScreenResource, "win.button.nextLevel.text"),
-        resourceManager.getConfig(winScreenResource, "win.button.restartLevel.text"),
-        resourceManager.getConfig(winScreenResource, "win.button.returnHome.text")
+        resourceManager.getConfig(endGameScreenResource, "button.restartLevel.text"),
+        resourceManager.getConfig(endGameScreenResource, "button.returnHome.text")
     };
   }
 
@@ -110,11 +130,10 @@ public class WinScreen extends GameOverlayScreen {
    *
    * @return array of strings for button IDs
    */
-  private String[] getWinButtonIDs() {
+  private String[] getButtonIDs() {
     return new String[]{
-        resourceManager.getConfig(winScreenResource, "win.button.nextLevel.id"),
-        resourceManager.getConfig(winScreenResource, "win.button.restartLevel.id"),
-        resourceManager.getConfig(winScreenResource, "win.button.returnHome.id")
+        resourceManager.getConfig(endGameScreenResource, "button.restartLevel.id"),
+        resourceManager.getConfig(endGameScreenResource, "button.returnHome.id")
     };
   }
 
@@ -127,7 +146,8 @@ public class WinScreen extends GameOverlayScreen {
 
   @Override
   public void addGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRemoveAddObjectImage"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotRemoveAddObjectImage"));
   }
 
   @Override

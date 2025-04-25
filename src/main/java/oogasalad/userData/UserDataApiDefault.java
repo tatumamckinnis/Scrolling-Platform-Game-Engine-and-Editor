@@ -19,6 +19,10 @@ import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
 import oogasalad.userData.writer.UserDataWriter;
 
+/**
+ *
+ * @author Billy McCune
+ */
 public class UserDataApiDefault implements UserApi {
 
   private UserDataParser myUserDataParser;
@@ -101,7 +105,7 @@ public class UserDataApiDefault implements UserApi {
     }
 
     // 3) Merge in the new stats with numeric comparison
-    Map<String, String> merged = updatePlayerStatMap(
+    Map<String, String> mergedStatsForLevel = updatePlayerStatMap(
         newLevelStats,
         targetLevel.levelHighestStatMap()
     );
@@ -109,15 +113,16 @@ public class UserDataApiDefault implements UserApi {
     targetLevel = new UserLevelData(
         targetLevel.levelName(),
         new Date().toString(),
-        merged
+        mergedStatsForLevel
     );
     targetGame.playerLevelStatMap().put(levelName, targetLevel);
 
+    Map<String,String> mergedStatsForGame = updatePlayerStatMap(newLevelStats, targetGame.playerHighestGameStatMap());
     // also update game lastPlayed
     targetGame = new UserGameData(
         targetGame.gameName(),
         new Date().toString(),
-        targetGame.playerHighestGameStatMap(),
+        mergedStatsForGame,
         targetGame.playerLevelStatMap()
     );
     myUserData.userGameData().removeIf(g -> g.gameName().equals(gameName));

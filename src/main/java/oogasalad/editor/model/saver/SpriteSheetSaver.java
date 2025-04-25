@@ -3,7 +3,6 @@ package oogasalad.editor.model.saver;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import oogasalad.editor.view.EditorComponentFactory;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteSheetData;

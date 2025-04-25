@@ -12,6 +12,8 @@ package oogasalad.exceptions;
  * Being an unchecked exception, it does not require explicit declaration in a method's
  * {@code throws} clause.
  * </p>
+ *
+ * @author Billy McCune
  */
 public class CameraParserException extends RuntimeException {
 

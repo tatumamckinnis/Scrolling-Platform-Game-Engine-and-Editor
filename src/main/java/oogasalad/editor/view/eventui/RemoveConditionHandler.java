@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 
 /**
  * Functional interface for handling the removal of an existing condition within the editor view,

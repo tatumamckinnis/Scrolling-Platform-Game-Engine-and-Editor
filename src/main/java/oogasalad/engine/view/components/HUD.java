@@ -1,6 +1,8 @@
 package oogasalad.engine.view.components;
 
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.Objects;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -9,7 +11,8 @@ import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
-import oogasalad.engine.view.factory.ButtonActionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The {@code HUD} class represents a Heads-Up Display in the game view. It is responsible for
@@ -26,17 +29,18 @@ public class HUD extends Display {
    * Resource manager for fetching localized exception and display text.
    */
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
-
-  /**
-   * Container pane for rendering HUD elements such as player stats.
-   */
+  private static final Logger LOG = LogManager.getLogger();
   private Pane container;
+  private String HUDStylesheet;
 
   /**
    * Constructs a new {@code HUD} instance and initializes its layout and components.
    */
   public HUD() {
     initialize();
+    String HUDStylesheetFilepath = resourceManager.getConfig("engine.view.hud",
+        "hud.stylesheet");
+    HUDStylesheet = Objects.requireNonNull(getClass().getResource(HUDStylesheetFilepath)).toExternalForm();
   }
 
   /**
@@ -78,13 +82,27 @@ public class HUD extends Display {
     container.getChildren().clear();
     Map<String, String> displayedStats = ((ImmutablePlayer) player).getDisplayedStatsMap();
     for (String stat : displayedStats.keySet()) {
-      Text statText = new Text(String.format("%s: %s", stat, displayedStats.get(stat)));
-      // TODO: This line is usually going to cause problems if the stat doesnt exist. Fix it!
-      if (resourceManager.getText("displayedText", stat) != null) {
-        statText = new Text(String.format("%s: %s", resourceManager.getText("displayedText", stat),
-            displayedStats.get(stat)));
+      String localizedStat;
+      try {
+        localizedStat = resourceManager.getText("displayedText", stat);
+      } catch (MissingResourceException e) {
+        LOG.error("{}{}", resourceManager.getText("exceptions", "StatCannotBeTranslated"),
+            e.getMessage());
+        localizedStat = stat;
       }
+      Text statText = new Text(String.format("%s: %s", localizedStat, displayedStats.get(stat)));
+      styleStats(statText);
       container.getChildren().add(statText);
     }
+  }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
+
+  private void styleStats(Text statText) {
+    container.getStylesheets().add(HUDStylesheet);
+    statText.getStyleClass().add(resourceManager.getConfig("engine.view.hud", "hud.stats.style"));
   }
 }

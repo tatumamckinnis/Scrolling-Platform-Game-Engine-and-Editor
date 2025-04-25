@@ -2,24 +2,19 @@ package oogasalad.engine.model.object.event;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.DataFormatException;
+import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.event.CollisionHandler;
-import oogasalad.engine.model.event.ConditionChecker;
 import oogasalad.engine.model.event.OutcomeExecutor;
-import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
-import oogasalad.engine.model.event.outcome.EventOutcome;
-import oogasalad.engine.model.event.outcome.EventOutcome.OutcomeType;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.Player;
-import oogasalad.engine.model.object.event.ConditionCheckerTest.MockCollision;
-import oogasalad.engine.model.object.event.ConditionCheckerTest.mockInput;
 import oogasalad.engine.model.object.mapObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -30,6 +25,7 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.FrameData;
+import oogasalad.fileparser.records.GameObjectData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,6 +59,11 @@ public class OutcomesTest {
     }
 
     @Override
+    public void addGameObject(GameObjectData gameObjectData) {
+
+    }
+
+    @Override
     public mapObject getMapObject() {
       return null;
     }
@@ -73,8 +74,8 @@ public class OutcomesTest {
     }
 
     @Override
-    public void endGame() {
-
+    public void endGame(boolean gameWon) {
+      return;
     }
 
     @Override
@@ -119,7 +120,28 @@ public class OutcomesTest {
   }
   @BeforeEach
   void setUp() throws Exception {
-    executor = new OutcomeExecutor(new MockCollision(), new MockExecutor(), new MockAnimation());
+    executor = new OutcomeExecutor(new MockCollision(), new MockExecutor(), new MockAnimation(),
+        new InputProvider() {
+          @Override
+          public boolean isKeyPressed(KeyCode keyCode) {
+            return false;
+          }
+
+          @Override
+          public boolean isKeyReleased(KeyCode keyCode) {
+            return false;
+          }
+
+          @Override
+          public Point getMousePosition() {
+            return null;
+          }
+
+          @Override
+          public void clearReleased() {
+
+          }
+        });
     player = new Player(null, null, 0, 0, 0, null, null, null, null, null, null);
 
 

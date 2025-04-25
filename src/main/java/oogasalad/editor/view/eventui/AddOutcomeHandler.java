@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 
 /**
  * Functional interface for handling the addition of a new outcome within the editor view, typically

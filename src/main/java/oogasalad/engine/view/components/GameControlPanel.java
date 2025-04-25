@@ -82,6 +82,11 @@ public class GameControlPanel extends Display {
         resourceManager.getText("exceptions", "CannotRenderPlayerStats"));
   }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
+
   /**
    * Initializes the game control panel buttons based on the properties file
    */

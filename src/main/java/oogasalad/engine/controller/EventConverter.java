@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
  * constructed {@link Event} objects tied to a specific {@link GameObject}.
  *
  * <p>This conversion includes parsing the event's conditions, outcomes, and type.
+ *
+ * @author Alana Zinkin
  */
 public class EventConverter {
 

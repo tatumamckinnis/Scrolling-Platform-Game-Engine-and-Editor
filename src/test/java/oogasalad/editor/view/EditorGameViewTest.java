@@ -8,6 +8,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
+import oogasalad.editor.view.components.EditorGameView;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import org.mockito.MockitoAnnotations;
 import org.junit.jupiter.api.BeforeEach;

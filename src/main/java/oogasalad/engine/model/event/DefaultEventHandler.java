@@ -37,7 +37,7 @@ public class DefaultEventHandler implements EventHandler {
    */
   public DefaultEventHandler(InputProvider inputProvider, CollisionHandler collisionHandler,
       GameExecutor gameExecutor, DefaultAnimationHandler animationHandlerApi) {
-    outcomeExecutor = new OutcomeExecutor(collisionHandler, gameExecutor, animationHandlerApi);
+    outcomeExecutor = new OutcomeExecutor(collisionHandler, gameExecutor, animationHandlerApi, inputProvider);
     conditionChecker = new ConditionChecker(inputProvider, collisionHandler);
   }
 

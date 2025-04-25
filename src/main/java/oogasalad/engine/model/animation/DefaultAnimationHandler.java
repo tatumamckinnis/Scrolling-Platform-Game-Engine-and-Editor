@@ -8,17 +8,21 @@ import oogasalad.engine.model.object.Sprite;
 import oogasalad.fileparser.records.FrameData;
 
 /**
- * Default implementation of {@link AnimationHandlerApi}, managing an {@link AnimationState}
- * for each GameObject by its UUID.
- * It advances and applies frame updates on each call to getCurrentFrameInAnimation().
+ * Default implementation of {@link AnimationHandlerApi}, managing an {@link AnimationState} for
+ * each GameObject by its UUID. It advances and applies frame updates on each call to
+ * getCurrentFrameInAnimation().
+ *
+ * @author Billy McCune
  */
 public class DefaultAnimationHandler implements AnimationHandlerApi {
+
   private final Map<String, AnimationState> stateMap = new HashMap<>();
   private Sprite currentSprite;
-  
+
   /**
-   * Advances the animation state for the given GameObject and updates its current frame.
-   * If no animations are queued, the sprite's base frame is used.
+   * Advances the animation state for the given GameObject and updates its current frame. If no
+   * animations are queued, the sprite's base frame is used.
+   *
    * @param gameObject the object whose animation to advance
    * @return the FrameData that was set as the current frame
    */
@@ -32,7 +36,9 @@ public class DefaultAnimationHandler implements AnimationHandlerApi {
   }
 
   /**
-   * Clears any queued animations for this GameObject and immediately sets its frame to the base image.
+   * Clears any queued animations for this GameObject and immediately sets its frame to the base
+   * image.
+   *
    * @param gameObject the object whose animations should be reset
    */
   @Override
@@ -46,32 +52,36 @@ public class DefaultAnimationHandler implements AnimationHandlerApi {
 
   /**
    * Adds an animation to the end of the GameObject's play queue.
-   * @param gameObject the object to animate
+   *
+   * @param gameObject    the object to animate
    * @param animationName the key of the animation to enqueue
    */
   @Override
   public void addToAnimations(GameObject gameObject, String animationName) {
-    AnimationState state = stateMap.computeIfAbsent(gameObject.getUUID(), k -> new AnimationState());
+    AnimationState state = stateMap.computeIfAbsent(gameObject.getUUID(),
+        k -> new AnimationState());
     state.addAnimation(animationName);
   }
 
   /**
    * Clears the GameObject's animation queue and starts the specified animation immediately.
-   * @param gameObject the object to animate
+   *
+   * @param gameObject    the object to animate
    * @param animationName the key of the animation to play
    */
   @Override
   public void clearAndAddToAnimationList(GameObject gameObject, String animationName) {
-    AnimationState state = stateMap.computeIfAbsent(gameObject.getUUID(), k -> new AnimationState());
+    AnimationState state = stateMap.computeIfAbsent(gameObject.getUUID(),
+        k -> new AnimationState());
     state.clearAndPlay(animationName);
   }
 
   /**
-   * Overrides the sprite's base frame to a different named frame,
-   * clears any queued animations, and resets the current frame.
+   * Overrides the sprite's base frame to a different named frame, clears any queued animations, and
+   * resets the current frame.
    *
-   * @param gameObject    the GameObject whose base you’re changing
-   * @param newBaseName   the key of the new base frame in the Sprite’s frameMap
+   * @param gameObject  the GameObject whose base you’re changing
+   * @param newBaseName the key of the new base frame in the Sprite’s frameMap
    * @throws IllegalArgumentException if no such frame exists
    */
   @Override

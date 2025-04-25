@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.factories;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +26,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.components.EditorGameView;
+import oogasalad.editor.view.components.PrefabPalettePane;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
 import oogasalad.editor.view.panes.level_properties.LevelPropertiesDialog;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
@@ -551,7 +553,7 @@ public class EditorComponentFactory {
    * @param defaultValue The default integer value to use if lookup or parsing fails.
    * @return The integer value from properties or the default value.
    */
-  int getIntProperty(String key, int defaultValue) {
+  public int getIntProperty(String key, int defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {
@@ -592,7 +594,7 @@ public class EditorComponentFactory {
    * @param defaultValue The default double value to use if lookup or parsing fails.
    * @return The double value from properties or the default value.
    */
-  double getDoubleProperty(String key, double defaultValue) {
+  public double getDoubleProperty(String key, double defaultValue) {
     String value = editorProperties.getProperty(key);
     if (value != null) {
       try {

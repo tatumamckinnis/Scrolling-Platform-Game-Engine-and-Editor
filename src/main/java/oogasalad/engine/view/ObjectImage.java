@@ -13,6 +13,8 @@ import oogasalad.engine.view.util.ViewObjectToImageConverter;
  * The {@code ObjectImage} class represents a visual object in the game world, composed of an
  * {@link ImageView} for the sprite and a {@link Rectangle} hitbox for interactions or debugging. It
  * uses a {@link ViewObjectToImageConverter} to convert frame data into visual representation.
+ *
+ * @author Billy McCune, Alana Zinkin
  */
 public class ObjectImage {
 
@@ -95,8 +97,10 @@ public class ObjectImage {
    */
   private void displayHitBox(int x, int y, int hitBoxWidth, int hitBoxHeight) {
     this.hitBox = new Rectangle(x, y, hitBoxWidth, hitBoxHeight);
-    hitBox.setArcWidth(Double.parseDouble(resourceManager.getConfig("engine.view.objectimage", "ArcWidth")));
-    hitBox.setArcHeight(Double.parseDouble(resourceManager.getConfig("engine.view.objectimage", "ArcHeight")));
+    hitBox.setArcWidth(
+        Double.parseDouble(resourceManager.getConfig("engine.view.objectimage", "ArcWidth")));
+    hitBox.setArcHeight(
+        Double.parseDouble(resourceManager.getConfig("engine.view.objectimage", "ArcHeight")));
     hitBox.setFill(Color.TRANSPARENT);  // Makes the center clear
     hitBox.setStroke(Color.RED);
   }

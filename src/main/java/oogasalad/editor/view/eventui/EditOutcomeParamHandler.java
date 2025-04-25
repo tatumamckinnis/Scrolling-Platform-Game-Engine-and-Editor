@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 
 /**
  * Functional interface for handling the modification of a parameter associated with an existing

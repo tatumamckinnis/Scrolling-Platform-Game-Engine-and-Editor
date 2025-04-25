@@ -12,13 +12,14 @@ import oogasalad.fileparser.records.FrameData;
  * Represents the visual rendering data for a game object, including static frames and animations.
  *
  * <p>A {@code Sprite} holds a set of named frames (images), animation data, and positioning
- * offsets
- * for how the sprite should be rendered relative to the object’s hitbox. The {@code Sprite} may
- * represent the current visual appearance using a base frame, and can retrieve other frames by ID.
+ * offsets for how the sprite should be rendered relative to the object’s hitbox. The {@code Sprite}
+ * may represent the current visual appearance using a base frame, and can retrieve other frames by
+ * ID.
  *
  * <p>This class serves as a core part of the visual model and is used during rendering to
- * determine
- * what image to show and where.
+ * determine what image to show and where.
+ *
+ * @author Alana Zinkin
  */
 public class Sprite {
 
@@ -52,7 +53,8 @@ public class Sprite {
    * @param spriteDy      the vertical offset of the sprite relative to the hitbox
    */
   public Sprite(Map<String, FrameData> frameMap, FrameData currentSprite,
-      Map<String, AnimationData> animations, int spriteDx, int spriteDy, File spriteFile, double rotation, boolean needsFlipped) {
+      Map<String, AnimationData> animations, int spriteDx, int spriteDy, File spriteFile,
+      double rotation, boolean needsFlipped) {
     this.spriteDx = spriteDx;
     this.spriteDy = spriteDy;
     this.frameMap = frameMap;
@@ -125,7 +127,6 @@ public class Sprite {
   }
 
   /**
-   *
    * @return the current animation the sprite is on
    */
   public String getCurrAnimation() {
@@ -133,7 +134,6 @@ public class Sprite {
   }
 
   /**
-   *
    * @return the current frame number in relation to framelen of the animation
    */
   public int getFrameNumber() {
@@ -141,8 +141,6 @@ public class Sprite {
   }
 
   /**
-   *
-   *
    * @return the current animation number in relation to the List of frames  in the animation data
    */
   public int getAnimationNumber() {
@@ -150,61 +148,73 @@ public class Sprite {
   }
 
   /**
-   *
-   *
    * @return all the animations that the sprite has.
    */
-  public  Map<String, AnimationData> getAnimations() {
+  public Map<String, AnimationData> getAnimations() {
     return animations;
   }
 
   /**
+   * Returns the base (default) sprite frame for this object.
    *
-   *
+   * @return the base {@link FrameData} sprite used as the default appearance
    */
-    public FrameData getBaseSprite() {
-      return baseSprite;
-    }
-
-    public void setCurrentSprite(FrameData currentSprite) {
-      this.currentSprite = currentSprite;
-    }
-
-    public void setBaseSprite(FrameData baseSprite) {
-      this.baseSprite = baseSprite;
-    }
-
-
-    /**
-     *
-     *
-     * @return a boolean if the object is flipped by default for most objects flipping will have the object face left.
-     */
-    public boolean needsFlipped() {
-      return needsFlipped;
-    }
-
-
-    public void setNeedsFlipped(boolean needsFlipped) {
-      this.needsFlipped = needsFlipped;
-    }
+  public FrameData getBaseSprite() {
+    return baseSprite;
+  }
 
   /**
+   * Sets the current sprite frame used for rendering this object.
    *
-   * @return the rotation of the object about its center.
+   * @param currentSprite the {@link FrameData} to set as the current sprite
+   */
+  public void setCurrentSprite(FrameData currentSprite) {
+    this.currentSprite = currentSprite;
+  }
+
+  /**
+   * Sets the base (default) sprite frame for this object.
+   *
+   * @param baseSprite the {@link FrameData} to set as the base sprite
+   */
+  public void setBaseSprite(FrameData baseSprite) {
+    this.baseSprite = baseSprite;
+  }
+
+  /**
+   * Indicates whether the object should be flipped horizontally by default.
+   * <p>For most objects, flipping makes the object face left.</p>
+   *
+   * @return {@code true} if the sprite should be flipped; {@code false} otherwise
+   */
+  public boolean needsFlipped() {
+    return needsFlipped;
+  }
+
+  /**
+   * Sets whether the object should be flipped horizontally.
+   *
+   * @param needsFlipped {@code true} to flip the object; {@code false} to leave it as-is
+   */
+  public void setNeedsFlipped(boolean needsFlipped) {
+    this.needsFlipped = needsFlipped;
+  }
+
+  /**
+   * Returns the current rotation of the object about its center.
+   *
+   * @return the rotation angle in degrees
    */
   public double getRotation() {
-      return rotation;
-    }
+    return rotation;
+  }
 
   /**
+   * Sets the rotation angle of the object's sprite.
    *
-   *
-   * @param rotation the rotation of the sprite image.
+   * @param rotation the angle in degrees to rotate the sprite about its center
    */
   public void setRotation(double rotation) {
-      this.rotation = rotation;
-    }
-
+    this.rotation = rotation;
+  }
 }
-

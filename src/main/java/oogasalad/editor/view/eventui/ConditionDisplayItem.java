@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 
 import java.util.Objects;
 import oogasalad.editor.model.data.object.event.ExecutorData;
@@ -10,7 +10,7 @@ import oogasalad.editor.model.data.object.event.ExecutorData;
  *
  * @author Tatum McKinnis
  */
-class ConditionDisplayItem {
+public class ConditionDisplayItem {
 
   private final int groupIndex;
   private final int conditionIndex;
@@ -39,7 +39,7 @@ class ConditionDisplayItem {
    *
    * @return The group index.
    */
-  int getGroupIndex() {
+  public int getGroupIndex() {
     return groupIndex;
   }
 
@@ -48,7 +48,7 @@ class ConditionDisplayItem {
    *
    * @return The condition index.
    */
-  int getConditionIndex() {
+  public int getConditionIndex() {
     return conditionIndex;
   }
 
@@ -57,7 +57,7 @@ class ConditionDisplayItem {
    *
    * @return The ExecutorData.
    */
-  ExecutorData getData() {
+  public ExecutorData getData() {
     return data;
   }
 

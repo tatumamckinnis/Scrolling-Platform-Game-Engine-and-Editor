@@ -5,7 +5,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.view.EditorComponentFactory;
+import oogasalad.editor.view.factories.EditorComponentFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

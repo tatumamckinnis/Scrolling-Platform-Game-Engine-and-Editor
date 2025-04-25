@@ -7,18 +7,21 @@ import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 
 /**
- * Represents the current animation playback state for a single GameObject.
- * It maintains a queue of animations, frame indices, and tick counters,
- * and provides the next frame to render on each game loop iteration.
+ * Represents the current animation playback state for a single GameObject. It maintains a queue of
+ * animations, frame indices, and tick counters, and provides the next frame to render on each game
+ * loop iteration.
+ *
+ * @author Billy McCune
  */
 public class AnimationState {
+
   private final Deque<String> queue = new ArrayDeque<>();
   private int frameIndex = 0;
-  private int frameTick  = 0;
+  private int frameTick = 0;
 
   /**
-   * Clears all pending animations and resets the frame index and tick counter.
-   * After this call, nextFrame(...) will return the sprite's base frame.
+   * Clears all pending animations and resets the frame index and tick counter. After this call,
+   * nextFrame(...) will return the sprite's base frame.
    */
   public void goToBase() {
     queue.clear();
@@ -27,6 +30,7 @@ public class AnimationState {
 
   /**
    * Enqueues an animation to play after existing ones complete.
+   *
    * @param animationName the key of the AnimationData in the Sprite's map
    */
   public void addAnimation(String animationName) {
@@ -34,8 +38,9 @@ public class AnimationState {
   }
 
   /**
-   * Clears any currently queued animations and starts playing only the specified animation
-   * from its first frame.
+   * Clears any currently queued animations and starts playing only the specified animation from its
+   * first frame.
+   *
    * @param animationName the key of the AnimationData to play immediately
    */
   public void clearAndPlay(String animationName) {
@@ -50,6 +55,7 @@ public class AnimationState {
    *   <li>If the queue is empty, the sprite's base frame is returned.</li>
    *   <li>Otherwise, it plays through the queued animations, popping each off when complete.</li>
    * </ul>
+   *
    * @param sprite the Sprite containing animation definitions and frame mappings
    * @return the FrameData for the current animation frame, or the base frame if idle
    */

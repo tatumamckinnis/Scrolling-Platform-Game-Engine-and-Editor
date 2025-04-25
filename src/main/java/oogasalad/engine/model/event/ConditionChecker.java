@@ -12,6 +12,7 @@ import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
 import oogasalad.engine.model.event.condition.InputCondition;
 import oogasalad.engine.model.event.condition.TrueCondition;
+import oogasalad.engine.model.event.condition.VariableEqualThresholdCondition;
 import oogasalad.engine.model.event.condition.VariableGreaterThanThresholdCondition;
 import oogasalad.engine.model.event.condition.VariableLessThanThresholdCondition;
 import oogasalad.engine.model.object.GameObject;
@@ -45,6 +46,8 @@ public class ConditionChecker {
         new VariableLessThanThresholdCondition());
     conditionMap.put(ConditionType.GREATER_VARIABLE_THRESHOLD,
         new VariableGreaterThanThresholdCondition());
+    conditionMap.put(ConditionType.EQUAL_VARIABLE_THRESHOLD,
+        new VariableEqualThresholdCondition());
     conditionMap.put(ConditionType.AT_OR_BEYOND_X, new AtOrBeyondXCondition());
     conditionMap.put(ConditionType.AT_OR_BEYOND_Y, new AtOrBeyondYCondition());
   }
