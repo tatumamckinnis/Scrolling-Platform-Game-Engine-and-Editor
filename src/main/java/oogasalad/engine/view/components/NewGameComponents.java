@@ -21,7 +21,6 @@ public class NewGameComponents extends Display {
   // contains a play again
   // contains a high score object
   private final ViewState viewState;
-  private final Text highScore;
 
   /**
    * Constructor for the NewGameComponents class that initializes the high score text.
@@ -30,7 +29,6 @@ public class NewGameComponents extends Display {
    */
   public NewGameComponents(ViewState viewState) {
     this.viewState = viewState;
-    highScore = new Text("High score: " + 0);
     initialize();
   }
 
@@ -39,7 +37,6 @@ public class NewGameComponents extends Display {
    */
   private void initialize() {
     VBox buttonContainer = new VBox();
-    buttonContainer.getChildren().add(highScore);
     buttonContainer.setSpacing(20);
     buttonContainer.setLayoutX(250); // change to levelViewWidth / 2
 
