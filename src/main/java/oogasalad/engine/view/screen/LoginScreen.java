@@ -1,11 +1,8 @@
 package oogasalad.engine.view.screen;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +20,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
@@ -35,16 +34,7 @@ import oogasalad.userData.records.UserData;
 public class LoginScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String LOGIN_PROPS_PATH = "/oogasalad/screens/loginScreen.properties";
-  private static final Properties props = new Properties();
-
-  static {
-    try (InputStream in = LoginScreen.class.getResourceAsStream(LOGIN_PROPS_PATH)) {
-      props.load(in);
-    } catch (IOException e) {
-      LOG.warn("Could not load loginScreen.properties", e);
-    }
-  }
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private final ViewState viewState;
   private final String stylesheet;
@@ -56,7 +46,7 @@ public class LoginScreen extends Display {
   public LoginScreen(ViewState viewState) {
     this.viewState = viewState;
     this.stylesheet = Objects.requireNonNull(
-        getClass().getResource("/oogasalad/css/screens/loginScreen.css")).toExternalForm();
+        getClass().getResource(resourceManager.getConfig("engine/view/loginScreen", "login.stylesheet"))).toExternalForm();
     this.actionFactory = new ButtonActionFactory(viewState);
     this.userDataApi = new UserDataApiDefault();
     this.sessionManager = new SessionManager();
@@ -77,11 +67,11 @@ public class LoginScreen extends Display {
   private void initializeLoginScreen() {
     // Root pane
     BorderPane root = new BorderPane();
-    root.setPadding(new Insets(20));
-    root.getStyleClass().add("login-root-pane");
+    root.setPadding(new Insets(Double.parseDouble(resourceManager.getConfig("engine/view/loginScreen", "login.root.padding"))));
+    root.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.root.style"));
 
     // Top: Back button
-    Button back = new Button("Back");
+    Button back = new Button(resourceManager.getConfig("engine/view/loginScreen", "login.back.button.text"));
     back.setId("backToSplash");
     back.setOnAction(e -> actionFactory.getAction("backToSplash").run());
 
@@ -93,19 +83,19 @@ public class LoginScreen extends Display {
     // Center: Login/Signup tabs
     TabPane tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    tabPane.getStyleClass().add("login-tab-pane");
+    tabPane.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.tab.pane.style"));
     
-    Tab loginTab = new Tab("Login");
+    Tab loginTab = new Tab(resourceManager.getConfig("engine/view/loginScreen", "login.tab.text"));
     loginTab.setContent(createLoginForm());
     
-    Tab signupTab = new Tab("Sign Up");
+    Tab signupTab = new Tab(resourceManager.getConfig("engine/view/loginScreen", "signup.tab.text"));
     signupTab.setContent(createSignupForm());
     
     tabPane.getTabs().addAll(loginTab, signupTab);
     
     // Status message area
     statusMessage = new Label();
-    statusMessage.getStyleClass().add("status-message");
+    statusMessage.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.status.message.style"));
     
     VBox centerBox = new VBox(20, tabPane, statusMessage);
     centerBox.setAlignment(Pos.CENTER);
@@ -120,15 +110,15 @@ public class LoginScreen extends Display {
     VBox loginBox = new VBox(15);
     loginBox.setAlignment(Pos.CENTER);
     loginBox.setPadding(new Insets(25));
-    loginBox.getStyleClass().add("login-form");
+    loginBox.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.form.style"));
     
-    Label usernameLabel = new Label("Username:");
+    Label usernameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "login.username.label"));
     TextField usernameField = new TextField();
-    usernameField.setPromptText("Enter your username");
+    usernameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "login.username.prompt"));
     
-    Label passwordLabel = new Label("Password:");
+    Label passwordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "login.password.label"));
     PasswordField passwordField = new PasswordField();
-    passwordField.setPromptText("Enter your password");
+    passwordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "login.password.prompt"));
     
     // Check if we have saved credentials and pre-fill the fields
     if (sessionManager.hasActiveSession()) {
@@ -137,11 +127,11 @@ public class LoginScreen extends Display {
     }
     
     // Add "Remember Me" checkbox
-    CheckBox rememberMeCheckbox = new CheckBox("Remember Me");
+    CheckBox rememberMeCheckbox = new CheckBox(resourceManager.getConfig("engine/view/loginScreen", "login.remember.me.text"));
     rememberMeCheckbox.setSelected(sessionManager.hasActiveSession());
     
-    Button loginButton = new Button("Login");
-    loginButton.getStyleClass().add("login-button");
+    Button loginButton = new Button(resourceManager.getConfig("engine/view/loginScreen", "login.button.text"));
+    loginButton.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.button.style"));
     loginButton.setOnAction(e -> handleLogin(
         usernameField.getText(), 
         passwordField.getText(), 
@@ -162,30 +152,30 @@ public class LoginScreen extends Display {
     VBox signupBox = new VBox(15);
     signupBox.setAlignment(Pos.CENTER);
     signupBox.setPadding(new Insets(25));
-    signupBox.getStyleClass().add("signup-form");
+    signupBox.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "signup.form.style"));
     
-    Label usernameLabel = new Label("Username:");
+    Label usernameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.username.label"));
     TextField usernameField = new TextField();
-    usernameField.setPromptText("Choose a username");
+    usernameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.username.prompt"));
     
-    Label displayNameLabel = new Label("Display Name:");
+    Label displayNameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.displayName.label"));
     TextField displayNameField = new TextField();
-    displayNameField.setPromptText("How others will see you");
+    displayNameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.displayName.prompt"));
     
-    Label emailLabel = new Label("Email:");
+    Label emailLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.email.label"));
     TextField emailField = new TextField();
-    emailField.setPromptText("Your email address");
+    emailField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.email.prompt"));
     
-    Label passwordLabel = new Label("Password:");
+    Label passwordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.password.label"));
     PasswordField passwordField = new PasswordField();
-    passwordField.setPromptText("Choose a password");
+    passwordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.password.prompt"));
     
-    Label confirmPasswordLabel = new Label("Confirm Password:");
+    Label confirmPasswordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.confirmPassword.label"));
     PasswordField confirmPasswordField = new PasswordField();
-    confirmPasswordField.setPromptText("Enter password again");
+    confirmPasswordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.confirmPassword.prompt"));
     
-    Button signupButton = new Button("Create Account");
-    signupButton.getStyleClass().add("signup-button");
+    Button signupButton = new Button(resourceManager.getConfig("engine/view/loginScreen", "signup.button.text"));
+    signupButton.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "signup.button.style"));
     signupButton.setOnAction(e -> handleSignup(
         usernameField.getText(),
         displayNameField.getText(),

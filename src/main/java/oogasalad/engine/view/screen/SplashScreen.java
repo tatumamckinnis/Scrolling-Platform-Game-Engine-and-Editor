@@ -249,7 +249,7 @@ public class SplashScreen extends Display {
 
     // Add profile button
     String profileId = resourceManager.getConfig(splashConfig, "splash.button.profile.id");
-    String profileText = resourceManager.getConfig(splashConfig, "splash.button.profile.text");
+    String profileText = resourceManager.getText(displayedText, "splash.button.profile.text");
     String profileStyle = resourceManager.getConfig(splashConfig, "splash.button.profile.style");
     Button profileBtn = new Button(profileText);
     profileBtn.setId(profileId);
@@ -381,10 +381,10 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonTexts() {
     return new String[]{
-        resourceManager.getConfig(splashConfig, "splash.button.startEngine.text"),
-        resourceManager.getConfig(splashConfig, "splash.button.startEditor.text"),
-        resourceManager.getConfig(splashConfig, "splash.button.help.text"),
-        resourceManager.getConfig(splashConfig, "splash.button.play.another.game.text")
+        resourceManager.getText(displayedText, "splash.button.startEngine.text"),
+        resourceManager.getText(displayedText, "splash.button.startEditor.text"),
+        resourceManager.getText(displayedText, "splash.button.help.text"),
+        resourceManager.getText(displayedText, "splash.button.play.another.game.text")
     };
   }
 
@@ -484,6 +484,12 @@ public class SplashScreen extends Display {
     comboBox.valueProperty().addListener((obs, oldValue, language) -> {
         LOG.info("Setting language to {}", language);
         factory.selectLanguage(language).run();
+        try {
+            // Re-render the splash screen with new language
+            initializeSplashScreen();
+        } catch (FileNotFoundException e) {
+            LOG.error("Failed to re-render splash screen after language change", e);
+        }
     });
   }
 }

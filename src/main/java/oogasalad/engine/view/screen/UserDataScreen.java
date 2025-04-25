@@ -1,10 +1,7 @@
 package oogasalad.engine.view.screen;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,11 +19,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
-import oogasalad.userData.SessionManager;
 import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
@@ -34,16 +32,7 @@ import oogasalad.userData.records.UserLevelData;
 public class UserDataScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String USERDATA_PROPS_PATH = "/oogasalad/screens/userDataScene.properties";
-  private static final Properties props = new Properties();
-
-  static {
-    try (InputStream in = UserDataScreen.class.getResourceAsStream(USERDATA_PROPS_PATH)) {
-      props.load(in);
-    } catch (IOException e) {
-      LOG.warn("Could not load userDataScene.properties", e);
-    }
-  }
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private final UserData user;
   private final ViewState viewState;
@@ -54,7 +43,7 @@ public class UserDataScreen extends Display {
     this.user          = user;
     this.viewState     = viewState;
     this.stylesheet    = Objects.requireNonNull(
-        getClass().getResource(props.getProperty("userData.stylesheet"))).toExternalForm();
+        getClass().getResource(resourceManager.getConfig("engine/view/userDataScene", "userData.stylesheet"))).toExternalForm();
     this.actionFactory = new ButtonActionFactory(viewState);
     initializeUserDataScreen();
   }
@@ -63,13 +52,13 @@ public class UserDataScreen extends Display {
     // Root pane
     BorderPane root = new BorderPane();
     root.setPadding(new Insets(
-        Double.parseDouble(props.getProperty("userData.root.padding"))
+        Double.parseDouble(resourceManager.getConfig("engine/view/userDataScene", "userData.root.padding"))
     ));
-    root.getStyleClass().add(props.getProperty("userData.root.style"));
+    root.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.root.style"));
 
     // Top: Back button via ButtonActionFactory
-    String backId = props.getProperty("userData.back.button.id");
-    Button back = new Button(props.getProperty("userData.back.button.text"));
+    String backId = resourceManager.getConfig("engine/view/userDataScene", "userData.back.button.id");
+    Button back = new Button(resourceManager.getConfig("engine/view/userDataScene", "userData.back.button.text"));
     back.setId(backId);
     back.setId("backToSplash");
     back.setOnAction(e -> actionFactory.getAction("backToSplash").run());
@@ -82,7 +71,7 @@ public class UserDataScreen extends Display {
     // Left: Profile image
     VBox leftBox = new VBox(15);
     leftBox.setAlignment(Pos.TOP_CENTER);
-    leftBox.getStyleClass().add(props.getProperty("userData.left.box.style"));
+    leftBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.left.box.style"));
     File imgFile = user.userImage();
     if (imgFile != null && imgFile.exists()) {
       ImageView iv = new ImageView(new Image(imgFile.toURI().toString()));
@@ -107,24 +96,30 @@ public class UserDataScreen extends Display {
     // Right: Info & Stats
     VBox rightBox = new VBox(10);
     rightBox.setAlignment(Pos.TOP_LEFT);
-    rightBox.getStyleClass().add(props.getProperty("userData.right.box.style"));
+    rightBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.right.box.style"));
 
     // Basic Info grid
     GridPane infoGrid = new GridPane();
     infoGrid.setVgap(8);
     infoGrid.setHgap(10);
-    infoGrid.getStyleClass().add(props.getProperty("userData.info.grid.style"));
+    infoGrid.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.info.grid.style"));
 
-    Label l1 = new Label("Username:");      l1.getStyleClass().add(props.getProperty("userData.label.style"));
+    Label l1 = new Label("Username:");      
+    l1.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v1 = new Label(user.username());
-    Label l2 = new Label("Display Name:");  l2.getStyleClass().add(props.getProperty("userData.label.style"));
+    Label l2 = new Label("Display Name:");  
+    l2.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v2 = new Label(user.displayName());
-    Label l3 = new Label("Email:");         l3.getStyleClass().add(props.getProperty("userData.label.style"));
+    Label l3 = new Label("Email:");         
+    l3.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v3 = new Label(user.email());
-    Label l4 = new Label("Language:");      l4.getStyleClass().add(props.getProperty("userData.label.style"));
+    Label l4 = new Label("Language:");      
+    l4.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v4 = new Label(user.language());
-    Label l5 = new Label("Bio:");           l5.getStyleClass().add(props.getProperty("userData.label.style"));
-    Label v5 = new Label(user.bio());       v5.setWrapText(true);
+    Label l5 = new Label("Bio:");           
+    l5.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label v5 = new Label(user.bio());       
+    v5.setWrapText(true);
 
     infoGrid.addRow(0, l1, v1);
     infoGrid.addRow(1, l2, v2);
@@ -136,7 +131,7 @@ public class UserDataScreen extends Display {
 
     // Games Accordion
     Accordion gamesAcc = new Accordion();
-    gamesAcc.getStyleClass().add(props.getProperty("userData.game.accordion.style"));
+    gamesAcc.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.game.accordion.style"));
     for (UserGameData g : user.userGameData()) {
       VBox gameBox = new VBox(5);
       gameBox.setPadding(new Insets(10));
@@ -155,7 +150,7 @@ public class UserDataScreen extends Display {
 
       // Levels Accordion
       Accordion levelsAcc = new Accordion();
-      levelsAcc.getStyleClass().add(props.getProperty("userData.level.accordion.style"));
+      levelsAcc.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.level.accordion.style"));
       for (UserLevelData lvl : g.playerLevelStatMap().values()) {
         VBox lvlBox = new VBox(4);
         lvlBox.setPadding(new Insets(5));
@@ -191,7 +186,7 @@ public class UserDataScreen extends Display {
     // Centering both image & stats
     HBox centerBox = new HBox(30, leftBox, scroll);
     centerBox.setAlignment(Pos.CENTER);
-    centerBox.getStyleClass().add(props.getProperty("userData.center.container.style"));
+    centerBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.center.container.style"));
     root.setCenter(centerBox);
 
     // Attach

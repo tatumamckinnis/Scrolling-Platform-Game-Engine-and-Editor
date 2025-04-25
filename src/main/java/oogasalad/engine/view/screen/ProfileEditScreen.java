@@ -1,10 +1,7 @@
 package oogasalad.engine.view.screen;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +21,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
@@ -38,20 +37,7 @@ import oogasalad.userData.records.UserData;
 public class ProfileEditScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
-  private static final String PROFILE_EDIT_PROPS_PATH = "/oogasalad/screens/profileEditScreen.properties";
-  private static final Properties props = new Properties();
-
-  static {
-    try (InputStream in = ProfileEditScreen.class.getResourceAsStream(PROFILE_EDIT_PROPS_PATH)) {
-      if (in != null) {
-        props.load(in);
-      } else {
-        LOG.warn("Could not load profileEditScreen.properties");
-      }
-    } catch (IOException e) {
-      LOG.warn("Could not load profileEditScreen.properties", e);
-    }
-  }
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   private final ViewState viewState;
   private final String stylesheet;
@@ -72,7 +58,7 @@ public class ProfileEditScreen extends Display {
     this.viewState = viewState;
     this.originalUserData = userData;
     this.stylesheet = Objects.requireNonNull(
-        getClass().getResource("/oogasalad/css/screens/profileEdit.css")).toExternalForm();
+        getClass().getResource(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.stylesheet"))).toExternalForm();
     this.actionFactory = new ButtonActionFactory(viewState);
     this.userDataApi = new UserDataApiDefault();
     this.selectedAvatarFile = userData.userImage();
@@ -83,15 +69,15 @@ public class ProfileEditScreen extends Display {
   private void initializeProfileEditScreen() {
     // Root pane
     BorderPane root = new BorderPane();
-    root.setPadding(new Insets(20));
-    root.getStyleClass().add("profile-edit-root-pane");
+    root.setPadding(new Insets(Double.parseDouble(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.root.padding"))));
+    root.getStyleClass().add(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.root.style"));
 
     // Top: Back button and title
-    Button backButton = new Button("Back to Profile");
+    Button backButton = new Button(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.back.button.text"));
     backButton.setOnAction(e -> returnToProfile());
     
-    Label titleLabel = new Label("Edit Profile");
-    titleLabel.getStyleClass().add("profile-edit-title");
+    Label titleLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.title.text"));
+    titleLabel.getStyleClass().add(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.title.style"));
     
     HBox topBar = new HBox(20, backButton, titleLabel);
     topBar.setAlignment(Pos.CENTER_LEFT);
@@ -103,7 +89,7 @@ public class ProfileEditScreen extends Display {
     
     // Bottom: Status message
     statusMessage = new Label();
-    statusMessage.getStyleClass().add("status-message");
+    statusMessage.getStyleClass().add(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.status.message.style"));
     
     VBox centerBox = new VBox(20, editForm, statusMessage);
     centerBox.setAlignment(Pos.TOP_CENTER);
@@ -138,7 +124,7 @@ public class ProfileEditScreen extends Display {
       }
     }
     
-    Button changeAvatarButton = new Button("Change Avatar");
+    Button changeAvatarButton = new Button(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.avatar.button.text"));
     changeAvatarButton.setOnAction(e -> chooseNewAvatar());
     
     avatarSection.getChildren().addAll(avatarView, changeAvatarButton);
@@ -150,45 +136,45 @@ public class ProfileEditScreen extends Display {
     infoGrid.setAlignment(Pos.CENTER);
     
     // Display name
-    Label displayNameLabel = new Label("Display Name:");
+    Label displayNameLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.displayName.label"));
     displayNameField = new TextField(originalUserData.displayName());
-    displayNameField.setPromptText("Your display name");
+    displayNameField.setPromptText(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.displayName.prompt"));
     infoGrid.add(displayNameLabel, 0, 0);
     infoGrid.add(displayNameField, 1, 0);
     
     // Email
-    Label emailLabel = new Label("Email:");
+    Label emailLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.email.label"));
     emailField = new TextField(originalUserData.email());
-    emailField.setPromptText("Your email address");
+    emailField.setPromptText(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.email.prompt"));
     infoGrid.add(emailLabel, 0, 1);
     infoGrid.add(emailField, 1, 1);
     
     // Bio
-    Label bioLabel = new Label("Bio:");
+    Label bioLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.bio.label"));
     bioField = new TextArea(originalUserData.bio());
-    bioField.setPromptText("Tell us about yourself");
+    bioField.setPromptText(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.bio.prompt"));
     bioField.setPrefRowCount(4);
     bioField.setWrapText(true);
     infoGrid.add(bioLabel, 0, 2);
     infoGrid.add(bioField, 1, 2);
     
     // New password (optional)
-    Label passwordLabel = new Label("New Password (optional):");
+    Label passwordLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.password.label"));
     passwordField = new PasswordField();
-    passwordField.setPromptText("Leave blank to keep current password");
+    passwordField.setPromptText(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.password.prompt"));
     infoGrid.add(passwordLabel, 0, 3);
     infoGrid.add(passwordField, 1, 3);
     
     // Confirm password
-    Label confirmPasswordLabel = new Label("Confirm Password:");
+    Label confirmPasswordLabel = new Label(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.confirmPassword.label"));
     confirmPasswordField = new PasswordField();
-    confirmPasswordField.setPromptText("Confirm new password");
+    confirmPasswordField.setPromptText(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.confirmPassword.prompt"));
     infoGrid.add(confirmPasswordLabel, 0, 4);
     infoGrid.add(confirmPasswordField, 1, 4);
     
     // Save button
-    Button saveButton = new Button("Save Changes");
-    saveButton.getStyleClass().add("save-button");
+    Button saveButton = new Button(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.save.button.text"));
+    saveButton.getStyleClass().add(resourceManager.getConfig("engine/view/profileEditScreen", "profileEdit.save.button.style"));
     saveButton.setOnAction(e -> saveChanges());
     
     formContainer.getChildren().addAll(avatarSection, infoGrid, saveButton);
