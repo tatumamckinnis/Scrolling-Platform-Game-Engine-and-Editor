@@ -29,6 +29,7 @@ import oogasalad.engine.model.event.outcome.SelectLevelOutcome;
 import oogasalad.engine.model.event.outcome.SetBaseFrameOutcome;
 import oogasalad.engine.model.event.outcome.SetVarOutcome;
 import oogasalad.engine.model.event.outcome.SpawnNewObjectOutcome;
+import oogasalad.engine.model.event.outcome.SpawnOnObjectOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToPointOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToRandomPointOutcome;
 import oogasalad.engine.model.event.outcome.stopObjectAnimationsOutcome;
@@ -93,6 +94,7 @@ public class OutcomeExecutor {
     outcomeMap.put(OutcomeType.TELEPORT_TO_POINT, new TeleportObjectToPointOutcome());
     outcomeMap.put(OutcomeType.TELEPORT_TO_RANDOM_POINT, new TeleportObjectToRandomPointOutcome());
     outcomeMap.put(OutcomeType.SPAWN_NEW_OBJECT, new SpawnNewObjectOutcome(gameExecutor));
+    outcomeMap.put(OutcomeType.SPAWN_ON_OBJECT, new SpawnOnObjectOutcome(gameExecutor));
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
@@ -106,7 +108,6 @@ public class OutcomeExecutor {
   public void executeOutcome(EventOutcome outcomeData, GameObject gameObject)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
    Outcome outcome = outcomeMap.get(outcomeData.outcomeType());
-   System.out.println(outcomeData.outcomeType());
     outcome.execute(gameObject, outcomeData.stringProperties(), outcomeData.doubleProperties());
   }
 

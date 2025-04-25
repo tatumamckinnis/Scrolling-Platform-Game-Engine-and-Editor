@@ -47,7 +47,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,69,87"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,69,87"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <displayedProperties propertyList="score,lives,rocket_duration"/>
@@ -343,6 +343,30 @@ interact with each other -->
             <parameter name="blueprintId" value="12"/>
             <parameter name="x" value="100"/>
             <parameter name="y" value="100"/>
+            <parameter name="layer" value="3"/>
+          </doubleParameters>
+          <stringParameters>
+            <parameter name="layer_name" value="layername"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="physics" id="31">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="g"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SPAWN_ON_OBJECT">
+          <doubleParameters>
+            <parameter name="blueprintId" value="111"/>
+            <parameter name="offset_x" value="0"/>
+            <parameter name="offset_y" value="-10"/>
             <parameter name="layer" value="3"/>
           </doubleParameters>
           <stringParameters>
