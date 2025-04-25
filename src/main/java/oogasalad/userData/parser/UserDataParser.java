@@ -16,6 +16,8 @@ import org.xml.sax.SAXException;
 
 /**
  * Converts a <user> XML document into a UserData record.
+ *
+ * @author Billy McCune
  */
 public class UserDataParser {
 

@@ -4,6 +4,20 @@ import java.io.File;
 import java.util.List;
 import oogasalad.fileparser.records.SpriteData;
 
+/**
+ *
+ * @param username
+ * @param displayName
+ * @param email
+ * @param password
+ * @param language
+ * @param bio
+ * @param userImage
+ * @param userAvatar
+ * @param userGameData
+ *
+ * @author Billy McCune
+ */
 public record UserData(
     String username,
     String displayName,

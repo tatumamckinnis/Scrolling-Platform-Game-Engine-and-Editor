@@ -11,7 +11,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Manages user session persistence by storing and retrieving login credentials.
- * This allows users to stay logged in between application sessions.
+ * This allows users to stay logged in between application sessions.\
+ *
+ * @author Billy McCune
  */
 public class SessionManager {
     private static final Logger LOG = LogManager.getLogger();
