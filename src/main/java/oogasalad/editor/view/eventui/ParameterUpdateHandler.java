@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 @FunctionalInterface
 interface ParameterUpdateHandler {
 

@@ -18,13 +18,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 
+import oogasalad.editor.view.eventui.AddOutcomeHandler;
+import oogasalad.editor.view.eventui.EditOutcomeParamHandler;
+import oogasalad.editor.view.eventui.OutcomeDisplayItem;
+import oogasalad.editor.view.eventui.OutcomesSectionBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.eventui;
 
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import java.util.Objects;
@@ -9,7 +9,7 @@ import java.util.Objects;
  * and formats a display text string.
  * @author Tatum McKinnis
  */
-class OutcomeDisplayItem {
+public class OutcomeDisplayItem {
   private final int index;
   private final String displayText;
   private final ExecutorData data;
@@ -30,7 +30,7 @@ class OutcomeDisplayItem {
    * Returns the index of this outcome.
    * @return The outcome index.
    */
-  int getIndex() {
+  public int getIndex() {
     return index;
   }
 
@@ -38,7 +38,7 @@ class OutcomeDisplayItem {
    * Returns the underlying ExecutorData.
    * @return The ExecutorData.
    */
-  ExecutorData getData() {
+  public ExecutorData getData() {
     return data;
   }
 

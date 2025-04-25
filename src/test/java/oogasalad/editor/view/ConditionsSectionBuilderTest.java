@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ListResourceBundle;
@@ -23,6 +22,11 @@ import javafx.stage.Stage;
 
 import oogasalad.editor.model.data.object.event.ExecutorData;
 
+import oogasalad.editor.view.eventui.AddConditionHandler;
+import oogasalad.editor.view.eventui.ConditionDisplayItem;
+import oogasalad.editor.view.eventui.ConditionsSectionBuilder;
+import oogasalad.editor.view.eventui.EditConditionParamHandler;
+import oogasalad.editor.view.eventui.RemoveConditionHandler;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

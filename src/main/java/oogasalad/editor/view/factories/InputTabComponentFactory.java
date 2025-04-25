@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.factories;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +26,11 @@ import oogasalad.editor.model.data.event_enum.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
+import oogasalad.editor.view.dialogs.DynamicVariableDialog;
+import oogasalad.editor.view.EditorViewListener;
+import oogasalad.editor.view.eventui.ConditionsSectionBuilder;
+import oogasalad.editor.view.eventui.EventsSectionBuilder;
+import oogasalad.editor.view.eventui.OutcomesSectionBuilder;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -569,7 +574,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    * Fetches data from the controller and updates the ListView. Preserves selection if possible.
    * Clears conditions/outcomes if the selected event no longer exists or if no event is selected.
    */
-  void refreshEventsList() {
+  public void refreshEventsList() {
     runOnFxThread(() -> {
       String previouslySelectedEvent = currentEventId;
       Map<String, EditorEvent> events = fetchEventsForCurrentObject();
@@ -616,7 +621,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    * Refreshes the Conditions and Outcomes sections based on the currently selected event.
    * Fetches the relevant data from the controller and updates the respective section builders.
    */
-  void refreshConditionsAndOutcomesForEvent() {
+  public void refreshConditionsAndOutcomesForEvent() {
     runOnFxThread(() -> {
       LOG.debug("Refreshing conditions and outcomes for event: {}", currentEventId);
       List<List<ExecutorData>> conditions = fetchConditionsForCurrentEvent();

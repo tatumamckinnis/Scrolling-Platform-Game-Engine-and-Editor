@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.components;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,8 +42,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.loader.EditorBlueprintParser;
+import oogasalad.editor.view.EditorViewListener;
 import oogasalad.editor.view.resources.EditorResourceLoader;
-import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
 import org.apache.logging.log4j.LogManager;

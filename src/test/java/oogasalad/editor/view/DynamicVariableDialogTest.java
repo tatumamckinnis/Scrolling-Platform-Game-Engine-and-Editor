@@ -7,6 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.view.dialogs.DynamicVariableDialog;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
