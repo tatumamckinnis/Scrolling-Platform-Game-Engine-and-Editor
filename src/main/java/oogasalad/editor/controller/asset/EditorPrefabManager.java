@@ -1,4 +1,4 @@
-package oogasalad.editor.controller;
+package oogasalad.editor.controller.asset;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,16 +18,11 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.loader.EditorBlueprintParser;
 import oogasalad.editor.model.saver.BlueprintBuilder;
-import oogasalad.exceptions.BlueprintParseException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
-import oogasalad.fileparser.BlueprintDataParser;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
@@ -36,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 /**
  * Manages the creation, saving, and loading of prefabs (Blueprints) to/from XML files.

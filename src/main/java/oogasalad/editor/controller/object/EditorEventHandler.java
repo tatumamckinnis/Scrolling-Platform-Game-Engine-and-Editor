@@ -1,11 +1,11 @@
-package oogasalad.editor.controller.object_data;
+package oogasalad.editor.controller.object;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import oogasalad.editor.controller.EditorDataAPI;
+import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;

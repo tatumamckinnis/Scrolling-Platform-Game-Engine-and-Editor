@@ -1,19 +1,18 @@
-package oogasalad.editor.controller;
+package oogasalad.editor.controller.level;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.zip.DataFormatException;
+import oogasalad.editor.controller.asset.SpriteSheetDataManager;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.controller.object_data.CollisionDataManager;
-import oogasalad.editor.controller.object_data.CustomEventDataManager;
-import oogasalad.editor.controller.object_data.HitboxDataManager;
-import oogasalad.editor.controller.object_data.IdentityDataManager;
-import oogasalad.editor.controller.object_data.InputDataManager;
-import oogasalad.editor.controller.object_data.PhysicsDataManager;
-import oogasalad.editor.controller.object_data.SpriteDataManager;
+import oogasalad.editor.controller.object.CollisionDataManager;
+import oogasalad.editor.controller.object.CustomEventDataManager;
+import oogasalad.editor.controller.object.HitboxDataManager;
+import oogasalad.editor.controller.object.IdentityDataManager;
+import oogasalad.editor.controller.object.InputDataManager;
+import oogasalad.editor.controller.object.PhysicsDataManager;
+import oogasalad.editor.controller.object.SpriteDataManager;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.Layer;
@@ -57,6 +56,7 @@ public class EditorDataAPI {
   private final CustomEventDataManager customEventAPI;
   private final SpriteSheetDataManager spriteSheetAPI;
   private final EditorFileConverterAPI fileConverterAPI;
+  private final CameraDataManager cameraAPI;
   private final FileParserApi fileParserAPI;
   private final SaverStrategy saverStrategy;
   private final EditorListenerNotifier listenerNotifier;
@@ -81,6 +81,7 @@ public class EditorDataAPI {
     this.collisionAPI = new CollisionDataManager(level);
     this.spriteAPI = new SpriteDataManager(level, listenerNotifier);
     this.customEventAPI = new CustomEventDataManager(level);
+    this.cameraAPI = new CameraDataManager(level);
     this.dynamicVariableContainer = new DynamicVariableContainer();
     this.spriteSheetAPI = new SpriteSheetDataManager(level, saverStrategy, fileParserAPI);
 
@@ -388,5 +389,9 @@ public class EditorDataAPI {
 
   public void saveLevelData(String fileName) throws EditorSaveException {
     fileConverterAPI.saveEditorDataToFile(level, fileName, saverStrategy);
+  }
+
+  public CameraDataManager getCameraAPI(String camType) {
+    return cameraAPI;
   }
 }

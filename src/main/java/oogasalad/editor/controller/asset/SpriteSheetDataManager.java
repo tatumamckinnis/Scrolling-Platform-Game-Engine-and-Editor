@@ -1,4 +1,4 @@
-package oogasalad.editor.controller;
+package oogasalad.editor.controller.asset;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -10,13 +10,11 @@ import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.loader.SpriteSheetLoader;
 import oogasalad.editor.model.saver.SpriteSheetSaver;
-import oogasalad.editor.view.panes.spriteCreation.SpriteRegion;
+import oogasalad.editor.view.panes.sprite_creation.SpriteRegion;
 import oogasalad.exceptions.SpriteSheetLoadException;
 import oogasalad.exceptions.SpriteSheetSaveException;
-import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
-import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

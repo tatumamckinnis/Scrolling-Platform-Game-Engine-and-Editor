@@ -1,4 +1,4 @@
-package oogasalad.editor.controller.object_data;
+package oogasalad.editor.controller.object;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
@@ -7,16 +7,16 @@ import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 
 /**
- * Manages the Physics Event related data of a specific object. Implements EditorEventDataManager
- * for methods pertaining to event, outcome, and condition lists and classes.
+ * Manages the Input Event related data of a specific object. Implements EditorEventDataManager for
+ * methods pertaining to event, outcome, and condition lists and classes.
  *
  * @author Jacob You
  */
-public class PhysicsDataManager extends EditorEventDataManager {
+public class InputDataManager extends EditorEventDataManager {
 
   @Override
   protected AbstractEventMapData createDataIfAbsent(EditorObject object) {
-    return object.getPhysicsData();
+    return object.getInputData();
   }
 
   /**
@@ -24,7 +24,7 @@ public class PhysicsDataManager extends EditorEventDataManager {
    *
    * @param level The level object to create a CollisionDataManager for
    */
-  public PhysicsDataManager(EditorLevelData level) {
+  public InputDataManager(EditorLevelData level) {
     super(level);
   }
 
@@ -37,7 +37,7 @@ public class PhysicsDataManager extends EditorEventDataManager {
   public void setEvent(UUID objectId, String eventId, EditorEvent event) {
     EditorObject object = getObjectById(objectId);
     if (object != null) {
-      object.getPhysicsData().setEvent(eventId, event);
+      object.getInputData().setEvent(eventId, event);
     }
   }
 }

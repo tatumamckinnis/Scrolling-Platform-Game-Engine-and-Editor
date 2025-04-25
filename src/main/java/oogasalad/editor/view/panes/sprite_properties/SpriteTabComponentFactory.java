@@ -1,4 +1,4 @@
-package oogasalad.editor.view.panes.spriteProperties;
+package oogasalad.editor.view.panes.sprite_properties;
 
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +19,7 @@ import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.controller.object_data.SpriteDataManager;
+import oogasalad.editor.controller.object.SpriteDataManager;
 import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.view.EditorViewListener;

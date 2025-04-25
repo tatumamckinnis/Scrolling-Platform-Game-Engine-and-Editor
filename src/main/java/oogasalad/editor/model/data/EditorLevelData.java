@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
+import oogasalad.editor.model.data.object.CameraData;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 public class EditorLevelData {
 
   private static final Logger LOG = LogManager.getLogger();
+  private static final String DEFAULT_CAMERA_TYPE = "Tracker";
 
   private String gameName;
   private String levelName;
@@ -34,6 +37,7 @@ public class EditorLevelData {
   private Map<UUID, EditorObject> myObjectDataMap;
   private SpriteSheetLibrary spriteLibrary;
   private SpriteTemplateMap spriteTemplateMap;
+  private CameraData cameraData;
 
   private static final Properties editorConfig = new Properties();
   private static final String propertyFile = "oogasalad/config/editor/resources/editorConfig.properties";
@@ -62,6 +66,7 @@ public class EditorLevelData {
     myObjectDataMap = new HashMap<>();
     spriteLibrary = new SpriteSheetLibrary();
     spriteTemplateMap = new SpriteTemplateMap();
+    cameraData = new CameraData();
   }
 
   /**
@@ -168,6 +173,15 @@ public class EditorLevelData {
    */
   public void addGroup(String group) {
     myGroups.add(group);
+  }
+
+  /**
+   * Gets the CameraData object from the level object
+   *
+   * @return the {@link CameraData} of the object
+   */
+  public CameraData getCameraData() {
+    return cameraData;
   }
 
   /**

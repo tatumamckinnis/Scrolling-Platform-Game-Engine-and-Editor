@@ -1,4 +1,4 @@
-package oogasalad.editor.controller.object_data;
+package oogasalad.editor.controller.object;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package oogasalad.editor.controller.object_data;
+package oogasalad.editor.controller.object;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;

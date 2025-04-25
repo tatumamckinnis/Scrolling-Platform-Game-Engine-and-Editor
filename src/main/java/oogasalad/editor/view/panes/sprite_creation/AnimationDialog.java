@@ -1,4 +1,4 @@
-package oogasalad.editor.view.panes.spriteCreation;
+package oogasalad.editor.view.panes.sprite_creation;
 
 import java.util.Collections;
 import java.util.List;

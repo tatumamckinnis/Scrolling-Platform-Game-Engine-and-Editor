@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,9 +27,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
+import oogasalad.editor.view.panes.level_properties.LevelPropertiesDialog;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
-import oogasalad.editor.view.panes.spriteCreation.SpriteAssetPane;
-import oogasalad.editor.view.panes.spriteProperties.SpriteTabComponentFactory;
+import oogasalad.editor.view.panes.sprite_creation.SpriteAssetPane;
+import oogasalad.editor.view.panes.sprite_properties.SpriteTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.ClearAllTool;
 import oogasalad.editor.view.tools.DeleteTool;
@@ -467,6 +469,11 @@ public class EditorComponentFactory {
     VBox componentContent = new VBox();
     componentContent.setId(getId("id.component.content.vbox"));
     componentContent.getChildren().addAll(componentsLabel, tabPane);
+
+    Button levelPropsBtn = createLevelPropertiesButton();
+    VBox.setMargin(levelPropsBtn, new Insets(10, 0, 0, 0));
+    componentContent.getChildren().add(levelPropsBtn);
+
     VBox.setVgrow(tabPane, Priority.ALWAYS);
 
     componentPane.setCenter(componentContent);
@@ -523,6 +530,18 @@ public class EditorComponentFactory {
     return spriteTab;
   }
 
+  /**
+   * Create the button to open the level properties of a level
+   *
+   * @return the button to open the level properties
+   */
+  private Button createLevelPropertiesButton() {
+    Button btn = new Button("Level Properties…");
+    btn.setOnAction(e -> {
+      new LevelPropertiesDialog(editorController, btn.getScene().getWindow()).showAndWait();
+    });
+    return btn;
+  }
 
   /**
    * Safely retrieves an integer property value from the loaded editor properties file. Uses a
