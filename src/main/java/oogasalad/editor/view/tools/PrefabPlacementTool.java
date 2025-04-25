@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.components.EditorGameView;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;

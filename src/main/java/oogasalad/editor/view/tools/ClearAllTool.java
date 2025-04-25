@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.components.EditorGameView;
 
 /**
  * Tool for clearing all the objects from the editor view

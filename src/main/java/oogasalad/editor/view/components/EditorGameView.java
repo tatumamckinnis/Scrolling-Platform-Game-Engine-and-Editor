@@ -1,4 +1,4 @@
-package oogasalad.editor.view;
+package oogasalad.editor.view.components;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -29,6 +29,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.EditorObject;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
+import oogasalad.editor.view.EditorViewListener;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
@@ -528,7 +529,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
    * placeholder) and hitbox (if enabled). Also draws the selection indicator for the currently
    * selected object.
    */
-  void redrawObjectsInternal() {
+  public void redrawObjectsInternal() {
     double width = objectCanvas.getWidth();
     double height = objectCanvas.getHeight();
     updateCameraCoordinates();
