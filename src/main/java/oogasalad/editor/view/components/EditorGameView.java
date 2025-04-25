@@ -831,7 +831,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
     if (image != null && !image.isError() && image.getProgress() >= 1.0) {
       FrameData displayFrame = null;
-      String baseFrameName = spriteData.getName();
+      String baseFrameName = spriteData.getBaseFrameName();
       Map<String, FrameData> frameMap = spriteData.getFrames();
 
       LOG.debug("[redrawSprites ID: {}] Trying to display frame.", id);
