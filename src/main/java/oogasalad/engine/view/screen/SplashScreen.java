@@ -239,12 +239,28 @@ public class SplashScreen extends Display {
     // Add any other relevant buttons
     makeSplashButtons(buttonIDs, buttonTexts, buttonWidth, buttonHeight, buttonStyles, splashBox);
     // Add network buttons
-    addOnlineButtons(splashBox);
+    makeOnlineWidgets(buttonWidth, buttonHeight, splashBox);
 
     int buttonSpacing = Integer.parseInt(
         resourceManager.getConfig(splashConfig, "splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  private void makeOnlineWidgets(double buttonWidth, double buttonHeight, VBox splashBox) {
+    TextField lobbyField = new TextField();
+    lobbyField.setPromptText(
+        resourceManager.getText(displayedText, "splash.enter.lobby.number.text"));
+    lobbyField.getStyleClass().add(resourceManager.getConfig(splashConfig, "splash.lobbyField.style"));
+
+    Button joinServer = new Button(
+        resourceManager.getText(displayedText, "splash.join.lobby.text"));
+    joinServer.setOnAction(event -> {
+      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
+    });
+    joinServer.setPrefSize(buttonWidth, buttonHeight);
+    setButtonStyle(joinServer, resourceManager.getConfig(splashConfig, "splash.button.join.lobby.id"), resourceManager.getConfig(splashConfig, "splash.button.joinServer.style"));
+    splashBox.getChildren().addAll(joinServer, lobbyField);
   }
 
   private void makeSplashButtons(String[] buttonIDs, String[] buttonTexts, double buttonWidth,
@@ -253,22 +269,9 @@ public class SplashScreen extends Display {
       Button currButton = new Button(buttonTexts[i]);
       currButton.setPrefSize(buttonWidth, buttonHeight);
       setButtonStyle(currButton, buttonIDs[i], buttonStyles[i]);
+      setButtonAction(buttonIDs[i], currButton);
       splashBox.getChildren().add(currButton);
     }
-  }
-
-  private void makePlayerProfileWidgets(double buttonWidth, double buttonHeight, VBox splashBox) {
-    String profileId = resourceManager.getConfig(splashConfig, "splash.button.profile.id");
-    String profileText = resourceManager.getText(displayedText, "splash.button.profile.text");
-    String profileStyle = resourceManager.getConfig(splashConfig, "splash.button.profile.style");
-    Button profileBtn = new Button(profileText);
-    profileBtn.setId(profileId);
-    profileBtn.setPrefSize(buttonWidth, buttonHeight);
-    profileBtn.getStyleClass()
-        .add(resourceManager.getConfig(splashConfig, "splash.button.default.style"));
-    profileBtn.getStyleClass().add(profileStyle);
-    splashBox.getChildren().add(profileBtn);
-    setButtonAction(profileId, profileBtn);
   }
 
   private void makeGameAndLevelSelectors(VBox splashBox, String[] comboBoxTexts,
@@ -313,7 +316,6 @@ public class SplashScreen extends Display {
     currButton.getStyleClass().add(defaultButtonStyle);
     currButton.getStyleClass().add(buttonStyle);
     currButton.setWrapText(true);
-    setButtonAction(buttonID, currButton);
   }
 
   private void setComboBoxStyle(ComboBox<String> currBox, String comboBoxID, String comboBoxStyle) {
@@ -467,17 +469,6 @@ public class SplashScreen extends Display {
   }
 
   private void addOnlineButtons(VBox splashBox) {
-    TextField lobbyField = new TextField();
-    lobbyField.setPromptText(
-        resourceManager.getText(displayedText, "splash.enter.lobby.number.text"));
-
-    Button joinServer = new Button(
-        resourceManager.getText(displayedText, "splash.join.lobby.text"));
-    joinServer.setOnAction(event -> {
-      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
-    });
-
-    splashBox.getChildren().addAll(joinServer, lobbyField);
   }
 
   private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
