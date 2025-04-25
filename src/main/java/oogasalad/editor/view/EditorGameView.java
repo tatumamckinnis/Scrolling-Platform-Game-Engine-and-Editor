@@ -877,7 +877,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
       drawPlaceholder(objectGraphicsContext, object, dx, dy);
     }
   }
-    /**
+  /**
    * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
    * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
    *
