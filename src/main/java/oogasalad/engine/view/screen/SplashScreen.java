@@ -67,7 +67,8 @@ public class SplashScreen extends Display {
 
   @Override
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
-    throw new UnsupportedOperationException(resourceManager.getText(exceptions,"CannotRemoveGameObjectImage"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText(exceptions, "CannotRemoveGameObjectImage"));
   }
 
   @Override
@@ -77,7 +78,8 @@ public class SplashScreen extends Display {
 
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
-    throw new UnsupportedOperationException(resourceManager.getText(exceptions,"CannotRenderPlayerStats"));
+    throw new UnsupportedOperationException(
+        resourceManager.getText(exceptions, "CannotRenderPlayerStats"));
   }
 
   /**
@@ -234,8 +236,6 @@ public class SplashScreen extends Display {
     // Then add game and level selectors
     makeGameAndLevelSelectors(splashBox, comboBoxTexts, comboBoxIDs, comboBoxStyles, buttonWidth,
         buttonHeight);
-    // Add profile button
-    makePlayerProfileWidgets(buttonWidth, buttonHeight, splashBox);
     // Add any other relevant buttons
     makeSplashButtons(buttonIDs, buttonTexts, buttonWidth, buttonHeight, buttonStyles, splashBox);
     // Add network buttons
@@ -264,7 +264,8 @@ public class SplashScreen extends Display {
     Button profileBtn = new Button(profileText);
     profileBtn.setId(profileId);
     profileBtn.setPrefSize(buttonWidth, buttonHeight);
-    profileBtn.getStyleClass().add(resourceManager.getConfig(splashConfig, "splash.button.default.style"));
+    profileBtn.getStyleClass()
+        .add(resourceManager.getConfig(splashConfig, "splash.button.default.style"));
     profileBtn.getStyleClass().add(profileStyle);
     splashBox.getChildren().add(profileBtn);
     setButtonAction(profileId, profileBtn);
@@ -289,7 +290,7 @@ public class SplashScreen extends Display {
     String languages = resourceManager.getConfig(splashConfig, "available.languages");
     String[] languagesArray = languages.split(",");
     for (String lang : languagesArray) {
-        languageSelector.getItems().add(lang);
+      languageSelector.getItems().add(lang);
     }
     setLanguageComboBoxButtonAction(languageSelector);
   }
@@ -307,7 +308,8 @@ public class SplashScreen extends Display {
 
   private void setButtonStyle(Button currButton, String buttonID, String buttonStyle) {
     currButton.setId(buttonID);
-    String defaultButtonStyle = resourceManager.getConfig(splashConfig, "splash.button.default.style");
+    String defaultButtonStyle = resourceManager.getConfig(splashConfig,
+        "splash.button.default.style");
     currButton.getStyleClass().add(defaultButtonStyle);
     currButton.getStyleClass().add(buttonStyle);
     currButton.setWrapText(true);
@@ -316,7 +318,8 @@ public class SplashScreen extends Display {
 
   private void setComboBoxStyle(ComboBox<String> currBox, String comboBoxID, String comboBoxStyle) {
     currBox.setId(comboBoxID);
-    String defaultButtonStyle = resourceManager.getConfig(splashConfig, "splash.button.default.style");
+    String defaultButtonStyle = resourceManager.getConfig(splashConfig,
+        "splash.button.default.style");
     currBox.getStyleClass().add(defaultButtonStyle);
     currBox.getStyleClass().add(comboBoxStyle);
   }
@@ -375,7 +378,7 @@ public class SplashScreen extends Display {
     File gamesDir = new File(gamesFilePath);
     if (!gamesDir.exists() || !gamesDir.isDirectory()) {
       throw new FileNotFoundException(
-          resourceManager.getText(exceptions,"GameDirectoryNotFound"));
+          resourceManager.getText(exceptions, "GameDirectoryNotFound"));
     }
     File[] folders = gamesDir.listFiles(File::isDirectory);
     return folders != null ? folders : new File[0];
@@ -401,6 +404,7 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonTexts() {
     return new String[]{
+        resourceManager.getText(displayedText, "splash.button.profile.text"),
         resourceManager.getText(displayedText, "splash.button.startEngine.text"),
         resourceManager.getText(displayedText, "splash.button.startEditor.text"),
         resourceManager.getText(displayedText, "splash.button.help.text"),
@@ -423,6 +427,7 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonIDs() {
     return new String[]{
+        resourceManager.getConfig(splashConfig, "splash.button.profile.id"),
         resourceManager.getConfig(splashConfig, "splash.button.startEngine.id"),
         resourceManager.getConfig(splashConfig, "splash.button.startEditor.id"),
         resourceManager.getConfig(splashConfig, "splash.button.help.id"),
@@ -445,6 +450,7 @@ public class SplashScreen extends Display {
    */
   private String[] getSplashButtonStyles() {
     return new String[]{
+        resourceManager.getConfig(splashConfig, "splash.button.profile.style"),
         resourceManager.getConfig(splashConfig, "splash.button.startEngine.style"),
         resourceManager.getConfig(splashConfig, "splash.button.startEditor.style"),
         resourceManager.getConfig(splashConfig, "splash.button.help.style"),
@@ -468,7 +474,7 @@ public class SplashScreen extends Display {
     Button joinServer = new Button(
         resourceManager.getText(displayedText, "splash.join.lobby.text"));
     joinServer.setOnAction(event -> {
-        ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
+      ButtonActionFactory.joinLobby(Integer.parseInt(lobbyField.getText()), viewState).run();
     });
 
     splashBox.getChildren().addAll(joinServer, lobbyField);
@@ -477,14 +483,14 @@ public class SplashScreen extends Display {
   private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     comboBox.valueProperty().addListener((obs, oldValue, language) -> {
-        LOG.info("Setting language to {}", language);
-        factory.selectLanguage(language).run();
-        try {
-            // Re-render the splash screen with new language
-            initializeSplashScreen();
-        } catch (FileNotFoundException e) {
-            LOG.error("Failed to re-render splash screen after language change", e);
-        }
+      LOG.info("Setting language to {}", language);
+      factory.selectLanguage(language).run();
+      try {
+        // Re-render the splash screen with new language
+        initializeSplashScreen();
+      } catch (FileNotFoundException e) {
+        LOG.error("Failed to re-render splash screen after language change", e);
+      }
     });
   }
 }

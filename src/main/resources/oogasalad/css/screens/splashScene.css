@@ -131,6 +131,15 @@ html {
     -fx-text-fill: white;
 }
 
+.profile-button-style {
+    -fx-border-color: #e399f0;
+}
+
+.profile-button-style:hover {
+    -fx-background-color: #e399f0;
+    -fx-text-fill: white;
+}
+
 .help-button {
     -fx-border-color: #ccccff;
 }
