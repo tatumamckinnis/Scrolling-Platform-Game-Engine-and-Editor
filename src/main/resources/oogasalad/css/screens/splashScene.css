@@ -158,6 +158,28 @@ html {
     -fx-text-fill: white;
 }
 
+.join-server-button {
+    -fx-border-color: #002a6e;
+}
+
+.join-server-button:hover {
+    -fx-background-color: #002a6e;
+    -fx-text-fill: white;
+}
+
+.lobby-textfield {
+    -fx-max-width: 500px;
+    -fx-background-color: #ffffff;     /* white background */
+    -fx-border-color: #002a6e;          /* blue border */
+    -fx-border-width: 3px;
+    -fx-border-radius: 5px;
+    -fx-font-size: 16px;
+    -fx-font-family: "Montserrat", "Lato", sans-serif;
+    -fx-text-fill: #333333;             /* dark text color */
+    -fx-padding: 6px 10px;
+
+}
+
 body {
     font-family: 'Montserrat', 'Lato', serif;
     font-weight: bold;
