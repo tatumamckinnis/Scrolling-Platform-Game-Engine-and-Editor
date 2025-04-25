@@ -11,10 +11,13 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Level Map returns a list of levels for a given game.
+ *
+ * @author Billy McCune
  */
 public class levelMap {
 
   private static final Logger LOG = LogManager.getLogger();
+
   /**
    * reads the levels directory and builds the nested map structure.
    *
