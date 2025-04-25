@@ -202,7 +202,12 @@ public class UserDataScreen extends Display {
   }
 
   @Override public void renderPlayerStats(ImmutableGameObject player)      { }
-  
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+
+  }
+
   /**
    * Navigates to the profile edit screen.
    */

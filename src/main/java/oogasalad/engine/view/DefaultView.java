@@ -169,7 +169,7 @@ public class DefaultView implements ViewAPI {
    *
    * @param key pressed key.
    */
-  void pressKey(KeyCode key) {
+  public void pressKey(KeyCode key) {
     if (!currentInputs.contains(key)) {
       currentInputs.add(key);
     }
@@ -180,13 +180,17 @@ public class DefaultView implements ViewAPI {
    *
    * @param key released key.
    */
-  void releaseKey(KeyCode key) {
+  public void releaseKey(KeyCode key) {
     currentInputs.remove(key);
     if (!releasedInputs.contains(key)) {
       releasedInputs.add(key);
     }
   }
 
+  public void renderEndGameScreen(boolean gameWon) {
+    LOG.info("Game is over: " + gameWon);
+    currentDisplay.renderEndGameScreen(gameWon);
+  }
 
 }
 

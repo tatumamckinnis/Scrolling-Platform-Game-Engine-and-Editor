@@ -54,7 +54,7 @@ public interface GameManagerAPI {
   /**
    * Pauses the timeline and displays a splashscreen when the user either wins or loses
    */
-  void endGame();
+  void endGame(boolean gameWon);
 
   /**
    * Lists all available levels for user to select
@@ -85,9 +85,9 @@ public interface GameManagerAPI {
 
   /**
    * get gameobject using bid from level api
-   *
    */
   public GameObject makeObjectFromData(GameObjectData gameObjectData);
+
   /**
    * @return a String path to the current level file
    */
@@ -105,4 +105,11 @@ public interface GameManagerAPI {
   String getCurrentGameName();
 
   String getCurrentLevelName();
+
+  /**
+   * sets the game won variable to true or false
+   *
+   * @param gameWon whether the game has been won
+   */
+  void setGameWonVariable(Boolean gameWon);
 }

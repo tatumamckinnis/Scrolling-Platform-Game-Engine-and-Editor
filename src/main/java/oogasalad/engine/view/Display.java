@@ -68,4 +68,11 @@ public abstract class Display extends Group {
    * @param player game objects of the player type
    */
   public abstract void renderPlayerStats(ImmutableGameObject player);
+
+  /**
+   * renders the end game splash screen (win/lose) depending on player outcome
+   *
+   * @param gameWon boolean indicating whether the game has been won
+   */
+  public abstract void renderEndGameScreen(boolean gameWon);
 }

@@ -82,6 +82,11 @@ public class SplashScreen extends Display {
         resourceManager.getText(exceptions, "CannotRenderPlayerStats"));
   }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
+
   /**
    * Returns the width of the splash effect.
    *

@@ -85,4 +85,9 @@ public class LevelDisplay extends Display {
     throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayPlayerStats"));
   }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
+
 }

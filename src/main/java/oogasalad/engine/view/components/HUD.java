@@ -96,9 +96,13 @@ public class HUD extends Display {
     }
   }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
+
   private void styleStats(Text statText) {
     container.getStylesheets().add(HUDStylesheet);
-    LOG.info("Applying style class: " + resourceManager.getConfig("engine.view.hud", "hud.stats.style"));
     statText.getStyleClass().add(resourceManager.getConfig("engine.view.hud", "hud.stats.style"));
   }
 }

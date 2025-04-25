@@ -19,4 +19,9 @@ public class UserLoginScreen extends Display {
   public void renderPlayerStats(ImmutableGameObject player) {
 
   }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+
+  }
 }
