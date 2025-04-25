@@ -102,8 +102,8 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
-  public void endGame() {
-    myGameManager.endGame();
+  public void endGame(boolean gameWon) {
+    myGameManager.endGame(gameWon);
   }
 
   @Override
@@ -199,7 +199,6 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
     myGameManager.selectGame(filePath);
   }
-
 
   private List<ImmutableGameObject> makeGameObjectsImmutable(
       List<GameObject> gameObjectsToConvert) {

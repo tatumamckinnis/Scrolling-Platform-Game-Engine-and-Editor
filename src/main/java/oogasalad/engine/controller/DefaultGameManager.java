@@ -53,9 +53,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private List<KeyCode> currentKeysReleased;
   private String myCurrentGamePath;
   private String currentLevel;
+  private boolean gameWon = false;
 
   /**
    * default constructor for the game manager
+   *
    * @throws ViewInitializationException if the view cannot render
    */
   public DefaultGameManager()
@@ -120,7 +122,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   @Override
   public void clearReleased() {
-  currentKeysReleased.clear();
+    currentKeysReleased.clear();
   }
 
   /**
@@ -163,7 +165,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
 
   @Override
   public Object getPlayer() {
-    return myGameController.getImmutablePlayers().get(0);
+    return myGameController.getImmutablePlayers().getFirst();
   }
 
   @Override
@@ -197,12 +199,23 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   /**
-   * @see GameManagerAPI#endGame() (String, GameObject)
+   * sets the gameWon variable to true/false
+   *
+   * @param gameWon true/false depending on whether the player has won the game
    */
   @Override
-  public void endGame() {
+  public void setGameWonVariable(Boolean gameWon) {
+    this.gameWon = gameWon;
+  }
+
+  /**
+   * @see GameManagerAPI#endGame(boolean gameWon) (String, GameObject)
+   */
+  @Override
+  public void endGame(boolean gameWon) {
     pauseGame();
-    //myView.renderEndGameScreen(text, gameObject);
+    setGameWonVariable(gameWon);
+    myView.renderEndGameScreen(gameWon);
   }
 
   private void step()
@@ -221,8 +234,8 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   private void updateInputList() throws InputException {
-      currentKeysPressed  = myView.getCurrentInputs();
-      currentKeysReleased = myView.getReleasedInputs();
+    currentKeysPressed = myView.getCurrentInputs();
+    currentKeysReleased = myView.getReleasedInputs();
   }
 
   private void initializeMyView() throws ViewInitializationException, FileNotFoundException {
