@@ -36,6 +36,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     TELEPORT_TO_POINT,
     TELEPORT_TO_RANDOM_POINT,
     SPAWN_NEW_OBJECT,
+    SPAWN_ON_OBJECT,
+    CHANGE_OBJECT,
   }
 
   /**

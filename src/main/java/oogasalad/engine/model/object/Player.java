@@ -65,7 +65,6 @@ public class Player extends GameObject implements ImmutablePlayer {
     Map<String,String> displayedStatsMap = new HashMap<>();
     for (String stat : displayedStats) {
       if (getDoubleParams().containsKey(stat)) {
-        LOG.info("Displayed stat: " + stat + " = " + getDoubleParams().get(stat));
         displayedStatsMap.put(stat,String.valueOf(getDoubleParams().get(stat).intValue()));
       }
       else if (getStringParams().containsKey(stat)) {

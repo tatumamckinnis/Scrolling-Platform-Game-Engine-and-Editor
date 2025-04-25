@@ -16,7 +16,6 @@ public class VariableLessThanThresholdCondition implements Condition {
   @Override
   public boolean isMet(GameObject gameObject, Map<String, String> stringParams, Map<String, Double> doubleParams) {
     String variableName = stringParams.get("variable");
-    LOG.info("Dynamic var name: " + variableName);
     Double amount = gameObject.getDoubleParams().getOrDefault(variableName,0.0);
     Double threshold = doubleParams.get("threshold");
     return amount <= threshold;

@@ -1,0 +1,12 @@
+<userAvatar>
+  <spriteName>heroSprite</spriteName>
+  <spriteSheetFile>sprites/hero_sheet.png</spriteSheetFile>
+  <baseImage>hero_idle</baseImage>
+  <frames>
+    <frame name="idle1"/>
+    <frame name="idle2"/>
+  </frames>
+  <animations>
+    <animation name="walk" loop="true"/>
+  </animations>
+</userAvatar>
