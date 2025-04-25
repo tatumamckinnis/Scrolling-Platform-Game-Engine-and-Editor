@@ -49,6 +49,11 @@ public class OnlineLobby extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    //
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     // No player stats to render in the lobby.
   }

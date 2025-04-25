@@ -1,0 +1,67 @@
+.profile-edit-root-pane {
+    -fx-background-color: #f0f2f5;
+}
+
+.profile-edit-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 0;
+}
+
+.status-message {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-height: 20px;
+    -fx-padding: 10px 0;
+}
+
+.save-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-min-width: 150px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.save-button:hover {
+    -fx-background-color: #45a049;
+}
+
+GridPane {
+    -fx-padding: 15px;
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+Label {
+    -fx-font-weight: bold;
+}
+
+TextField, PasswordField, TextArea {
+    -fx-min-width: 300px;
+    -fx-padding: 8px;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+}
+
+TextField:focused, PasswordField:focused, TextArea:focused {
+    -fx-border-color: #4267B2;
+}
+
+ImageView {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+Button {
+    -fx-cursor: hand;
+}
+
+VBox {
+    -fx-spacing: 10;
+} 

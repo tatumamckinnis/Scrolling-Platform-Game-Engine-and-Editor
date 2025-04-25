@@ -52,6 +52,11 @@ public class NewGameComponents extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRemoveGameObjectImage"));
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRenderPlayerStats"));
   }

@@ -19,8 +19,7 @@ public class ClientSocket extends WebSocketClient {
   private static final Logger LOG = LogManager.getLogger();
   private final Gson gson;
   private final ViewState viewState;
-  private static final String SERVER_DEV_LINK = ConfigLoader.getServerURL("server.dev.link");;
-  private static final String SERVER_URI = SERVER_DEV_LINK + "?filepath=%s&lobby=%s";
+  private static final String SERVER_URI = ConfigLoader.getServerURL("server.dev.link") + "?filepath=%s&lobby=%s";
   private final int lobby;
 
   /**

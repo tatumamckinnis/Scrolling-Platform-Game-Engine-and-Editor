@@ -5,21 +5,21 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.zip.DataFormatException;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import oogasalad.Main;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.controller.api.GameControllerAPI;
 import oogasalad.engine.controller.api.GameManagerAPI;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.model.object.Player;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -32,6 +32,7 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.exceptions.ViewInitializationException;
+import oogasalad.fileparser.records.GameObjectData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,6 +50,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
   private List<KeyCode> currentKeysReleased;
+  private String myCurrentGamePath;
   private String currentLevel;
 
   /**
@@ -91,6 +93,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
       NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     currentLevel = filePath;
+    myCurrentGamePath = filePath;
     myLevelAPI.selectGame(filePath);
   }
 
@@ -128,6 +131,16 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    myView.addGameObjectImage(gameObject);
+  }
+
+  @Override
+  public GameObject makeObjectFromData(GameObjectData gameObjectData) {
+    return myLevelAPI.makeObjectFromData(gameObjectData);
+  }
+
+  @Override
   public String getCurrentLevel() throws NullPointerException {
     if (currentLevel != null) {
       return currentLevel;
@@ -140,6 +153,41 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     String i18nLanguageCode = language.substring(0, 2);
     ResourceManager.getInstance().setLocale(Locale.of(i18nLanguageCode));
     LOG.info("Setting language to {}", language);
+  }
+
+  @Override
+  public Object getPlayer() {
+    return myGameController.getImmutablePlayers().get(0);
+  }
+
+  @Override
+  public String getCurrentGameName() {
+    // Extract game name from the loaded file path
+    if (myCurrentGamePath != null && !myCurrentGamePath.isEmpty()) {
+      // Handle path like "data/gameData/levels/GameName/level.xml"
+      String[] pathParts = myCurrentGamePath.split("/");
+      // Find the game name part (usually the second-to-last directory)
+      if (pathParts.length >= 2) {
+        return pathParts[pathParts.length - 2];
+      }
+    }
+    return "Unknown";
+  }
+
+  @Override
+  public String getCurrentLevelName() {
+    // Extract level name from the loaded file path
+    if (myCurrentGamePath != null && !myCurrentGamePath.isEmpty()) {
+      // Handle path like "data/gameData/levels/GameName/level.xml"
+      String[] pathParts = myCurrentGamePath.split("/");
+      // Get the level filename (last part of path)
+      if (pathParts.length >= 1) {
+        String levelFile = pathParts[pathParts.length - 1];
+        // Remove file extension if needed
+        return levelFile.replaceAll("\\.xml$", "");
+      }
+    }
+    return "Unknown";
   }
 
   /**

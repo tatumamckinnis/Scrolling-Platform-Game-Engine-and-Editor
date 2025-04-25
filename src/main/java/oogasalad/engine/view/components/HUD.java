@@ -9,6 +9,7 @@ import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.Display;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 
 /**
  * The {@code HUD} class represents a Heads-Up Display in the game view. It is responsible for
@@ -58,6 +59,12 @@ public class HUD extends Display {
   public void removeGameObjectImage(ImmutableGameObject gameObject) {
     throw new UnsupportedOperationException(
         resourceManager.getText("exceptions", "CannotRemoveGameObjectImage"));
+  }
+
+  @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    throw new UnsupportedOperationException(
+        resourceManager.getText("exceptions", "CannotAddGameObjectImage"));
   }
 
   /**

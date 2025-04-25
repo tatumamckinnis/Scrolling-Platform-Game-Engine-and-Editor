@@ -74,6 +74,13 @@ public class LevelDisplay extends Display {
   }
 
   @Override
+  public void addGameObjectImage(ImmutableGameObject gameObject) {
+    ObjectImage imageToAdd = myConverter.retrieveImageObject(gameObject);
+    this.getChildren().add(imageToAdd.getImageView());
+    this.getChildren().add(imageToAdd.getHitBox());
+  }
+
+  @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayPlayerStats"));
   }

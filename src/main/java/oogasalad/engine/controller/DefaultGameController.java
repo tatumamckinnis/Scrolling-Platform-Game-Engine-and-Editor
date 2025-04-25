@@ -37,6 +37,7 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
 /**
@@ -165,8 +166,32 @@ public class DefaultGameController implements GameControllerAPI, GameObjectProvi
   }
 
   @Override
+  public void addGameObject(GameObjectData gameObjectData) {
+    //get gameObject from level data map
+    GameObject gameObject = myGameManager.makeObjectFromData(gameObjectData);
+    myGameObjects.add(gameObject);
+    myGameObjectMap.put(gameObject.getUUID(), gameObject);
+    myGameManager.addGameObjectImage(gameObject);
+  }
+
+  @Override
   public Camera getCamera() {
     return myCamera;
+  }
+
+  @Override
+  public Object getPlayer() {
+    return myGameManager.getPlayer();
+  }
+
+  @Override
+  public String getCurrentGameName() {
+    return myGameManager.getCurrentGameName();
+  }
+
+  @Override
+  public String getCurrentLevelName() {
+    return myGameManager.getCurrentLevelName();
   }
 
   @Override

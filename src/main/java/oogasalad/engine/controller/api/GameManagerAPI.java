@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.zip.DataFormatException;
+import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -16,6 +17,7 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.RenderingException;
 import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.records.GameObjectData;
 
 /**
  * API responsible for managing the game loop, including playing, pausing, and selecting a game
@@ -75,6 +77,18 @@ public interface GameManagerAPI {
   void removeGameObjectImage(ImmutableGameObject gameObject);
 
   /**
+   * adds game object image from the level view scene
+   *
+   * @param gameObject the game object to add to the view
+   */
+  void addGameObjectImage(ImmutableGameObject gameObject);
+
+  /**
+   * get gameobject using bid from level api
+   *
+   */
+  public GameObject makeObjectFromData(GameObjectData gameObjectData);
+  /**
    * @return a String path to the current level file
    */
   String getCurrentLevel() throws NullPointerException;
@@ -85,4 +99,10 @@ public interface GameManagerAPI {
    * @param language new language selected
    */
   void setLanguage(String language);
+
+  Object getPlayer();
+
+  String getCurrentGameName();
+
+  String getCurrentLevelName();
 }

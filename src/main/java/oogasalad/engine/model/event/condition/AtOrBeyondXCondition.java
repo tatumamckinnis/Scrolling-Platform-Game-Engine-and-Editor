@@ -32,7 +32,6 @@ public class AtOrBeyondXCondition implements Condition {
       Map<String, String> stringParams,
       Map<String, Double> doubleParams) {
     int xToMeet = doubleParams.get("x").intValue();
-    System.out.println(gameObject.getXPosition() + "," + "x to meet is" + "," + xToMeet);
     return gameObject.getXPosition() >= xToMeet;
   }
 }
