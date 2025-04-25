@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
+import oogasalad.engine.view.factory.ButtonActionFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,13 +88,15 @@ public class EndGameScreen extends GameOverlayScreen {
   @Override
   public VBox createOverlayButtonBox() {
     VBox buttonBox = new VBox();
-    String[] buttonTexts = getWinButtonTexts();
-    String[] buttonIDs = getWinButtonIDs();
+    String[] buttonTexts = getButtonTexts();
+    String[] buttonIDs = getButtonIDs();
 
     for (int i = 0; i < buttonIDs.length; i++) {
       Button currButton = new Button(buttonTexts[i]);
       currButton.getStyleClass()
           .add(resourceManager.getConfig(endGameScreenResource, "button.style"));
+      LOG.info(buttonIDs[i]);
+      setButtonAction(buttonIDs[i], currButton);
       buttonBox.getChildren().add(currButton);
     }
 
@@ -103,14 +106,20 @@ public class EndGameScreen extends GameOverlayScreen {
     return buttonBox;
   }
 
+  private void setButtonAction(String buttonID, Button currButton) {
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
+    currButton.setOnAction(event -> {
+      factory.getAction(buttonID).run();
+    });
+  }
+
   /**
    * Provides button texts for the win screen.
    *
    * @return array of strings for button strings
    */
-  private String[] getWinButtonTexts() {
+  private String[] getButtonTexts() {
     return new String[]{
-        resourceManager.getConfig(endGameScreenResource, "button.nextLevel.text"),
         resourceManager.getConfig(endGameScreenResource, "button.restartLevel.text"),
         resourceManager.getConfig(endGameScreenResource, "button.returnHome.text")
     };
@@ -121,9 +130,8 @@ public class EndGameScreen extends GameOverlayScreen {
    *
    * @return array of strings for button IDs
    */
-  private String[] getWinButtonIDs() {
+  private String[] getButtonIDs() {
     return new String[]{
-        resourceManager.getConfig(endGameScreenResource, "button.nextLevel.id"),
         resourceManager.getConfig(endGameScreenResource, "button.restartLevel.id"),
         resourceManager.getConfig(endGameScreenResource, "button.returnHome.id")
     };
