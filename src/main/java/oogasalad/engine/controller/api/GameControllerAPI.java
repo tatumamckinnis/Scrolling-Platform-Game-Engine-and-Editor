@@ -63,4 +63,9 @@ public interface GameControllerAPI {
    */
   Camera getCamera();
 
+  Object getPlayer();
+
+  String getCurrentGameName();
+
+  String getCurrentLevelName();
 }

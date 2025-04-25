@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user>
+  <username>gage</username>
+  <displayName>ppoopoo</displayName>
+  <email>gage@gmail.com</email>
+  <password>bruh</password>
+  <language>en</language>
+  <bio>New user</bio>
+  <userImage>data/userData/default-avatar.png</userImage>
+  <userGameDataList>
+  </userGameDataList>
+</user>
+</users>

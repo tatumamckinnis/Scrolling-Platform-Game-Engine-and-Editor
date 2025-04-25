@@ -68,5 +68,6 @@ public class GameDisplay extends Display {
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     myHUD.renderPlayerStats(player);
+
   }
 }
