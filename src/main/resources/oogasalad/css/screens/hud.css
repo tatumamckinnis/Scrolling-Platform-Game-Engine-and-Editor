@@ -1,0 +1,6 @@
+.hud-stat-text {
+  -fx-font-family: "Montserrat", "Lato", serif;
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+  -fx-background-color: blue;
+}
