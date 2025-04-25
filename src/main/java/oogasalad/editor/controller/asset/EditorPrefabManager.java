@@ -20,7 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.loader.EditorBlueprintParser;
 import oogasalad.editor.model.saver.BlueprintBuilder;
 import oogasalad.fileparser.records.BlueprintData;

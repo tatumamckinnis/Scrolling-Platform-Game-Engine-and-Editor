@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;

@@ -14,7 +14,7 @@ import oogasalad.editor.controller.object.InputDataManager;
 import oogasalad.editor.controller.object.PhysicsDataManager;
 import oogasalad.editor.controller.object.SpriteDataManager;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;

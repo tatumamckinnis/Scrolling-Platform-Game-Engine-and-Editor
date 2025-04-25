@@ -1,6 +1,5 @@
-package oogasalad.editor.model.data.object;
+package oogasalad.editor.model.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

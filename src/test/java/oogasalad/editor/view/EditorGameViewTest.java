@@ -5,7 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.tools.ObjectInteractionTool;

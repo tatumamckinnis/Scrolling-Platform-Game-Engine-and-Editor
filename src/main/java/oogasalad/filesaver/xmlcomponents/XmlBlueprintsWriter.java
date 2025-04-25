@@ -18,6 +18,8 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
   private static final String INDENT4 = INDENT3 + INDENT;
   private final BufferedWriter writer;
   private final LevelData levelData;
+  private final Map<String, String> savedSprites;
+  private String gameName;
 
   /**
    * Instantiates a writer.
@@ -27,6 +29,7 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
   public XmlBlueprintsWriter(BufferedWriter writer, LevelData levelData) {
     this.writer = writer;
     this.levelData = levelData;
+    this.savedSprites = new HashMap<>();
   }
 
   /**
@@ -41,9 +44,16 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
     Map<String, Map<String, List<BlueprintData>>> groupedBlueprints = groupBlueprintsByGameAndGroup(blueprintsMap);
 
     // Each gameEntry is a string to a map
-    for (var gameEntry : groupedBlueprints.entrySet()) {
-      writeGameSection(gameEntry.getKey(), gameEntry.getValue());
+    if (groupedBlueprints.size() == 1) {
+      gameName = groupedBlueprints.keySet().iterator().next();
+    } else {
+      gameName = "Untitled";
     }
+    writer.write(INDENT + "<game name=\"" + gameName + "\">\n");
+    for (var gameEntry : groupedBlueprints.entrySet()) {
+      writeGameSection(gameEntry.getValue());
+    }
+    writer.write(INDENT + "</game>\n");
   }
 
   private Map<String, Map<String, List<BlueprintData>>> groupBlueprintsByGameAndGroup(Map<Integer, BlueprintData> blueprintsMap) {
@@ -57,12 +67,10 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
     return grouped;
   }
 
-  private void writeGameSection(String gameName, Map<String, List<BlueprintData>> groups) throws IOException {
-    writer.write(INDENT + "<game name=\"" + gameName + "\">\n");
+  private void writeGameSection(Map<String, List<BlueprintData>> groups) throws IOException {
     for (var groupEntry : groups.entrySet()) {
       writeObjectGroupSection(groupEntry.getKey(), groupEntry.getValue());
     }
-    writer.write(INDENT + "</game>\n");
   }
 
   private void writeObjectGroupSection(String groupName, List<BlueprintData> blueprints) throws IOException {
@@ -76,12 +84,13 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
   private void writeBlueprintObject(BlueprintData blueprint) throws IOException {
     SpriteData sprite = blueprint.spriteData();
     HitBoxData hitbox = blueprint.hitBoxData();
+    String spriteFileName = saveSpriteIfNeeded(gameName, sprite);
 
     writer.write(INDENT3 + String.format(
         "<object spriteName=\"%s\" type=\"%s\" id=\"%d\" spriteFile=\"%s\" hitBoxWidth=\"%d\"%n" +
             INDENT4 + "hitBoxHeight=\"%d\" hitBoxShape=\"%s\" spriteDx=\"%d\" spriteDy=\"%d\" eventIDs=\"%s\"%n" +
             INDENT4 + "velocityX=\"%.2f\" velocityY=\"%.2f\" rotation=\"%.2f\">%n",
-        sprite.name(), blueprint.type(), blueprint.blueprintId(), sprite.spriteFile().getName(),
+        sprite.name(), blueprint.type(), blueprint.blueprintId(), spriteFileName,
         hitbox.hitBoxWidth(), hitbox.hitBoxHeight(), hitbox.shape(),
         hitbox.spriteDx(), hitbox.spriteDy(),
         getEventIdsAsString(blueprint),
@@ -101,5 +110,21 @@ public class XmlBlueprintsWriter implements XmlComponentWriter{
         .map(EventData::eventId)
         .filter(id -> !id.isEmpty())
         .collect(Collectors.joining(","));
+  }
+
+  private String saveSpriteIfNeeded(String gameName, SpriteData sprite) {
+    String key = gameName + "#" + sprite.name();
+    if (!savedSprites.containsKey(key)) {
+      try {
+        XmlSpriteWriter writer = new XmlSpriteWriter(gameName, sprite);
+        writer.write();
+        String fileName = writer.getSpriteFileName();
+        savedSprites.put(key, fileName);
+        return fileName;
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
+    }
+    return savedSprites.get(key);
   }
 }

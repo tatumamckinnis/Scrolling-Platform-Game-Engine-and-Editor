@@ -1,10 +1,9 @@
-package oogasalad.editor.model.data;
+package oogasalad.editor.model.data.object;
 
 import java.util.HashMap;
 import java.util.Properties;
 import java.util.UUID;
-import oogasalad.editor.model.data.object.HitboxData;
-import oogasalad.editor.model.data.object.IdentityData;
+import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.event.CollisionData;
 import oogasalad.editor.model.data.object.event.CustomEventData;
 import oogasalad.editor.model.data.object.event.EventData;

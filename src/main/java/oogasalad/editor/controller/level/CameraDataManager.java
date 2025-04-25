@@ -6,7 +6,7 @@ import java.util.Set;
 import oogasalad.editor.model.data.CameraSpecLoader;
 import oogasalad.editor.model.data.CameraSpecLoader.Specifications;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.object.CameraData;
+import oogasalad.editor.model.data.CameraData;
 
 /**
  * Thin wrapper that exposes safe, typed access to {@link CameraData} in a well defined file.

@@ -2,7 +2,7 @@ package oogasalad.editor.controller.object;
 
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 
