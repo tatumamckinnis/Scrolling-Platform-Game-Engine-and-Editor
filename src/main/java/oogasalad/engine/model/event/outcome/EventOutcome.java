@@ -38,6 +38,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     SPAWN_NEW_OBJECT,
     SPAWN_ON_OBJECT,
     CHANGE_OBJECT,
+    DASH,
+    RESET_VELOCITY,
   }
 
   /**

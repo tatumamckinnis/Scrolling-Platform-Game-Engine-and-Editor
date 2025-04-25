@@ -1,5 +1,6 @@
 package oogasalad.engine.view;
 
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,6 +46,7 @@ public class DefaultView implements ViewAPI {
   private final List<KeyCode> currentInputs;
   private final List<KeyCode> releasedInputs;
   private Camera myCamera;
+  private Point mousePosition;
 
   /**
    * Constructor to initialize the GameAppView with a Stage reference.
@@ -71,6 +73,9 @@ public class DefaultView implements ViewAPI {
     currentDisplay = splashScreen;
 
     currentScene = new Scene(currentDisplay, width, height);
+    currentScene.setOnMouseMoved(e -> {
+      this.mousePosition = new Point((int)e.getSceneX(), (int)e.getSceneY());
+    });
   }
 
   /**
@@ -89,6 +94,17 @@ public class DefaultView implements ViewAPI {
    */
   public List<KeyCode> getCurrentInputs() throws InputException {
     return Collections.unmodifiableList(currentInputs);
+  }
+
+  /**
+   * return current mouse position
+   */
+  @Override
+  public Point getMousePosition() {
+    if (mousePosition == null) {
+      return new Point(0, 0);
+    }
+    return mousePosition;
   }
 
   /**
@@ -170,6 +186,7 @@ public class DefaultView implements ViewAPI {
       releasedInputs.add(key);
     }
   }
+
 
 }
 

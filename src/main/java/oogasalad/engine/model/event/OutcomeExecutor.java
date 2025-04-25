@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
+import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.outcome.AddToAnimationsOutcome;
 import oogasalad.engine.model.event.outcome.ChangeObjectOutcome;
 import oogasalad.engine.model.event.outcome.ChangeVarOutcome;
+import oogasalad.engine.model.event.outcome.DashOutcome;
 import oogasalad.engine.model.event.outcome.DestroyObjectOutcome;
 import oogasalad.engine.model.event.outcome.EventOutcome;
 import oogasalad.engine.model.event.outcome.EventOutcome.OutcomeType;
@@ -23,6 +25,7 @@ import oogasalad.engine.model.event.outcome.MoveRightOutcome;
 import oogasalad.engine.model.event.outcome.Outcome;
 import oogasalad.engine.model.event.outcome.PatrolOutcome;
 import oogasalad.engine.model.event.outcome.PlatformPassThroughOutcome;
+import oogasalad.engine.model.event.outcome.ResetVelocityOutcome;
 import oogasalad.engine.model.event.outcome.RestartLevelOutcome;
 import oogasalad.engine.model.event.outcome.RocketOutcome;
 import oogasalad.engine.model.event.outcome.RunObjectsAnimationsOutcome;
@@ -56,7 +59,7 @@ public class OutcomeExecutor {
    *
    * @param gameExecutor Initialize mapping of outcome enum to outcome interface
    */
-  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor, AnimationHandlerApi animationHandler) {
+  public OutcomeExecutor(CollisionHandler collisionHandler, GameExecutor gameExecutor, AnimationHandlerApi animationHandler, InputProvider inputProvider) {
     this.outcomeMap = new HashMap<>();
     outcomeMap.put(EventOutcome.OutcomeType.MOVE_RIGHT, new MoveRightOutcome());
     outcomeMap.put(EventOutcome.OutcomeType.JUMP, new JumpOutcome());
@@ -81,6 +84,8 @@ public class OutcomeExecutor {
     outcomeMap.put(OutcomeType.SPAWN_NEW_OBJECT, new SpawnNewObjectOutcome(gameExecutor));
     outcomeMap.put(OutcomeType.SPAWN_ON_OBJECT, new SpawnOnObjectOutcome(gameExecutor));
     outcomeMap.put(OutcomeType.CHANGE_OBJECT, new ChangeObjectOutcome(gameExecutor));
+    outcomeMap.put(OutcomeType.DASH, new DashOutcome(inputProvider));
+    outcomeMap.put(OutcomeType.RESET_VELOCITY, new ResetVelocityOutcome());
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;

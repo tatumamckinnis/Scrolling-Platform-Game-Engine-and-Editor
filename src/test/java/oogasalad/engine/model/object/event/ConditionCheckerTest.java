@@ -4,6 +4,7 @@
 package oogasalad.engine.model.object.event;
 
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +51,11 @@ public class ConditionCheckerTest {
     }
 
     @Override
+    public Point getMousePosition() {
+      return null;
+    }
+
+    @Override
     public void clearReleased() {
 
     }
@@ -83,7 +89,7 @@ public class ConditionCheckerTest {
 
   @Test
   void InputCondition() {
-    EventCondition ec = new EventCondition(ConditionType.A_KEY_PRESSED, null, null);
+    EventCondition ec = new EventCondition(ConditionType.KEY_PRESSED, null, null);
     assertEquals(checker.checkCondition(ec, null), true);
   }
 

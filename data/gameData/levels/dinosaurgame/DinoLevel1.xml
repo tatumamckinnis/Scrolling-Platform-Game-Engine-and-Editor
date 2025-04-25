@@ -47,17 +47,18 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,69,87"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,69,87"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
-        <displayedProperties propertyList="score,lives,rocket_duration"/>
+        <displayedProperties propertyList="score,lives,rocket_duration,dash_duration"/>
         <properties>
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="20"/>
+            <property name="lives" value="200000"/>
             <property name="score" value="100"/>
             <property name="rocket_duration" value="0"/>
+            <property name="dash_duration" value="0"/>
           </doubleProperties>
         </properties>
       </object>
@@ -141,7 +142,7 @@ interact with each other -->
       <outcomes>
         <outcome name="MOVE_RIGHT">
           <doubleParameters>
-            <parameter name="amount" value="10" />
+            <parameter name="amount" value="5" />
           </doubleParameters>
         </outcome>
         <outcome name="CHANGE_VAR">
@@ -397,6 +398,104 @@ interact with each other -->
         </outcome>
       </outcomes>
     </event>
-
+    <event type="input" id="33">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="x"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="dash_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="2"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="34">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="dash_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-0.2"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="35">
+      <conditions>
+        <conditionSet>
+          <condition name="GREATER_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="dash_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DASH">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="35">
+      <conditions>
+        <conditionSet>
+          <condition name="GREATER_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="dash_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DASH">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="36">
+      <conditions>
+        <conditionSet>
+          <condition name="EQUAL_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="dash_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RESET_VELOCITY">
+        </outcome>
+      </outcomes>
+    </event>
   </events>
 </map>

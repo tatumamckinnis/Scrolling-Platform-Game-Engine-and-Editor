@@ -1,5 +1,6 @@
 package oogasalad.engine.view;
 
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.util.List;
 import javafx.scene.input.KeyCode;
@@ -46,5 +47,11 @@ public interface ViewAPI {
    * @throws InputException if there is an issue retrieving inputs.
    */
   List<KeyCode> getCurrentInputs() throws InputException;
+
+  /**
+   * Returns position of mouse cursor
+   * @return Point x,y position of mouse
+   */
+  Point getMousePosition();
 
 }

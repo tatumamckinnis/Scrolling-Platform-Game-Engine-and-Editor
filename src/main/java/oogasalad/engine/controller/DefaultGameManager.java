@@ -1,5 +1,6 @@
 package oogasalad.engine.controller;
 
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -110,6 +111,11 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   @Override
   public boolean isKeyReleased(KeyCode keyCode) {
     return currentKeysReleased.contains(keyCode);
+  }
+
+  @Override
+  public Point getMousePosition() {
+    return myView.getMousePosition();
   }
 
   @Override
