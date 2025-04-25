@@ -29,7 +29,7 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
 /**
  * Initial splash screen a user sees when running the game engine.
  *
- * @author Luke Nam, Aksel Bell
+ * @author Luke Nam, Aksel Bell, Alana Zinkin
  */
 public class SplashScreen extends Display {
 
@@ -229,25 +229,35 @@ public class SplashScreen extends Display {
         resourceManager.getConfig(splashConfig, "splash.button.height"));
 
     // Add language selector first
-    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    String languages = resourceManager.getConfig(splashConfig, "available.languages");
-    String[] languagesArray = languages.split(",");
-    for (String lang : languagesArray) {
-        languageSelector.getItems().add(lang);
-    }
-    setLanguageComboBoxButtonAction(languageSelector);
-
+    makeLanguageSelector(splashBox, comboBoxTexts, comboBoxIDs, comboBoxStyles, buttonWidth,
+        buttonHeight);
     // Then add game and level selectors
-    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    populateGameTypeComboBox(gameTypeBox);
-    selectGameType(gameTypeBox, levelBox);
-    setComboBoxButtonAction(gameTypeBox, levelBox);
-
+    makeGameAndLevelSelectors(splashBox, comboBoxTexts, comboBoxIDs, comboBoxStyles, buttonWidth,
+        buttonHeight);
     // Add profile button
+    makePlayerProfileWidgets(buttonWidth, buttonHeight, splashBox);
+    // Add any other relevant buttons
+    makeSplashButtons(buttonIDs, buttonTexts, buttonWidth, buttonHeight, buttonStyles, splashBox);
+    // Add network buttons
+    addOnlineButtons(splashBox);
+
+    int buttonSpacing = Integer.parseInt(
+        resourceManager.getConfig(splashConfig, "splash.button.spacing"));
+    alignSplashButtonBox(splashBox, buttonSpacing);
+    return splashBox;
+  }
+
+  private void makeSplashButtons(String[] buttonIDs, String[] buttonTexts, double buttonWidth,
+      double buttonHeight, String[] buttonStyles, VBox splashBox) {
+    for (int i = 0; i < buttonIDs.length; i++) {
+      Button currButton = new Button(buttonTexts[i]);
+      currButton.setPrefSize(buttonWidth, buttonHeight);
+      setButtonStyle(currButton, buttonIDs[i], buttonStyles[i]);
+      splashBox.getChildren().add(currButton);
+    }
+  }
+
+  private void makePlayerProfileWidgets(double buttonWidth, double buttonHeight, VBox splashBox) {
     String profileId = resourceManager.getConfig(splashConfig, "splash.button.profile.id");
     String profileText = resourceManager.getText(displayedText, "splash.button.profile.text");
     String profileStyle = resourceManager.getConfig(splashConfig, "splash.button.profile.style");
@@ -258,20 +268,30 @@ public class SplashScreen extends Display {
     profileBtn.getStyleClass().add(profileStyle);
     splashBox.getChildren().add(profileBtn);
     setButtonAction(profileId, profileBtn);
+  }
 
-    for (int i = 0; i < buttonIDs.length; i++) {
-      Button currButton = new Button(buttonTexts[i]);
-      currButton.setPrefSize(buttonWidth, buttonHeight);
-      setButtonStyle(currButton, buttonIDs[i], buttonStyles[i]);
-      splashBox.getChildren().add(currButton);
+  private void makeGameAndLevelSelectors(VBox splashBox, String[] comboBoxTexts,
+      String[] comboBoxIDs, String[] comboBoxStyles, double buttonWidth, double buttonHeight)
+      throws FileNotFoundException {
+    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    populateGameTypeComboBox(gameTypeBox);
+    selectGameType(gameTypeBox, levelBox);
+    setComboBoxButtonAction(gameTypeBox, levelBox);
+  }
+
+  private void makeLanguageSelector(VBox splashBox, String[] comboBoxTexts, String[] comboBoxIDs,
+      String[] comboBoxStyles, double buttonWidth, double buttonHeight) {
+    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
+        comboBoxIDs, comboBoxStyles, splashBox);
+    String languages = resourceManager.getConfig(splashConfig, "available.languages");
+    String[] languagesArray = languages.split(",");
+    for (String lang : languagesArray) {
+        languageSelector.getItems().add(lang);
     }
-
-    addOnlineButtons(splashBox);
-
-    int buttonSpacing = Integer.parseInt(
-        resourceManager.getConfig(splashConfig, "splash.button.spacing"));
-    alignSplashButtonBox(splashBox, buttonSpacing);
-    return splashBox;
+    setLanguageComboBoxButtonAction(languageSelector);
   }
 
   private ComboBox<String> createComboBox(String[] comboBoxTexts, int i, double buttonWidth,
@@ -438,31 +458,6 @@ public class SplashScreen extends Display {
         resourceManager.getConfig(splashConfig, "splash.button.gameLevel.style"),
         resourceManager.getConfig(splashConfig, "splash.button.select.language.style")
     };
-  }
-
-  private void renderLanguageSelector(String[] comboBoxTexts, double buttonWidth,
-      double buttonHeight,
-      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) {
-    ComboBox<String> languageSelector = createComboBox(comboBoxTexts, 2, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    String languages = resourceManager.getConfig(splashConfig, "available.languages");
-    String[] languagesArray = languages.split(",");
-    for (String lang : languagesArray) {
-        languageSelector.getItems().add(lang);
-    }
-    setLanguageComboBoxButtonAction(languageSelector);
-  }
-
-  private void renderGameAndLevelSelectors(String[] comboBoxTexts, double buttonWidth,
-      double buttonHeight,
-      String[] comboBoxIDs, String[] comboBoxStyles, VBox splashBox) throws FileNotFoundException {
-    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
-        comboBoxIDs, comboBoxStyles, splashBox);
-    populateGameTypeComboBox(gameTypeBox);
-    selectGameType(gameTypeBox, levelBox);
-    setComboBoxButtonAction(gameTypeBox, levelBox);
   }
 
   private void addOnlineButtons(VBox splashBox) {
