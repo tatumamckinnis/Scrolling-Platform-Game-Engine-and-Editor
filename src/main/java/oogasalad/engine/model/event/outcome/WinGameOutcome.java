@@ -1,15 +1,3 @@
-/**
- * Outcome that triggers a loss condition in the game.
- *
- * <p>When executed, this outcome logs that the player has lost the game.
- * This can later be expanded to interface with game state or UI logic to end the game session or
- * transition to a game over screen.
- *
- * <p>This outcome is typically triggered by an in-game event such as
- * the player colliding with a hazard or running out of time.
- *
- * @author Gage Garcia
- */
 package oogasalad.engine.model.event.outcome;
 
 import java.util.Map;
@@ -19,11 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Represents an outcome that causes the game to end in a loss.
+ * Represents an outcome that causes the game to end in a win.
  *
  * @author Alana Zinkin
  */
-public class LoseGameOutcome implements Outcome {
+public class WinGameOutcome implements Outcome {
 
   private final GameExecutor executor;
 
@@ -31,11 +19,13 @@ public class LoseGameOutcome implements Outcome {
    * Logger used to record loss events
    */
   private static final Logger LOG = LogManager.getLogger();
+
   /**
    * Outcome that the player has lost the game
+   *
    * @param executor allows for access to the game manager
    */
-  public LoseGameOutcome(GameExecutor executor) {
+  public WinGameOutcome(GameExecutor executor) {
     this.executor = executor;
   }
 
@@ -48,8 +38,8 @@ public class LoseGameOutcome implements Outcome {
   public void execute(GameObject gameObject,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    executor.endGame(false);
-    LOG.info("You lose the game");
+    executor.endGame(true);
+    LOG.info("You win the game!");
   }
-}
 
+}
