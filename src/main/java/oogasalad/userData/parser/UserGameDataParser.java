@@ -9,6 +9,8 @@ import java.util.LinkedHashMap;
 
 /**
  * Converts <userGameData> XML elements into UserGameData records.
+ *
+ * @author Billy McCune
  */
 public class UserGameDataParser {
 

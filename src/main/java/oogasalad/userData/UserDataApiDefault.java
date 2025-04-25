@@ -19,6 +19,10 @@ import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
 import oogasalad.userData.writer.UserDataWriter;
 
+/**
+ *
+ * @author Billy McCune
+ */
 public class UserDataApiDefault implements UserApi {
 
   private UserDataParser myUserDataParser;

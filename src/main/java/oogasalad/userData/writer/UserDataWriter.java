@@ -19,6 +19,8 @@ public class UserDataWriter {
 
   /**
    * Writes a single <user> XML document for the given UserData to the provided OutputStream.
+   *
+   * @author Billy McCune
    */
   public void writeUsersData(UserData user, OutputStream out)
       throws UserDataWriteException, XMLStreamException {

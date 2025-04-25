@@ -9,6 +9,10 @@ import oogasalad.exceptions.UserDataWriteException;
 import oogasalad.userData.records.UserData;
 import org.xml.sax.SAXException;
 
+/**
+ *
+ * @author Billy McCune
+ */
 public interface UserApi {
 
   public UserData parseUserData(String username, String password)

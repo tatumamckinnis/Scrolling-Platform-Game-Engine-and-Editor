@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 
 /**
  * Converts <level> XML elements into UserLevelData records.
+ *
+ * @author Billy McCune
  */
 public class UserLevelDataParser {
 
