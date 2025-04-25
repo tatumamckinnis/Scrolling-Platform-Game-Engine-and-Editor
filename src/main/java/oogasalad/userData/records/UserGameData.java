@@ -4,7 +4,7 @@ import java.util.Map;
 public record UserGameData(
     String gameName,
     String lastPlayed,
-    Map<String,Double> playerHighestGameStatMap,
+    Map<String,String> playerHighestGameStatMap,
     Map<String, UserLevelData> playerLevelStatMap
     ) {
 

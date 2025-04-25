@@ -20,13 +20,13 @@ public class UserGameDataParser {
     // parse playerHighestGameStatMap
     Element highElem = (Element)
         ugdElem.getElementsByTagName("playerHighestGameStatMap").item(0);
-    Map<String, Double> highMap = new LinkedHashMap<>();
+    Map<String, String> highMap = new LinkedHashMap<>();
     NodeList highStats = highElem.getElementsByTagName("stat");
     for (int i = 0; i < highStats.getLength(); i++) {
       Element s = (Element) highStats.item(i);
       highMap.put(
           s.getAttribute("name"),
-          Double.parseDouble(s.getTextContent())
+          s.getTextContent()
       );
     }
 

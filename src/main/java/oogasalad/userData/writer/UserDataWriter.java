@@ -53,11 +53,11 @@ public class UserDataWriter {
       //playerHighestGameStatMap
       w.writeCharacters("\n      ");
       w.writeStartElement("playerHighestGameStatMap");
-      for (Map.Entry<String, Double> e : ugd.playerHighestGameStatMap().entrySet()) {
+      for (Map.Entry<String, String> e : ugd.playerHighestGameStatMap().entrySet()) {
         w.writeCharacters("\n        ");
         w.writeStartElement("stat");
         w.writeAttribute("name", e.getKey());
-        w.writeCharacters(e.getValue().toString());
+        w.writeCharacters(e.getValue());
         w.writeEndElement();
       }
       w.writeCharacters("\n      ");
