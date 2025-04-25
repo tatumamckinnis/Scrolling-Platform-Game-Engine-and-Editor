@@ -19,6 +19,7 @@ import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.controller.api.LevelAPI;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import oogasalad.engine.model.object.Player;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
@@ -49,6 +50,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
   private DefaultView myView;
   private static List<KeyCode> currentKeysPressed;
   private List<KeyCode> currentKeysReleased;
+  private String myCurrentGamePath;
   private String currentLevel;
 
   /**
@@ -91,6 +93,7 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException,
       NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     currentLevel = filePath;
+    myCurrentGamePath = filePath;
     myLevelAPI.selectGame(filePath);
   }
 
@@ -150,6 +153,41 @@ public class DefaultGameManager implements GameManagerAPI, InputProvider {
     String i18nLanguageCode = language.substring(0, 2);
     ResourceManager.getInstance().setLocale(Locale.of(i18nLanguageCode));
     LOG.info("Setting language to {}", language);
+  }
+
+  @Override
+  public Object getPlayer() {
+    return myGameController.getImmutablePlayers().get(0);
+  }
+
+  @Override
+  public String getCurrentGameName() {
+    // Extract game name from the loaded file path
+    if (myCurrentGamePath != null && !myCurrentGamePath.isEmpty()) {
+      // Handle path like "data/gameData/levels/GameName/level.xml"
+      String[] pathParts = myCurrentGamePath.split("/");
+      // Find the game name part (usually the second-to-last directory)
+      if (pathParts.length >= 2) {
+        return pathParts[pathParts.length - 2];
+      }
+    }
+    return "Unknown";
+  }
+
+  @Override
+  public String getCurrentLevelName() {
+    // Extract level name from the loaded file path
+    if (myCurrentGamePath != null && !myCurrentGamePath.isEmpty()) {
+      // Handle path like "data/gameData/levels/GameName/level.xml"
+      String[] pathParts = myCurrentGamePath.split("/");
+      // Get the level filename (last part of path)
+      if (pathParts.length >= 1) {
+        String levelFile = pathParts[pathParts.length - 1];
+        // Remove file extension if needed
+        return levelFile.replaceAll("\\.xml$", "");
+      }
+    }
+    return "Unknown";
   }
 
   /**

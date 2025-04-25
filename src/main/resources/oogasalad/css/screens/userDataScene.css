@@ -1,0 +1,177 @@
+/* Full window */
+html {
+  height: 100%;
+  width: 100%;
+}
+
+/* Splash‐style panes (if reused) */
+.logo-pane {
+  -fx-background-color: lightblue;
+}
+.options-pane {
+  -fx-background-color: lightgoldenrodyellow;
+}
+
+/* All Buttons */
+.button {
+  -fx-font-family: "Montserrat", "Lato", serif;
+  -fx-font-weight: bold;
+  -fx-font-size: 24px;
+  -fx-background-color: white;
+  -fx-text-fill: black;
+  -fx-border-width: 5px;
+  -fx-border-style: solid;
+}
+.button:hover {
+  -fx-scale-x: 1.1;
+  -fx-scale-y: 1.1;
+}
+.button:pressed {
+  -fx-scale-x: 0.9;
+  -fx-scale-y: 0.9;
+  -fx-text-fill: white;
+}
+
+/* ComboBoxes */
+.game-combobox {
+  -fx-border-color: #ff746c;
+}
+.game-combobox:hover {
+  -fx-background-color: #ff746c;
+  -fx-text-fill: white;
+}
+.game-combobox > .list-cell {
+  -fx-alignment: center;
+  -fx-text-alignment: center;
+}
+.game-combobox:hover > .list-cell:empty {
+  -fx-text-fill: white;
+}
+.game-combobox:hover > .list-cell {
+  -fx-text-fill: white;
+}
+
+.level-combobox {
+  -fx-border-color: #b7f582;
+}
+.level-combobox:hover {
+  -fx-background-color: #b7f582;
+}
+.level-combobox > .list-cell {
+  -fx-alignment: center;
+  -fx-text-alignment: center;
+}
+.level-combobox:hover > .list-cell:empty {
+  -fx-text-fill: white;
+}
+.level-combobox:hover > .list-cell {
+  -fx-text-fill: white;
+}
+
+/* Engine / Editor / Help / "Play Another Game" buttons */
+.engine-button {
+  -fx-border-color: #ffbe4e;
+}
+.engine-button:hover {
+  -fx-background-color: #ffbe4e;
+  -fx-text-fill: white;
+}
+
+.editor-button {
+  -fx-border-color: #535bff;
+}
+.editor-button:hover {
+  -fx-background-color: #535bff;
+  -fx-text-fill: white;
+}
+
+.help-button {
+  -fx-border-color: #ccccff;
+}
+.help-button:hover {
+  -fx-background-color: #ccccff;
+  -fx-text-fill: white;
+}
+
+.play-another-game-button {
+  -fx-border-color: #ffc4df;
+}
+.play-another-game-button:hover {
+  -fx-background-color: #ffc4df;
+  -fx-text-fill: white;
+}
+
+/* Body text defaults */
+body {
+  font-family: 'Montserrat', 'Lato', serif;
+  font-weight: bold;
+  font-size: 12px;
+  color: white;
+}
+
+/* container centering the profile */
+.user-profile-container {
+  -fx-padding: 20;
+}
+
+/* info grid background & border */
+.user-info-grid {
+  -fx-background-color: rgba(255,255,255,0.1);
+  -fx-border-color: white;
+  -fx-border-width: 2;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+  -fx-padding: 10;
+}
+
+/* games accordion header styling */
+.game-combobox .titled-pane > .title {
+  -fx-background-color: white;
+  -fx-border-color: #ff746c;
+  -fx-border-width: 2px 2px 0 2px;
+  -fx-padding: 8px;
+  -fx-text-fill: black;
+  -fx-alignment: center;
+}
+.game-combobox .titled-pane:hover > .title {
+  -fx-background-color: #ff746c;
+  -fx-text-fill: white;
+}
+.game-combobox .titled-pane > .content {
+  -fx-background-color: white;
+  -fx-border-color: #ff746c;
+  -fx-border-width: 0 2px 2px 2px;
+}
+
+/* level accordion header styling */
+.level-combobox .titled-pane > .title {
+  -fx-background-color: white;
+  -fx-border-color: #b7f582;
+  -fx-border-width: 2px 2px 0 2px;
+  -fx-padding: 6px;
+  -fx-text-fill: black;
+  -fx-alignment: center;
+}
+.level-combobox .titled-pane:hover > .title {
+  -fx-background-color: #b7f582;
+  -fx-text-fill: white;
+}
+.level-combobox .titled-pane > .content {
+  -fx-background-color: white;
+  -fx-border-color: #b7f582;
+  -fx-border-width: 0 2px 2px 2px;
+}
+
+.edit-profile-button {
+  -fx-background-color: #4267B2;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-min-width: 120px;
+  -fx-padding: 8px;
+  -fx-cursor: hand;
+  -fx-font-size: 13px;
+}
+
+.edit-profile-button:hover {
+  -fx-background-color: #365899;
+}

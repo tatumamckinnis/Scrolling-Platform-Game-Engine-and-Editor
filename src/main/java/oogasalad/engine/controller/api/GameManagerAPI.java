@@ -99,4 +99,10 @@ public interface GameManagerAPI {
    * @param language new language selected
    */
   void setLanguage(String language);
+
+  Object getPlayer();
+
+  String getCurrentGameName();
+
+  String getCurrentLevelName();
 }
