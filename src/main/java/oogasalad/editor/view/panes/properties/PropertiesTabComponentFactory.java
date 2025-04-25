@@ -105,6 +105,16 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     LOG.debug("PropertiesTabComponentFactory onSpriteTemplateAdded.");
   }
 
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+
+  }
+
   /**
    * Factory method for creating identity text fields (Name, Group).
    */

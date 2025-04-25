@@ -119,4 +119,14 @@ public class EditorListenerNotifier {
     LOG.debug("Notifying listeners: Sprite template changed");
     viewListeners.forEach(EditorViewListener::onSpriteTemplateChanged);
   }
+
+  public void notifySnapToGridChanged(boolean doSnap) {
+    LOG.debug("Notifying listeners: Snap to grid changed");
+    viewListeners.forEach(listener -> listener.setSnapToGrid(doSnap));
+  }
+
+  public void notifyCellSizeChanged(int cellSize) {
+    LOG.debug("Notifying listeners: Cell size changed");
+    viewListeners.forEach(listener -> listener.setCellSize(cellSize));
+  }
 }
