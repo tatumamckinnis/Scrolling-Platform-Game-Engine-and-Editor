@@ -17,12 +17,19 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.GameObjectData;
 
-public class SpawnNewObjectOutcome implements Outcome{
+/**
+ * Spawns object at specified location
+ *
+ * @author Gage Garcia
+ */
+public class SpawnNewObjectOutcome implements Outcome {
+
   private final GameExecutor executor;
 
   public SpawnNewObjectOutcome(GameExecutor gameExecutor) {
     this.executor = gameExecutor;
   }
+
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)

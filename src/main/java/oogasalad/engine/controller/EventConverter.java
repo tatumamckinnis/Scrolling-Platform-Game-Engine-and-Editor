@@ -75,13 +75,6 @@ public class EventConverter {
             EventCondition.ConditionType.valueOf(condition.name()), condition.stringProperties(),
             condition.doubleProperties());
 
-        for (Map.Entry<String,String> e : condition.stringProperties().entrySet()) {
-          LOG.info("stringProperty: " + e.getKey() + " -> " + e.getValue());
-        }
-
-        for (Map.Entry<String,Double> e : condition.doubleProperties().entrySet()) {
-          LOG.info("doubleProperty: " + e.getKey() + " -> " + e.getValue());
-        }
         conditions.add(newCondition);
       }
       eventConditions.add(conditions);

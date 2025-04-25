@@ -18,33 +18,29 @@ import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.GameObjectData;
 
 /**
- * Spawns object with respect to the object containing the event
+ * Spawns specified object at current location and removes current object
  *
  * @author Gage Garcia
  */
-public class SpawnOnObjectOutcome implements Outcome {
-
+public class ChangeObjectOutcome implements Outcome{
   private final GameExecutor gameExecutor;
 
-  public SpawnOnObjectOutcome(GameExecutor gameExecutor) {
-    this.gameExecutor = gameExecutor;
+  public ChangeObjectOutcome(GameExecutor executor) {
+    this.gameExecutor = executor;
   }
-
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)
       throws LayerParseException, EventParseException, BlueprintParseException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, DataFormatException, LevelDataParseException, PropertyParsingException, SpriteParseException, HitBoxParseException, GameObjectParseException, ClassNotFoundException, InstantiationException {
-
-    UUID uniqueId = UUID.randomUUID();
+    gameExecutor.destroyGameObject(gameObject); //remove current object
+    UUID uniqueId = UUID.fromString(gameObject.getUUID());
     int blueprintId = (int) Math.ceil(doubleParameters.get("blueprintId"));
-    int dx = (int) Math.ceil(doubleParameters.get("offset_x"));
-    int dy = (int) Math.ceil(doubleParameters.get("offset_y"));
-    int x = gameObject.getXPosition() + dx;
-    int y = gameObject.getYPosition() + dy;
+    int x = gameObject.getXPosition();
+    int y = gameObject.getYPosition();
     int layer = (int) Math.ceil(doubleParameters.get("layer"));
     String layerName = stringParameters.get("layer_name");
     GameObjectData data = new GameObjectData(blueprintId, uniqueId, x, y, layer, layerName);
-    gameExecutor.addGameObject(data);
+    gameExecutor.addGameObject(data); //add new one
 
   }
 }
