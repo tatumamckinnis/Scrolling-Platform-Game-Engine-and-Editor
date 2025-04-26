@@ -5,6 +5,8 @@ import javafx.scene.Group;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The {@code TimeCamera} class implements the {@link Camera} interface to simulate a camera that
@@ -15,6 +17,7 @@ import oogasalad.engine.model.object.ImmutableGameObject;
  */
 public class TrackerCamera implements Camera {
 
+  private static final Logger LOG = LogManager.getLogger();
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
 
   /**
@@ -29,6 +32,9 @@ public class TrackerCamera implements Camera {
   private static final double CAMERA_OFFSET_Y = Double.parseDouble(
       resourceManager.getConfig("engine.controller.level", "LevelHeight")) / 2.0;
 
+  private double xOffset;
+  private double yOffset;
+  private double zoom;
   private ImmutableGameObject viewObjectToTrack;
 
   /**
@@ -44,11 +50,39 @@ public class TrackerCamera implements Camera {
       throw new NullPointerException(resourceManager.getText("exceptions","GameWorldNull"));
     }
     try {
+      scaleWorld(gameWorld);
       gameWorld.setTranslateX(CAMERA_OFFSET_X - viewObjectToTrack.getXPosition());
       gameWorld.setTranslateY(CAMERA_OFFSET_Y - viewObjectToTrack.getYPosition());
     } catch (Exception e) {
       throw new NoSuchElementException(resourceManager.getText("exceptions","ObjectDoesntExist"));
     }
+  }
+
+  @Override
+  public void scaleWorld(Group gameWorld) {
+    try {
+      gameWorld.setScaleX(zoom);
+      gameWorld.setScaleY(zoom);
+    } catch (Exception e) {
+      throw new NullPointerException(
+          resourceManager.getText("exceptions", "GameWorldNull") + e.getMessage());
+    }
+  }
+
+  @Override
+  public void setZoom(double zoom) {
+    LOG.info("Setting zoom to " + zoom);
+    this.zoom = zoom;
+  }
+
+  @Override
+  public void setCameraOffsetX(double x) {
+    this.xOffset = x;
+  }
+
+  @Override
+  public void setCameraOffsetY(double y) {
+    this.yOffset = y;
   }
 
   /**
