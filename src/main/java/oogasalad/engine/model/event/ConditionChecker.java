@@ -2,7 +2,6 @@ package oogasalad.engine.model.event;
 
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.input.KeyCode;
 import oogasalad.engine.controller.api.InputProvider;
 import oogasalad.engine.model.event.condition.AtOrBeyondXCondition;
 import oogasalad.engine.model.event.condition.AtOrBeyondYCondition;

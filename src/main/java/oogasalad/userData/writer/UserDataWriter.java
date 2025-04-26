@@ -14,8 +14,12 @@ import oogasalad.exceptions.UserDataWriteException;
 import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserDataWriter {
+
+  private static Logger LOG = LogManager.getLogger();
 
   /**
    * Writes a single <user> XML document for the given UserData to the provided OutputStream.
@@ -150,7 +154,7 @@ public class UserDataWriter {
     }
     
     String fullPath = directoryPath + filename;
-    System.out.println("Writing user " + user.username() + " to " + fullPath);
+    LOG.info("Writing user " + user.username() + " to " + fullPath);
     writeUsersData(user, fullPath);
   }
 
