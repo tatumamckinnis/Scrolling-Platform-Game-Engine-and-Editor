@@ -1,6 +1,8 @@
 package oogasalad.engine.view.screen;
 
 import javafx.scene.text.Text;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 
@@ -12,6 +14,7 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
  * An online lobby screen with a start button and a text displaying the number of players.
  */
 public class OnlineLobby extends Display {
+  private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private final int players;
   private final int lobby;
   private final ViewState viewState;
@@ -56,5 +59,10 @@ public class OnlineLobby extends Display {
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     // No player stats to render in the lobby.
+  }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
   }
 }

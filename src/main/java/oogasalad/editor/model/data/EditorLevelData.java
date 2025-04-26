@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import org.apache.logging.log4j.LogManager;
@@ -24,26 +27,30 @@ import org.apache.logging.log4j.Logger;
  */
 public class EditorLevelData {
 
-  private static final Logger LOG = LogManager.getLogger();
+  private static final Logger LOG = LogManager.getLogger(EditorLevelData.class);
 
   private String gameName;
   private String levelName;
-  private List<String> myGroups;
+  private Set<String> myGroups;
   private List<Layer> myLayers;
   private Map<Layer, List<EditorObject>> myLayerDataMap;
   private Map<UUID, EditorObject> myObjectDataMap;
   private SpriteSheetLibrary spriteLibrary;
   private SpriteTemplateMap spriteTemplateMap;
+  private CameraData cameraData;
 
   private static final Properties editorConfig = new Properties();
   private static final String propertyFile = "oogasalad/config/editor/resources/editorConfig.properties";
 
   static {
-    try (InputStream is = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream(propertyFile)) {
-      editorConfig.load(is);
-    } catch (IOException e) {
-      LOG.info(e.getMessage());
+    try (InputStream is = EditorLevelData.class.getClassLoader().getResourceAsStream(propertyFile)) {
+      if (is != null) {
+        editorConfig.load(is);
+      } else {
+        LOG.error("Could not find editor configuration file: {}", propertyFile);
+      }
+    } catch (IOException | NullPointerException e) {
+      LOG.error("Failed to load editor configuration properties from {}: {}", propertyFile, e.getMessage(), e);
     }
   }
 
@@ -54,14 +61,16 @@ public class EditorLevelData {
   public EditorLevelData() {
     gameName = "dinosaurgame";
     levelName = "";
-    myGroups = new ArrayList<>();
+    myGroups = new LinkedHashSet<>();
     myLayers = new ArrayList<>();
     myLayerDataMap = new HashMap<>();
-    getFirstLayer(); // Instantiates the first layer if it does not exist.
-    myLayerDataMap.put(getFirstLayer(), new ArrayList<>());
+    Layer firstLayer = getFirstLayer();
+    myLayerDataMap.put(firstLayer, new ArrayList<>());
     myObjectDataMap = new HashMap<>();
     spriteLibrary = new SpriteSheetLibrary();
     spriteTemplateMap = new SpriteTemplateMap();
+    cameraData = new CameraData();
+    LOG.debug("EditorLevelData initialized.");
   }
 
   /**
@@ -71,8 +80,10 @@ public class EditorLevelData {
    */
   public UUID createEditorObject() {
     EditorObject newObject = new EditorObject(this);
-    myLayerDataMap.getOrDefault(getFirstLayer(), new ArrayList<>()).add(newObject);
+    Layer firstLayer = getFirstLayer();
+    myLayerDataMap.computeIfAbsent(firstLayer, k -> new ArrayList<>()).add(newObject);
     myObjectDataMap.put(newObject.getIdentityData().getId(), newObject);
+    LOG.debug("Created and registered new EditorObject with ID: {}", newObject.getId());
     return newObject.getIdentityData().getId();
   }
 
@@ -83,6 +94,7 @@ public class EditorLevelData {
    * @return the unique identifier of the created editor object, or null if not implemented
    */
   public UUID createEditorObject(String prefab) {
+    LOG.warn("createEditorObject(String prefab) is not implemented.");
     return null;
   }
 
@@ -95,6 +107,7 @@ public class EditorLevelData {
    */
   public EditorObject removeObjectById(UUID uuid) {
     Objects.requireNonNull(uuid, "UUID cannot be null for removal.");
+    LOG.debug("Removing EditorObject with ID: {}", uuid);
     return myObjectDataMap.remove(uuid);
   }
 
@@ -110,10 +123,12 @@ public class EditorLevelData {
     Objects.requireNonNull(layer, "Layer cannot be null for object removal.");
     Objects.requireNonNull(object, "Object cannot be null for removal.");
     List<EditorObject> objectsInLayer = myLayerDataMap.get(layer);
+    boolean removed = false;
     if (objectsInLayer != null) {
-      return objectsInLayer.remove(object);
+      removed = objectsInLayer.remove(object);
     }
-    return false;
+    LOG.debug("Removing object {} from layer {}: {}", object.getId(), layer.getName(), removed ? "Success" : "Failed (not found)");
+    return removed;
   }
 
   /**
@@ -121,17 +136,19 @@ public class EditorLevelData {
    *
    * @param id            the UUID of the editor object to update
    * @param updatedObject the updated {@link EditorObject} instance
-   * @return if the update was successful, false if no object with the given ID exists
+   * @return true if the update was successful, false if no object with the given ID exists
    * @throws NullPointerException if either the id or updatedObject is null
    */
   public boolean updateObjectInDataMap(UUID id, EditorObject updatedObject) {
     Objects.requireNonNull(id, "ID cannot be null for update.");
     Objects.requireNonNull(updatedObject, "Updated object cannot be null.");
+    boolean updated = false;
     if (myObjectDataMap.containsKey(id)) {
       myObjectDataMap.put(id, updatedObject);
-      return true;
+      updated = true;
     }
-    return false;
+    LOG.debug("Updating object {} in data map: {}", id, updated ? "Success" : "Failed (not found)");
+    return updated;
   }
 
   /**
@@ -154,20 +171,41 @@ public class EditorLevelData {
 
   /**
    * Retrieves the list of group names defined in the level.
+   * Returns a new list containing the elements of the internal set.
    *
-   * @return a {@link List} of group names
+   * @return a new {@link List} of group names, preserving insertion order.
    */
   public List<String> getGroups() {
-    return myGroups;
+    return new ArrayList<>(myGroups);
   }
 
   /**
-   * Adds a new group name to the level.
+   * Adds a new group name to the level. Duplicates are automatically handled by the Set.
    *
-   * @param group the group name to add
+   * @param group the group name to add. If null or empty, the group is not added.
+   * @return true if the group was added (i.e., it wasn't already present), false otherwise.
    */
-  public void addGroup(String group) {
-    myGroups.add(group);
+  public boolean addGroup(String group) {
+    if (group == null || group.trim().isEmpty()) {
+      LOG.warn("Attempted to add null or empty group name.");
+      return false;
+    }
+    boolean added = myGroups.add(group);
+    if (added) {
+      LOG.debug("Added new group: {}", group);
+    } else {
+      LOG.trace("Group '{}' already exists, not added again.", group);
+    }
+    return added;
+  }
+
+  /**
+   * Gets the CameraData object from the level object
+   *
+   * @return the {@link CameraData} of the object
+   */
+  public CameraData getCameraData() {
+    return cameraData;
   }
 
   /**
@@ -175,16 +213,24 @@ public class EditorLevelData {
    *
    * @param group the group name to remove
    * @return true if the group was successfully removed, false if any editor object is still
-   * associated with it
+   * associated with it or if the group didn't exist.
    */
   public boolean removeGroup(String group) {
+    if (group == null || !myGroups.contains(group)) {
+      LOG.warn("Attempted to remove non-existent group: {}", group);
+      return false;
+    }
     for (EditorObject object : myObjectDataMap.values()) {
-      if (group.equals(object.getIdentityData().getType())) {
+      if (object.getIdentityData() != null && group.equals(object.getIdentityData().getType())) {
+        LOG.warn("Cannot remove group '{}' because it is still associated with object {}", group, object.getId());
         return false;
       }
     }
-    myGroups.remove(group);
-    return true;
+    boolean removed = myGroups.remove(group);
+    if (removed) {
+      LOG.debug("Removed group: {}", group);
+    }
+    return removed;
   }
 
   /**
@@ -204,43 +250,80 @@ public class EditorLevelData {
    */
   public Layer getFirstLayer() {
     if (myLayers.isEmpty()) {
-      addLayer(new Layer("New Layer", 0)); // TODO: Make this to a default
+      LOG.info("No layers found, creating default layer 'New Layer'.");
+      addLayer(new Layer("New Layer", 0));
+    }
+    if (myLayers.isEmpty()) {
+      LOG.error("Failed to create or retrieve the first layer!");
+      return null;
     }
     return myLayers.get(0);
   }
 
   /**
    * Adds a new layer to the level. The layer is inserted into the list based on its priority,
-   * maintaining descending order.
+   * maintaining descending order (higher priority first).
+   * Also ensures a map entry exists for the new layer.
    *
-   * @param layer the {@link Layer} to add
+   * @param layer the {@link Layer} to add. If null, the method does nothing.
    */
   public void addLayer(Layer layer) {
+    if (layer == null) {
+      LOG.warn("Attempted to add a null layer.");
+      return;
+    }
+
     int index = 0;
     while (index < myLayers.size() && layer.getPriority() <= myLayers.get(index).getPriority()) {
-      index++; // Insert the layer to maintain descending priority levels
+      index++;
     }
     myLayers.add(index, layer);
-    myLayerDataMap.put(layer, new ArrayList<>());
+    myLayerDataMap.computeIfAbsent(layer, k -> new ArrayList<>());
+    LOG.debug("Added layer '{}' with priority {} at index {}", layer.getName(), layer.getPriority(), index);
   }
 
   /**
-   * Removes a layer from the level if it exists and its associated editor object list is empty.
+   * Removes a layer from the level if it exists and is empty (contains no objects).
+   * Cannot remove the last remaining layer.
    *
    * @param layerName the name of the layer to remove
-   * @return true if the layer was removed; false otherwise
+   * @return true if the layer was removed; false otherwise (layer not found, not empty, or last layer).
    */
   public boolean removeLayer(String layerName) {
+    if (myLayers.size() <= 1) {
+      LOG.warn("Cannot remove the last remaining layer '{}'.", layerName);
+      return false;
+    }
+
+    Layer layerToRemove = null;
     for (Layer layer : myLayers) {
       if (layer.getName().equals(layerName)) {
-        if (myLayerDataMap.containsKey(layer) && myLayerDataMap.get(layer).isEmpty()) {
-          myLayerDataMap.remove(layer);
-          return true;
-        }
+        layerToRemove = layer;
+        break;
       }
     }
-    return false;
+
+    if (layerToRemove == null) {
+      LOG.warn("Layer '{}' not found for removal.", layerName);
+      return false;
+    }
+
+    List<EditorObject> objectsInLayer = myLayerDataMap.get(layerToRemove);
+    if (objectsInLayer != null && !objectsInLayer.isEmpty()) {
+      LOG.warn("Cannot remove non-empty layer '{}'. It contains {} objects.", layerName, objectsInLayer.size());
+      return false;
+    }
+
+    boolean layerRemoved = myLayers.remove(layerToRemove);
+    myLayerDataMap.remove(layerToRemove);
+    if(layerRemoved) {
+      LOG.debug("Removed empty layer: {}", layerName);
+    } else {
+      LOG.error("Failed to remove layer '{}' from list, though it was found.", layerName);
+    }
+    return layerRemoved;
   }
+
 
   /**
    * Retrieves the editor object corresponding to the specified UUID.
@@ -290,24 +373,36 @@ public class EditorLevelData {
   }
 
   /**
-   * Adds a spriteData object to the current spriteData mapping
-   * @param spriteTemplate The spriteData to add to the mapping
+   * Adds a sprite template to the current sprite template mapping.
+   * @param spriteTemplate The sprite template to add to the mapping. If null, nothing is added.
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
-    spriteTemplateMap.addSpriteTemplate(spriteTemplate);
+    if (spriteTemplate != null) {
+      spriteTemplateMap.addSpriteTemplate(spriteTemplate);
+      LOG.debug("Added sprite template: {}", spriteTemplate.getName());
+    } else {
+      LOG.warn("Attempted to add a null sprite template.");
+    }
   }
 
+  /**
+   * Gets the map holding sprite templates.
+   * @return The SpriteTemplateMap instance.
+   */
   public SpriteTemplateMap getSpriteTemplateMap() {
     return spriteTemplateMap;
   }
 
   /**
-   * Retrieves the minimum and maximum dimensions of all objects.
-   * TODO: Create a record class to use this
+   * Retrieves the minimum and maximum dimensions encompassing all object hitboxes.
    *
-   * @return an integer array of minX, minY, maxX, maxY
+   * @return an integer array of [minX, minY, maxX, maxY], or [0, 0, 0, 0] if no objects exist.
    */
   public int[] getBounds() {
+    if (myObjectDataMap.isEmpty()) {
+      return new int[]{0, 0, 0, 0};
+    }
+
     double minX = Double.MAX_VALUE;
     double minY = Double.MAX_VALUE;
     double maxX = Double.MIN_VALUE;
@@ -315,16 +410,25 @@ public class EditorLevelData {
 
     for (EditorObject object : myObjectDataMap.values()) {
       HitboxData hitbox = object.getHitboxData();
-      double x = hitbox.getX();
-      double y = hitbox.getY();
-      double width = hitbox.getWidth();
-      double height = hitbox.getHeight();
+      if (hitbox != null) {
+        double x = hitbox.getX();
+        double y = hitbox.getY();
+        double width = hitbox.getWidth();
+        double height = hitbox.getHeight();
 
-      minX = Math.min(minX, x);
-      minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x + width);
-      maxY = Math.max(maxY, y + height);
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x + width);
+        maxY = Math.max(maxY, y + height);
+      } else {
+        LOG.warn("Object {} has null HitboxData when calculating bounds.", object.getId());
+      }
     }
-    return new int[]{(int) minX, (int) minY, (int) maxX, (int) maxY};
+
+    if (minX == Double.MAX_VALUE) {
+      return new int[]{0, 0, 0, 0};
+    }
+
+    return new int[]{(int) Math.floor(minX), (int) Math.floor(minY), (int) Math.ceil(maxX), (int) Math.ceil(maxY)};
   }
 }

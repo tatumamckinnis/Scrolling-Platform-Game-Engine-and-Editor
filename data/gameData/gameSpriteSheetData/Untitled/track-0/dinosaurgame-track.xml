@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for track-0 (Untitled)
+-->
+<spriteFile imagePath="dinosaurgame-track.png">
+  <sprite name="track-0" x="0" y="0" width="480" height="28">
+    <frames>
+      <frame name="track-0" x="0" y="0" width="480" height="28"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

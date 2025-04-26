@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.CollisionData;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;

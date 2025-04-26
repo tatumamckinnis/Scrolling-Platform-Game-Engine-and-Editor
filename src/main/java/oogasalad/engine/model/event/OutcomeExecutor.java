@@ -36,6 +36,7 @@ import oogasalad.engine.model.event.outcome.SpawnNewObjectOutcome;
 import oogasalad.engine.model.event.outcome.SpawnOnObjectOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToPointOutcome;
 import oogasalad.engine.model.event.outcome.TeleportObjectToRandomPointOutcome;
+import oogasalad.engine.model.event.outcome.WinGameOutcome;
 import oogasalad.engine.model.event.outcome.stopObjectAnimationsOutcome;
 import oogasalad.engine.model.object.GameObject;
 import oogasalad.exceptions.BlueprintParseException;
@@ -86,6 +87,7 @@ public class OutcomeExecutor {
     outcomeMap.put(OutcomeType.CHANGE_OBJECT, new ChangeObjectOutcome(gameExecutor));
     outcomeMap.put(OutcomeType.DASH, new DashOutcome(inputProvider));
     outcomeMap.put(OutcomeType.RESET_VELOCITY, new ResetVelocityOutcome());
+    outcomeMap.put(OutcomeType.WIN_GAME, new WinGameOutcome(gameExecutor));
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;

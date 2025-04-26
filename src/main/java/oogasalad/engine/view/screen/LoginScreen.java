@@ -314,4 +314,9 @@ public class LoginScreen extends Display {
   public void renderPlayerStats(ImmutableGameObject player) {
     // Not applicable for login screen
   }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
 } 

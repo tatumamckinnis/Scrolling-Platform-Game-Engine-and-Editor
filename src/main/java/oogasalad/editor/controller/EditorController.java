@@ -3,12 +3,13 @@ package oogasalad.editor.controller;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import oogasalad.editor.model.data.EditorObject;
-import oogasalad.editor.model.data.SpriteSheetLibrary;
+import oogasalad.editor.controller.level.EditorDataAPI;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.records.BlueprintData;
 
 /**
@@ -212,4 +213,10 @@ public interface EditorController {
    */
   void notifyPrefabsChanged();
 
+  /**
+   * Save the level data by calling the editor saver
+   *
+   * @param fileName the file to save the level data to
+   */
+  void saveLevelData(String fileName) throws EditorSaveException;
 }

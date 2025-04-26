@@ -2,12 +2,7 @@ package oogasalad.editor.view;
 
 import java.util.List;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import oogasalad.editor.controller.ConcreteEditorController;
-import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.controller.EditorDataAPI;
 import oogasalad.editor.controller.EditorMaker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

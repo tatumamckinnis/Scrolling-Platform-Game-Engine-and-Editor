@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
@@ -16,7 +16,6 @@ import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.EventData;
 
 /**
  * Unit tests for the BlueprintBuilder converter.

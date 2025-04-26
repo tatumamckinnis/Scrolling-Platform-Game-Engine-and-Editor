@@ -7,7 +7,10 @@ import oogasalad.engine.view.camera.Camera;
 import oogasalad.engine.view.components.GameControlPanel;
 import oogasalad.engine.view.components.HUD;
 import oogasalad.engine.view.components.NewGameComponents;
+import oogasalad.engine.view.screen.EndGameScreen;
 import oogasalad.exceptions.RenderingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is the view for an active game. It manages rendering the game scene, displaying UI
@@ -16,6 +19,8 @@ import oogasalad.exceptions.RenderingException;
  * @author Aksel Bell
  */
 public class GameDisplay extends Display {
+
+  private static final Logger LOG = LogManager.getLogger();
 
   private final ViewState myViewState;
   private final GameControlPanel myGameControlPanel;
@@ -68,6 +73,13 @@ public class GameDisplay extends Display {
   @Override
   public void renderPlayerStats(ImmutableGameObject player) {
     myHUD.renderPlayerStats(player);
+  }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    LOG.info("Rendering End Game Scene: " + gameWon);
+    EndGameScreen winScreen = new EndGameScreen(myViewState);
+    this.getChildren().add(winScreen);
+    winScreen.renderEndGameScreen(gameWon);
   }
 }

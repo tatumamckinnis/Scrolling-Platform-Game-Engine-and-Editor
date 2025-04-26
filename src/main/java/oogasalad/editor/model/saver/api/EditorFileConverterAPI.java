@@ -3,6 +3,7 @@ package oogasalad.editor.model.saver.api;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 /**
@@ -27,7 +28,7 @@ public interface EditorFileConverterAPI {
    * @throws DataFormatException if data cannot be translated into the parser's model
    */
   void saveEditorDataToFile(EditorLevelData editorLevelData, String fileName, SaverStrategy saver)
-      throws IOException, DataFormatException;
+      throws EditorSaveException;
 
   /**
    * Loads an existing file into the Editor by: 1) Calling GameFileParserAPI to parse the file into

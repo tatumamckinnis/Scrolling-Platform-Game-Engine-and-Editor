@@ -451,7 +451,6 @@ public class ButtonActionFactory {
             username = sessionManager.getSavedUsername();
             password = sessionManager.getSavedPassword();
           } else {
-            // If no session, use default account as fallback (ideally remove this in a real app)
             username = "gamer123";
             password = "bruh";
           }

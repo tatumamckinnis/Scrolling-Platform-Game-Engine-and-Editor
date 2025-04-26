@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.CameraData;
@@ -41,6 +41,7 @@ public class EditorDataSaver {
     }
 
     int[] bounds = editorLevelData.getBounds();
+    oogasalad.editor.model.data.CameraData cameraData = editorLevelData.getCameraData();
 
     return new LevelData(
         editorLevelData.getLevelName(),
@@ -48,7 +49,7 @@ public class EditorDataSaver {
         bounds[1],
         bounds[2],
         bounds[3],
-        new CameraData("camera", null, null),
+        new CameraData(cameraData.getCameraType(), cameraData.getStringParams(), cameraData.getDoubleParams()),
         flipMapping(blueprintToId),
         gameObjects
     );

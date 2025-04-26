@@ -3,6 +3,7 @@ package oogasalad.filesaver;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -42,7 +43,7 @@ public class FileSaver {
    * @param levelData the level data to be exported.
    * @param filePath the file path to write to.
    */
-  public void saveLevelData(LevelData levelData, String filePath) throws IOException {
+  public void saveLevelData(LevelData levelData, String filePath) throws EditorSaveException {
     if (mySaverStrategy == null) {
       LOG.warn("Export type not selected.");
       throw new IllegalStateException("Export type not selected. Call chooseExportType first.");

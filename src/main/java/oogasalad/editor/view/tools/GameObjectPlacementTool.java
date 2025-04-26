@@ -2,7 +2,7 @@ package oogasalad.editor.view.tools;
 
 import java.util.Objects;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.components.EditorGameView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

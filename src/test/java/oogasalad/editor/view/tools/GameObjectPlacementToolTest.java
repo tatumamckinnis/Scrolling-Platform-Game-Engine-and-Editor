@@ -1,7 +1,7 @@
 package oogasalad.editor.view.tools;
 
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.view.EditorGameView;
+import oogasalad.editor.view.components.EditorGameView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

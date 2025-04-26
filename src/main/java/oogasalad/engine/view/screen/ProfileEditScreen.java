@@ -333,4 +333,9 @@ public class ProfileEditScreen extends Display {
   public void renderPlayerStats(ImmutableGameObject player) {
     // Not applicable for profile edit screen
   }
+
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
+  }
 } 
