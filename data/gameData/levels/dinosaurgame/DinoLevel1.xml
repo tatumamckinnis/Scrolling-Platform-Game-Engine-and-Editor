@@ -63,7 +63,7 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
-        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="100" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties>
           </stringProperties>
@@ -494,6 +494,18 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="RESET_VELOCITY">
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="100">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PATROL">
         </outcome>
       </outcomes>
     </event>

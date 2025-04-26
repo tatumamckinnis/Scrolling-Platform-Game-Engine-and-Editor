@@ -318,19 +318,22 @@ public class ConditionsSectionBuilder {
 
     GridPane grid = createParametersGrid();
     String paramCountKey = executorName + getLocalProp("param.baseKey") + getLocalProp("param.countSuffix");
-    String paramCountStr = localProps.getProperty(paramCountKey);
+    System.out.println(paramCountKey);
+    int paramCount = Integer.parseInt(localProps.getProperty(paramCountKey));
 
-    if (paramCountStr == null) {
-      LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
-          executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
-      Label errorLabel = new Label(errorMsg);
-      parametersPane.getChildren().add(errorLabel);
-      return;
-    }
+    /**
+     * if (paramCountStr == null) {
+     *       LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
+     *           executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
+     *       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
+     *       Label errorLabel = new Label(errorMsg);
+     *       parametersPane.getChildren().add(errorLabel);
+     *       return;
+     *     }
+     */
+
 
     try {
-      int paramCount = Integer.parseInt(paramCountStr);
 
       for (int i = 1; i <= paramCount; i++) {
         String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + i;
@@ -352,7 +355,7 @@ public class ConditionsSectionBuilder {
       LOG.trace("Parameters pane updated for condition: {}", executorName);
 
     } catch (NumberFormatException e) {
-      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCountStr, e);
+      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCount, e);
       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnInvalidNumber")), executorName);
       Label errorLabel = new Label(errorMsg);
       parametersPane.getChildren().add(errorLabel);
