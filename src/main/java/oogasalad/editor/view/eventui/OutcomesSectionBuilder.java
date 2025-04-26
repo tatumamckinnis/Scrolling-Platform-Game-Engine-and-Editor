@@ -303,7 +303,7 @@ public class OutcomesSectionBuilder {
       int paramCount = Integer.parseInt(paramCountStr);
 
       for (int i = 1; i <= paramCount; i++) {
-        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + i;
+        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + "." + i;
         String name = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.nameSuffix"));
         String type = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.typeSuffix"));
         String description = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.descSuffix"), "");
