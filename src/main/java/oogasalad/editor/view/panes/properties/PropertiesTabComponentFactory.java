@@ -21,7 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Builds the "Properties" tab UI, displaying Identity & Hitbox data, etc. Implements
- * EditorViewListener to update whenever the selected object changes. Handles Group selection via ComboBox.
+ * EditorViewListener to update whenever the selected object changes. Handles Group selection via
+ * ComboBox.
  *
  * @author Tatum McKinnis
  */
@@ -30,6 +31,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private static final Logger LOG = LogManager.getLogger(PropertiesTabComponentFactory.class);
   private static final String NUMERIC_REGEX = "\\d*";
   private static final String NO_GROUP_OPTION = "<None>";
+  private TextField uuidField;
 
   private final EditorController editorController;
 
@@ -51,7 +53,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
    * @param editorController the main controller, must not be null.
    */
   public PropertiesTabComponentFactory(EditorController editorController) {
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
     LOG.info("PropertiesTabComponentFactory initialized.");
   }
 
@@ -86,6 +89,12 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Label identityLabel = new Label("Identity");
     identityLabel.getStyleClass().add("section-header");
 
+    Label uuidLabel = new Label("Object ID");
+    uuidField = new TextField();
+    uuidField.setEditable(false);
+    uuidField.setFocusTraversable(false);
+    uuidField.getStyleClass().add("uuid-field");
+
     nameField = createIdentityTextField("Name",
         (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI().setName(id, value));
 
@@ -99,14 +108,17 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           groupToSet = "";
         }
 
-        LOG.debug("Group ComboBox value changed to: '{}' for object {}", groupToSet, currentObjectId);
-        editorController.getEditorDataAPI().getIdentityDataAPI().setGroup(currentObjectId, groupToSet);
+        LOG.debug("Group ComboBox value changed to: '{}' for object {}", groupToSet,
+            currentObjectId);
+        editorController.getEditorDataAPI().getIdentityDataAPI()
+            .setGroup(currentObjectId, groupToSet);
 
       }
     });
 
     box.getChildren()
-        .addAll(identityLabel, new Label("Name"), nameField, new Label("Group"), groupComboBox);
+        .addAll(identityLabel, uuidLabel, uuidField, new Label("Name"), nameField, new Label("Group"),
+            groupComboBox);
 
     return box;
   }
@@ -131,9 +143,11 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
       if (!newVal && currentObjectId != null) {
         String currentValue = textField.getText();
-        String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
+        String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI()
+            .getName(currentObjectId);
         if (!Objects.equals(currentValue, modelValue)) {
-          LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId, currentValue);
+          LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId,
+              currentValue);
           setter.accept(currentObjectId, currentValue);
         }
       }
@@ -189,7 +203,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         int value = parseSafeInt(currentValueStr);
         int modelValue = getModelHitboxValue(promptText, currentObjectId);
         if (value != modelValue) {
-          LOG.debug("Hitbox field '{}' focus lost. Updating object {} to: {}", promptText, currentObjectId, value);
+          LOG.debug("Hitbox field '{}' focus lost. Updating object {} to: {}", promptText,
+              currentObjectId, value);
           setter.accept(currentObjectId, value);
         }
       }
@@ -200,14 +215,20 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private int getModelHitboxValue(String property, UUID id) {
     try {
       switch (property) {
-        case "X": return editorController.getEditorDataAPI().getHitboxDataAPI().getX(id);
-        case "Y": return editorController.getEditorDataAPI().getHitboxDataAPI().getY(id);
-        case "Width": return editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(id);
-        case "Height": return editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(id);
-        default: return 0;
+        case "X":
+          return editorController.getEditorDataAPI().getHitboxDataAPI().getX(id);
+        case "Y":
+          return editorController.getEditorDataAPI().getHitboxDataAPI().getY(id);
+        case "Width":
+          return editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(id);
+        case "Height":
+          return editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(id);
+        default:
+          return 0;
       }
     } catch (Exception e) {
-      LOG.warn("Could not get hitbox model value for property '{}', object {}: {}", property, id, e.getMessage());
+      LOG.warn("Could not get hitbox model value for property '{}', object {}: {}", property, id,
+          e.getMessage());
       return 0;
     }
   }
@@ -221,10 +242,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
       if (!newVal && currentObjectId != null) {
         String currentValue = textField.getText();
-        String modelValue = editorController.getEditorDataAPI().getHitboxDataAPI().getShape(currentObjectId);
+        String modelValue = editorController.getEditorDataAPI().getHitboxDataAPI()
+            .getShape(currentObjectId);
         if (!Objects.equals(currentValue, modelValue)) {
-          LOG.debug("Shape field focus lost. Updating object {} shape to: {}", currentObjectId, currentValue);
-          editorController.getEditorDataAPI().getHitboxDataAPI().setShape(currentObjectId, currentValue);
+          LOG.debug("Shape field focus lost. Updating object {} shape to: {}", currentObjectId,
+              currentValue);
+          editorController.getEditorDataAPI().getHitboxDataAPI()
+              .setShape(currentObjectId, currentValue);
         }
       }
     });
@@ -232,7 +256,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Safely parses a string into an integer. Returns 0 if parsing fails or the string is null/empty.
+   * Safely parses a string into an integer. Returns 0 if parsing fails or the string is
+   * null/empty.
    */
   private int parseSafeInt(String s) {
     if (s == null || s.trim().isEmpty()) {
@@ -296,14 +321,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   @Override
   public void onSpriteTemplateChanged() {
-    LOG.debug("PropertiesTabComponentFactory notified of sprite template changes (no direct action).");
+    LOG.debug(
+        "PropertiesTabComponentFactory notified of sprite template changes (no direct action).");
   }
 
 
   /**
-   * Refreshes all editable fields in the UI by fetching the latest data for the
-   * selected object. If no object is selected, clears all fields. Ensures execution
-   * on the JavaFX application thread.
+   * Refreshes all editable fields in the UI by fetching the latest data for the selected object. If
+   * no object is selected, clears all fields. Ensures execution on the JavaFX application thread.
    */
   private void refreshFields() {
     if (currentObjectId == null) {
@@ -315,7 +340,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       populateIdentityFields();
       populateHitboxFields();
     } catch (Exception e) {
-      LOG.error("Error refreshing properties fields for object {}: {}", currentObjectId, e.getMessage(), e);
+      LOG.error("Error refreshing properties fields for object {}: {}", currentObjectId,
+          e.getMessage(), e);
       clearFieldsInternal();
     }
   }
@@ -325,10 +351,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
    * Handles updating the ComboBox items and selection.
    */
   private void populateIdentityFields() {
-    String currentName = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
+    uuidField.setText(currentObjectId.toString());
+
+    String currentName = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getName(currentObjectId);
     nameField.setText(Objects.toString(currentName, ""));
 
-    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI().getGroup(currentObjectId);
+    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getGroup(currentObjectId);
     List<String> availableGroups = editorController.getEditorDataAPI().getGroups();
     ObservableList<String> groupOptions = FXCollections.observableArrayList();
     groupOptions.add(NO_GROUP_OPTION);
@@ -344,7 +374,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
     isUpdatingGroupComboBox = false;
 
-    LOG.trace("Populated identity fields: Name='{}', Group='{}', Options={}", currentName, groupComboBox.getValue(), groupOptions);
+    LOG.trace("Populated identity fields: Name='{}', Group='{}', Options={}", currentName,
+        groupComboBox.getValue(), groupOptions);
   }
 
   /**
@@ -380,6 +411,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     LOG.debug("Clearing properties fields.");
     currentObjectId = null;
 
+    uuidField.setText("");
     nameField.setText("");
 
     isUpdatingGroupComboBox = true;
@@ -395,8 +427,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Updates the items in the group ComboBox. Call this when the global list of groups changes.
-   * This might be called from an onGroupsChanged listener method if implemented.
+   * Updates the items in the group ComboBox. Call this when the global list of groups changes. This
+   * might be called from an onGroupsChanged listener method if implemented.
    */
   private void updateGroupComboBoxItems() {
     LOG.debug("Updating group combo box items.");
@@ -412,14 +444,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentSelection != null && groupOptions.contains(currentSelection)) {
       groupComboBox.setValue(currentSelection);
     } else if (currentObjectId != null) {
-      String objectGroup = editorController.getEditorDataAPI().getIdentityDataAPI().getGroup(currentObjectId);
+      String objectGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+          .getGroup(currentObjectId);
       if (objectGroup != null && !objectGroup.isEmpty() && groupOptions.contains(objectGroup)) {
         groupComboBox.setValue(objectGroup);
       } else {
         groupComboBox.setValue(NO_GROUP_OPTION);
       }
-    }
-    else {
+    } else {
       groupComboBox.setValue(NO_GROUP_OPTION);
     }
     isUpdatingGroupComboBox = false;

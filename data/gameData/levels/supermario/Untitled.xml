@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-240" minY="-32" maxX="32" maxY="80">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="fbab8ff2-5c57-4290-bad8-67d0651bfdfe"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="2.0"/>
+      <property name="cameraOffsetX" value="0.0"/>
+      <property name="cameraOffsetY" value="0.0"/>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_0" width="272" height="112" z="0">
+      <data>
+        <object id="1" coordinates="(-64,64), (-128,-16), (-240,16), (-240,64), (-96,16), (-96,64), (16,64), (-144,64), (-224,64), (-240,0), (-48,64), (-128,-16), (-240,-32), (-208,64), (0,64), (-240,-32), (-32,64), (-80,64), (-192,64), (-176,64), (-160,64), (-160,-16), (-64,16), (-240,-16), (-16,64), (16,64), (-240,48), (-112,64), (-160,-16), (-240,32), (-128,64)" uid="77d7f577-b157-4c74-9ba4-e75d85aa8712, d4e1e256-c440-4a80-8dff-ee808356961d, c2a4ad6f-8561-46cb-9bb3-51f3bf93b2b7, b4ced89d-4f44-44de-8490-8d76faab6b42, 81c18f4b-d4e1-4ce5-87b1-31eddb044950, 95bb9b5f-0bf5-474e-9c5a-21c6da06c8cd, 607b5a0e-b521-4be8-b694-40e3bcbb2e78, 993b56d0-04f1-4971-9494-19a7969dabcc, 08034d82-8ea3-47bb-ab8a-3b35f9dc2870, 159e012c-23a6-4182-a9ae-c01f128bb366, 8d527899-30b2-4253-9d9e-8ec1aa83a7fa, 11598f98-cde1-4ece-8d88-5ab1f9516048, ca51b24b-3f6d-42de-97af-76070e9326c2, fcef3812-ca15-4b04-a592-694da0f40116, 8a236535-7c71-4f23-9097-c5a2c06e37cc, 26a64ade-ff69-4c20-815a-f382a2b3bd8f, 6d707cf0-ade5-4da3-addb-303624d033ec, 4de0192c-aecf-4ed6-a4f6-eda63e7805a6, 6515af6d-f8a6-4488-bd4c-b6897e7013ff, 741af309-1ef5-4314-a8ff-f69160da5e19, 17fd54b7-3ab7-49a0-ba6d-634dffc88810, 1f0a8b5d-c1bd-48b9-ae49-706d43b73de5, 10fbf618-9b34-476b-8b7f-b1cbf01dd830, cc63c76b-f563-4406-8538-ed1cce1f7e79, d4f8f4d2-240e-4cac-af0e-64b65a0bf30a, 9ba53d1f-8243-4f12-8bbe-179b1975fb4a, 85ad5707-7dac-4f25-acbe-51707b7e2a26, de44a947-6992-43fc-92b8-0dbf7041a39c, 4a99884a-3193-4bec-8e57-9ce8a2d460be, 03760052-3821-4a71-aa66-1e5dbc4053f2, 8f196847-f23e-4118-bbaf-97a34651a41a" />
+        <object id="2" coordinates="(-80,16), (-144,-16), (-144,-16)" uid="73a2a3f7-9a87-4108-b03c-7970c641fd91, eb1192e5-55b6-4cd6-b6ae-2aa5596bfe62, 324172c9-ff27-4977-965b-dbe76b948e0c" />
+        <object id="3" coordinates="(-144,-32)" uid="b704912b-cd40-4d4e-9088-39b981077907" />
+        <object id="4" coordinates="(-80,0)" uid="20152458-efe1-4177-94b6-a84124e3c768" />
+        <object id="5" coordinates="(-208,32)" uid="fbab8ff2-5c57-4290-bad8-67d0651bfdfe" />
+      </data>
+    </layer>
+  </layers>
+  <game name="supermario">
+    <objectGroup name="entities">
+      <object
+  spriteName="big-mario-begin-run-left"
+  type="entities"
+  id="5"
+  spriteFile="big-mario-begin-run-left.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="32"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks">
+      <object
+  spriteName="overworld-brick"
+  type="blocks"
+  id="1"
+  spriteFile="overworld-brick.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="flash-1"
+  type="blocks"
+  id="2"
+  spriteFile="flash-1.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="items">
+      <object
+  spriteName="mushroom-green.png"
+  type="items"
+  id="3"
+  spriteFile="mushroom-green.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="mushroom-red.png"
+  type="items"
+  id="4"
+  spriteFile="mushroom-red.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+  </events>
+</map>

@@ -1101,11 +1101,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void setSnapToGrid(boolean doSnap) {
     this.snapToGrid = doSnap;
+    redrawObjects();
   }
 
   @Override
   public void setCellSize(int cellSize) {
     this.cellSize = cellSize;
+    redrawObjects();
   }
 
   /**
