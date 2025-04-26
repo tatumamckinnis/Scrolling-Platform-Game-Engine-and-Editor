@@ -58,6 +58,7 @@ public class LevelPropertiesDialog extends Stage {
   private final CameraDataManager cameraManager;
 
   /* ------------------- UI controls -------------------- */
+  private final TextField gameNameTextField = new TextField();
   private final TextField widthField = new TextField();
   private final TextField heightField = new TextField();
 
@@ -128,6 +129,7 @@ public class LevelPropertiesDialog extends Stage {
 
     /* ––– root layout ––– */
     VBox root = new VBox(12,
+        section("Game Name:", gameNameTextField),
         section("Dimensions", sizeGrid),
         section("Camera", cameraBlock),
         section("Layers", new VBox(layerTable, layerButtons(layerTable))),
@@ -274,26 +276,9 @@ public class LevelPropertiesDialog extends Stage {
 
   private boolean pushToModel() {
     try {
+      setGameName();
       /* camera type + per-type params */
-      String camType = cameraTypeBox.getValue();
-      cameraManager.setType(camType);
-
-      CameraSpecLoader.Specifications spec =
-          SPEC_LOADER.getSpecifications(camType);
-
-      Map<String, String> strParams = new HashMap<>();
-      Map<String, Double> dblParams = new HashMap<>();
-
-      spec.strParams().forEach(p ->
-          strParams.put(p, paramFieldMap.get(p).getText()));
-      spec.dblParams().forEach(p -> {
-        String txt = paramFieldMap.get(p).getText();
-        dblParams.put(p, txt.isBlank() ? 0 : Double.parseDouble(txt));
-      });
-
-      cameraManager.replaceStringParams(strParams);
-      cameraManager.replaceDoubleParams(dblParams);
-
+      setCamera();
       return true;
 
     } catch (NumberFormatException nfe) {
@@ -307,5 +292,32 @@ public class LevelPropertiesDialog extends Stage {
           .showAndWait();
     }
     return false;
+  }
+
+  private void setCamera() {
+    String camType = cameraTypeBox.getValue();
+    cameraManager.setType(camType);
+
+    CameraSpecLoader.Specifications spec =
+        SPEC_LOADER.getSpecifications(camType);
+
+    Map<String, String> strParams = new HashMap<>();
+    Map<String, Double> dblParams = new HashMap<>();
+
+    spec.strParams().forEach(p ->
+        strParams.put(p, paramFieldMap.get(p).getText()));
+    spec.dblParams().forEach(p -> {
+      String txt = paramFieldMap.get(p).getText();
+      dblParams.put(p, txt.isBlank() ? 0 : Double.parseDouble(txt));
+    });
+
+    cameraManager.replaceStringParams(strParams);
+    cameraManager.replaceDoubleParams(dblParams);
+  }
+
+  private void setGameName() {
+    String gameName = gameNameTextField.getText();
+    gameName = gameName.trim();
+    level.setGameName(gameName);
   }
 }

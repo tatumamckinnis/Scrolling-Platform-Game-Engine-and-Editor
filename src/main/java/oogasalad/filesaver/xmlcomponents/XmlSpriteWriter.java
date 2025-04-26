@@ -29,10 +29,10 @@ public class XmlSpriteWriter implements XmlComponentWriter {
   @Override
   public void write() throws IOException {
 
-    this.spriteFileName = sprite.spriteFile().getName()
+    this.spriteFileName = sprite.baseFrame().name().toLowerCase()
         .replaceFirst("\\.[^.]+$", "") + ".xml";
 
-    Path outDir = Paths.get(ROOT, gameName, sprite.name().toLowerCase());
+    Path outDir = Paths.get(ROOT, gameName);
     Files.createDirectories(outDir);
     Path outFile = outDir.resolve(spriteFileName);
 
@@ -43,7 +43,7 @@ public class XmlSpriteWriter implements XmlComponentWriter {
           <!--
             Auto-generated sprite sheet for %s (%s)
           -->
-          """, sprite.name(), gameName));
+          """, sprite.baseFrame().name(), gameName));
 
       bw.write(String.format(
           "<spriteFile imagePath=\"%s\">\n",
@@ -53,7 +53,7 @@ public class XmlSpriteWriter implements XmlComponentWriter {
       /* <sprite …> tag --------------------------------------------------- */
       bw.write(
           String.format("  <sprite name=\"%s\" x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\">\n",
-              sprite.name(),
+              sprite.baseFrame().name(),
               sprite.baseFrame().x(), sprite.baseFrame().y(),
               sprite.baseFrame().width(), sprite.baseFrame().height()
           ));

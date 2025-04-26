@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for Bird1 (dinosaurgame)
+-->
+<spriteFile imagePath="dinosaurgame-sprites.png">
+  <sprite name="Bird1" x="118" y="0" width="93" height="62">
+    <frames>
+      <frame name="Bird2" x="118" y="0" width="93" height="62"/>
+      <frame name="Bird1" x="0" y="0" width="97" height="68"/>
+    </frames>
+    <animations>
+      <animation name="fly" frameLen="0.15" frames="Bird1,Bird2"/>
+    </animations>
+  </sprite>
+</spriteFile>

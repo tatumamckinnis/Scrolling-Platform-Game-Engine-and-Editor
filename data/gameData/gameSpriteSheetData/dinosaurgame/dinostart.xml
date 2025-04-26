@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Auto-generated sprite sheet for Dino (Untitled)
+  Auto-generated sprite sheet for DinoStart (dinosaurgame)
 -->
 <spriteFile imagePath="dinosaurgame-sprites.png">
-  <sprite name="Dino" x="944" y="0" width="97" height="101">
+  <sprite name="DinoStart" x="944" y="0" width="97" height="101">
     <frames>
       <frame name="DinoStart" x="944" y="0" width="97" height="101"/>
       <frame name="DinoDead" x="236" y="0" width="86" height="101"/>
