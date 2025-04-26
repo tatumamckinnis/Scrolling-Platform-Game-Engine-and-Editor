@@ -43,14 +43,16 @@ public class EditorLevelData {
   private static final String propertyFile = "oogasalad/config/editor/resources/editorConfig.properties";
 
   static {
-    try (InputStream is = EditorLevelData.class.getClassLoader().getResourceAsStream(propertyFile)) {
+    try (InputStream is = EditorLevelData.class.getClassLoader()
+        .getResourceAsStream(propertyFile)) {
       if (is != null) {
         editorConfig.load(is);
       } else {
         LOG.error("Could not find editor configuration file: {}", propertyFile);
       }
     } catch (IOException | NullPointerException e) {
-      LOG.error("Failed to load editor configuration properties from {}: {}", propertyFile, e.getMessage(), e);
+      LOG.error("Failed to load editor configuration properties from {}: {}", propertyFile,
+          e.getMessage(), e);
     }
   }
 
@@ -127,7 +129,8 @@ public class EditorLevelData {
     if (objectsInLayer != null) {
       removed = objectsInLayer.remove(object);
     }
-    LOG.debug("Removing object {} from layer {}: {}", object.getId(), layer.getName(), removed ? "Success" : "Failed (not found)");
+    LOG.debug("Removing object {} from layer {}: {}", object.getId(), layer.getName(),
+        removed ? "Success" : "Failed (not found)");
     return removed;
   }
 
@@ -170,8 +173,8 @@ public class EditorLevelData {
   }
 
   /**
-   * Retrieves the list of group names defined in the level.
-   * Returns a new list containing the elements of the internal set.
+   * Retrieves the list of group names defined in the level. Returns a new list containing the
+   * elements of the internal set.
    *
    * @return a new {@link List} of group names, preserving insertion order.
    */
@@ -222,7 +225,8 @@ public class EditorLevelData {
     }
     for (EditorObject object : myObjectDataMap.values()) {
       if (object.getIdentityData() != null && group.equals(object.getIdentityData().getType())) {
-        LOG.warn("Cannot remove group '{}' because it is still associated with object {}", group, object.getId());
+        LOG.warn("Cannot remove group '{}' because it is still associated with object {}", group,
+            object.getId());
         return false;
       }
     }
@@ -262,8 +266,8 @@ public class EditorLevelData {
 
   /**
    * Adds a new layer to the level. The layer is inserted into the list based on its priority,
-   * maintaining descending order (higher priority first).
-   * Also ensures a map entry exists for the new layer.
+   * maintaining descending order (higher priority first). Also ensures a map entry exists for the
+   * new layer.
    *
    * @param layer the {@link Layer} to add. If null, the method does nothing.
    */
@@ -279,15 +283,17 @@ public class EditorLevelData {
     }
     myLayers.add(index, layer);
     myLayerDataMap.computeIfAbsent(layer, k -> new ArrayList<>());
-    LOG.debug("Added layer '{}' with priority {} at index {}", layer.getName(), layer.getPriority(), index);
+    LOG.debug("Added layer '{}' with priority {} at index {}", layer.getName(), layer.getPriority(),
+        index);
   }
 
   /**
-   * Removes a layer from the level if it exists and is empty (contains no objects).
-   * Cannot remove the last remaining layer.
+   * Removes a layer from the level if it exists and is empty (contains no objects). Cannot remove
+   * the last remaining layer.
    *
    * @param layerName the name of the layer to remove
-   * @return true if the layer was removed; false otherwise (layer not found, not empty, or last layer).
+   * @return true if the layer was removed; false otherwise (layer not found, not empty, or last
+   * layer).
    */
   public boolean removeLayer(String layerName) {
     if (myLayers.size() <= 1) {
@@ -310,13 +316,14 @@ public class EditorLevelData {
 
     List<EditorObject> objectsInLayer = myLayerDataMap.get(layerToRemove);
     if (objectsInLayer != null && !objectsInLayer.isEmpty()) {
-      LOG.warn("Cannot remove non-empty layer '{}'. It contains {} objects.", layerName, objectsInLayer.size());
+      LOG.warn("Cannot remove non-empty layer '{}'. It contains {} objects.", layerName,
+          objectsInLayer.size());
       return false;
     }
 
     boolean layerRemoved = myLayers.remove(layerToRemove);
     myLayerDataMap.remove(layerToRemove);
-    if(layerRemoved) {
+    if (layerRemoved) {
       LOG.debug("Removed empty layer: {}", layerName);
     } else {
       LOG.error("Failed to remove layer '{}' from list, though it was found.", layerName);
@@ -374,6 +381,7 @@ public class EditorLevelData {
 
   /**
    * Adds a sprite template to the current sprite template mapping.
+   *
    * @param spriteTemplate The sprite template to add to the mapping. If null, nothing is added.
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
@@ -387,6 +395,7 @@ public class EditorLevelData {
 
   /**
    * Gets the map holding sprite templates.
+   *
    * @return The SpriteTemplateMap instance.
    */
   public SpriteTemplateMap getSpriteTemplateMap() {
@@ -429,6 +438,16 @@ public class EditorLevelData {
       return new int[]{0, 0, 0, 0};
     }
 
-    return new int[]{(int) Math.floor(minX), (int) Math.floor(minY), (int) Math.ceil(maxX), (int) Math.ceil(maxY)};
+    return new int[]{(int) Math.floor(minX), (int) Math.floor(minY), (int) Math.ceil(maxX),
+        (int) Math.ceil(maxY)};
+  }
+
+  /**
+   * sets the game name
+   *
+   * @param gameName the game name to set it to
+   */
+  public void setGameName(String gameName) {
+    this.gameName = gameName;
   }
 }
