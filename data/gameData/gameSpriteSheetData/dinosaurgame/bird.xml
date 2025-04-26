@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Format:
+name  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+width  => sprite width
+height  => sprite height
+
+-->
+<spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
+<sprite name="Bird1" x="0" y="0" width="97" height="68">
+  <frames>
+    <frame name="Bird1" x="0" y="0" width="97" height="68"/>
+    <frame name="Bird2" x="118" y="0" width="93" height="62"/>
+  </frames>
+  <animations>
+    <animation name="fly" frameLen="0.15" frames="Bird1,Bird2"/>
+  </animations>
+</sprite>
+</spriteFile>

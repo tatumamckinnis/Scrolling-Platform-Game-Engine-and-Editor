@@ -27,10 +27,24 @@ public record EventData(
     List<OutcomeData> outcomes
 ) {
 
+  /**
+   * Returns the list of condition groups for this event.
+   * This is an alias for the record's conditions component.
+   * Each inner list represents a group of conditions to be evaluated together.
+   *
+   * @return a list of condition groups
+   */
   public List<List<ConditionData>> conditionGroups() {
     return conditions;
   }
 
+  /**
+   * Returns the list of outcomes associated with this event.
+   * This is an alias for the record's outcomes component.
+   * These outcomes will be executed when the event's conditions are met.
+   *
+   * @return a list of outcome data
+   */
   public List<OutcomeData> outcomes() {
     return outcomes;
   }

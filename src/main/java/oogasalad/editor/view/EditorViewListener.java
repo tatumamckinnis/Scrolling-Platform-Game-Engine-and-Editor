@@ -65,4 +65,19 @@ public interface EditorViewListener {
    * Called when a sprite template is changed
    */
   void onSpriteTemplateChanged();
+
+  /**
+   * change the snap to grid
+   *
+   *
+   * @param doSnap
+   */
+  void setSnapToGrid(boolean doSnap);
+
+  /**
+   * changed the game view cell size to the number of pixels.
+   *
+   * @param cellSize
+   */
+  void setCellSize(int cellSize);
 }

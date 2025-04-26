@@ -47,12 +47,15 @@ public class DefaultCameraFactory implements CameraFactory {
   private TrackerCamera makeTrackerCamera(CameraData cameraData,
       Map<String, GameObject> gameObjectMap) {
     TrackerCamera camera = new TrackerCamera();
-    Map<String, String> properties = cameraData.stringProperties();
+    Map<String, String> stringProperties = cameraData.stringProperties();
+    Map<String, Double> doubleProperties = cameraData.doubleProperties();
 
-    if (properties.containsKey("objectToTrack")) {
+    if (stringProperties.containsKey("objectToTrack")) {
       try {
-        ImmutableGameObject viewObjectToTrack = gameObjectMap.get(properties.get("objectToTrack"));
+        ImmutableGameObject viewObjectToTrack = gameObjectMap.get(
+            stringProperties.get("objectToTrack"));
         camera.setViewObjectToTrack(viewObjectToTrack);
+        setCameraZoomAndPosition(camera, doubleProperties);
         return camera;
       } catch (NullPointerException e) {
         throw new NullPointerException(
@@ -75,11 +78,21 @@ public class DefaultCameraFactory implements CameraFactory {
       Map<String, GameObject> gameObjectMap) {
     AutoScrollingCamera camera = new AutoScrollingCamera();
     Map<String, Double> properties = cameraData.doubleProperties();
+    setCameraZoomAndPosition(camera, properties);
     camera.setScrollSpeedX(properties.getOrDefault("scrollSpeedX",
         Double.parseDouble(resourceManager.getConfig("engine.controller.level", "ScrollSpeedX"))));
     camera.setScrollSpeedY(properties.getOrDefault("scrollSpeedY",
         Double.parseDouble(resourceManager.getConfig("engine.controller.level", "ScrollSpeedY"))));
     return camera;
+  }
+
+  private void setCameraZoomAndPosition(Camera camera, Map<String, Double> properties) {
+    camera.setZoom(properties.getOrDefault("zoom",
+        Double.parseDouble(resourceManager.getConfig("engine.controller.level", "Zoom"))));
+    camera.setCameraOffsetX(properties.getOrDefault("cameraOffsetX", Double.parseDouble(
+        resourceManager.getConfig("engine.controller.level", "CurrentOffsetX"))));
+    camera.setCameraOffsetY(properties.getOrDefault("cameraOffsetY", Double.parseDouble(
+        resourceManager.getConfig("engine.controller.level", "CurrentOffsetY"))));
   }
 
 }

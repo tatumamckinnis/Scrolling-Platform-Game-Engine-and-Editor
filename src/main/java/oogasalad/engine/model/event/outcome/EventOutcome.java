@@ -40,6 +40,7 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     CHANGE_OBJECT,
     DASH,
     RESET_VELOCITY,
+    WIN_GAME
   }
 
   /**

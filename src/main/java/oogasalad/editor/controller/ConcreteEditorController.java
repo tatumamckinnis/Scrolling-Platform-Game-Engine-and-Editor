@@ -7,14 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import oogasalad.editor.controller.asset.EditorPrefabManager;
+import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.controller.object_data.EditorEventHandler;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.controller.object.EditorEventHandler;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +43,11 @@ public class ConcreteEditorController implements EditorController {
   private final EditorPrefabManager prefabManager;
   private final EditorEventHandler eventHandler;
   private final EditorObjectQueryHandler objectQueryHandler;
+
+  private int cellSize = 32; // Default cell size
+  private boolean snapToGrid = true; // Default snap to grid
+  private int editorWidth = 1200; // Default editor width
+  private int editorHeight = 800; // Default editor height
 
   /**
    * Constructs a ConcreteEditorController, initializing its data API and helper handlers.
@@ -422,5 +430,34 @@ public class ConcreteEditorController implements EditorController {
       listenerNotifier.notifyErrorOccurred("Failed to retrieve variable list: " + e.getMessage());
       return Collections.emptyList();
     }
+  }
+
+  @Override
+  public void saveLevelData(String fileName) throws EditorSaveException {
+    editorDataAPI.saveLevelData(fileName);
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+    if (cellSize > 0) {
+      this.cellSize = cellSize;
+      listenerNotifier.notifyCellSizeChanged(cellSize);
+    }
+  }
+
+  @Override
+  public int getCellSize() {
+    return cellSize;
+  }
+
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+    this.snapToGrid = doSnap;
+    listenerNotifier.notifySnapToGridChanged(doSnap);
+  }
+
+  @Override
+  public boolean isSnapToGrid() {
+    return snapToGrid;
   }
 }

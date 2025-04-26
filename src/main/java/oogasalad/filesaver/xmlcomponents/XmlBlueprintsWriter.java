@@ -2,104 +2,181 @@ package oogasalad.filesaver.xmlcomponents;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-import oogasalad.fileparser.records.*;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.EventData;
+import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.LevelData;
+import oogasalad.fileparser.records.SpriteData;
 
 /**
- * This class writes the Object tags (which contain the blueprints) in the XML file.
- *
- * @author Aksel Bell
+ * Writes the <game>/<objectGroup>/<object> (blueprint) sections of the level XML.
+ * <p>
+ * One <game> element is emitted for every distinct game-name found in the blueprints map.  Sprite
+ * sheets are emitted once-per-game+spriteName combo via {@link XmlSpriteWriter}.
  */
-public class XmlBlueprintsWriter implements XmlComponentWriter{
+public class XmlBlueprintsWriter implements XmlComponentWriter {
+
   private static final String INDENT = "  ";
   private static final String INDENT2 = INDENT + INDENT;
   private static final String INDENT3 = INDENT2 + INDENT;
   private static final String INDENT4 = INDENT3 + INDENT;
+
   private final BufferedWriter writer;
   private final LevelData levelData;
+  private final Map<String, String> savedSprites = new HashMap<>();
 
-  /**
-   * Instantiates a writer.
-   * @param writer writer to write to.
-   * @param levelData level data containing necessary data.
-   */
   public XmlBlueprintsWriter(BufferedWriter writer, LevelData levelData) {
-    this.writer = writer;
-    this.levelData = levelData;
+    this.writer = Objects.requireNonNull(writer);
+    this.levelData = Objects.requireNonNull(levelData);
   }
 
-  /**
-   * @see XmlComponentWriter#write()
-   */
+  /* ====================================================================== */
+
+  @Override
   public void write() throws IOException {
-    Map<Integer, BlueprintData> blueprintsMap = levelData.gameBluePrintData();
-    if (blueprintsMap == null || blueprintsMap.isEmpty()) {
+
+    Map<Integer, BlueprintData> blueprints = levelData.gameBluePrintData();
+    if (blueprints == null || blueprints.isEmpty()) {
       return;
     }
 
-    Map<String, Map<String, List<BlueprintData>>> groupedBlueprints = groupBlueprintsByGameAndGroup(blueprintsMap);
+    // gameName -> ( groupName -> List<BlueprintData> )
+    Map<String, Map<String, List<BlueprintData>>> grouped =
+        groupByGameAndGroup(blueprints);
 
-    // Each gameEntry is a string to a map
-    for (var gameEntry : groupedBlueprints.entrySet()) {
-      writeGameSection(gameEntry.getKey(), gameEntry.getValue());
+    for (var gameEntry : grouped.entrySet()) {
+      String gameName = gameEntry.getKey();
+      Map<String, List<BlueprintData>> groups = gameEntry.getValue();
+
+      writer.write(INDENT + "<game name=\"" + gameName + "\">\n");
+      writeGameSection(gameName, groups);
+      writer.write(INDENT + "</game>\n");
     }
   }
 
-  private Map<String, Map<String, List<BlueprintData>>> groupBlueprintsByGameAndGroup(Map<Integer, BlueprintData> blueprintsMap) {
-    Map<String, Map<String, List<BlueprintData>>> grouped = new HashMap<>();
-    for (BlueprintData blueprint : blueprintsMap.values()) {
-      grouped
-          .computeIfAbsent(blueprint.gameName(), k -> new HashMap<>())
-          .computeIfAbsent(blueprint.group(), k -> new ArrayList<>())
-          .add(blueprint);
-    }
-    return grouped;
-  }
+  /* ====================================================================== */
+  /* -----------------------  helper writers  ----------------------------- */
 
-  private void writeGameSection(String gameName, Map<String, List<BlueprintData>> groups) throws IOException {
-    writer.write(INDENT + "<game name=\"" + gameName + "\">\n");
+  private void writeGameSection(String gameName,
+      Map<String, List<BlueprintData>> groups) throws IOException {
+
     for (var groupEntry : groups.entrySet()) {
-      writeObjectGroupSection(groupEntry.getKey(), groupEntry.getValue());
+      writeObjectGroupSection(gameName,
+          groupEntry.getKey(),
+          groupEntry.getValue());
     }
-    writer.write(INDENT + "</game>\n");
   }
 
-  private void writeObjectGroupSection(String groupName, List<BlueprintData> blueprints) throws IOException {
+  private void writeObjectGroupSection(String gameName,
+      String groupName,
+      List<BlueprintData> blueprints) throws IOException {
+
     writer.write(INDENT2 + "<objectGroup name=\"" + groupName + "\">\n");
     for (BlueprintData blueprint : blueprints) {
-      writeBlueprintObject(blueprint);
+      writeBlueprintObject(gameName, blueprint);
     }
     writer.write(INDENT2 + "</objectGroup>\n");
   }
 
-  private void writeBlueprintObject(BlueprintData blueprint) throws IOException {
+  private void writeBlueprintObject(String gameName,
+      BlueprintData blueprint) throws IOException {
+
     SpriteData sprite = blueprint.spriteData();
     HitBoxData hitbox = blueprint.hitBoxData();
 
-    writer.write(INDENT3 + String.format(
-        "<object spriteName=\"%s\" type=\"%s\" id=\"%d\" spriteFile=\"%s\" hitBoxWidth=\"%d\"%n" +
-            INDENT4 + "hitBoxHeight=\"%d\" hitBoxShape=\"%s\" spriteDx=\"%d\" spriteDy=\"%d\" eventIDs=\"%s\"%n" +
-            INDENT4 + "velocityX=\"%.2f\" velocityY=\"%.2f\" rotation=\"%.2f\">%n",
-        sprite.name(), blueprint.type(), blueprint.blueprintId(), sprite.spriteFile().getName(),
-        hitbox.hitBoxWidth(), hitbox.hitBoxHeight(), hitbox.shape(),
-        hitbox.spriteDx(), hitbox.spriteDy(),
-        getEventIdsAsString(blueprint),
-        blueprint.velocityX(), blueprint.velocityY(), blueprint.rotation()
+    String spriteFileName = saveSpriteIfNeeded(gameName, sprite);
+
+    writer.write(INDENT3 + String.format("""
+            <object
+              spriteName="%s"
+              type="%s"
+              id="%d"
+              spriteFile="%s"
+              hitBoxWidth="%d"
+              hitBoxHeight="%d"
+              hitBoxShape="%s"
+              spriteDx="%d"
+              spriteDy="%d"
+              eventIDs="%s"
+              velocityX="%.2f"
+              velocityY="%.2f"
+              rotation="%.2f">
+            """,
+        sprite.baseFrame().name(),           // %s  spriteName
+        blueprint.type(),                    // %s  type
+        blueprint.blueprintId(),             // %d  id
+        spriteFileName,                      // %s  spriteFile
+        hitbox.hitBoxWidth(),                // %d  hitBoxWidth
+        hitbox.hitBoxHeight(),               // %d  hitBoxHeight
+        hitbox.shape(),                      // %s  hitBoxShape
+        hitbox.spriteDx(),                   // %d  spriteDx
+        hitbox.spriteDy(),                   // %d  spriteDy
+        getEventIdsAsString(blueprint),      // %s  eventIDs
+        blueprint.velocityX(),               // %.2f velocityX
+        blueprint.velocityY(),               // %.2f velocityY
+        blueprint.rotation()                 // %.2f rotation
     ));
 
+    /* ---- custom properties ---- */
     writer.write(INDENT4 + "<properties>\n");
-    new XmlPropertiesWriter(writer, 5, blueprint.stringProperties(), blueprint.doubleProperties(), "property").write();
+    new XmlPropertiesWriter(
+        writer,
+        5,
+        blueprint.stringProperties(),
+        blueprint.doubleProperties(),
+        "property"
+    ).write();
     writer.write(INDENT4 + "</properties>\n");
 
     writer.write(INDENT3 + "</object>\n");
   }
 
+  private Map<String, Map<String, List<BlueprintData>>> groupByGameAndGroup(
+      Map<Integer, BlueprintData> src) {
+
+    Map<String, Map<String, List<BlueprintData>>> grouped = new HashMap<>();
+
+    for (BlueprintData bp : src.values()) {
+      grouped
+          .computeIfAbsent(bp.gameName(), g -> new HashMap<>())
+          .computeIfAbsent(bp.group(), g -> new ArrayList<>())
+          .add(bp);
+    }
+    return grouped;
+  }
+
   private String getEventIdsAsString(BlueprintData blueprint) {
-    return blueprint.eventDataList().stream()
-        // Grab the eventIDs
+    return blueprint.eventDataList()
+        .stream()
         .map(EventData::eventId)
-        .filter(id -> !id.isEmpty())
+        .filter(id -> !id.isBlank())
         .collect(Collectors.joining(","));
+  }
+
+  /**
+   * Writes the sprite-sheet XML for {@code sprite} once per (gameName,spriteName) combination and
+   * returns the file-name that should be referenced from the
+   * <object> tag.
+   */
+  private String saveSpriteIfNeeded(String gameName, SpriteData sprite) {
+    String key = gameName + "#" + sprite.name();
+
+    if (!savedSprites.containsKey(key)) {
+      try {
+        XmlSpriteWriter sw = new XmlSpriteWriter(gameName, sprite);
+        sw.write();
+        savedSprites.put(key, sw.getSpriteFileName());
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+        savedSprites.put(key, sprite.spriteFile().getName());
+      }
+    }
+    return savedSprites.get(key);
   }
 }

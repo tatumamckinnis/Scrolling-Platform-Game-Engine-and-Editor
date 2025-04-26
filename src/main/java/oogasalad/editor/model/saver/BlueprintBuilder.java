@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import oogasalad.editor.model.data.EditorObject;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
@@ -38,8 +38,8 @@ public class BlueprintBuilder {
    * @return a BlueprintData record representing the object's state
    */
   public static BlueprintData fromEditorObject(EditorObject obj) {
-    String gameName = obj.getIdentityData().getName();
-    String group = "";  // placeholder, replace with actual grouping logic if needed
+    String gameName = obj.getGameName();
+    String group = obj.getIdentityData().getType();
     String type = obj.getIdentityData().getType();
     double rotation = obj.getSpriteData().getRotation();
     boolean isFlipped = obj.getSpriteData().getIsFlipped();

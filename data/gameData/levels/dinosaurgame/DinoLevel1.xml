@@ -12,6 +12,9 @@ interact with each other -->
       <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
     </stringProperties>
     <doubleProperties>
+      <property name="zoom" value="1.0" />
+      <property name="cameraOffsetX" value="0"/>
+      <property name="cameraOffsetY" value="0"/>
     </doubleProperties>
   </cameraData>
   <layers>
@@ -46,7 +49,7 @@ interact with each other -->
     <objectGroup name="entities">
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
-      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
+      <object spriteName="DinoStart" type="player" id="111" spriteFile="dinostart.xml" hitBoxWidth="97"
         hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,69,87"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
@@ -55,15 +58,15 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="200000"/>
+            <property name="lives" value="1"/>
             <property name="score" value="100"/>
             <property name="rocket_duration" value="0"/>
             <property name="dash_duration" value="0"/>
           </doubleProperties>
         </properties>
       </object>
-      <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
-        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="100" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="Bird1" type="platforms" id="12" spriteFile="bird1.xml" hitBoxWidth="97"
+        hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties>
           </stringProperties>
@@ -494,18 +497,6 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="RESET_VELOCITY">
-        </outcome>
-      </outcomes>
-    </event>
-    <event type="input" id="100">
-      <conditions>
-        <conditionSet>
-          <condition name="TRUE">
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="PATROL">
         </outcome>
       </outcomes>
     </event>

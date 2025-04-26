@@ -54,7 +54,7 @@ public interface GameExecutor {
   /**
    * Ends the game using game manager methods
    */
-  void endGame();
+  void endGame(boolean gameWon);
 
   /**
    * Restarts using current level

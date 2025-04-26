@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for DinoStart (dinosaurgame)
+-->
+<spriteFile imagePath="dinosaurgame-sprites.png">
+  <sprite name="DinoStart" x="944" y="0" width="97" height="101">
+    <frames>
+      <frame name="DinoStart" x="944" y="0" width="97" height="101"/>
+      <frame name="DinoDead" x="236" y="0" width="86" height="101"/>
+      <frame name="DinoJump" x="590" y="0" width="88" height="94"/>
+      <frame name="DinoDuck2" x="472" y="0" width="116" height="60"/>
+      <frame name="DinoDuck1" x="354" y="0" width="118" height="60"/>
+      <frame name="DinoRun1" x="708" y="0" width="87" height="94"/>
+      <frame name="DinoRun2" x="826" y="0" width="88" height="94"/>
+    </frames>
+    <animations>
+      <animation name="dead" frameLen="5.0" frames="DinoDead"/>
+      <animation name="duck-walk" frameLen="0.15" frames="DinoDuck1,DinoDuck2"/>
+      <animation name="walk" frameLen="5.0" frames="DinoRun1,DinoRun2"/>
+      <animation name="jump" frameLen="5.0" frames="DinoJump"/>
+    </animations>
+  </sprite>
+</spriteFile>

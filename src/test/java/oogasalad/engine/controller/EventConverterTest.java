@@ -44,9 +44,10 @@ class EventConverterTest {
     conditionDataList.add(conditionData1);
 
     Map<String, String> stringProperties = new HashMap<>();
+    stringProperties.put("key", "w");
     Map<String, Double> doubleProperties = new HashMap<>();
     doubleProperties.put("Sensitivity", 0.5);
-    conditionData1.add(new ConditionData("W_KEY_PRESSED", stringProperties, doubleProperties));
+    conditionData1.add(new ConditionData("KEY_PRESSED", stringProperties, doubleProperties));
 
     List<OutcomeData> outcomeDataList = new ArrayList<>();
     Map<String, String> outcomeStringProperties2 = new HashMap<>();
@@ -79,7 +80,7 @@ class EventConverterTest {
     List<Event> expectedEvents = new ArrayList<>();
     List<List<EventCondition>> expectedConditions = new ArrayList<>();
     List<EventCondition> expectedConditionsList = new ArrayList<>();
-    expectedConditionsList.add(new EventCondition(ConditionType.W_KEY_PRESSED, stringProperties, doubleProperties)) ;
+    expectedConditionsList.add(new EventCondition(ConditionType.KEY_PRESSED, stringProperties, doubleProperties)) ;
     expectedConditions.add(expectedConditionsList);
 
     List<EventOutcome> expectedOutcomes = new ArrayList<>();

@@ -26,6 +26,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.components.EditorGameView;
+import oogasalad.editor.view.factories.EditorComponentFactory;
+import oogasalad.editor.view.factories.InputTabComponentFactory;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
@@ -50,6 +53,7 @@ class EditorComponentFactoryTest {
   private static final String CSS_PATH = "/oogasalad/css/editor/editor.css";
   private static final String KEY_MAP_TITLE = "mapTitle";
   private static final String KEY_ADD_ENTITY_TOOL = "addEntityTool";
+  private static final String GO_TO_EDITOR_PROPERTIES = "goToEditorProperties";
   private static final String KEY_SELECT_TOOL = "selectTool";
   private static final String KEY_PROPERTIES_TITLE = "propertiesTitle";
   private static final String KEY_PROPERTIES_TAB = "propertiesTab";

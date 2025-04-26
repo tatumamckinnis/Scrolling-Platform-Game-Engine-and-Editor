@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for LargeCactus1 (dinosaurgame)
+-->
+<spriteFile imagePath="dinosaurgame-sprites.png">
+  <sprite name="LargeCactus1" x="1062" y="0" width="48" height="95">
+    <frames>
+      <frame name="LargeCactus1" x="1062" y="0" width="48" height="95"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

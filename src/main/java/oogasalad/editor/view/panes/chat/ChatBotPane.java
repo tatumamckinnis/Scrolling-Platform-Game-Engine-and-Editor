@@ -10,8 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.api.ChatBotApi;
-
+import oogasalad.editor.view.tools.ChatBotApi;
 
 /**
  * ChatBotPane provides a simple UI for sending messages to ChatBotApi and displaying responses.

@@ -60,11 +60,16 @@
 * Blockers/Issues in your way
     * Saving functionality needs to be finalized for save button to be completed
 
-### Team Member 3
+### Team Member 3 - Aksel
 
 * Work done this Sprint
+  * Wrote the file saver class which takes level data and turns it into an XML file
+  * Set up infrastructure to allow easy extension using strategies and components
 * Plan for next Sprint?
+  * Support multiplayer games over servers
 * Blockers/Issues in your way
+  * Learn how to set up a server, how to connect server. Don't know anything about the topic
+  * Need to do initial research and learning on how multiplayer works
 
 ### Team Member 4
 

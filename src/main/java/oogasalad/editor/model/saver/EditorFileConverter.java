@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 /**
@@ -20,7 +21,7 @@ public class EditorFileConverter implements EditorFileConverterAPI {
   @Override
   public void saveEditorDataToFile(EditorLevelData editorLevelData, String fileName,
       SaverStrategy saver)
-      throws IOException, DataFormatException {
+      throws EditorSaveException {
     saver.save(EditorDataSaver.buildLevelData(editorLevelData), new File(fileName));
   }
 

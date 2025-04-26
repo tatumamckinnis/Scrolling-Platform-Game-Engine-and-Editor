@@ -58,5 +58,10 @@ public class NewGameComponents extends Display {
     throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRenderPlayerStats"));
   }
 
+  @Override
+  public void renderEndGameScreen(boolean gameWon) {
+    throw new UnsupportedOperationException(resourceManager.getText("exceptions","CannotRenderEndGameScreen"));
+  }
+
 
 }

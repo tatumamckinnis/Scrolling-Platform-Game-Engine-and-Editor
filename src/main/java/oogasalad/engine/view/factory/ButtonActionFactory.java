@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import oogasalad.engine.view.screen.HelpScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,7 +58,7 @@ public class ButtonActionFactory {
   private static final Logger LOG = LogManager.getLogger();
   private static final String gamesFilePath = "data/gameData/levels/";
   private final ViewState viewState;
-  UserDataApiDefault userDataApi;
+  private UserDataApiDefault userDataApi;
 
 
   /**
@@ -140,8 +141,14 @@ public class ButtonActionFactory {
    * @throws ViewInitializationException thrown if issue with initialization.
    */
   private Runnable openHelp() throws ViewInitializationException {
-    // TODO need to implement
-    return null;
+    return () -> {
+      HelpScreen helpScreen = new HelpScreen();
+      try {
+        helpScreen.showHelpWindow();
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 
   /**
@@ -387,26 +394,13 @@ public class ButtonActionFactory {
         if (!userDataDir.exists()) {
           userDataDir.mkdirs();
         }
-
         // Create a session manager to check for login status
         SessionManager sessionManager = new SessionManager();
-
         // Check if there's an active session
         if (sessionManager.hasActiveSession()) {
           String username = sessionManager.getSavedUsername();
           String password = sessionManager.getSavedPassword();
-
-          try {
-            // Try to load user with saved credentials
-            UserData user = userDataApi.parseUserData(username, password);
-            viewState.setDisplay(new UserDataScreen(viewState, user));
-            LOG.info("Automatically logged in user: " + username);
-          } catch (Exception e) {
-            // Saved credentials are invalid or expired
-            LOG.info("Saved credentials are invalid, showing login screen");
-            sessionManager.clearSession(); // Clear invalid session
-            viewState.setDisplay(new LoginScreen(viewState));
-          }
+          loadUserProfile(username, password, sessionManager);
         } else {
           // No saved credentials, show login screen
           viewState.setDisplay(new LoginScreen(viewState));
@@ -415,6 +409,20 @@ public class ButtonActionFactory {
         LOG.error("Failed to load profile screen", e);
       }
     };
+  }
+
+  private void loadUserProfile(String username, String password, SessionManager sessionManager) {
+    try {
+      // Try to load user with saved credentials
+      UserData user = userDataApi.parseUserData(username, password);
+      viewState.setDisplay(new UserDataScreen(viewState, user));
+      LOG.info("Automatically logged in user: " + username);
+    } catch (Exception e) {
+      // Saved credentials are invalid or expired
+      LOG.info("Saved credentials are invalid, showing login screen");
+      sessionManager.clearSession(); // Clear invalid session
+      viewState.setDisplay(new LoginScreen(viewState));
+    }
   }
 
   private Runnable savePlayerProgress() {
@@ -451,7 +459,6 @@ public class ButtonActionFactory {
             username = sessionManager.getSavedUsername();
             password = sessionManager.getSavedPassword();
           } else {
-            // If no session, use default account as fallback (ideally remove this in a real app)
             username = "gamer123";
             password = "bruh";
           }

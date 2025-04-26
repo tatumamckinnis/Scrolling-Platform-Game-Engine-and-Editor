@@ -48,7 +48,7 @@ public class LoseGameOutcome implements Outcome {
   public void execute(GameObject gameObject,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    executor.endGame();
+    executor.endGame(false);
     LOG.info("You lose the game");
   }
 }
