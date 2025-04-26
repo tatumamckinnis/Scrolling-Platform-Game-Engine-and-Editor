@@ -20,6 +20,8 @@ import oogasalad.userData.records.UserLevelData;
 import oogasalad.userData.writer.UserDataWriter;
 
 /**
+ * Default implementation of UserApi using XML parsers and writers.
+ * Maintains an in-memory UserData object and its backing file.
  *
  * @author Billy McCune
  */
@@ -30,6 +32,17 @@ public class UserDataApiDefault implements UserApi {
   private UserData myUserData;
   private File dataFile;
 
+  /**
+   * Parses and validates user credentials from XML.
+   *
+   * @param username the username of the user
+   * @param password the plaintext password to validate
+   * @return the loaded UserData if credentials are correct
+   * @throws IOException if the user file is missing or unreadable
+   * @throws ParserConfigurationException if XML parser configuration fails
+   * @throws SAXException if XML parsing errors occur
+   * @throws UserDataParseException if password validation fails
+   */
   @Override
   public UserData parseUserData(String username, String password)
       throws IOException, ParserConfigurationException, SAXException, UserDataParseException {
@@ -49,6 +62,14 @@ public class UserDataApiDefault implements UserApi {
     }
   }
 
+  /**
+   * Writes a new user record to XML (overwriting if exists).
+   *
+   * @param userData the UserData to write
+   * @throws XMLStreamException if XML streaming errors occur
+   * @throws IOException if I/O fails
+   * @throws UserDataWriteException if writing fails
+   */
   @Override
   public void writeNewUserData(UserData userData)
       throws XMLStreamException, IOException, UserDataWriteException {
@@ -56,6 +77,15 @@ public class UserDataApiDefault implements UserApi {
     writeUserData(userData);
   }
 
+  /**
+   * Serializes the given UserData to its associated XML file.
+   * Lazy-initializes the writer if necessary.
+   *
+   * @param userData the UserData to persist
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML streaming errors occur
+   * @throws IOException if I/O fails
+   */
   @Override
   public void writeUserData(UserData userData)
       throws UserDataWriteException, XMLStreamException, IOException {
@@ -65,6 +95,13 @@ public class UserDataApiDefault implements UserApi {
     myUserDataWriter.writeUsersData(userData);
   }
 
+  /**
+   * Writes the currently loaded UserData back to its file.
+   *
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML streaming errors occur
+   * @throws IOException if I/O fails
+   */
   @Override
   public void writeCurrentUserData()
       throws UserDataWriteException, XMLStreamException, IOException {
@@ -74,6 +111,14 @@ public class UserDataApiDefault implements UserApi {
     writeUserData(myUserData);
   }
 
+  /**
+   * Updates or creates game and level data for the user, merges stats, and persists.
+   *
+   * @param playerName the username of the player (must match loaded data)
+   * @param gameName the game identifier to update
+   * @param levelName the level identifier to update
+   * @param newLevelStats map of stat names to new values
+   */
   @Override
   public void updatePlayerLevelStats(String playerName,
       String gameName,
@@ -136,10 +181,23 @@ public class UserDataApiDefault implements UserApi {
     }
   }
 
+  /**
+   * Checks if the provided password matches the stored one.
+   *
+   * @param data the loaded UserData record
+   * @param password the plaintext password to validate
+   * @return true if passwords match, false otherwise
+   */
   private boolean isCorrectPassword(UserData data, String password) {
     return data.password().equals(password);
   }
 
+  /**
+   * Creates a new UserGameData with empty stats and current timestamp.
+   *
+   * @param gameName the name of the new game
+   * @return a blank UserGameData record
+   */
   private UserGameData makeNewGameData(String gameName) {
     String now = new Date().toString();
     return new UserGameData(
@@ -150,6 +208,12 @@ public class UserDataApiDefault implements UserApi {
     );
   }
 
+  /**
+   * Creates a new UserLevelData with empty stats and current timestamp.
+   *
+   * @param levelName the name of the new level
+   * @return a blank UserLevelData record
+   */
   private UserLevelData makeNewLevelData(String levelName) {
     String now = new Date().toString();
     return new UserLevelData(
@@ -160,10 +224,12 @@ public class UserDataApiDefault implements UserApi {
   }
 
   /**
-   * For each entry in newStats:
-   * - if oldStats contains the key and both old/new values parse as doubles,
-   *   only overwrite when newValue > oldValue
-   * - otherwise (non-numeric or key not present) just put the new value
+   * Merges newStats into oldStats, keeping the greater numeric values when applicable.
+   * Non-numeric values are always overwritten.
+   *
+   * @param newStats map of incoming stat values
+   * @param oldStats existing stat map to update
+   * @return the merged stat map
    */
   private Map<String, String> updatePlayerStatMap(
       Map<String, String> newStats,
@@ -195,16 +261,19 @@ public class UserDataApiDefault implements UserApi {
 
   /**
    * Returns the username of the currently active user.
-   * @return The current username
+   *
+   * @return the current username, or "defaultUser" if none loaded
    */
   public String getCurrentUsername() {
     // Return the username of currently parsed user data
     return myUserData != null ? myUserData.username() : "defaultUser";
   }
 
+
   /**
-   * Returns the path to the current user data file.
-   * @return the absolute path to the user data file
+   * Returns the file path for the current user data file.
+   *
+   * @return absolute path of the loaded data file, or a placeholder if none loaded
    */
   public String getUserDataFilePath() {
     return dataFile != null ? dataFile.getAbsolutePath() : "No file loaded";

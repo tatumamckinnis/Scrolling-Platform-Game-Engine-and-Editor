@@ -8,12 +8,18 @@ import java.util.LinkedHashMap;
 
 /**
  * Converts <level> XML elements into UserLevelData records.
+ * Parses level name, last played timestamp, and highest stats map.
  *
  * @author Billy McCune
  */
 public class UserLevelDataParser {
 
-
+  /**
+   * Parses a <level> element into a UserLevelData record.
+   *
+   * @param levelElem the XML Element representing a <level>
+   * @return a UserLevelData record populated with levelName, lastPlayed, and highest stat map
+   */
   public UserLevelData fromElement(Element levelElem) {
     String levelName = getText(levelElem, "levelName");
     String lastPlayed = getText(levelElem, "lastPlayed");
@@ -32,6 +38,13 @@ public class UserLevelDataParser {
     return new UserLevelData(levelName, lastPlayed, statMap);
   }
 
+  /**
+   * Utility method to extract text content of the first occurrence of a tag.
+   *
+   * @param parent the Element to search within
+   * @param tag the tag name whose text content is to be retrieved
+   * @return the text content of the tag, or null if not present
+   */
   private static String getText(Element parent, String tag) {
     NodeList list = parent.getElementsByTagName(tag);
     return (list.getLength() == 0)

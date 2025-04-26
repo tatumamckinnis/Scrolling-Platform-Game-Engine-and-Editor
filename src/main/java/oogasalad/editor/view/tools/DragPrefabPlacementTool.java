@@ -16,6 +16,8 @@ import oogasalad.fileparser.records.BlueprintData;
  * Extension of PrefabPlacementTool that supports placing multiple prefab objects
  * through a click-and-drag operation. Keeps track of grid cells that have been
  * populated during a single drag to avoid duplicates.
+ *
+ * @author Billy McCune
  */
 public class DragPrefabPlacementTool extends PrefabPlacementTool {
 

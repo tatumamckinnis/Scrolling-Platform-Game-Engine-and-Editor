@@ -8,13 +8,21 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 
 /**
- * Converts <userGameData> XML elements into UserGameData records.
- *
- * @author Billy McCune
+    * Converts <userGameData> XML elements into UserGameData records.
+    * Parses overall game stats and delegates per-level parsing to UserLevelDataParser.
+    *
+    * @author Billy McCune
  */
 public class UserGameDataParser {
 
   UserLevelDataParser myUserLevelDataParser = new UserLevelDataParser();
+
+  /**
+   * Parses a <userGameData> element into a UserGameData record.
+   *
+   * @param ugdElem the XML Element representing <userGameData>
+   * @return a UserGameData record with gameName, lastPlayed, highest game stats, and per-level data
+   */
   public UserGameData fromElement(Element ugdElem) {
     String gameName   = getText(ugdElem, "gameName");
     String lastPlayed = getText(ugdElem, "lastPlayed");
@@ -46,6 +54,13 @@ public class UserGameDataParser {
     return new UserGameData(gameName, lastPlayed, highMap, levelMap);
   }
 
+  /**
+   * Utility method to extract text content of the first occurrence of a tag.
+   *
+   * @param parent the Element to search within
+   * @param tag the tag name whose text content is to be retrieved
+   * @return the text content of the tag, or null if not present
+   */
   private static String getText(Element parent, String tag) {
     NodeList list = parent.getElementsByTagName(tag);
     return (list.getLength() == 0)

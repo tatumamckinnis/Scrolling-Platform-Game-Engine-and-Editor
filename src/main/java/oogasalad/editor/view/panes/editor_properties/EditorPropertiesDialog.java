@@ -28,6 +28,8 @@ import oogasalad.editor.model.data.EditorLevelData;
 /**
  * Modal window that lets the designer tweak editor-wide settings like cell size and snap to grid.
  * It writes straight back through the EditorController.
+ *
+ * @author Billy McCune
  */
 public class EditorPropertiesDialog extends Stage {
 
@@ -43,6 +45,12 @@ public class EditorPropertiesDialog extends Stage {
   private final TextField cellSizeField = new TextField();
   private final CheckBox snapToGridCheckBox = new CheckBox("Enable");
 
+  /**
+   * Creates a new EditorPropertiesDialog.
+   *
+   * @param controller the EditorController used to get and set properties
+   * @param owner the owner Window for this modal dialog
+   */
   public EditorPropertiesDialog(EditorController controller, Window owner) {
     this.controller = Objects.requireNonNull(controller);
     this.editorAPI = controller.getEditorDataAPI();
@@ -56,6 +64,11 @@ public class EditorPropertiesDialog extends Stage {
     populateFromModel();
   }
 
+  /**
+   * Builds the main UI layout for the dialog.
+   *
+   * @return the root Parent node containing all UI controls
+   */
   private Parent buildUI() {
     VBox root = new VBox(12);
     root.setPadding(new Insets(15));
@@ -76,6 +89,11 @@ public class EditorPropertiesDialog extends Stage {
     return root;
   }
 
+  /**
+   * Builds the Grid Settings section containing cell size and snap-to-grid controls.
+   *
+   * @return a VBox containing grid setting controls
+   */
   private VBox buildGridSection() {
     VBox section = new VBox(8);
     section.getStyleClass().add("input-sub-section");
@@ -98,6 +116,11 @@ public class EditorPropertiesDialog extends Stage {
     return section;
   }
 
+  /**
+   * Builds the dialog button bar with "Save" and "Cancel" buttons.
+   *
+   * @return an HBox with configured action buttons
+   */
   private HBox buildDialogButtons() {
     Button ok = new Button("Save");
     ok.setDefaultButton(true);
@@ -114,11 +137,22 @@ public class EditorPropertiesDialog extends Stage {
     return new HBox(10, ok, cancel);
   }
 
+  /**
+   * Wraps a content section with a titled label.
+   *
+   * @param title the section title
+   * @param content the Node to display below the title
+   * @return a Node grouping the title and content
+   */
   private Node section(String title, Node content) {
     VBox box = new VBox(4, new Label(title), content);
     return box;
   }
 
+  /**
+   * Populates the UI fields from the current model data.
+   * Displays an error alert if population fails.
+   */
   private void populateFromModel() {
     try {
       // Grid Settings
@@ -132,6 +166,12 @@ public class EditorPropertiesDialog extends Stage {
     }
   }
 
+  /**
+   * Validates and pushes the user's input back to the model.
+   * Shows error alerts on invalid input or save failures.
+   *
+   * @return true if the model was successfully updated; false otherwise
+   */
   private boolean pushToModel() {
     try {
       // Grid Settings

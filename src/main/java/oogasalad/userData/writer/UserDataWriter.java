@@ -17,14 +17,26 @@ import oogasalad.userData.records.UserLevelData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * UserDataWriter is responsible for serializing UserData objects
+ * into XML format. It provides methods to write user data to an OutputStream,
+ * a file path, a File object, or a default location using XML streaming.
+ * It maintains indentation and handles directory creation.
+ *
+ * @author Billy McCune
+ */
 public class UserDataWriter {
 
   private static Logger LOG = LogManager.getLogger();
 
   /**
    * Writes a single <user> XML document for the given UserData to the provided OutputStream.
+   * Uses streaming XML writer to generate properly indented XML.
    *
-   * @author Billy McCune
+   * @param user the UserData record to serialize
+   * @param out the OutputStream to write the XML data to
+   * @throws UserDataWriteException if writing an element fails
+   * @throws XMLStreamException if an XML writing error occurs
    */
   public void writeUsersData(UserData user, OutputStream out)
       throws UserDataWriteException, XMLStreamException {
@@ -114,8 +126,14 @@ public class UserDataWriter {
   }
 
   /**
-   * Writes the user XML to the given file path, creating directories if needed.
-   * If the file does not exist, it is created; otherwise it's overwritten.
+   * Writes the user XML to the given file path, creating directories as needed.
+   * If the file exists, it is overwritten.
+   *
+   * @param user the UserData to serialize
+   * @param filePath the path of the file to write to
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML writing fails
+   * @throws IOException if file operations fail
    */
   public void writeUsersData(UserData user, String filePath)
       throws UserDataWriteException, XMLStreamException, IOException {
@@ -124,7 +142,13 @@ public class UserDataWriter {
   }
 
   /**
-   * Writes the user XML to the given File, creating directories if needed.
+   * Writes the user XML to the given File, creating parent directories as needed.
+   *
+   * @param user the UserData to serialize
+   * @param file the File object to write to
+   * @throws UserDataWriteException if writing fails
+   * @throws IOException if directory creation or file IO fails
+   * @throws XMLStreamException if XML writing fails
    */
   public void writeUsersData(UserData user, File file)
       throws UserDataWriteException, IOException, XMLStreamException {
@@ -141,6 +165,12 @@ public class UserDataWriter {
 
   /**
    * Writes the user XML using a default filename (<username>.xml) in the data/userData directory.
+   * Creates the directory if it does not exist and logs the output path.
+   *
+   * @param user the UserData to serialize
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML writing fails
+   * @throws IOException if directory or file IO fails
    */
   public void writeUsersData(UserData user)
       throws UserDataWriteException, XMLStreamException, IOException {
@@ -159,7 +189,14 @@ public class UserDataWriter {
   }
 
   /**
-   * Helper to write an indented element with text content
+   * Helper to write an indented element with text content.
+   *
+   * @param w the XMLStreamWriter to use
+   * @param name the element name
+   * @param text the text content of the element (null is allowed)
+   * @param indentSpaces number of spaces to indent before the element
+   * @throws UserDataWriteException if writing the element fails
+   * @throws XMLStreamException if XML writing fails
    */
   private void writeElement(XMLStreamWriter w,
       String name,

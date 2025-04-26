@@ -15,7 +15,8 @@ import java.io.IOException;
 import org.xml.sax.SAXException;
 
 /**
- * Converts a <user> XML document into a UserData record.
+ * Converts a <user> XML document into a UserData record, including nested game and level data.
+ * Uses DOM parsing to read elements and delegates to UserGameDataParser.
  *
  * @author Billy McCune
  */
@@ -23,6 +24,15 @@ public class UserDataParser {
 
   UserGameDataParser myUserGameDataParser = new UserGameDataParser();
 
+  /**
+   * Parses the specified XML file into a UserData record.
+   *
+   * @param xmlFile the File containing the <user> XML document
+   * @return a UserData record populated with user profile and game data
+   * @throws IOException if file access fails or required elements are missing
+   * @throws ParserConfigurationException if a parser cannot be created
+   * @throws SAXException if XML parsing errors occur
+   */
   public UserData getUserData(File xmlFile)
       throws IOException, ParserConfigurationException, SAXException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -59,11 +69,18 @@ public class UserDataParser {
         language,
         bio,
         userImage,
-        /* avatar omitted */ null,
+        null, //didn't have to implement avatar
         games
     );
   }
 
+  /**
+   * Utility method to extract text content of the first occurrence of a tag.
+   *
+   * @param parent the Element to search within
+   * @param tag the tag name whose text content is to be retrieved
+   * @return the text content of the tag, or null if not present
+   */
   private static String getText(Element parent, String tag) {
     NodeList list = parent.getElementsByTagName(tag);
     return (list.getLength() == 0)
