@@ -14,6 +14,8 @@ import oogasalad.exceptions.LayerParseException;
 import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An {@code Outcome} that teleports a {@link GameObject} to a random point
@@ -34,6 +36,7 @@ import oogasalad.exceptions.SpriteParseException;
  */
 public class TeleportObjectToRandomPointOutcome implements Outcome {
 
+  private static final Logger LOG = LogManager.getLogger();
   /**
    * Shared pseudo‑random number generator used to compute the new coordinates.
    */
@@ -100,7 +103,7 @@ public class TeleportObjectToRandomPointOutcome implements Outcome {
     // Compute random coordinates within the inclusive range
     int newX = randomGenerator.nextInt(xMin, xMax + 1);
     int newY = randomGenerator.nextInt(yMin, yMax + 1);
-    System.out.println("newX: " + newX + " newY: " + newY);
+    LOG.info("newX: " + newX + " newY: " + newY);
     // Apply teleportation
     gameObject.setXPosition(newX);
     gameObject.setYPosition(newY);

@@ -383,15 +383,33 @@ public class EditorDataAPI {
     return level.getSpriteTemplateMap();
   }
 
+  /**
+   * Returns the name of the game associated with the current level.
+   *
+   * @return the game name as a {@code String}
+   */
   public String getGameName() {
     return level.getGameName();
   }
 
+  /**
+   * Saves the current editor level data to a file.
+   *
+   * @param fileName the name (or path) of the file to save to
+   * @throws EditorSaveException if an error occurs during saving
+   */
   public void saveLevelData(String fileName) throws EditorSaveException {
     fileConverterAPI.saveEditorDataToFile(level, fileName, saverStrategy);
   }
 
+  /**
+   * Returns the {@link CameraDataManager} for interacting with camera data.
+   *
+   * @param camType the camera type requested (currently ignored in implementation)
+   * @return the {@link CameraDataManager} instance
+   */
   public CameraDataManager getCameraAPI(String camType) {
     return cameraAPI;
   }
+
 }
