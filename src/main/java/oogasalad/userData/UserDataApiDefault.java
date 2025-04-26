@@ -130,50 +130,98 @@ public class UserDataApiDefault implements UserApi {
     }
 
     // 1) Find or create the UserGameData
-    UserGameData targetGame = null;
-    for (UserGameData ugd : myUserData.userGameData()) {
-      if (ugd.gameName().equals(gameName)) {
-        targetGame = ugd;
-        break;
-      }
-    }
-    if (targetGame == null) {
-      targetGame = makeNewGameData(gameName);
-      myUserData.userGameData().add(targetGame);
-    }
+    UserGameData targetGame = findOrCreateGameData(gameName);
 
     // 2) Find or create the UserLevelData
-    UserLevelData targetLevel = targetGame.playerLevelStatMap().get(levelName);
-    if (targetLevel == null) {
-      targetLevel = makeNewLevelData(levelName);
-      targetGame.playerLevelStatMap().put(levelName, targetLevel);
-    }
+    UserLevelData targetLevel = findOrCreateLevelData(targetGame, levelName);
 
-    // 3) Merge in the new stats with numeric comparison
-    Map<String, String> mergedStatsForLevel = updatePlayerStatMap(
-        newLevelStats,
-        targetLevel.levelHighestStatMap()
-    );
-    // update lastPlayed timestamps
-    targetLevel = new UserLevelData(
-        targetLevel.levelName(),
-        new Date().toString(),
-        mergedStatsForLevel
-    );
-    targetGame.playerLevelStatMap().put(levelName, targetLevel);
-
-    Map<String,String> mergedStatsForGame = updatePlayerStatMap(newLevelStats, targetGame.playerHighestGameStatMap());
-    // also update game lastPlayed
-    targetGame = new UserGameData(
-        targetGame.gameName(),
-        new Date().toString(),
-        mergedStatsForGame,
-        targetGame.playerLevelStatMap()
-    );
-    myUserData.userGameData().removeIf(g -> g.gameName().equals(gameName));
-    myUserData.userGameData().add(targetGame);
+    // 3) Update level and game stats with merged values
+    updateGameAndLevelStats(targetGame, targetLevel, levelName, newLevelStats);
 
     // 4) Persist back to XML
+    saveUpdatedUserData();
+  }
+
+  /**
+   * Finds or creates game data for the specified game name.
+   *
+   * @param gameName the game identifier
+   * @return the existing or newly created UserGameData
+   */
+  private UserGameData findOrCreateGameData(String gameName) {
+    for (UserGameData ugd : myUserData.userGameData()) {
+      if (ugd.gameName().equals(gameName)) {
+        return ugd;
+      }
+    }
+    UserGameData newGame = makeNewGameData(gameName);
+    myUserData.userGameData().add(newGame);
+    return newGame;
+  }
+
+  /**
+   * Finds or creates level data for the specified level within a game.
+   *
+   * @param game the game containing the level
+   * @param levelName the level identifier
+   * @return the existing or newly created UserLevelData
+   */
+  private UserLevelData findOrCreateLevelData(UserGameData game, String levelName) {
+    UserLevelData level = game.playerLevelStatMap().get(levelName);
+    if (level == null) {
+      level = makeNewLevelData(levelName);
+      game.playerLevelStatMap().put(levelName, level);
+    }
+    return level;
+  }
+
+  /**
+   * Updates both game and level stats with merged values and current timestamps.
+   *
+   * @param game the game to update
+   * @param level the level to update
+   * @param levelName the level identifier
+   * @param newStats the new stats to merge
+   */
+  private void updateGameAndLevelStats(UserGameData game, UserLevelData level, 
+                                     String levelName, Map<String, String> newStats) {
+    // Update level stats
+    Map<String, String> mergedLevelStats = updatePlayerStatMap(
+        newStats, level.levelHighestStatMap()
+    );
+    
+    // Create updated level with new timestamp
+    UserLevelData updatedLevel = new UserLevelData(
+        level.levelName(),
+        new Date().toString(),
+        mergedLevelStats
+    );
+    game.playerLevelStatMap().put(levelName, updatedLevel);
+    
+    // Update game stats
+    Map<String, String> mergedGameStats = updatePlayerStatMap(
+        newStats, game.playerHighestGameStatMap()
+    );
+    
+    // Create updated game with new timestamp
+    UserGameData updatedGame = new UserGameData(
+        game.gameName(),
+        new Date().toString(),
+        mergedGameStats,
+        game.playerLevelStatMap()
+    );
+    
+    // Replace old game data with updated version
+    myUserData.userGameData().removeIf(g -> g.gameName().equals(game.gameName()));
+    myUserData.userGameData().add(updatedGame);
+  }
+  
+  /**
+   * Saves the updated user data to XML.
+   * 
+   * @throws RuntimeException if saving fails
+   */
+  private void saveUpdatedUserData() {
     try {
       writeUserData(myUserData);
     } catch (Exception e) {
@@ -235,28 +283,64 @@ public class UserDataApiDefault implements UserApi {
       Map<String, String> newStats,
       Map<String, String> oldStats) {
 
-    for (Map.Entry<String, String> e : newStats.entrySet()) {
-      String key = e.getKey();
-      String newVal = e.getValue();
-
-      if (oldStats.containsKey(key)) {
-        String oldVal = oldStats.get(key);
-        try {
-          double newD = Double.parseDouble(newVal);
-          double oldD = Double.parseDouble(oldVal);
-          if (newD > oldD) {
-            oldStats.put(key, newVal);
-          }
-        } catch (NumberFormatException ex) {
-          // non-numeric: overwrite
-          oldStats.put(key, newVal);
-        }
-      } else {
-        // brand new stat key: add it
-        oldStats.put(key, newVal);
+    Map<String, String> result = new HashMap<>(oldStats);
+    
+    for (Map.Entry<String, String> entry : newStats.entrySet()) {
+      String key = entry.getKey();
+      String newValue = entry.getValue();
+      
+      if (!result.containsKey(key)) {
+        // Brand new stat - just add it
+        result.put(key, newValue);
+        continue;
       }
+      
+      // Update existing stat
+      updateExistingStat(result, key, newValue);
     }
-    return oldStats;
+    
+    return result;
+  }
+  
+  /**
+   * Updates an existing stat with a new value if appropriate.
+   * For numeric values, keeps the larger value. For non-numeric, overwrites.
+   * 
+   * @param stats the stats map to update
+   * @param key the stat key
+   * @param newValue the new stat value
+   */
+  private void updateExistingStat(Map<String, String> stats, String key, String newValue) {
+    String oldValue = stats.get(key);
+    
+    if (areNumericValues(oldValue, newValue)) {
+      double oldNumeric = Double.parseDouble(oldValue);
+      double newNumeric = Double.parseDouble(newValue);
+      
+      if (newNumeric > oldNumeric) {
+        stats.put(key, newValue);
+      }
+    } else {
+      // Non-numeric values are always overwritten
+      stats.put(key, newValue);
+    }
+  }
+  
+  /**
+   * Checks if both values can be parsed as numbers.
+   * 
+   * @param value1 first value to check
+   * @param value2 second value to check
+   * @return true if both are valid numbers
+   */
+  private boolean areNumericValues(String value1, String value2) {
+    try {
+      Double.parseDouble(value1);
+      Double.parseDouble(value2);
+      return true;
+    } catch (NumberFormatException ex) {
+      return false;
+    }
   }
 
   /**

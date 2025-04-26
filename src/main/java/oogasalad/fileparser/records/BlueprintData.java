@@ -96,6 +96,13 @@ public record BlueprintData(
     );
   }
 
+  /**
+   * Creates a new BlueprintData instance with the provided ID while keeping all other properties the same.
+   * This method is useful for creating a copy of a blueprint with a different identifier.
+   *
+   * @param newId the new identifier to use for the blueprint
+   * @return a new BlueprintData instance with the updated ID
+   */
   public BlueprintData withId(int newId) {
     return new BlueprintData(
         newId,

@@ -1,11 +1,13 @@
 package oogasalad.userData.parser;
 
-import oogasalad.userData.records.UserGameData;
-import oogasalad.userData.records.UserLevelData;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import java.util.Map;
-import java.util.LinkedHashMap;
+
+import oogasalad.userData.records.UserGameData;
+import oogasalad.userData.records.UserLevelData;
 
 /**
     * Converts <userGameData> XML elements into UserGameData records.
@@ -15,7 +17,7 @@ import java.util.LinkedHashMap;
  */
 public class UserGameDataParser {
 
-  UserLevelDataParser myUserLevelDataParser = new UserLevelDataParser();
+  private final UserLevelDataParser myUserLevelDataParser = new UserLevelDataParser();
 
   /**
    * Parses a <userGameData> element into a UserGameData record.

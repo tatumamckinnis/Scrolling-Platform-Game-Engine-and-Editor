@@ -44,30 +44,59 @@ public class SessionManager {
     public boolean saveSession(String username, String password) {
         try {
             File sessionFile = getSessionFile();
-            File parent = sessionFile.getParentFile();
-            if (parent != null) {
-                if (!parent.exists()) {
-                    if (!parent.mkdirs()) {
-                        LOG.error("Failed to create session directory: {}", parent);
-                        return false;
-                    }
-                } else if (!parent.isDirectory()) {
-                    LOG.error("Session path parent is not a directory: {}", parent);
-                    return false;
-                }
+            if (!ensureSessionDirectoryExists(sessionFile)) {
+                return false;
             }
+            
             // Store credentials
             sessionProperties.setProperty(USERNAME_KEY, username);
             sessionProperties.setProperty(PASSWORD_KEY, password);
+            
             // Save to file
-            try (FileOutputStream out = new FileOutputStream(sessionFile)) {
-                sessionProperties.store(out, "OogaSalad Session Data");
-                LOG.info("Session saved for user: {}", username);
-                return true;
-            }
+            return savePropertiesToFile(sessionFile, username);
         } catch (IOException e) {
             LOG.error("Failed to save session", e);
             return false;
+        }
+    }
+
+    /**
+     * Ensures the session directory exists and is a valid directory.
+     * 
+     * @param sessionFile the session file
+     * @return true if the directory exists or was created successfully
+     */
+    private boolean ensureSessionDirectoryExists(File sessionFile) {
+        File parent = sessionFile.getParentFile();
+        if (parent == null) {
+            return true;
+        }
+        
+        if (!parent.exists()) {
+            if (!parent.mkdirs()) {
+                LOG.error("Failed to create session directory: {}", parent);
+                return false;
+            }
+        } else if (!parent.isDirectory()) {
+            LOG.error("Session path parent is not a directory: {}", parent);
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Saves the session properties to the specified file.
+     * 
+     * @param sessionFile the file to save to
+     * @param username the username (for logging)
+     * @return true if saved successfully
+     * @throws IOException if an I/O error occurs
+     */
+    private boolean savePropertiesToFile(File sessionFile, String username) throws IOException {
+        try (FileOutputStream out = new FileOutputStream(sessionFile)) {
+            sessionProperties.store(out, "OogaSalad Session Data");
+            LOG.info("Session saved for user: {}", username);
+            return true;
         }
     }
 

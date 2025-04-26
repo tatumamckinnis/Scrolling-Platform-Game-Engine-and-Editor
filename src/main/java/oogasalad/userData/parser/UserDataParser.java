@@ -1,18 +1,21 @@
 package oogasalad.userData.parser;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import oogasalad.userData.records.UserData;
-import oogasalad.userData.records.UserGameData;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
 import org.xml.sax.SAXException;
+
+import oogasalad.userData.records.UserData;
+import oogasalad.userData.records.UserGameData;
 
 /**
  * Converts a <user> XML document into a UserData record, including nested game and level data.
@@ -22,7 +25,7 @@ import org.xml.sax.SAXException;
  */
 public class UserDataParser {
 
-  UserGameDataParser myUserGameDataParser = new UserGameDataParser();
+  private final UserGameDataParser myUserGameDataParser = new UserGameDataParser();
 
   /**
    * Parses the specified XML file into a UserData record.

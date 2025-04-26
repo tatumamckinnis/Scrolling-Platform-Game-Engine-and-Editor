@@ -4,18 +4,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import oogasalad.exceptions.UserDataWriteException;
 import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * UserDataWriter is responsible for serializing UserData objects
@@ -49,72 +51,8 @@ public class UserDataWriter {
     w.writeCharacters("\n");
     w.writeStartElement("user");
 
-    //basic UserData fields
-    writeElement(w, "username",    user.username(),       2);
-    writeElement(w, "displayName", user.displayName(),    2);
-    writeElement(w, "email",       user.email(),          2);
-    writeElement(w, "password",    user.password(),       2);
-    writeElement(w, "language",    user.language(),       2);
-    writeElement(w, "bio",         user.bio(),            2);
-    writeElement(w, "userImage",   user.userImage().getPath(), 2);
-
-    //userGameDataList
-    w.writeCharacters("\n  ");
-    w.writeStartElement("userGameDataList");
-    for (UserGameData ugd : user.userGameData()) {
-      w.writeCharacters("\n    ");
-      w.writeStartElement("userGameData");
-
-      writeElement(w, "gameName",    ugd.gameName(),   6);
-      writeElement(w, "lastPlayed",  ugd.lastPlayed(), 6);
-
-      //playerHighestGameStatMap
-      w.writeCharacters("\n      ");
-      w.writeStartElement("playerHighestGameStatMap");
-      for (Map.Entry<String, String> e : ugd.playerHighestGameStatMap().entrySet()) {
-        w.writeCharacters("\n        ");
-        w.writeStartElement("stat");
-        w.writeAttribute("name", e.getKey());
-        w.writeCharacters(e.getValue());
-        w.writeEndElement();
-      }
-      w.writeCharacters("\n      ");
-      w.writeEndElement(); // playerHighestGameStatMap
-
-      //playerLevelStatMap
-      w.writeCharacters("\n      ");
-      w.writeStartElement("playerLevelStatMap");
-      for (UserLevelData uld : ugd.playerLevelStatMap().values()) {
-        w.writeCharacters("\n        ");
-        w.writeStartElement("level");
-
-        writeElement(w, "levelName",      uld.levelName(),      8);
-        writeElement(w, "lastPlayed",     uld.lastPlayed(),     8);
-
-        //levelHighestStatMap
-        w.writeCharacters("\n          ");
-        w.writeStartElement("levelHighestStatMap");
-        for (Map.Entry<String, String> se : uld.levelHighestStatMap().entrySet()) {
-          w.writeCharacters("\n            ");
-          w.writeStartElement("stat");
-          w.writeAttribute("name", se.getKey());
-          w.writeCharacters(se.getValue());
-          w.writeEndElement();
-        }
-        w.writeCharacters("\n          ");
-        w.writeEndElement(); //levelHighestStatMap
-
-        w.writeCharacters("\n        ");
-        w.writeEndElement(); //level
-      }
-      w.writeCharacters("\n      ");
-      w.writeEndElement(); //playerLevelStatMap
-
-      w.writeCharacters("\n    ");
-      w.writeEndElement(); // userGameData
-    }
-    w.writeCharacters("\n  ");
-    w.writeEndElement(); // userGameDataList
+    writeUserBasicInfo(w, user);
+    writeUserGameData(w, user.userGameData());
 
     w.writeCharacters("\n");
     w.writeEndElement(); // user
@@ -186,6 +124,140 @@ public class UserDataWriter {
     String fullPath = directoryPath + filename;
     LOG.info("Writing user " + user.username() + " to " + fullPath);
     writeUsersData(user, fullPath);
+  }
+
+  /**
+   * Writes the basic user information fields to the XML.
+   * 
+   * @param w the XML writer
+   * @param user the user data
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML errors occur
+   */
+  private void writeUserBasicInfo(XMLStreamWriter w, UserData user) 
+      throws UserDataWriteException, XMLStreamException {
+    //basic UserData fields
+    writeElement(w, "username",    user.username(),       2);
+    writeElement(w, "displayName", user.displayName(),    2);
+    writeElement(w, "email",       user.email(),          2);
+    writeElement(w, "password",    user.password(),       2);
+    writeElement(w, "language",    user.language(),       2);
+    writeElement(w, "bio",         user.bio(),            2);
+    writeElement(w, "userImage",   user.userImage().getPath(), 2);
+  }
+  
+  /**
+   * Writes the list of game data for the user.
+   * 
+   * @param w the XML writer
+   * @param gameDataList the list of game data
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML errors occur
+   */
+  private void writeUserGameData(XMLStreamWriter w, List<UserGameData> gameDataList)
+      throws UserDataWriteException, XMLStreamException {
+    //userGameDataList
+    w.writeCharacters("\n  ");
+    w.writeStartElement("userGameDataList");
+    
+    for (UserGameData ugd : gameDataList) {
+      w.writeCharacters("\n    ");
+      w.writeStartElement("userGameData");
+
+      writeElement(w, "gameName",    ugd.gameName(),   6);
+      writeElement(w, "lastPlayed",  ugd.lastPlayed(), 6);
+      
+      writeGameStats(w, ugd.playerHighestGameStatMap());
+      writeLevelStats(w, ugd.playerLevelStatMap());
+
+      w.writeCharacters("\n    ");
+      w.writeEndElement(); // userGameData
+    }
+    
+    w.writeCharacters("\n  ");
+    w.writeEndElement(); // userGameDataList
+  }
+  
+  /**
+   * Writes the game stats map.
+   * 
+   * @param w the XML writer
+   * @param statsMap the game stats map
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML errors occur
+   */
+  private void writeGameStats(XMLStreamWriter w, Map<String, String> statsMap)
+      throws UserDataWriteException, XMLStreamException {
+    //playerHighestGameStatMap
+    w.writeCharacters("\n      ");
+    w.writeStartElement("playerHighestGameStatMap");
+    
+    for (Map.Entry<String, String> e : statsMap.entrySet()) {
+      w.writeCharacters("\n        ");
+      w.writeStartElement("stat");
+      w.writeAttribute("name", e.getKey());
+      w.writeCharacters(e.getValue());
+      w.writeEndElement();
+    }
+    
+    w.writeCharacters("\n      ");
+    w.writeEndElement(); // playerHighestGameStatMap
+  }
+  
+  /**
+   * Writes the level stats map.
+   * 
+   * @param w the XML writer
+   * @param levelMap the level stats map
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML errors occur
+   */
+  private void writeLevelStats(XMLStreamWriter w, Map<String, UserLevelData> levelMap)
+      throws UserDataWriteException, XMLStreamException {
+    //playerLevelStatMap
+    w.writeCharacters("\n      ");
+    w.writeStartElement("playerLevelStatMap");
+    
+    for (UserLevelData uld : levelMap.values()) {
+      w.writeCharacters("\n        ");
+      w.writeStartElement("level");
+
+      writeElement(w, "levelName",      uld.levelName(),      8);
+      writeElement(w, "lastPlayed",     uld.lastPlayed(),     8);
+      writeLevelStatMap(w, uld.levelHighestStatMap());
+
+      w.writeCharacters("\n        ");
+      w.writeEndElement(); //level
+    }
+    
+    w.writeCharacters("\n      ");
+    w.writeEndElement(); //playerLevelStatMap
+  }
+  
+  /**
+   * Writes a single level's stat map.
+   * 
+   * @param w the XML writer
+   * @param statMap the level stat map
+   * @throws UserDataWriteException if writing fails
+   * @throws XMLStreamException if XML errors occur
+   */
+  private void writeLevelStatMap(XMLStreamWriter w, Map<String, String> statMap)
+      throws UserDataWriteException, XMLStreamException {
+    //levelHighestStatMap
+    w.writeCharacters("\n          ");
+    w.writeStartElement("levelHighestStatMap");
+    
+    for (Map.Entry<String, String> se : statMap.entrySet()) {
+      w.writeCharacters("\n            ");
+      w.writeStartElement("stat");
+      w.writeAttribute("name", se.getKey());
+      w.writeCharacters(se.getValue());
+      w.writeEndElement();
+    }
+    
+    w.writeCharacters("\n          ");
+    w.writeEndElement(); //levelHighestStatMap
   }
 
   /**
