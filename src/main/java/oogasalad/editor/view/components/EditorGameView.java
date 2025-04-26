@@ -1,12 +1,10 @@
 package oogasalad.editor.view.components;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +18,9 @@ import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -631,7 +631,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
-
   /**
    * Retrieves the sprite path associated with an object from the controller.
    *
@@ -648,9 +647,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Loads an image from the specified path string into the cache if it's not already present,
-   * has a different path than the cached version, or if the cached image is marked as errored.
-   * Handles converting absolute file paths to proper file URLs for JavaFX Image loading.
+   * Loads an image from the specified path string into the cache if it's not already present, has a
+   * different path than the cached version, or if the cached image is marked as errored. Handles
+   * converting absolute file paths to proper file URLs for JavaFX Image loading.
    *
    * @param id   The UUID of the object associated with the image.
    * @param path The path string (can be absolute file path or classpath resource).
@@ -682,7 +681,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
       return;
     }
 
-
     boolean needsLoading = cachedImage == null
         || !Objects.equals(cachedImage.getUrl(), urlString)
         || cachedImage.isError();
@@ -694,11 +692,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
         setupImageListeners(newImage, urlString);
         objectImages.put(id, newImage);
       } catch (IllegalArgumentException e) {
-        LOG.error("Failed to load image for {} - Invalid URL or resource not found: {}", id, urlString, e);
+        LOG.error("Failed to load image for {} - Invalid URL or resource not found: {}", id,
+            urlString, e);
         objectImages.remove(id);
         redrawObjects();
       } catch (Exception e) {
-        LOG.error("Unexpected error loading image for {} from URL {}: {}", id, urlString, e.getMessage(), e);
+        LOG.error("Unexpected error loading image for {} from URL {}: {}", id, urlString,
+            e.getMessage(), e);
         objectImages.remove(id);
         redrawObjects();
       }
@@ -807,12 +807,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
-
-
   /**
-   * Redraws the sprite visual for a specific object ID on the object canvas.
-   * Retrieves object data, checks for a loaded image, finds the correct frame,
-   * and draws the specific frame using its original dimensions.
+   * Redraws the sprite visual for a specific object ID on the object canvas. Retrieves object data,
+   * checks for a loaded image, finds the correct frame, and draws the specific frame using its
+   * original dimensions.
    *
    * @param id The UUID of the object whose sprite needs redrawing.
    */
@@ -836,18 +834,22 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
       LOG.debug("[redrawSprites ID: {}] Trying to display frame.", id);
       LOG.debug("[redrawSprites ID: {}] BaseFrame Name from SpriteData: '{}'", id, baseFrameName);
-      LOG.debug("[redrawSprites ID: {}] Frame Map Size: {}", id, frameMap != null ? frameMap.size() : "null map");
+      LOG.debug("[redrawSprites ID: {}] Frame Map Size: {}", id,
+          frameMap != null ? frameMap.size() : "null map");
       if (frameMap != null && baseFrameName != null) {
         LOG.debug("[redrawSprites ID: {}] Frame Map Keys: {}", id, frameMap.keySet());
-        LOG.debug("[redrawSprites ID: {}] Does map contain key '{}'? {}", id, baseFrameName, frameMap.containsKey(baseFrameName));
+        LOG.debug("[redrawSprites ID: {}] Does map contain key '{}'? {}", id, baseFrameName,
+            frameMap.containsKey(baseFrameName));
       }
 
       if (baseFrameName != null && frameMap != null && frameMap.containsKey(baseFrameName)) {
         displayFrame = frameMap.get(baseFrameName);
-        LOG.trace("[redrawSprites ID: {}] Using base frame '{}' retrieved from map.", id, baseFrameName);
+        LOG.trace("[redrawSprites ID: {}] Using base frame '{}' retrieved from map.", id,
+            baseFrameName);
       } else if (frameMap != null && !frameMap.isEmpty()) {
         displayFrame = frameMap.values().iterator().next();
-        LOG.warn("[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first available frame: {}",
+        LOG.warn(
+            "[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first available frame: {}",
             id, baseFrameName, frameMap.keySet(), displayFrame.name());
       }
 
@@ -861,15 +863,19 @@ public class EditorGameView extends Pane implements EditorViewListener {
         double dh = sh;
 
         if (sw > 0 && sh > 0) {
-          LOG.trace("[redrawSprites ID: {}] Drawing frame '{}' from [{},{},{},{}] to [{},{},{},{}] (Actual Size)",
+          LOG.trace(
+              "[redrawSprites ID: {}] Drawing frame '{}' from [{},{},{},{}] to [{},{},{},{}] (Actual Size)",
               id, displayFrame.name(), sx, sy, sw, sh, dx, dy, dw, dh);
           objectGraphicsContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
         } else {
-          LOG.warn("[redrawSprites ID: {}] Frame '{}' has invalid dimensions (w={}, h={}). Drawing placeholder.", id, displayFrame.name(), sw, sh);
+          LOG.warn(
+              "[redrawSprites ID: {}] Frame '{}' has invalid dimensions (w={}, h={}). Drawing placeholder.",
+              id, displayFrame.name(), sw, sh);
           drawPlaceholder(objectGraphicsContext, object, dx, dy);
         }
       } else {
-        LOG.error("[redrawSprites ID: {}] Could not determine display frame (baseFrameName='{}', mapKeys={}). Drawing placeholder.",
+        LOG.error(
+            "[redrawSprites ID: {}] Could not determine display frame (baseFrameName='{}', mapKeys={}). Drawing placeholder.",
             id, baseFrameName, frameMap != null ? frameMap.keySet() : "null map");
         drawPlaceholder(objectGraphicsContext, object, dx, dy);
       }
@@ -878,6 +884,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
       drawPlaceholder(objectGraphicsContext, object, dx, dy);
     }
   }
+
   /**
    * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
    * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.

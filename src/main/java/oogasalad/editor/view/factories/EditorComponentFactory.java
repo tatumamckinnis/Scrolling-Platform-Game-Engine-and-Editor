@@ -29,6 +29,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.components.EditorGameView;
 import oogasalad.editor.view.components.PrefabPalettePane;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
+import oogasalad.editor.view.panes.editor_properties.EditorPropertiesDialog;
 import oogasalad.editor.view.panes.level_properties.LevelPropertiesDialog;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
 import oogasalad.editor.view.panes.sprite_creation.SpriteAssetPane;
@@ -472,10 +473,16 @@ public class EditorComponentFactory {
     componentContent.setId(getId("id.component.content.vbox"));
     componentContent.getChildren().addAll(componentsLabel, tabPane);
 
-    Button levelPropsBtn = createLevelPropertiesButton();
-    VBox.setMargin(levelPropsBtn, new Insets(10, 0, 0, 0));
-    componentContent.getChildren().add(levelPropsBtn);
+    Button levelPropsBtn  = createLevelPropertiesButton();
+    Button editorPropsBtn = createEditorPropertiesButton();
 
+// now create an HBox to hold them horizontally, with 10px spacing
+    HBox buttonRow = new HBox(10, levelPropsBtn, editorPropsBtn);
+// if you still want that 10px top margin:
+    VBox.setMargin(buttonRow, new Insets(10, 0, 0, 0));
+
+// finally, add the HBox to your VBox container
+    componentContent.getChildren().add(buttonRow);
     VBox.setVgrow(tabPane, Priority.ALWAYS);
 
     componentPane.setCenter(componentContent);
@@ -541,6 +548,14 @@ public class EditorComponentFactory {
     Button btn = new Button("Level Properties…");
     btn.setOnAction(e -> {
       new LevelPropertiesDialog(editorController, btn.getScene().getWindow()).showAndWait();
+    });
+    return btn;
+  }
+
+  private Button createEditorPropertiesButton() {
+    Button btn = new Button("Editor Properties…");
+    btn.setOnAction(e -> {
+      new EditorPropertiesDialog(editorController, btn.getScene().getWindow()).showAndWait();
     });
     return btn;
   }

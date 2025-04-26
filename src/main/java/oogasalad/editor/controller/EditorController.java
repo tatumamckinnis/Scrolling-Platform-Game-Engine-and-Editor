@@ -3,9 +3,10 @@ package oogasalad.editor.controller;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import oogasalad.editor.controller.level.EditorDataAPI;
-import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
@@ -50,7 +51,7 @@ public interface EditorController {
   void requestObjectRemoval(UUID objectId);
 
   /**
-   * Requests an update to an existing object’s properties.
+   * Requests an update to an existing object's properties.
    */
   void requestObjectUpdate(EditorObject updatedObject);
 
@@ -192,7 +193,7 @@ public interface EditorController {
   // --- Dynamic Variables ---
 
   /**
-   * Adds a new dynamic variable to the editor’s shared variable list.
+   * Adds a new dynamic variable to the editor's shared variable list.
    */
   void addDynamicVariable(DynamicVariable variable);
 
@@ -219,4 +220,27 @@ public interface EditorController {
    * @param fileName the file to save the level data to
    */
   void saveLevelData(String fileName) throws EditorSaveException;
+
+  // --- Editor Settings ---
+
+  /**
+   * Sets the cell size for the editor grid.
+   */
+  void setCellSize(int cellSize);
+
+  /**
+   * Gets the current cell size of the editor grid.
+   */
+  int getCellSize();
+
+  /**
+   * Sets whether objects should snap to the grid.
+   */
+  void setSnapToGrid(boolean doSnap);
+
+  /**
+   * Gets whether objects are currently set to snap to the grid.
+   */
+  boolean isSnapToGrid();
+
 }
