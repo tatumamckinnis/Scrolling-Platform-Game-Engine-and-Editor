@@ -1,5 +1,6 @@
 package oogasalad.editor.controller.level;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,10 +32,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Provides an API to manage editor data by interfacing with the various underlying data managers.
- * This class acts as a facade for performing operations on editor objects, layers, groups, and
- * dynamic variables, and delegates tasks to corresponding data managers within an
- * {@link EditorLevelData} instance.
+ * Provides a comprehensive API to manage editor data, acting as a facade for various underlying
+ * data managers and the core {@link EditorLevelData}. It handles operations related to editor
+ * objects (creation, retrieval, update, removal), layers, groups, sprite assets (sheets, templates),
+ * camera settings, custom object parameters, and level saving/loading integration. This API simplifies
+ * interaction with the editor's data model for the controller layer.
  *
  * @author Jacob You
  */
@@ -64,17 +66,19 @@ public class EditorDataAPI {
 
   /**
    * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
-   * all related data managers.
+   * all related data managers, including the modified {@link IdentityDataManager} which now handles
+   * per-object parameters.
    *
-   * @author Jacob You
+   * @param listenerNotifier The notifier for broadcasting changes to view listeners. Must not be null.
+   * @author Jacob You, Tatum McKinnis
    */
   public EditorDataAPI(EditorListenerNotifier listenerNotifier) {
     this.fileParserAPI = DEFAULT_FILE_PARSER;
     this.saverStrategy = DEFAULT_SAVER_STRATEGY;
 
-    this.listenerNotifier = listenerNotifier;
+    this.listenerNotifier = Objects.requireNonNull(listenerNotifier, "ListenerNotifier cannot be null");
     this.level = new EditorLevelData();
-    this.identityAPI = new IdentityDataManager(level);
+    this.identityAPI = new IdentityDataManager(level); // Handles identity + parameters
     this.hitboxAPI = new HitboxDataManager(level);
     this.inputAPI = new InputDataManager(level);
     this.physicsAPI = new PhysicsDataManager(level);
@@ -82,7 +86,7 @@ public class EditorDataAPI {
     this.spriteAPI = new SpriteDataManager(level, listenerNotifier);
     this.customEventAPI = new CustomEventDataManager(level);
     this.cameraAPI = new CameraDataManager(level);
-    this.dynamicVariableContainer = new DynamicVariableContainer();
+    this.dynamicVariableContainer = new DynamicVariableContainer(); // Still exists but not used for object params
     this.spriteSheetAPI = new SpriteSheetDataManager(level, saverStrategy, fileParserAPI);
 
     this.fileConverterAPI = new EditorFileConverter();
@@ -103,10 +107,11 @@ public class EditorDataAPI {
   /**
    * Retrieves the editor object associated with the given UUID.
    *
-   * @param id the unique identifier of the editor object.
-   * @return the corresponding {@link EditorObject} or null if no object is found.
+   * @param id the unique identifier of the editor object. Can be null.
+   * @return the corresponding {@link EditorObject} or null if no object is found or ID is null.
    */
   public EditorObject getEditorObject(UUID id) {
+    if (id == null) return null;
     return level.getEditorObject(id);
   }
 
@@ -114,7 +119,7 @@ public class EditorDataAPI {
    * Removes the editor object corresponding to the provided UUID. Also attempts to remove the
    * object from its associated layer.
    *
-   * @param id the unique identifier of the editor object to be removed.
+   * @param id the unique identifier of the editor object to be removed. Must not be null.
    * @return whether the object was successfully removed.
    */
   public boolean removeEditorObject(UUID id) {
@@ -139,10 +144,11 @@ public class EditorDataAPI {
   }
 
   /**
-   * Updates an existing editor object with new data.
+   * Updates an existing editor object with new data provided in the {@code updatedObject}.
+   * The object is identified by the ID within {@code updatedObject}.
    *
-   * @param updatedObject the editor object containing the updated data.
-   * @return whether the object was successfully updated
+   * @param updatedObject the editor object containing the updated data. Must not be null and must have a valid ID.
+   * @return whether the object was successfully found and updated in the underlying data map.
    */
   public boolean updateEditorObject(EditorObject updatedObject) {
     Objects.requireNonNull(updatedObject, "Updated object cannot be null.");
@@ -164,11 +170,16 @@ public class EditorDataAPI {
   }
 
   /**
-   * Adds a new layer to the editor level with a specified name.
+   * Adds a new layer to the editor level with a specified name and the next available priority.
    *
-   * @param layerName the name of the layer to add.
+   * @param layerName the name of the layer to add. Must not be null or empty.
    */
   public void addLayer(String layerName) {
+    Objects.requireNonNull(layerName, "Layer name cannot be null");
+    if (layerName.trim().isEmpty()) {
+      LOG.warn("Attempted to add a layer with an empty name.");
+      return;
+    }
     LOG.debug("Adding layer '{}' via EditorLevelData.", layerName);
     int newPriority = 0;
     if (!level.getLayers().isEmpty()) {
@@ -178,9 +189,9 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the list of Layers in the editor level.
+   * Retrieves the list of Layers currently defined in the editor level.
    *
-   * @return a list of {@link Layer} objects.
+   * @return an unmodifiable list of {@link Layer} objects.
    */
   public List<Layer> getLayers() {
     return level.getLayers();
@@ -190,7 +201,7 @@ public class EditorDataAPI {
    * Removes the layer identified by the given layer name from the editor level.
    *
    * @param layerName the name of the layer to remove.
-   * @return true if the layer was removed; false otherwise
+   * @return true if the layer was found and removed; false otherwise.
    */
   public boolean removeLayer(String layerName) {
     LOG.debug("Removing layer '{}' via EditorLevelData.", layerName);
@@ -198,30 +209,35 @@ public class EditorDataAPI {
   }
 
   /**
-   * Adds a new group to the editor level with the specified group name.
+   * Adds a new group (category/type name) to the editor level's list of known groups.
    *
-   * @param groupName the name of the group to add.
+   * @param groupName the name of the group to add. Must not be null or empty.
    */
   public void addGroup(String groupName) {
+    Objects.requireNonNull(groupName, "Group name cannot be null");
+    if (groupName.trim().isEmpty()) {
+      LOG.warn("Attempted to add a group with an empty name.");
+      return;
+    }
     LOG.debug("Adding group '{}' via EditorLevelData.", groupName);
     level.addGroup(groupName);
   }
 
   /**
-   * Retrieves the list of groups in the editor level.
+   * Retrieves the list of all currently defined groups in the editor level.
    *
-   * @return a list of group names.
+   * @return an unmodifiable list of group names.
    */
   public List<String> getGroups() {
     return level.getGroups();
   }
 
   /**
-   * Removes the group identified by the provided group name from the editor level.
+   * Removes the group identified by the provided group name from the editor level's list.
+   * Fails if any existing editor object is still assigned to this group.
    *
    * @param groupName the name of the group to remove.
-   * @return true if the group was successfully removed, false if any editor object is still
-   * associated with it
+   * @return true if the group was successfully removed (and no objects used it), false otherwise.
    */
   public boolean removeGroup(String groupName) {
     LOG.debug("Removing group '{}' via EditorLevelData.", groupName);
@@ -229,7 +245,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the {@link EditorLevelData} instance of the API.
+   * Gets the underlying {@link EditorLevelData} instance managed by this API.
+   * Use with caution, prefer using specific API methods when possible.
    *
    * @return the current {@link EditorLevelData}.
    */
@@ -238,7 +255,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link IdentityDataManager} used by the editor.
+   * Retrieves the {@link IdentityDataManager} used by the editor, which handles object identity
+   * (name, group, layer) and custom parameters.
    *
    * @return the IdentityDataManager instance.
    */
@@ -247,7 +265,7 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link HitboxDataManager} used by the editor.
+   * Retrieves the {@link HitboxDataManager} used by the editor to manage object hitbox properties.
    *
    * @return the HitboxDataManager instance.
    */
@@ -256,7 +274,7 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link InputDataManager} used by the editor to manage input data and events.
+   * Retrieves the {@link InputDataManager} used by the editor to manage input-related events and data.
    *
    * @return the InputDataManager instance.
    */
@@ -265,7 +283,7 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link PhysicsDataManager} used by the editor.
+   * Retrieves the {@link PhysicsDataManager} used by the editor to manage object physics properties.
    *
    * @return the PhysicsDataManager instance.
    */
@@ -274,7 +292,7 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link CollisionDataManager} used by the editor.
+   * Retrieves the {@link CollisionDataManager} used by the editor to manage collision-related events and data.
    *
    * @return the CollisionDataManager instance.
    */
@@ -283,7 +301,7 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link SpriteDataManager} used by the editor.
+   * Retrieves the {@link SpriteDataManager} used by the editor to manage object sprite properties and templates.
    *
    * @return the SpriteDataManager instance.
    */
@@ -292,7 +310,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the container holding dynamic variables for this instance of the API.
+   * Gets the container holding global dynamic variables for this instance of the API.
+   * Note: This is separate from the per-object parameters managed by IdentityDataManager.
    *
    * @return the {@link DynamicVariableContainer} instance.
    */
@@ -301,25 +320,30 @@ public class EditorDataAPI {
   }
 
   /**
-   * Sets the current game directory path.
+   * Sets the file system path to the root directory of the currently loaded game project.
+   * Also updates the game name in the underlying {@link EditorLevelData} based on the
+   * directory name extracted from the path.
    *
    * @param path The path to the current game directory.
    */
   public void setCurrentGameDirectoryPath(String path) {
     this.currentGameDirectoryPath = path;
+    String gameName = extractGameNameFromPath(path); // Extract name from path
+    level.setGameName(gameName); // Use the existing setter
+    LOG.info("Current game directory path set to: {}, Game name set to: {}", path, gameName);
   }
 
   /**
-   * Gets the current game directory path.
+   * Gets the file system path to the root directory of the currently loaded game project.
    *
-   * @return The path to the current game directory.
+   * @return The path to the current game directory, or null if not set.
    */
   public String getCurrentGameDirectoryPath() {
     return currentGameDirectoryPath;
   }
 
   /**
-   * Gets the CustomEventDataManager instance.
+   * Gets the {@link CustomEventDataManager} instance for managing custom event definitions.
    *
    * @return The CustomEventDataManager instance.
    */
@@ -328,88 +352,120 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the current SpriteSheetDataManager instance.
+   * Gets the {@link SpriteSheetDataManager} instance for managing sprite sheet assets (loading, saving).
    *
-   * @return The current SpriteSheetDataManager instance
+   * @return The current SpriteSheetDataManager instance.
    */
   public SpriteSheetDataManager getSpriteSheetDataAPI() {
     return spriteSheetAPI;
   }
 
   /**
-   * Notifies all registered view listeners that an error has occurred, providing a descriptive
-   * message.
+   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
+   * This is typically called by data managers when operations fail.
    *
    * @param errorMessage the error message to be reported to the listeners.
    */
   public void notifyErrorOccurred(String errorMessage) {
-    LOG.error("Error occurred in EditorDataAPI: {}", errorMessage);
+    LOG.error("Error reported via EditorDataAPI: {}", errorMessage);
+    listenerNotifier.notifyErrorOccurred(errorMessage);
   }
 
   /**
-   * Returns the current sprite library for the current level.
+   * Returns the current {@link SpriteSheetLibrary} containing loaded sprite sheet data for the level.
    *
-   * @return the sprite library for the current level
+   * @return the sprite library for the current level.
    */
   public SpriteSheetLibrary getSpriteLibrary() {
     return level.getSpriteLibrary();
   }
 
   /**
-   * Returns a list of all the EditorObject instances in the current data mapping for the level
+   * Returns an unmodifiable view of the map containing all {@link EditorObject} instances in the current level,
+   * keyed by their UUID.
    *
-   * @return the map of object UUID to EditorObject
+   * @return an unmodifiable map of object UUID to EditorObject.
    */
   public Map<UUID, EditorObject> getObjectDataMap() {
     return level.getObjectDataMap();
   }
 
   /**
-   * Adds a sprite template to the sprite template mapping for the current level.
+   * Adds a {@link SpriteTemplate} to the sprite template mapping for the current level.
+   * Notifies listeners that the sprite templates have changed.
    *
-   * @param spriteTemplate The sprite template to add to the level mapping
+   * @param spriteTemplate The sprite template to add to the level mapping. Must not be null.
    */
   public void addSpriteTemplate(SpriteTemplate spriteTemplate) {
+    Objects.requireNonNull(spriteTemplate, "SpriteTemplate cannot be null");
     level.addSpriteTemplate(spriteTemplate);
     listenerNotifier.notifySpriteTemplateChanged();
   }
 
   /**
-   * Gets the sprite template map from the current level
+   * Gets the {@link SpriteTemplateMap} containing all defined sprite templates for the current level.
    *
-   * @return the {@link SpriteTemplateMap} for the current level
+   * @return the {@link SpriteTemplateMap} for the current level.
    */
   public SpriteTemplateMap getSpriteTemplateMap() {
     return level.getSpriteTemplateMap();
   }
 
   /**
-   * Returns the name of the game associated with the current level.
+   * Returns the name of the game associated with the current level, typically derived from the game directory path.
    *
-   * @return the game name as a {@code String}
+   * @return the game name as a {@code String}, or null if not set.
    */
   public String getGameName() {
     return level.getGameName();
   }
 
   /**
-   * Saves the current editor level data to a file.
+   * Saves the current editor level data (including objects, layers, groups, camera, parameters, etc.)
+   * to a file using the configured file converter and saver strategy.
    *
-   * @param fileName the name (or path) of the file to save to
-   * @throws EditorSaveException if an error occurs during saving
+   * @param fileName the name (or path) of the file to save to.
+   * @throws EditorSaveException if an error occurs during the saving process.
    */
   public void saveLevelData(String fileName) throws EditorSaveException {
+    LOG.info("Saving level data to file: {}", fileName);
     fileConverterAPI.saveEditorDataToFile(level, fileName, saverStrategy);
   }
 
   /**
-   * Returns the {@link CameraDataManager} for interacting with camera data.
+   * Returns the {@link CameraDataManager} for interacting with the level's camera data.
+   * The {@code camType} parameter is currently ignored but kept for potential future use
+   * with multiple camera types.
    *
-   * @param camType the camera type requested (currently ignored in implementation)
-   * @return the {@link CameraDataManager} instance
+   * @param camType the camera type requested (currently ignored).
+   * @return the {@link CameraDataManager} instance.
    */
   public CameraDataManager getCameraAPI(String camType) {
+    // Currently ignores camType, always returns the single camera manager
     return cameraAPI;
+  }
+
+  /**
+   * Extracts the presumed game name (the final directory component) from a file path.
+   *
+   * @param path The full path to the game directory.
+   * @return The extracted game name, or the original path if extraction fails.
+   */
+  private String extractGameNameFromPath(String path) {
+    if (path == null || path.isEmpty()) {
+      return "UnknownGame";
+    }
+    try {
+      File file = new File(path);
+      String name = file.getName();
+      if (name.isEmpty() && file.getParentFile() != null) {
+        name = file.getParentFile().getName();
+      }
+      return name.isEmpty() ? "UnknownGame" : name;
+    } catch (Exception e) {
+      LOG.warn("Could not extract game name from path '{}': {}", path, e.getMessage());
+      return path;
+    }
   }
 
 }
