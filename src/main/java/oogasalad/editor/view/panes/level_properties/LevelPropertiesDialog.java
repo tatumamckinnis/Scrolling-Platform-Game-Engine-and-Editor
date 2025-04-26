@@ -276,28 +276,9 @@ public class LevelPropertiesDialog extends Stage {
 
   private boolean pushToModel() {
     try {
-      String gameName = gameNameTextField.getText();
-      level.setGameName(gameName);
+      setGameName();
       /* camera type + per-type params */
-      String camType = cameraTypeBox.getValue();
-      cameraManager.setType(camType);
-
-      CameraSpecLoader.Specifications spec =
-          SPEC_LOADER.getSpecifications(camType);
-
-      Map<String, String> strParams = new HashMap<>();
-      Map<String, Double> dblParams = new HashMap<>();
-
-      spec.strParams().forEach(p ->
-          strParams.put(p, paramFieldMap.get(p).getText()));
-      spec.dblParams().forEach(p -> {
-        String txt = paramFieldMap.get(p).getText();
-        dblParams.put(p, txt.isBlank() ? 0 : Double.parseDouble(txt));
-      });
-
-      cameraManager.replaceStringParams(strParams);
-      cameraManager.replaceDoubleParams(dblParams);
-
+      setCamera();
       return true;
 
     } catch (NumberFormatException nfe) {
@@ -311,5 +292,32 @@ public class LevelPropertiesDialog extends Stage {
           .showAndWait();
     }
     return false;
+  }
+
+  private void setCamera() {
+    String camType = cameraTypeBox.getValue();
+    cameraManager.setType(camType);
+
+    CameraSpecLoader.Specifications spec =
+        SPEC_LOADER.getSpecifications(camType);
+
+    Map<String, String> strParams = new HashMap<>();
+    Map<String, Double> dblParams = new HashMap<>();
+
+    spec.strParams().forEach(p ->
+        strParams.put(p, paramFieldMap.get(p).getText()));
+    spec.dblParams().forEach(p -> {
+      String txt = paramFieldMap.get(p).getText();
+      dblParams.put(p, txt.isBlank() ? 0 : Double.parseDouble(txt));
+    });
+
+    cameraManager.replaceStringParams(strParams);
+    cameraManager.replaceDoubleParams(dblParams);
+  }
+
+  private void setGameName() {
+    String gameName = gameNameTextField.getText();
+    gameName = gameName.trim();
+    level.setGameName(gameName);
   }
 }
