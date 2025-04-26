@@ -92,7 +92,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private int gridMaxBound;
 
   private boolean drawHitboxes = true;
-  private boolean snapToGrid = false;
+  private boolean snapToGrid = true;
 
   /**
    * Creates a new editor game view.
