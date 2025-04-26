@@ -11,18 +11,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.components.EditorGameView;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteData;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.stage.FileChooser;
-import javafx.stage.Window;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Tool for placing selected prefabs (Blueprints) onto the editor grid. Handles sprite resolution
@@ -96,6 +98,20 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     }
 
     String relativePath = safeGetPath(spriteData.spriteFile());
+    
+    // Handle case when the path might be an absolute path
+    if (new File(relativePath).isAbsolute()) {
+      // For absolute paths, just check if the file exists directly
+      File absoluteFile = new File(relativePath);
+      if (absoluteFile.exists() && absoluteFile.isFile()) {
+        LOG.debug("Sprite '{}' for prefab '{}' found at absolute path.", relativePath,
+            originalPrefab.type());
+        return Optional.of(originalPrefab);
+      }
+      // If absolute path doesn't exist, extract just the filename for later use
+      relativePath = absoluteFile.getName();
+    }
+    
     Path targetPath = Paths.get(currentGameDirectory, relativePath);
 
     if (Files.exists(targetPath) && Files.isRegularFile(targetPath)) {
@@ -307,5 +323,23 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
 
   private <T> List<T> safeGetList(List<T> list) {
     return (list != null) ? list : new ArrayList<>();
+  }
+
+  /**
+   * Gets the editor view used by this tool.
+   * 
+   * @return The EditorGameView instance.
+   */
+  protected EditorGameView getEditorView() {
+    return editorView;
+  }
+  
+  /**
+   * Gets the editor controller used by this tool.
+   * 
+   * @return The EditorController instance.
+   */
+  protected EditorController getEditorController() {
+    return editorController;
   }
 }
