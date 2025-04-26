@@ -10,6 +10,8 @@ import oogasalad.ResourceManagerAPI;
 
 /**
  * HelpScreen displays an HTML help view for each simulation
+ *
+ * @author Alana Zinkin
  */
 public class HelpScreen {
 
@@ -34,7 +36,7 @@ public class HelpScreen {
     helpStage.show();
   }
 
-  public String buildHelpHTML() {
+  private String buildHelpHTML() {
     ResourceManagerAPI resourceManager = ResourceManager.getInstance();
     StringBuilder html = new StringBuilder();
     html.append("<html><head><title>").append(resourceManager.getText(help, "help.title"))
