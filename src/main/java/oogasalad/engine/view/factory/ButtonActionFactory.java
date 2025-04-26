@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import oogasalad.engine.view.screen.HelpScreen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,8 +141,14 @@ public class ButtonActionFactory {
    * @throws ViewInitializationException thrown if issue with initialization.
    */
   private Runnable openHelp() throws ViewInitializationException {
-    // TODO need to implement
-    return null;
+    return () -> {
+      HelpScreen helpScreen = new HelpScreen();
+      try {
+        helpScreen.showHelpWindow();
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    };
   }
 
   /**

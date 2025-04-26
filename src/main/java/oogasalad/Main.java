@@ -28,11 +28,11 @@ public class Main extends Application {
   public void start(Stage primaryStage)
       throws URISyntaxException, IOException, InterruptedException {
     try {
-      GameManagerAPI manager = new DefaultGameManager();
+      new DefaultGameManager();
       LOG.info("Starting game...");
     } catch (Exception e) {
-      e.printStackTrace();
-      LOG.warn("Error starting main.", e.getMessage());
+      LOG.warn(e.getMessage());
+      throw new IOException("Failed to start game", e);
     }
   }
 
