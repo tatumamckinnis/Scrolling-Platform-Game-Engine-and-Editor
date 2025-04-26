@@ -361,66 +361,91 @@ public class OutcomesSectionBuilder {
    * @param defaultValue Default value string from properties.
    * @param item         The OutcomeDisplayItem being edited.
    */
-  private void addParameterRow(GridPane grid, int rowIndex, String paramName, String paramType, String description, String defaultValue, OutcomeDisplayItem item) {
+  private void addParameterRow(GridPane grid,
+      int rowIndex,
+      String paramName,
+      String paramType,
+      String description,
+      String defaultValue,
+      OutcomeDisplayItem item) {
+    // 1) Get the “current” value (existing or default)
+    String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
+
+    // 2) Figure out which control & which bundle key to use
     String typeDisplayKey;
     Control inputControl;
-    String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
-    String typeIdBoolean = getLocalProp("param.typeIdBoolean");
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-    String typeIdDropdownPrefix = getLocalProp("param.typeIdDropdownPrefix");
-    String typeIdString = getLocalProp("param.typeIdString");
+    String boolId     = getLocalProp("param.typeIdBoolean");
+    String intId      = getLocalProp("param.typeIdInteger");
+    String dblId      = getLocalProp("param.typeIdDouble");
+    String ddPrefix   = getLocalProp("param.typeIdDropdownPrefix");
 
     try {
-      if (paramType.equalsIgnoreCase(typeIdBoolean)) {
+      if (paramType.equalsIgnoreCase(boolId)) {
         typeDisplayKey = getLocalProp("key.paramTypeBoolean");
-        CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(Boolean.parseBoolean(currentValue));
-        checkBox.setOnAction(e -> handleBooleanParamUpdate(item, paramName, checkBox.isSelected()));
-        inputControl = checkBox;
-      } else if (paramType.equalsIgnoreCase(typeIdInteger) || paramType.equalsIgnoreCase(typeIdDouble)) {
-        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInteger) ? getLocalProp("key.paramTypeInteger") : getLocalProp("key.paramTypeDouble");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, textField));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) handleNumericParamUpdate(item, paramName, paramType, textField);
+        CheckBox cb = new CheckBox();
+        cb.setSelected(Boolean.parseBoolean(currentValue));
+        cb.setOnAction(e -> handleBooleanParamUpdate(item, paramName, cb.isSelected()));
+        inputControl = cb;
+
+      } else if (paramType.equalsIgnoreCase(intId) || paramType.equalsIgnoreCase(dblId)) {
+        typeDisplayKey = paramType.equalsIgnoreCase(intId)
+            ? getLocalProp("key.paramTypeInteger")
+            : getLocalProp("key.paramTypeDouble");
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, tf));
+        tf.focusedProperty().addListener((o, oldV, newV) -> {
+          if (!newV) handleNumericParamUpdate(item, paramName, paramType, tf);
         });
-        inputControl = textField;
-      } else if (paramType.toUpperCase().startsWith(typeIdDropdownPrefix.toUpperCase())) {
+        inputControl = tf;
+
+      } else if (paramType.toUpperCase().startsWith(ddPrefix.toUpperCase())) {
         typeDisplayKey = getLocalProp("key.paramTypeDropdown");
-        String[] options = paramType.substring(typeIdDropdownPrefix.length()).split(",");
-        ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(options));
-        comboBox.setValue(currentValue);
-        comboBox.setOnAction(e -> handleStringParamUpdate(item, paramName, comboBox.getValue()));
-        inputControl = comboBox;
+        String[] opts = paramType.substring(ddPrefix.length()).split(",");
+        ComboBox<String> combo = new ComboBox<>(FXCollections.observableArrayList(opts));
+        combo.setValue(currentValue);
+        combo.setOnAction(e -> handleStringParamUpdate(item, paramName, combo.getValue()));
+        inputControl = combo;
+
       } else {
+        // default to string
         typeDisplayKey = getLocalProp("key.paramTypeString");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleStringParamUpdate(item, paramName, textField.getText()));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) handleStringParamUpdate(item, paramName, textField.getText());
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleStringParamUpdate(item, paramName, tf.getText()));
+        tf.focusedProperty().addListener((o, oldV, newV) -> {
+          if (!newV) handleStringParamUpdate(item, paramName, tf.getText());
         });
-        inputControl = textField;
+        inputControl = tf;
       }
-    } catch (IllegalArgumentException e) {
-      LOG.error("Error parsing current value for parameter '{}' of type '{}': {}", paramName, paramType, currentValue, e);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.errorParameterParse")), paramName, paramType, currentValue);
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip(errorMsg));
-      typeDisplayKey = getLocalProp("key.paramTypeError");
+
+    } catch (Exception e) {
+      // parsing or missing prop: show a label so row still exists
+      LOG.error("Param “{}” parse error: {}", paramName, e.getMessage());
+      inputControl = new Label(currentValue);
+      typeDisplayKey = "key.paramTypeError";
     }
 
-    Label nameLabel = new Label(String.format("%s %s:", paramName, uiBundle.getString(typeDisplayKey)));
+    // 3) Safely resolve the human‐readable type
+    String humanType;
+    try {
+      humanType = uiBundle.getString(typeDisplayKey);
+    } catch (MissingResourceException ex) {
+      humanType = paramType;  // fallback
+    }
+
+    // 4) Build the label + tooltip
+    Label nameLabel = new Label(String.format("%s %s:", paramName, humanType));
     if (description != null && !description.isEmpty()) {
       Tooltip tip = new Tooltip(description);
       nameLabel.setTooltip(tip);
-      if (inputControl != null) inputControl.setTooltip(tip);
+      inputControl.setTooltip(tip);
     }
 
-    grid.add(nameLabel, 0, rowIndex);
-    grid.add(inputControl, 1, rowIndex);
+    // 5) Add to the grid
+    grid.add(nameLabel,     0, rowIndex);
+    grid.add(inputControl,  1, rowIndex);
     GridPane.setHgrow(inputControl, Priority.ALWAYS);
   }
+
 
   /**
    * Retrieves the current value of a parameter from ExecutorData, falling back to defaultValue.
