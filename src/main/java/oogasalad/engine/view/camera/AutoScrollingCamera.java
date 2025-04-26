@@ -18,12 +18,12 @@ public class AutoScrollingCamera implements Camera {
 
   private double scrollSpeedX;
   private double scrollSpeedY; // Change if vertical scrolling is needed
-
   // Current accumulated offsets for the camera
-  private double currentOffsetX = Double.parseDouble(resourceManager.getConfig("engine.controller.level", "CurrentOffsetX"));
-  ;
-  private double currentOffsetY = Double.parseDouble(resourceManager.getConfig("engine.controller.level","CurrentOffsetY"));
-  ;
+  private double currentOffsetX ;
+  private double currentOffsetY;
+  private double xOffset;
+  private double yOffset;
+  private double zoom;
 
   /**
    * Updates the camera, causing the game world to scroll automatically. This method should be
@@ -37,13 +37,41 @@ public class AutoScrollingCamera implements Camera {
     if (gameWorld == null) {
       throw new NullPointerException(resourceManager.getText("exceptions", "GameWorldNull"));
     }
+    scaleWorld(gameWorld);
     // Increment the current offsets by the scroll speeds.
-    currentOffsetX += scrollSpeedX;
-    currentOffsetY += scrollSpeedY;
+    xOffset += scrollSpeedX;
+    yOffset += scrollSpeedY;
     // Apply the offsets to the game world.
     // Negative translation moves the world in the opposite direction to simulate camera movement.
     gameWorld.setTranslateX(-currentOffsetX);
     gameWorld.setTranslateY(-currentOffsetY);
+  }
+
+  @Override
+  public void scaleWorld(Group gameWorld) {
+    try {
+      gameWorld.setScaleX(zoom);
+      gameWorld.setScaleY(zoom);
+    } catch (Exception e) {
+      throw new NullPointerException(
+          resourceManager.getText("exceptions", "GameWorldNull") + e.getMessage());
+    }
+
+  }
+
+  @Override
+  public void setZoom(double zoom) {
+    this.zoom = zoom;
+  }
+
+  @Override
+  public void setCameraOffsetX(double x) {
+    this.xOffset = x;
+  }
+
+  @Override
+  public void setCameraOffsetY(double y) {
+    this.yOffset = y;
   }
 
   /**
