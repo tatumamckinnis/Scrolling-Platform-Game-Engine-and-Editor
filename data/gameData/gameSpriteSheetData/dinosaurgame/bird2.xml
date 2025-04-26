@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Auto-generated sprite sheet for Bird (Untitled)
+  Auto-generated sprite sheet for Bird2 (dinosaurgame)
 -->
 <spriteFile imagePath="dinosaurgame-sprites.png">
-  <sprite name="Bird" x="118" y="0" width="93" height="62">
+  <sprite name="Bird2" x="118" y="0" width="93" height="62">
     <frames>
       <frame name="Bird2" x="118" y="0" width="93" height="62"/>
       <frame name="Bird1" x="0" y="0" width="97" height="68"/>

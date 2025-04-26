@@ -46,7 +46,7 @@ interact with each other -->
     <objectGroup name="entities">
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
-      <object spriteName="Dino" type="player" id="111" spriteFile="dinosaur.xml" hitBoxWidth="97"
+      <object spriteName="DinoStart" type="player" id="111" spriteFile="dinostart.xml" hitBoxWidth="97"
         hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,69,87"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
@@ -62,7 +62,7 @@ interact with each other -->
           </doubleProperties>
         </properties>
       </object>
-      <object spriteName="Bird" type="platforms" id="12" spriteFile="bird.xml" hitBoxWidth="97"
+      <object spriteName="Bird1" type="platforms" id="12" spriteFile="bird1.xml" hitBoxWidth="97"
         hitBoxHeight="68" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties>

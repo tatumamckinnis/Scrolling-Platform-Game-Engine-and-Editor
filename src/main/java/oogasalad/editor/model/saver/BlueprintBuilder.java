@@ -38,8 +38,8 @@ public class BlueprintBuilder {
    * @return a BlueprintData record representing the object's state
    */
   public static BlueprintData fromEditorObject(EditorObject obj) {
-    String gameName = obj.getIdentityData().getName();
-    String group = "";  // placeholder, replace with actual grouping logic if needed
+    String gameName = obj.getGameName();
+    String group = obj.getIdentityData().getType();
     String type = obj.getIdentityData().getType();
     double rotation = obj.getSpriteData().getRotation();
     boolean isFlipped = obj.getSpriteData().getIsFlipped();

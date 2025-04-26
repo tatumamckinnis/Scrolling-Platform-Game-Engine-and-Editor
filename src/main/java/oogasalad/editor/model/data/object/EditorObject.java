@@ -240,4 +240,13 @@ public class EditorObject {
   public void setEventData(EventData event) {
     this.event = event;
   }
+
+  /**
+   * Gets the name of the game for the object
+   *
+   * @return the name of the game for the object
+   */
+  public String getGameName() {
+    return level.getGameName();
+  }
 }
