@@ -17,7 +17,15 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -430,5 +438,14 @@ public class ConcreteEditorController implements EditorController {
   @Override
   public void saveLevelData(String fileName) throws EditorSaveException {
     editorDataAPI.saveLevelData(fileName);
+  }
+
+  @Override
+  public void loadLevelData(String fileName)
+      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
+    editorDataAPI.loadLevelData(fileName);
+    editorDataAPI.getObjectDataMap().forEach((key, value) -> {
+      requestObjectUpdate(value);
+    });
   }
 }

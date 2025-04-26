@@ -9,7 +9,15 @@ import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 
 /**
@@ -219,4 +227,7 @@ public interface EditorController {
    * @param fileName the file to save the level data to
    */
   void saveLevelData(String fileName) throws EditorSaveException;
+
+  void loadLevelData(String fileName)
+      throws EditorSaveException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 }

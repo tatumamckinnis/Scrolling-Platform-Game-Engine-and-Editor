@@ -9,7 +9,9 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 
+import oogasalad.editor.controller.EditorController;
 import oogasalad.engine.view.screen.HelpScreen;
+import oogasalad.exceptions.EditorSaveException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -329,11 +331,36 @@ public class ButtonActionFactory {
     };
   }
 
-  private Runnable openEditor() {
+  public Runnable startEditor(String game, String level) {
+    LOG.info("selected game: " + game + " selected level: " + level);
     return () -> {
-      new EditorMaker(new Stage());
+      if (game != null && level != null) {
+        String levelPath = gamesFilePath + game + "/" + level;
+        openEditor(levelPath).run();
+      } else {
+        openEditor(null).run();
+      }
     };
   }
+
+
+  private Runnable openEditor(String levelPath) {
+    return () -> {
+      EditorMaker editor = new EditorMaker();
+      EditorController editorController = editor.initialize(new Stage());
+      if (levelPath != null) {
+        try {
+          LOG.info("Attempting to open level " + levelPath);
+          editorController.loadLevelData(levelPath);
+        } catch (EditorSaveException | LayerParseException | LevelDataParseException |
+                 PropertyParsingException | SpriteParseException | EventParseException |
+                 HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+  }
+
 
   /**
    * This method attempts to establish a connection to the server.

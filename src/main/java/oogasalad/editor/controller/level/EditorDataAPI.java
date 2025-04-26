@@ -13,6 +13,7 @@ import oogasalad.editor.controller.object.IdentityDataManager;
 import oogasalad.editor.controller.object.InputDataManager;
 import oogasalad.editor.controller.object.PhysicsDataManager;
 import oogasalad.editor.controller.object.SpriteDataManager;
+import oogasalad.editor.model.EditorObjectPopulator;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
@@ -22,9 +23,20 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -412,4 +424,16 @@ public class EditorDataAPI {
     return cameraAPI;
   }
 
+  public void loadLevelData(String fileName)
+      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
+    LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
+    Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
+    List<GameObjectData> gameObjectData = levelData.gameObjects();
+    EditorLevelData editorLevelData = new EditorLevelData();
+    EditorObjectPopulator populator = new EditorObjectPopulator(editorLevelData);
+    for (GameObjectData gameObject : gameObjectData) {
+      EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
+      editorLevelData.updateObjectInDataMap(object.getId(), object);
+    }
+  }
 }

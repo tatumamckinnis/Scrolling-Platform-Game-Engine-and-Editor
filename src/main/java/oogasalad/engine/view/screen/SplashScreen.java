@@ -43,7 +43,8 @@ public class SplashScreen extends Display {
   private int splashWidth;
   private int splashHeight;
   private ViewState viewState;
-
+  private ComboBox<String> gameTypeBox;
+  private ComboBox<String> levelBox;
 
   /**
    * Constructor for making a new opening splash screen
@@ -243,6 +244,14 @@ public class SplashScreen extends Display {
         buttonHeight);
     // Add any other relevant buttons
     makeSplashButtons(buttonIDs, buttonTexts, buttonWidth, buttonHeight, buttonStyles, splashBox);
+
+    Button startEditor = new Button();
+    startEditor.setId("startEditor");
+    startEditor.setText(resourceManager.getText(displayedText, "splash.button.startEditor.text"));
+    startEditor.setPrefSize(buttonWidth, buttonHeight);
+    splashBox.getChildren().add(startEditor);
+    setEditorButtonAction(startEditor);
+    setButtonStyle(startEditor, resourceManager.getConfig(splashConfig, "splash.button.startEditor.id"), resourceManager.getConfig(splashConfig, "splash.button.startEditor.style"));
     // Add network buttons
     makeOnlineWidgets(buttonWidth, buttonHeight, splashBox);
 
@@ -282,9 +291,9 @@ public class SplashScreen extends Display {
   private void makeGameAndLevelSelectors(VBox splashBox, String[] comboBoxTexts,
       String[] comboBoxIDs, String[] comboBoxStyles, double buttonWidth, double buttonHeight)
       throws FileNotFoundException {
-    ComboBox<String> gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
+    gameTypeBox = createComboBox(comboBoxTexts, 0, buttonWidth, buttonHeight,
         comboBoxIDs, comboBoxStyles, splashBox);
-    ComboBox<String> levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
+    levelBox = createComboBox(comboBoxTexts, 1, buttonWidth, buttonHeight,
         comboBoxIDs, comboBoxStyles, splashBox);
     populateGameTypeComboBox(gameTypeBox);
     selectGameType(gameTypeBox, levelBox);
@@ -344,6 +353,15 @@ public class SplashScreen extends Display {
     levelBox.valueProperty().addListener((obs, oldValue, level) -> {
       String game = gameBox.getValue();
       factory.selectLevel(game, level).run();
+    });
+  }
+
+  private void setEditorButtonAction(Button startEditor) {
+    ButtonActionFactory factory = new ButtonActionFactory(viewState);
+    String game = gameTypeBox.getValue();
+    String level = levelBox.getValue();
+    startEditor.setOnAction(event -> {
+      factory.startEditor("dinosaurgame", "DinoLevel1.xml").run();
     });
   }
 
@@ -413,7 +431,6 @@ public class SplashScreen extends Display {
     return new String[]{
         resourceManager.getText(displayedText, "splash.button.profile.text"),
         resourceManager.getText(displayedText, "splash.button.startEngine.text"),
-        resourceManager.getText(displayedText, "splash.button.startEditor.text"),
         resourceManager.getText(displayedText, "splash.button.help.text"),
         resourceManager.getText(displayedText, "splash.button.play.another.game.text")
     };
@@ -436,7 +453,6 @@ public class SplashScreen extends Display {
     return new String[]{
         resourceManager.getConfig(splashConfig, "splash.button.profile.id"),
         resourceManager.getConfig(splashConfig, "splash.button.startEngine.id"),
-        resourceManager.getConfig(splashConfig, "splash.button.startEditor.id"),
         resourceManager.getConfig(splashConfig, "splash.button.help.id"),
         resourceManager.getConfig(splashConfig, "splash.button.play.another.game.id")
     };
@@ -459,7 +475,6 @@ public class SplashScreen extends Display {
     return new String[]{
         resourceManager.getConfig(splashConfig, "splash.button.profile.style"),
         resourceManager.getConfig(splashConfig, "splash.button.startEngine.style"),
-        resourceManager.getConfig(splashConfig, "splash.button.startEditor.style"),
         resourceManager.getConfig(splashConfig, "splash.button.help.style"),
         resourceManager.getConfig(splashConfig, "splash.button.play.another.game.style")
     };
