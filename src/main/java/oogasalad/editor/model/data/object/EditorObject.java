@@ -1,6 +1,7 @@
 package oogasalad.editor.model.data.object;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import oogasalad.editor.model.data.EditorLevelData;
@@ -13,7 +14,7 @@ import oogasalad.editor.model.data.object.sprite.SpriteData;
 
 /**
  * Represents an object within the editor, encapsulating all data components such as identity, input
- * configuration, physics, collision, sprite, and hitbox data. EditorObjects are managed within an
+ * configuration, physics, collision, sprite, hitbox data, and custom parameters. EditorObjects are managed within an
  * {@link EditorLevelData} instance and are configured using properties loaded from the editor
  * configuration.
  *
@@ -31,23 +32,28 @@ public class EditorObject {
   private CustomEventData custom;
   private EventData event;
   private Properties editorConfig;
+  private Map<String, String> stringParameters;
+  private Map<String, Double> doubleParameters;
 
   /**
-   * Constructs an EditorObject with all specified data components.
+   * Constructs an EditorObject with all specified data components. Initializes parameter maps.
    *
-   * @param level     the EditorLevelData instance managing this object
-   * @param identity  the identity data containing the object's unique ID, name, group, and layer
-   * @param input     the input configuration data for this object
-   * @param physics   the physics data for this object
-   * @param collision the collision data for this object
-   * @param sprite    the sprite data for this object
-   * @param hitbox    the hitbox data for this object
-   * @param custom    the custom event data for this object
-   * @param event     the event data for this object
+   * @param level           the EditorLevelData instance managing this object
+   * @param identity        the identity data containing the object's unique ID, name, group, and layer
+   * @param input           the input configuration data for this object
+   * @param physics         the physics data for this object
+   * @param collision       the collision data for this object
+   * @param sprite          the sprite data for this object
+   * @param hitbox          the hitbox data for this object
+   * @param custom          the custom event data for this object
+   * @param event           the event data for this object
+   * @param stringParameters Map of custom string parameters
+   * @param doubleParameters Map of custom double parameters
    */
   public EditorObject(EditorLevelData level, IdentityData identity, InputData input,
       PhysicsData physics, CollisionData collision, SpriteData sprite, HitboxData hitbox,
-      CustomEventData custom, EventData event) {
+      CustomEventData custom, EventData event, Map<String, String> stringParameters,
+      Map<String, Double> doubleParameters) {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
     this.identity = identity;
@@ -58,13 +64,16 @@ public class EditorObject {
     this.hitbox = hitbox;
     this.custom = custom;
     this.event = event;
+    this.stringParameters = new HashMap<>(stringParameters);
+    this.doubleParameters = new HashMap<>(doubleParameters);
   }
 
   /**
-   * Constructs an EditorObject with default data components. ` The identity is initialized with a
-   * random UUID and a default name. The hitbox dimensions and shape are obtained from the editor
-   * configuration properties. Other data components (sprite, input, physics, collision) are
-   * initialized with default values.
+   * Constructs an EditorObject with default data components.
+   * The identity is initialized with a random UUID and a default name.
+   * The hitbox dimensions and shape are obtained from the editor configuration properties.
+   * Other data components (sprite, input, physics, collision) are initialized with default values.
+   * Parameter maps are initialized as empty.
    *
    * @param level the EditorLevelData instance managing this object
    */
@@ -72,7 +81,6 @@ public class EditorObject {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
     this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getFirstLayer());
-    // TODO: Make untitled a property rather than defined
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),
@@ -83,6 +91,8 @@ public class EditorObject {
     this.collision = new CollisionData();
     this.event = new EventData();
     this.custom = new CustomEventData();
+    this.stringParameters = new HashMap<>();
+    this.doubleParameters = new HashMap<>();
   }
 
   /**
@@ -248,5 +258,51 @@ public class EditorObject {
    */
   public String getGameName() {
     return level.getGameName();
+  }
+
+  /**
+   * Retrieves the map of custom string parameters associated with this object.
+   * Returns a mutable map.
+   *
+   * @return the map of string parameters.
+   */
+  public Map<String, String> getStringParameters() {
+    if (stringParameters == null) {
+      stringParameters = new HashMap<>();
+    }
+    return stringParameters;
+  }
+
+  /**
+   * Sets the map of custom string parameters for this object.
+   * The provided map is copied.
+   *
+   * @param stringParameters the new map of string parameters.
+   */
+  public void setStringParameters(Map<String, String> stringParameters) {
+    this.stringParameters = new HashMap<>(stringParameters);
+  }
+
+  /**
+   * Retrieves the map of custom double parameters associated with this object.
+   * Returns a mutable map.
+   *
+   * @return the map of double parameters.
+   */
+  public Map<String, Double> getDoubleParameters() {
+    if (doubleParameters == null) {
+      doubleParameters = new HashMap<>();
+    }
+    return doubleParameters;
+  }
+
+  /**
+   * Sets the map of custom double parameters for this object.
+   * The provided map is copied.
+   *
+   * @param doubleParameters the new map of double parameters.
+   */
+  public void setDoubleParameters(Map<String, Double> doubleParameters) {
+    this.doubleParameters = new HashMap<>(doubleParameters);
   }
 }

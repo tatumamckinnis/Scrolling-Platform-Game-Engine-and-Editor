@@ -1,8 +1,8 @@
 package oogasalad.editor.controller;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +24,12 @@ import org.apache.logging.log4j.Logger;
 
 
 /**
- * Concrete implementation of the EditorController interface. Acts as a mediator between the editor
- * view and the editor data backend (EditorDataAPI). Manages selection state, active tool,
- * listeners, and delegates specific actions to specialized handler classes.
+ * Concrete implementation of the {@link EditorController} interface. Acts as a mediator between the editor
+ * view and the editor data backend ({@link EditorDataAPI}). Manages selection state, active tool,
+ * listeners, and delegates specific actions (object placement, prefab management, event handling,
+ * object queries, parameter management) to specialized handler classes or directly to the data API.
  *
- * @author Tatum McKinnis, Jacob You (Original), Refactored by AI
+ * @author Tatum McKinnis
  */
 public class ConcreteEditorController implements EditorController {
 
@@ -36,7 +37,7 @@ public class ConcreteEditorController implements EditorController {
 
   private final EditorDataAPI editorDataAPI;
   private UUID currentSelectedObjectId;
-  private String activeToolName = "selectionTool"; // Default tool
+  private String activeToolName = "selectionTool";
 
   private final EditorListenerNotifier listenerNotifier;
   private final EditorObjectPlacementHandler objectPlacementHandler;
@@ -44,15 +45,17 @@ public class ConcreteEditorController implements EditorController {
   private final EditorEventHandler eventHandler;
   private final EditorObjectQueryHandler objectQueryHandler;
 
-  private int cellSize = 32; // Default cell size
-  private boolean snapToGrid = true; // Default snap to grid
-  private int editorWidth = 1200; // Default editor width
-  private int editorHeight = 800; // Default editor height
+  private int cellSize = 32;
+  private boolean snapToGrid = true;
+  private int editorWidth = 1200;
+  private int editorHeight = 800;
 
   /**
-   * Constructs a ConcreteEditorController, initializing its data API and helper handlers.
+   * Constructs a ConcreteEditorController, initializing its data API, listener notifier,
+   * and various helper handlers for specific editor functionalities.
    *
    * @param editorDataAPI The central API for accessing and modifying editor data. Cannot be null.
+   * @param listenerNotifier The notifier responsible for broadcasting events to registered view listeners. Cannot be null.
    */
   public ConcreteEditorController(EditorDataAPI editorDataAPI, EditorListenerNotifier listenerNotifier) {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null.");
@@ -243,8 +246,6 @@ public class ConcreteEditorController implements EditorController {
   @Override
   public UUID getObjectIDAt(double gridX, double gridY) {
     UUID foundId = objectQueryHandler.getObjectIDAt(gridX, gridY);
-    // Consider if an error notification is needed here if the query handler logs errors internally
-    // If not, add: if (foundId == null && someErrorOccurredInHandler) { notifyError(...) }
     return foundId;
   }
 
@@ -390,7 +391,7 @@ public class ConcreteEditorController implements EditorController {
   @Override
   public void addDynamicVariable(DynamicVariable variable) {
     Objects.requireNonNull(variable, "DynamicVariable cannot be null");
-    LOG.debug("Controller adding dynamic variable '{}'", variable.getName());
+    LOG.debug("Controller adding global dynamic variable '{}'", variable.getName());
     try {
       DynamicVariableContainer container = editorDataAPI.getDynamicVariableContainer();
       if (container != null) {
@@ -415,7 +416,7 @@ public class ConcreteEditorController implements EditorController {
    */
   @Override
   public List<DynamicVariable> getAvailableDynamicVariables(UUID objectId) {
-    LOG.trace("Retrieving available dynamic variables (context objectId: {})", objectId);
+    LOG.trace("Retrieving available global dynamic variables (context objectId: {})", objectId);
     try {
       DynamicVariableContainer container = editorDataAPI.getDynamicVariableContainer();
       if (container != null) {
@@ -432,11 +433,102 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setObjectStringParameter(UUID objectId, String key, String value) {
+    if (objectId == null || key == null || key.trim().isEmpty()) {
+      LOG.warn("Cannot set string parameter with null objectId or null/empty key.");
+      return;
+    }
+    try {
+      editorDataAPI.getIdentityDataAPI().setStringParameter(objectId, key, value);
+      listenerNotifier.notifyObjectUpdated(objectId); // Notify UI to refresh
+    } catch (Exception e) {
+      LOG.error("Error setting string parameter '{}' for object {}: {}", key, objectId, e.getMessage(), e);
+      listenerNotifier.notifyErrorOccurred("Failed to set string parameter: " + e.getMessage());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setObjectDoubleParameter(UUID objectId, String key, Double value) {
+    if (objectId == null || key == null || key.trim().isEmpty()) {
+      LOG.warn("Cannot set double parameter with null objectId or null/empty key.");
+      return;
+    }
+    try {
+      editorDataAPI.getIdentityDataAPI().setDoubleParameter(objectId, key, value);
+      listenerNotifier.notifyObjectUpdated(objectId); // Notify UI to refresh
+    } catch (Exception e) {
+      LOG.error("Error setting double parameter '{}' for object {}: {}", key, objectId, e.getMessage(), e);
+      listenerNotifier.notifyErrorOccurred("Failed to set double parameter: " + e.getMessage());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeObjectParameter(UUID objectId, String key) {
+    if (objectId == null || key == null || key.trim().isEmpty()) {
+      LOG.warn("Cannot remove parameter with null objectId or null/empty key.");
+      return;
+    }
+    try {
+      editorDataAPI.getIdentityDataAPI().removeParameter(objectId, key);
+      listenerNotifier.notifyObjectUpdated(objectId); // Notify UI to refresh
+    } catch (Exception e) {
+      LOG.error("Error removing parameter '{}' for object {}: {}", key, objectId, e.getMessage(), e);
+      listenerNotifier.notifyErrorOccurred("Failed to remove parameter: " + e.getMessage());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<String, String> getObjectStringParameters(UUID objectId) {
+    if (objectId == null) return Collections.emptyMap();
+    try {
+      return editorDataAPI.getIdentityDataAPI().getStringParameters(objectId);
+    } catch (Exception e) {
+      LOG.error("Error getting string parameters for object {}: {}", objectId, e.getMessage(), e);
+      listenerNotifier.notifyErrorOccurred("Failed to get string parameters: " + e.getMessage());
+      return Collections.emptyMap();
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<String, Double> getObjectDoubleParameters(UUID objectId) {
+    if (objectId == null) return Collections.emptyMap();
+    try {
+      return editorDataAPI.getIdentityDataAPI().getDoubleParameters(objectId);
+    } catch (Exception e) {
+      LOG.error("Error getting double parameters for object {}: {}", objectId, e.getMessage(), e);
+      listenerNotifier.notifyErrorOccurred("Failed to get double parameters: " + e.getMessage());
+      return Collections.emptyMap();
+    }
+  }
+
+
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void saveLevelData(String fileName) throws EditorSaveException {
     editorDataAPI.saveLevelData(fileName);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setCellSize(int cellSize) {
     if (cellSize > 0) {
@@ -445,17 +537,26 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public int getCellSize() {
     return cellSize;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setSnapToGrid(boolean doSnap) {
     this.snapToGrid = doSnap;
     listenerNotifier.notifySnapToGridChanged(doSnap);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isSnapToGrid() {
     return snapToGrid;

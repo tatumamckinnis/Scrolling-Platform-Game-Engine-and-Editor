@@ -1,18 +1,32 @@
 package oogasalad.editor.view.panes.properties;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.EditorViewListener;
@@ -20,8 +34,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Builds the "Properties" tab UI, displaying Identity & Hitbox data, etc. Implements
- * EditorViewListener to update whenever the selected object changes. Handles Group selection via ComboBox.
+ * Builds the "Properties" tab UI, displaying Identity, Hitbox data, and custom object parameters.
+ * Implements {@link EditorViewListener} to update whenever the selected object changes. Handles
+ * Group selection via ComboBox and allows adding/removing string and double parameters for the
+ * selected object.
  *
  * @author Tatum McKinnis
  */
@@ -29,7 +45,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   private static final Logger LOG = LogManager.getLogger(PropertiesTabComponentFactory.class);
   private static final String NUMERIC_REGEX = "\\d*";
+  private static final String DOUBLE_REGEX = "-?\\d*\\.?\\d*";
   private static final String NO_GROUP_OPTION = "<None>";
+  private static final String PARAM_DISPLAY_REGEX = "^(.*?) \\((String|Double)\\) = .*$";
+  private static final Pattern PARAM_KEY_PATTERN = Pattern.compile(PARAM_DISPLAY_REGEX);
 
   private final EditorController editorController;
 
@@ -42,8 +61,17 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private TextField heightField;
   private TextField shapeField;
 
+  private ListView<String> parametersListView;
+  private TextField paramKeyField;
+  private TextField paramStringValueField;
+  private TextField paramDoubleValueField;
+  private Button addStringParamButton;
+  private Button addDoubleParamButton;
+  private Button removeParamButton;
+
   private UUID currentObjectId;
   private boolean isUpdatingGroupComboBox = false;
+  private final ObservableList<String> parameterItems = FXCollections.observableArrayList();
 
   /**
    * Constructs a new factory for the Properties tab.
@@ -56,8 +84,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Creates the scrollable Pane that holds our Identity & Hitbox sections. This method is called by
-   * the code that sets up the "Properties" tab in EditorComponentFactory.
+   * Creates the scrollable Pane that holds our Identity, Hitbox, and Parameters sections.
+   * This method is called by the code that sets up the "Properties" tab in EditorComponentFactory.
+   *
+   * @return A {@link ScrollPane} containing the properties UI sections.
    */
   public ScrollPane createPropertiesPane() {
     VBox contentBox = new VBox(15);
@@ -67,8 +97,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
     VBox identitySection = buildIdentitySection();
     VBox hitboxSection = buildHitboxSection();
+    TitledPane parametersSection = buildParametersSection();
 
-    contentBox.getChildren().addAll(identitySection, hitboxSection);
+    contentBox.getChildren().addAll(identitySection, hitboxSection, parametersSection);
 
     ScrollPane scrollPane = new ScrollPane(contentBox);
     scrollPane.setFitToWidth(true);
@@ -77,7 +108,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Builds a VBox containing fields for Identity data: Name (TextField) + Group (ComboBox)
+   * Builds a VBox containing fields for Identity data: Name (TextField) + Group (ComboBox).
+   *
+   * @return A {@link VBox} containing the identity UI controls.
    */
   private VBox buildIdentitySection() {
     VBox box = new VBox(8);
@@ -112,39 +145,11 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
 
-  @Override
-  public void setSnapToGrid(boolean doSnap) {
-
-  }
-
-  @Override
-  public void setCellSize(int cellSize) {
-
-  }
-
-  /**
-   * Factory method for creating identity text fields (Name, Group).
-   */
-  private TextField createIdentityTextField(String prompt, BiConsumer<UUID, String> setter) {
-    TextField textField = new TextField();
-    textField.setPromptText(prompt);
-    textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
-        String currentValue = textField.getText();
-        String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
-        if (!Objects.equals(currentValue, modelValue)) {
-          LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId, currentValue);
-          setter.accept(currentObjectId, currentValue);
-        }
-      }
-    });
-    return textField;
-  }
-
-
   /**
    * Builds a VBox containing fields for Hitbox data: X, Y, Width, Height, Shape using factory
    * methods.
+   *
+   * @return A {@link VBox} containing the hitbox UI controls.
    */
   private VBox buildHitboxSection() {
     VBox box = new VBox(8);
@@ -171,9 +176,184 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
+   * Builds a {@link TitledPane} containing controls for viewing, adding, and removing
+   * custom string and double parameters associated with the selected object.
+   *
+   * @return A {@link TitledPane} for managing custom parameters.
+   */
+  private TitledPane buildParametersSection() {
+    VBox container = new VBox(10);
+    container.setPadding(new Insets(10));
+
+    parametersListView = new ListView<>(parameterItems);
+    parametersListView.setPlaceholder(new Label("No parameters defined"));
+    parametersListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    parametersListView.setPrefHeight(150);
+
+    removeParamButton = new Button("Remove Selected");
+    removeParamButton.setOnAction(e -> removeSelectedParameter());
+    removeParamButton.disableProperty().bind(parametersListView.getSelectionModel().selectedItemProperty().isNull());
+    HBox removeBox = new HBox(removeParamButton);
+    removeBox.setAlignment(Pos.CENTER_RIGHT);
+
+    GridPane addGrid = new GridPane();
+    addGrid.setHgap(8);
+    addGrid.setVgap(5);
+
+    paramKeyField = new TextField();
+    paramKeyField.setPromptText("Parameter Name");
+    paramStringValueField = new TextField();
+    paramStringValueField.setPromptText("String Value");
+    paramDoubleValueField = new TextField();
+    paramDoubleValueField.setPromptText("Double Value");
+    paramDoubleValueField.textProperty().addListener((obs, ov, nv) -> {
+      if (nv != null && !nv.matches(DOUBLE_REGEX)) {
+        paramDoubleValueField.setText(ov);
+      }
+    });
+
+
+    addStringParamButton = new Button("Add String");
+    addStringParamButton.setOnAction(e -> addStringParameter());
+    addDoubleParamButton = new Button("Add Double");
+    addDoubleParamButton.setOnAction(e -> addDoubleParameter());
+
+    addGrid.add(new Label("Key:"), 0, 0);
+    addGrid.add(paramKeyField, 1, 0);
+    GridPane.setHgrow(paramKeyField, Priority.ALWAYS);
+
+    addGrid.add(new Label("String:"), 0, 1);
+    addGrid.add(paramStringValueField, 1, 1);
+    addGrid.add(addStringParamButton, 2, 1);
+    GridPane.setHgrow(paramStringValueField, Priority.ALWAYS);
+
+    addGrid.add(new Label("Double:"), 0, 2);
+    addGrid.add(paramDoubleValueField, 1, 2);
+    addGrid.add(addDoubleParamButton, 2, 2);
+    GridPane.setHgrow(paramDoubleValueField, Priority.ALWAYS);
+
+
+    container.getChildren().addAll(new Label("Current Parameters:"), parametersListView, removeBox, new Label("Add New Parameter:"), addGrid);
+
+    TitledPane titledPane = new TitledPane("Custom Parameters", container);
+    titledPane.setCollapsible(true);
+    titledPane.setExpanded(true);
+    return titledPane;
+  }
+
+  /**
+   * Handles the action of adding a new string parameter based on the input fields.
+   * Performs basic validation and calls the controller.
+   */
+  private void addStringParameter() {
+    if (currentObjectId == null) return;
+    String key = paramKeyField.getText();
+    String value = paramStringValueField.getText();
+
+    if (key == null || key.trim().isEmpty()) {
+      showError("Parameter key cannot be empty.");
+      return;
+    }
+
+    editorController.setObjectStringParameter(currentObjectId, key.trim(), value);
+    paramKeyField.clear();
+    paramStringValueField.clear();
+  }
+
+  /**
+   * Handles the action of adding a new double parameter based on the input fields.
+   * Performs validation (key not empty, value is a valid double) and calls the controller.
+   */
+  private void addDoubleParameter() {
+    if (currentObjectId == null) return;
+    String key = paramKeyField.getText();
+    String valueStr = paramDoubleValueField.getText();
+
+    if (key == null || key.trim().isEmpty()) {
+      showError("Parameter key cannot be empty.");
+      return;
+    }
+    if (valueStr == null || valueStr.trim().isEmpty()) {
+      showError("Double value cannot be empty.");
+      return;
+    }
+
+    try {
+      double value = Double.parseDouble(valueStr.trim());
+      editorController.setObjectDoubleParameter(currentObjectId, key.trim(), value);
+      paramKeyField.clear();
+      paramDoubleValueField.clear();
+    } catch (NumberFormatException e) {
+      showError("Invalid double value: " + valueStr);
+    }
+  }
+
+  /**
+   * Handles the action of removing the parameter selected in the list view.
+   * Parses the key from the selected item string and calls the controller.
+   */
+  private void removeSelectedParameter() {
+    if (currentObjectId == null) return;
+    String selectedItem = parametersListView.getSelectionModel().getSelectedItem();
+    if (selectedItem == null) return;
+
+    Optional<String> keyOpt = parseKeyFromDisplayString(selectedItem);
+    if (keyOpt.isPresent()) {
+      editorController.removeObjectParameter(currentObjectId, keyOpt.get());
+    } else {
+      LOG.error("Could not parse key from selected parameter item: {}", selectedItem);
+      showError("Could not determine parameter key to remove.");
+    }
+  }
+
+  /**
+   * Parses the parameter key from the display string format "key (Type) = value".
+   *
+   * @param displayString The string from the ListView item.
+   * @return An Optional containing the key if parsed successfully, otherwise empty.
+   */
+  private Optional<String> parseKeyFromDisplayString(String displayString) {
+    if (displayString == null) return Optional.empty();
+    Matcher matcher = PARAM_KEY_PATTERN.matcher(displayString);
+    if (matcher.matches()) {
+      return Optional.of(matcher.group(1));
+    }
+    return Optional.empty();
+  }
+
+
+  /**
+   * Factory method for creating identity text fields (Name). Updates model on focus lost.
+   *
+   * @param prompt The prompt text for the field.
+   * @param setter The BiConsumer to call when updating the model.
+   * @return A configured {@link TextField}.
+   */
+  private TextField createIdentityTextField(String prompt, BiConsumer<UUID, String> setter) {
+    TextField textField = new TextField();
+    textField.setPromptText(prompt);
+    textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal && currentObjectId != null) {
+        String currentValue = textField.getText();
+        String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
+        if (!Objects.equals(currentValue, modelValue)) {
+          LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId, currentValue);
+          setter.accept(currentObjectId, currentValue);
+        }
+      }
+    });
+    return textField;
+  }
+
+
+  /**
    * Factory method to create a TextField for a numeric hitbox property (X, Y, Width, Height).
    * Attaches a listener that parses the input as an integer and updates the model via the setter
-   * only when focus is lost.
+   * only when focus is lost. Includes basic numeric input filtering.
+   *
+   * @param promptText The prompt text for the field.
+   * @param setter The BiConsumer to call when updating the model.
+   * @return A configured {@link TextField} for numeric hitbox input.
    */
   private TextField createHitboxTextField(String promptText, BiConsumer<UUID, Integer> setter) {
     TextField textField = new TextField();
@@ -197,6 +377,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     return textField;
   }
 
+  /**
+   * Helper to get the current value of a numeric hitbox property from the model.
+   * Used for comparison before updating to avoid unnecessary updates.
+   *
+   * @param property The name of the property ("X", "Y", "Width", "Height").
+   * @param id The UUID of the object.
+   * @return The current integer value from the model, or 0 on error.
+   */
   private int getModelHitboxValue(String property, UUID id) {
     try {
       switch (property) {
@@ -204,7 +392,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         case "Y": return editorController.getEditorDataAPI().getHitboxDataAPI().getY(id);
         case "Width": return editorController.getEditorDataAPI().getHitboxDataAPI().getWidth(id);
         case "Height": return editorController.getEditorDataAPI().getHitboxDataAPI().getHeight(id);
-        default: return 0;
+        default:
+          LOG.warn("Unknown hitbox property requested: {}", property);
+          return 0;
       }
     } catch (Exception e) {
       LOG.warn("Could not get hitbox model value for property '{}', object {}: {}", property, id, e.getMessage());
@@ -214,6 +404,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Creates the TextField for the hitbox shape property. Updates on focus lost.
+   *
+   * @return A configured {@link TextField} for the shape property.
    */
   private TextField createHitboxShapeField() {
     TextField textField = new TextField();
@@ -233,6 +425,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Safely parses a string into an integer. Returns 0 if parsing fails or the string is null/empty.
+   * Logs a warning on parsing failure.
+   *
+   * @param s The string to parse.
+   * @return The parsed integer, or 0 on failure.
    */
   private int parseSafeInt(String s) {
     if (s == null || s.trim().isEmpty()) {
@@ -246,6 +442,23 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
   }
 
+  /**
+   * Displays an error alert dialog to the user.
+   *
+   * @param message The error message to display.
+   */
+  private void showError(String message) {
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Error");
+    alert.setHeaderText(null);
+    alert.setContentText(message);
+    alert.showAndWait();
+  }
+
+  /**
+   * {@inheritDoc}
+   * Updates the currently selected object ID and refreshes all fields.
+   */
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
     Platform.runLater(() -> {
@@ -257,6 +470,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     });
   }
 
+  /**
+   * {@inheritDoc}
+   * If the updated object is the currently selected one, refreshes all fields.
+   */
   @Override
   public void onObjectUpdated(UUID objectId) {
     if (Objects.equals(this.currentObjectId, objectId)) {
@@ -265,6 +482,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   * If the removed object is the currently selected one, clears the selection and all fields.
+   */
   @Override
   public void onObjectRemoved(UUID objectId) {
     if (Objects.equals(this.currentObjectId, objectId)) {
@@ -274,26 +495,46 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   * No action needed in this component.
+   */
   @Override
   public void onObjectAdded(UUID objectId) {
     LOG.trace("PropertiesTab received: onObjectAdded {}", objectId);
   }
 
+  /**
+   * {@inheritDoc}
+   * No action needed in this component for global dynamic variables.
+   */
   @Override
   public void onDynamicVariablesChanged() {
     LOG.trace("PropertiesTab received: onDynamicVariablesChanged (no direct action needed)");
   }
 
+  /**
+   * {@inheritDoc}
+   * Logs the error message.
+   */
   @Override
   public void onErrorOccurred(String errorMessage) {
     LOG.warn("PropertiesTab received: onErrorOccurred: {}", errorMessage);
   }
 
+  /**
+   * {@inheritDoc}
+   * No action needed in this component.
+   */
   @Override
   public void onPrefabsChanged() {
     LOG.debug("PropertiesTabComponentFactory notified of prefab changes (no direct action).");
   }
 
+  /**
+   * {@inheritDoc}
+   * No action needed in this component.
+   */
   @Override
   public void onSpriteTemplateChanged() {
     LOG.debug("PropertiesTabComponentFactory notified of sprite template changes (no direct action).");
@@ -301,9 +542,23 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Refreshes all editable fields in the UI by fetching the latest data for the
-   * selected object. If no object is selected, clears all fields. Ensures execution
-   * on the JavaFX application thread.
+   * {@inheritDoc}
+   * No action needed in this component.
+   */
+  @Override
+  public void setSnapToGrid(boolean doSnap) { }
+
+  /**
+   * {@inheritDoc}
+   * No action needed in this component.
+   */
+  @Override
+  public void setCellSize(int cellSize) { }
+
+  /**
+   * Refreshes all editable fields in the UI (Identity, Hitbox, Parameters) by fetching the
+   * latest data for the currently selected object from the controller. If no object is selected,
+   * clears all fields. Ensures execution on the JavaFX application thread.
    */
   private void refreshFields() {
     if (currentObjectId == null) {
@@ -314,6 +569,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     try {
       populateIdentityFields();
       populateHitboxFields();
+      refreshParameterList();
     } catch (Exception e) {
       LOG.error("Error refreshing properties fields for object {}: {}", currentObjectId, e.getMessage(), e);
       clearFieldsInternal();
@@ -322,7 +578,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Fetches and populates the identity fields (name and group ComboBox) for the selected object.
-   * Handles updating the ComboBox items and selection.
+   * Handles updating the ComboBox items and selection state carefully to avoid triggering listeners.
    */
   private void populateIdentityFields() {
     String currentName = editorController.getEditorDataAPI().getIdentityDataAPI().getName(currentObjectId);
@@ -367,24 +623,55 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Clears all the property fields. Ensures execution on the JavaFX Application thread.
+   * Clears and repopulates the parameters list view based on the currently selected object's
+   * string and double parameters fetched from the controller. Sorts the parameters alphabetically by key.
+   */
+  private void refreshParameterList() {
+    parameterItems.clear();
+    if (currentObjectId == null) return;
+
+    List<String> combinedParams = new ArrayList<>();
+    try {
+      Map<String, String> stringParams = editorController.getObjectStringParameters(currentObjectId);
+      if (stringParams != null) {
+        stringParams.forEach((key, value) -> combinedParams.add(String.format("%s (String) = %s", key, value)));
+      }
+
+      Map<String, Double> doubleParams = editorController.getObjectDoubleParameters(currentObjectId);
+      if (doubleParams != null) {
+        doubleParams.forEach((key, value) -> combinedParams.add(String.format("%s (Double) = %s", key, value)));
+      }
+
+      Collections.sort(combinedParams);
+      parameterItems.addAll(combinedParams);
+      LOG.trace("Refreshed parameter list for object {}: {} items.", currentObjectId, parameterItems.size());
+
+    } catch (Exception e) {
+      LOG.error("Failed to refresh parameter list for object {}: {}", currentObjectId, e.getMessage(), e);
+    }
+  }
+
+
+  /**
+   * Clears all the property fields (Identity, Hitbox, Parameters). Ensures execution on the JavaFX Application thread.
    */
   private void clearFields() {
     Platform.runLater(this::clearFieldsInternal);
   }
 
   /**
-   * Internal method to clear fields, called on the FX thread.
+   * Internal method to clear all fields, called on the FX thread. Resets state related to the
+   * selected object and clears UI control contents.
    */
   private void clearFieldsInternal() {
     LOG.debug("Clearing properties fields.");
     currentObjectId = null;
 
     nameField.setText("");
-
     isUpdatingGroupComboBox = true;
     groupComboBox.getItems().clear();
     groupComboBox.setValue(null);
+    groupComboBox.setPromptText("Select Group");
     isUpdatingGroupComboBox = false;
 
     xField.setText("");
@@ -392,11 +679,17 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     widthField.setText("");
     heightField.setText("");
     shapeField.setText("");
+
+    parameterItems.clear();
+    paramKeyField.clear();
+    paramStringValueField.clear();
+    paramDoubleValueField.clear();
   }
 
   /**
-   * Updates the items in the group ComboBox. Call this when the global list of groups changes.
-   * This might be called from an onGroupsChanged listener method if implemented.
+   * Updates the items in the group ComboBox based on the global list from the controller.
+   * Preserves the current selection if possible, otherwise defaults based on the selected object's group
+   * or the "<None>" option. This might be called from an `onGroupsChanged` listener method if implemented.
    */
   private void updateGroupComboBoxItems() {
     LOG.debug("Updating group combo box items.");
@@ -409,6 +702,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
     isUpdatingGroupComboBox = true;
     groupComboBox.setItems(groupOptions);
+
+
     if (currentSelection != null && groupOptions.contains(currentSelection)) {
       groupComboBox.setValue(currentSelection);
     } else if (currentObjectId != null) {
