@@ -12,6 +12,9 @@ interact with each other -->
       <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
     </stringProperties>
     <doubleProperties>
+      <property name="zoom" value="1.0" />
+      <property name="cameraOffsetX" value="0"/>
+      <property name="cameraOffsetY" value="0"/>
     </doubleProperties>
   </cameraData>
   <layers>

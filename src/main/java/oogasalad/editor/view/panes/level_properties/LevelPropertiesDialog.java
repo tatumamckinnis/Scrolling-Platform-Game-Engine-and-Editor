@@ -58,6 +58,7 @@ public class LevelPropertiesDialog extends Stage {
   private final CameraDataManager cameraManager;
 
   /* ------------------- UI controls -------------------- */
+  private final TextField gameNameTextField = new TextField();
   private final TextField widthField = new TextField();
   private final TextField heightField = new TextField();
 
@@ -128,6 +129,7 @@ public class LevelPropertiesDialog extends Stage {
 
     /* ––– root layout ––– */
     VBox root = new VBox(12,
+        section("Game Name:", gameNameTextField),
         section("Dimensions", sizeGrid),
         section("Camera", cameraBlock),
         section("Layers", new VBox(layerTable, layerButtons(layerTable))),
@@ -274,6 +276,8 @@ public class LevelPropertiesDialog extends Stage {
 
   private boolean pushToModel() {
     try {
+      String gameName = gameNameTextField.getText();
+      level.setGameName(gameName);
       /* camera type + per-type params */
       String camType = cameraTypeBox.getValue();
       cameraManager.setType(camType);

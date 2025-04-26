@@ -53,7 +53,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private final GraphicsContext gridGraphicsContext;
   private final GraphicsContext objectGraphicsContext;
 
-  private final int cellSize;
+  private int cellSize;
   private final EditorController editorController;
   private final Properties identifierProps;
   private final ResourceBundle uiBundle;
@@ -92,7 +92,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private int gridMaxBound;
 
   private boolean drawHitboxes = true;
-  private boolean snapToGrid = true;
+  private boolean snapToGrid = false;
 
   /**
    * Creates a new editor game view.
@@ -996,6 +996,16 @@ public class EditorGameView extends Pane implements EditorViewListener {
    */
   @Override
   public void onSpriteTemplateChanged() {
+  }
+
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+    this.snapToGrid = doSnap;
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+    this.cellSize = cellSize;
   }
 
   /**

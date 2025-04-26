@@ -497,6 +497,16 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   }
 
   @Override
+  public void setSnapToGrid(boolean doSnap) {
+
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+
+  }
+
+  @Override
   public void onObjectRemoved(UUID objectId) {
   }
 

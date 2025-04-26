@@ -111,8 +111,19 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     return box;
   }
 
+
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+
+  }
+
   /**
-   * Factory method for creating the identity text field (Name).
+   * Factory method for creating identity text fields (Name, Group).
    */
   private TextField createIdentityTextField(String prompt, BiConsumer<UUID, String> setter) {
     TextField textField = new TextField();

@@ -241,6 +241,16 @@ public class SpriteTabComponentFactory implements EditorViewListener {
   @Override
   public void onSpriteTemplateChanged() { /* no cached list; nothing to do */ }
 
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+
+  }
+
   private int safeInt(String s) {
     try {
       return (s == null || s.isEmpty()) ? 0 : Integer.parseInt(s);

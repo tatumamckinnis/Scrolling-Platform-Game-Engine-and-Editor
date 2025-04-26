@@ -137,6 +137,16 @@ public class InputTabComponentFactory implements EditorViewListener {
     LOG.debug("InputTabComponentFactory notified of sprite template");
   }
 
+  @Override
+  public void setSnapToGrid(boolean doSnap) {
+
+  }
+
+  @Override
+  public void setCellSize(int cellSize) {
+
+  }
+
   /**
    * Initializes the builders for the Events, Conditions, and Outcomes UI sections,
    * passing them necessary resources and handler method references.
