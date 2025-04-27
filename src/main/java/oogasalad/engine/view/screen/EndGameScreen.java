@@ -114,7 +114,7 @@ public class EndGameScreen extends GameOverlayScreen {
   private void setButtonAction(String buttonID, Button currButton) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
     currButton.setOnAction(event -> {
-      factory.getAction(buttonID).run();
+      factory.getActionAndSendServerMessage(buttonID).run();
     });
   }
 

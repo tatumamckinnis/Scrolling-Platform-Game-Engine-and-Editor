@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import oogasalad.editor.model.EditorEventConverter;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
+import oogasalad.editor.model.data.object.event.CustomEventData;
 import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
@@ -229,15 +231,13 @@ public class EditorObjectPopulator {
     if (baseFrameName != null && frameMapModel.containsKey(baseFrameName)) {
       LOG.debug("Using exact match base frame name '{}' from blueprint record for sprite '{}'",
           baseFrameName, recordSprite.name());
-    }
-    else {
+    } else {
       if (!frameMapModel.isEmpty()) {
         baseFrameName = frameMapModel.keySet().iterator().next();
         LOG.warn(
             "Could not determine base frame from record or prefix/special case match for sprite '{}'. Falling back to first available frame name: '{}'",
             recordSprite.name(), baseFrameName);
-      }
-      else {
+      } else {
         LOG.warn(
             "No base frame name specified and no frames found for sprite record '{}'. Base frame name remains null.",
             recordSprite.name());
@@ -335,6 +335,8 @@ public class EditorObjectPopulator {
     setSpriteData(gameObjectData, object, blueprint);
     setHitboxData(gameObjectData, object, blueprint);
     setPhysicsData(object, blueprint);
+    setEventData(object, blueprint);
+    LOG.info("Events:" + object.getCustomEventData().getEvents().keySet());
 
     object.setStringParameters(
         blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
@@ -415,7 +417,8 @@ public class EditorObjectPopulator {
     object.setSpriteData(editorSpriteData);
   }
 
-  private void setHitboxData(GameObjectData gameObjectData, EditorObject object, BlueprintData blueprint) {
+  private void setHitboxData(GameObjectData gameObjectData, EditorObject object,
+      BlueprintData blueprint) {
     if (blueprint.hitBoxData() != null) {
       HitBoxData hitbox = blueprint.hitBoxData();
       int hitboxX = gameObjectData.x();
@@ -432,6 +435,12 @@ public class EditorObjectPopulator {
           blueprint.blueprintId(), gameObjectData.uniqueId(), gameObjectData.x(),
           gameObjectData.y());
     }
+  }
+
+  private void setEventData(EditorObject object,
+      BlueprintData blueprintData) {
+    CustomEventData customEventData  = EditorEventConverter.convertEventData(object, blueprintData);
+    object.setCustomEventData(customEventData);
   }
 
   private void setPhysicsData(EditorObject object, BlueprintData blueprint) {
