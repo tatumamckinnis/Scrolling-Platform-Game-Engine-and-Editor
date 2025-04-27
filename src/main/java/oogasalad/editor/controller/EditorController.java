@@ -424,11 +424,32 @@ public interface EditorController {
   void loadLevelData(String fileName)
       throws EditorSaveException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 
+  /**
+   * Sets the size of a single cell in the editor grid.
+   *
+   * @param cellSize the size (in pixels) of each grid cell
+   */
   void setCellSize(int cellSize);
 
+  /**
+   * Returns the current size of a single cell in the editor grid.
+   *
+   * @return the size (in pixels) of each grid cell
+   */
   int getCellSize();
 
+  /**
+   * Enables or disables snapping objects to the grid during editing.
+   *
+   * @param doSnap {@code true} to enable snapping to grid, {@code false} to allow free placement
+   */
   void setSnapToGrid(boolean doSnap);
 
+  /**
+   * Returns whether snapping to the grid is currently enabled.
+   *
+   * @return {@code true} if snapping to grid is enabled, {@code false} otherwise
+   */
   boolean isSnapToGrid();
+
 }
