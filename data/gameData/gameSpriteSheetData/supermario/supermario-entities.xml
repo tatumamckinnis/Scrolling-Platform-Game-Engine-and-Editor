@@ -6,7 +6,7 @@ y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
 -->
-<TextureAtlas imagePath="finished-0.png" width="1632" height="160">
+<spriteFile imagePath="finished-0.png" width="1632" height="160">
     <sprite name="big-mario-swim-still-left" x="0" y="0" width="16" height="29"/>
     <sprite name="big-mario-swim-1-left" x="32" y="0" width="16" height="29"/>
     <sprite name="big-mario-swim-2-left" x="64" y="0" width="14" height="30"/>
@@ -271,4 +271,4 @@ h  => sprite height (may be trimmed)
     <sprite name="sprite-261.png" x="1504" y="128" width="32" height="32"/>
     <sprite name="sprite-262.png" x="1536" y="128" width="32" height="32"/>
     <sprite name="sprite-263.png" x="1568" y="128" width="32" height="32"/>
-</TextureAtlas>
+</spriteFile>

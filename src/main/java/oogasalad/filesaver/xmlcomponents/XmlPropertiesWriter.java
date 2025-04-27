@@ -16,6 +16,7 @@ public class XmlPropertiesWriter implements XmlComponentWriter{
   private final Map<String, String> stringProps;
   private final Map<String, Double> doubleProps;
   private final String insideName;
+  private final String outsideName;
 
   /**
    * Instantiates a writer.
@@ -24,11 +25,12 @@ public class XmlPropertiesWriter implements XmlComponentWriter{
    * @param stringProps mapping of string properties the tag should contain.
    * @param doubleProps mapping of double properties the tag should contain.
    */
-  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel, Map<String, String> stringProps, Map<String, Double> doubleProps, String insideName) {
+  public XmlPropertiesWriter(BufferedWriter writer, int indentLevel, Map<String, String> stringProps, Map<String, Double> doubleProps, String outSideName, String insideName) {
     this.writer = writer;
     this.indentLevel = indentLevel;
     this.stringProps = stringProps;
     this.doubleProps = doubleProps;
+    this.outsideName = outSideName;
     this.insideName = insideName;
   }
 
@@ -39,20 +41,20 @@ public class XmlPropertiesWriter implements XmlComponentWriter{
     String indent = INDENT.repeat(indentLevel);
     String inner = INDENT.repeat(indentLevel + 1);
 
-    writer.write(indent + "<stringProperties>\n");
+    writer.write(indent + String.format("<string%s>\n", outsideName));
     if (stringProps != null) {
       for (var entry : stringProps.entrySet()) {
         writer.write(String.format(inner + "<%s name=\"%s\" value=\"%s\"/>\n", insideName, entry.getKey(), entry.getValue()));
       }
     }
-    writer.write(indent + "</stringProperties>\n");
+    writer.write(indent + String.format("</string%s>\n", outsideName));
 
-    writer.write(indent + "<doubleProperties>\n");
+    writer.write(indent + String.format("<double%s>\n", outsideName));
     if (doubleProps != null) {
       for (var entry : doubleProps.entrySet()) {
         writer.write(String.format(inner + "<%s name=\"%s\" value=\"%s\"/>\n", insideName, entry.getKey(), entry.getValue()));
       }
     }
-    writer.write(indent + "</doubleProperties>\n");
+    writer.write(indent + String.format("</double%s>\n", outsideName));
   }
 }

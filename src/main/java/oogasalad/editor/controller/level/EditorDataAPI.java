@@ -532,4 +532,57 @@ public class EditorDataAPI {
     Collections.sort(result);
     return result;
   }
+
+  /**
+   * Gets the layer priority of an editor object by its UUID.
+   * Delegates to the corresponding method in {@link EditorLevelData}.
+   *
+   * @param id the UUID of the editor object
+   * @return the priority of the layer the object belongs to, or 0 if the object or its layer is not found
+   */
+  public int getObjectLayerPriority(UUID id) {
+    LOG.debug("Getting layer priority for object with ID: {}", id);
+    return level.getObjectLayerPriority(id);
+  }
+
+  /**
+   * Returns all editor objects sorted by layer priority, from lowest to highest (back to front).
+   * This is useful for rendering objects in the correct Z-order in the frontend.
+   *
+   * @return a list of editor objects sorted by layer priority (ascending)
+   */
+  public List<EditorObject> getObjectsSortedByLayerPriority() {
+    return level.getObjectsSortedByLayerPriority();
+  }
+
+  /**
+   * Returns all objects on a specific layer.
+   * This is useful for operations that need to manipulate or select objects from a particular layer.
+   *
+   * @param layerName the name of the layer to get objects from
+   * @return a list of editor objects on the specified layer, or an empty list if the layer doesn't exist
+   */
+  public List<EditorObject> getObjectsByLayer(String layerName) {
+    return level.getObjectsByLayer(layerName);
+  }
+
+  /**
+   * Determines if one object is rendered on top of another based on layer priority.
+   * Objects with higher layer priority are rendered on top.
+   *
+   * @param topObjectId UUID of the object to check if it's on top
+   * @param bottomObjectId UUID of the object to check if it's on the bottom
+   * @return true if topObjectId has higher or equal layer priority than bottomObjectId, false otherwise
+   */
+  public boolean isObjectOnTopOf(UUID topObjectId, UUID bottomObjectId) {
+    if (topObjectId == null || bottomObjectId == null) {
+      return false;
+    }
+    
+    int topPriority = getObjectLayerPriority(topObjectId);
+    int bottomPriority = getObjectLayerPriority(bottomObjectId);
+    
+    // Higher priority means the object is rendered later (on top)
+    return topPriority >= bottomPriority;
+  }
 }
