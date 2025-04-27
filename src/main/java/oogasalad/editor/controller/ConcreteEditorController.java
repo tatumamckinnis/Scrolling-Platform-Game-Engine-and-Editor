@@ -445,7 +445,7 @@ public class ConcreteEditorController implements EditorController {
       throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     editorDataAPI.loadLevelData(fileName);
     editorDataAPI.getObjectDataMap().forEach((key, value) -> {
-      requestObjectUpdate(value);
+      listenerNotifier.notifyObjectAdded(key);
     });
   }
 }

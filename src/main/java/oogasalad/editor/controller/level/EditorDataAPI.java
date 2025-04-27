@@ -429,11 +429,10 @@ public class EditorDataAPI {
     LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
     Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
     List<GameObjectData> gameObjectData = levelData.gameObjects();
-    EditorLevelData editorLevelData = new EditorLevelData();
-    EditorObjectPopulator populator = new EditorObjectPopulator(editorLevelData);
+    EditorObjectPopulator populator = new EditorObjectPopulator(level);
     for (GameObjectData gameObject : gameObjectData) {
       EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
-      editorLevelData.updateObjectInDataMap(object.getId(), object);
+      level.updateObjectInDataMap(object.getId(), object);
     }
   }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-500" minY="-700" maxX="5261" maxY="501">
+  <cameraData type="TRACKER">
+    <stringProperties>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_0" width="5761" height="1201" z="0">
+      <data>
+        <object id="1" coordinates="(1420,324), (2700,-700), (3980,324), (3340,324), (3340,-700), (140,324), (4620,-700), (1420,-700), (3980,-700), (2060,-700), (780,324), (2700,324), (2060,324), (140,-700), (5260,324), (5260,-700), (4620,324), (780,-700), (-500,324), (-500,-700)" uid="c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 8757d18e-661e-4802-b8a4-c46b157d0bb6, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, a692f84b-b271-468c-8bae-7535604be673, cf209a9d-d4cc-4a23-9038-8a59f02a2990, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, f0410215-1c3b-4626-a24f-4d8fd707955e, f8ef7eb1-9485-4742-a20f-1fa8292a3804, 15fbb26d-974b-45c3-b1c6-376865be355a, d2134bc5-8682-4589-a2ef-8c750860b8b3, ff01ac6b-8c52-444d-ae78-bc46e6432a90, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, 6fd71b4d-f513-4109-982d-63c229489ac7, 646d4366-1aae-41b0-9c57-0c6840c2f049, dbd01b4f-393e-4de9-989b-11318d72247a, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, 66991927-aa5b-4787-ae13-4a0950d14090, 129acc3a-3dc4-49c9-861e-a86cfc67c605" />
+        <object id="2" coordinates="(891,400), (400,400), (616,400), (891,400), (616,400)" uid="f500c882-afa4-444b-a164-3d3dd213b967, dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, f320e242-842a-4ddb-bbca-58ca71c15762, 80cad290-cc89-4cc3-86cd-8b7de84b389f" />
+        <object id="3" coordinates="(1030,300), (829,300), (558,300), (319,300), (1597,300), (1886,300), (2159,300), (1316,300), (2404,300), (2639,300)" uid="f9fbde62-4b21-4e7e-ba0d-ca52027d68e5, b9f907db-1fa4-4144-bdc4-f8c6c25dfa1b, 7952dada-1d3c-4af6-a668-11f2688e005a, 8764685f-8329-4a9e-9329-aa1aa0dbff30, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd, 9ec4dd5c-f253-4e7c-b292-87072844985e, 80f45a6d-f145-4d73-a81b-57f91af8ce88, 3337c661-e1a1-46e1-b48b-082a74046d4c" />
+        <object id="4" coordinates="(0,490)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5" />
+        <object id="5" coordinates="(1440,490)" uid="e956d6f6-c520-4374-8128-17e284c05d73" />
+        <object id="6" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8" />
+        <object id="7" coordinates="(960,490)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d" />
+        <object id="8" coordinates="(1920,490)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda" />
+        <object id="9" coordinates="(480,490)" uid="3f780051-ec51-4c02-bc98-82d450d12397" />
+      </data>
+    </layer>
+  </layers>
+  <game name="dinosaurgame">
+    <objectGroup name="entities">
