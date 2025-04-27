@@ -11,10 +11,6 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,7 +30,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.object.EditorObject; // Import EditorObject
 import oogasalad.editor.view.EditorViewListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Builds the "Properties" tab UI, displaying Identity, Hitbox data, and custom object parameters.
@@ -67,7 +66,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private TextField widthField;
   private TextField heightField;
   private TextField shapeField;
-  
+
   private ListView<String> displayedStatsListView;
   private ComboBox<String> availableStatsComboBox;
   private Button addStatButton;
@@ -124,7 +123,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Builds a VBox containing fields for Identity data: Name (TextField) + Group (ComboBox).
+   * Builds a VBox containing fields for Identity data: UUID, Name, Group.
    *
    * @return A {@link VBox} containing the identity UI controls.
    */
@@ -173,7 +172,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
             LOG.debug("Set type to custom value '{}' for object {}", 
                 customTypeField.getText(), currentObjectId);
           }
-          
+
           // Hide the displayed stats section for non-player objects
           displayedStatsSection.setVisible(false);
           displayedStatsSection.setManaged(false);
@@ -183,12 +182,12 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           customTypeField.setManaged(false);
           editorController.getEditorDataAPI().getIdentityDataAPI().setType(currentObjectId, newVal);
           LOG.debug("Set type to '{}' for object {}", newVal, currentObjectId);
-          
+
           // Show the displayed stats section only for player objects
           boolean isPlayer = "player".equals(newVal);
           displayedStatsSection.setVisible(isPlayer);
           displayedStatsSection.setManaged(isPlayer);
-          
+
           if (isPlayer) {
             // Populate available stats from parameters
             updateAvailableStatsComboBox();
@@ -233,12 +232,11 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         if (NO_GROUP_OPTION.equals(newVal)) {
           groupToSet = "";
         }
-
         LOG.debug("Group ComboBox value changed to: '{}' for object {}", groupToSet,
             currentObjectId);
         editorController.getEditorDataAPI().getIdentityDataAPI()
             .setGroup(currentObjectId, groupToSet);
-
+        requestObjectUpdate(); // Ensure change is registered for saving
       }
     });
 
@@ -351,7 +349,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Handles the action of adding a new string parameter based on the input fields. Performs basic
-   * validation and calls the controller.
+   * validation and calls the controller. Requests object update after adding.
    */
   private void addStringParameter() {
     if (currentObjectId == null) {
@@ -368,11 +366,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     editorController.setObjectStringParameter(currentObjectId, key.trim(), value);
     paramKeyField.clear();
     paramStringValueField.clear();
+    requestObjectUpdate();
   }
 
   /**
    * Handles the action of adding a new double parameter based on the input fields. Performs
-   * validation (key not empty, value is a valid double) and calls the controller.
+   * validation (key not empty, value is a valid double) and calls the controller. Requests object
+   * update after adding.
    */
   private void addDoubleParameter() {
     if (currentObjectId == null) {
@@ -395,6 +395,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       editorController.setObjectDoubleParameter(currentObjectId, key.trim(), value);
       paramKeyField.clear();
       paramDoubleValueField.clear();
+      requestObjectUpdate();
     } catch (NumberFormatException e) {
       showError("Invalid double value: " + valueStr);
     }
@@ -402,7 +403,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Handles the action of removing the parameter selected in the list view. Parses the key from the
-   * selected item string and calls the controller.
+   * selected item string and calls the controller. Requests object update after removal.
    */
   private void removeSelectedParameter() {
     if (currentObjectId == null) {
@@ -416,6 +417,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Optional<String> keyOpt = parseKeyFromDisplayString(selectedItem);
     if (keyOpt.isPresent()) {
       editorController.removeObjectParameter(currentObjectId, keyOpt.get());
+      requestObjectUpdate();
     } else {
       LOG.error("Could not parse key from selected parameter item: {}", selectedItem);
       showError("Could not determine parameter key to remove.");
@@ -441,7 +443,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Factory method for creating identity text fields (Name). Updates model on focus lost.
+   * Factory method for creating identity text fields (Name). Updates model on focus lost and
+   * requests object update.
    *
    * @param prompt The prompt text for the field.
    * @param setter The BiConsumer to call when updating the model.
@@ -451,7 +454,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     TextField textField = new TextField();
     textField.setPromptText(prompt);
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValue = textField.getText();
         String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI()
             .getName(currentObjectId);
@@ -459,6 +462,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId,
               currentValue);
           setter.accept(currentObjectId, currentValue);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -469,7 +473,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   /**
    * Factory method to create a TextField for a numeric hitbox property (X, Y, Width, Height).
    * Attaches a listener that parses the input as an integer and updates the model via the setter
-   * only when focus is lost. Includes basic numeric input filtering.
+   * only when focus is lost. Includes basic numeric input filtering and requests object update.
    *
    * @param promptText The prompt text for the field.
    * @param setter     The BiConsumer to call when updating the model.
@@ -484,7 +488,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       }
     });
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValueStr = textField.getText();
         int value = parseSafeInt(currentValueStr);
         int modelValue = getModelHitboxValue(promptText, currentObjectId);
@@ -492,6 +496,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           LOG.debug("Hitbox field '{}' focus lost. Updating object {} to: {}", promptText,
               currentObjectId, value);
           setter.accept(currentObjectId, value);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -529,7 +534,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Creates the TextField for the hitbox shape property. Updates on focus lost.
+   * Creates the TextField for the hitbox shape property. Updates on focus lost and requests object
+   * update.
    *
    * @return A configured {@link TextField} for the shape property.
    */
@@ -537,7 +543,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     TextField textField = new TextField();
     textField.setPromptText("Shape (e.g. RECTANGLE)");
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValue = textField.getText();
         String modelValue = editorController.getEditorDataAPI().getHitboxDataAPI()
             .getShape(currentObjectId);
@@ -546,6 +552,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
               currentValue);
           editorController.getEditorDataAPI().getHitboxDataAPI()
               .setShape(currentObjectId, currentValue);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -743,7 +750,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       typeComboBox.setValue("player");
       customTypeField.setVisible(false);
       customTypeField.setManaged(false);
-      
+
       // Show and populate displayed stats section for player objects
       displayedStatsSection.setVisible(true);
       displayedStatsSection.setManaged(true);
@@ -776,8 +783,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
     isUpdatingGroupComboBox = false;
 
-    LOG.trace("Populated identity fields: Name='{}', Game='{}', Type='{}', Group='{}', Options={}", 
-        currentName, currentGame, currentType, groupComboBox.getValue(), groupOptions);
+    LOG.trace("Populated identity fields: Name='{}', Group='{}', Options={}", currentName,
+        groupComboBox.getValue(), groupOptions);
   }
 
   /**
@@ -829,7 +836,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       parameterItems.addAll(combinedParams);
       LOG.trace("Refreshed parameter list for object {}: {} items.", currentObjectId,
           parameterItems.size());
-          
+
       // If this is a player object, update the available stats dropdown
       String type = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
       if ("player".equals(type) && displayedStatsSection.isVisible()) {
@@ -853,8 +860,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Clears all property fields and lists when no object is selected or an error occurs. Called only
-   * internally from the refresh methods.
+   * Internal method to clear all fields, called on the FX thread. Resets state related to the
+   * selected object and clears UI control contents.
    */
   private void clearFieldsInternal() {
     // Clear identity fields
@@ -865,13 +872,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     customTypeField.clear();
     customTypeField.setVisible(false);
     customTypeField.setManaged(false);
-    
+
     // Clear displayed stats section
     displayedStatsItems.clear();
     availableStatsComboBox.getItems().clear();
     displayedStatsSection.setVisible(false);
     displayedStatsSection.setManaged(false);
-    
+
     isUpdatingGroupComboBox = true;
     groupComboBox.getItems().clear();
     groupComboBox.getItems().add(NO_GROUP_OPTION);
@@ -924,6 +931,21 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       groupComboBox.setValue(NO_GROUP_OPTION);
     }
     isUpdatingGroupComboBox = false;
+  }
+
+  /**
+   * Helper method to request an update for the currently selected object.
+   * Avoids issues if no object is currently selected.
+   */
+  private void requestObjectUpdate() {
+    if (currentObjectId != null) {
+      EditorObject currentObject = editorController.getEditorObject(currentObjectId);
+      if (currentObject != null) {
+        editorController.requestObjectUpdate(currentObject);
+      } else {
+        LOG.warn("Attempted to request update for object ID {} but it was not found.", currentObjectId);
+      }
+    }
   }
 
   /**
@@ -993,7 +1015,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentObjectId == null) {
       return;
     }
-    
+
     String selectedParam = availableStatsComboBox.getValue();
     if (selectedParam != null && !displayedStatsItems.contains(selectedParam)) {
       displayedStatsItems.add(selectedParam);
@@ -1008,14 +1030,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentObjectId == null) {
       return;
     }
-    
+
     String selectedStat = displayedStatsListView.getSelectionModel().getSelectedItem();
     if (selectedStat != null) {
       displayedStatsItems.remove(selectedStat);
       updateDisplayedStats();
     }
   }
-  
+
   /**
    * Updates the displayed stats string parameter on the current object.
    */
@@ -1023,14 +1045,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentObjectId == null) {
       return;
     }
-    
+
     // Convert the ObservableList to a String list and save in the appropriate format
     List<String> displayedStats = new ArrayList<>(displayedStatsItems);
-    
+
     // Set the "displayedProperties" parameter
-    editorController.setObjectStringParameter(currentObjectId, "displayedProperties", 
+    editorController.setObjectStringParameter(currentObjectId, "displayedProperties",
         String.join(",", displayedStats));
-    
+
     LOG.debug("Updated displayed stats for player {}: {}", currentObjectId, displayedStats);
   }
 
@@ -1041,13 +1063,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentObjectId == null) {
       return;
     }
-    
+
     // Clear existing items
     availableStatsComboBox.getItems().clear();
-    
+
     // Get all parameters for this object
     List<String> paramOptions = new ArrayList<>();
-    
+
     // Add string parameters
     Map<String, String> stringParams = editorController.getObjectStringParameters(currentObjectId);
     if (stringParams != null) {
@@ -1057,23 +1079,23 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         }
       });
     }
-    
+
     // Add double parameters
     Map<String, Double> doubleParams = editorController.getObjectDoubleParameters(currentObjectId);
     if (doubleParams != null) {
       paramOptions.addAll(doubleParams.keySet());
     }
-    
+
     // Sort alphabetically
     Collections.sort(paramOptions);
-    
+
     // Add to combo box
     availableStatsComboBox.getItems().addAll(paramOptions);
-    
+
     // Load currently displayed stats
     loadDisplayedStats();
   }
-  
+
   /**
    * Loads the currently selected displayed stats from the object's parameters.
    */
@@ -1081,14 +1103,14 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     if (currentObjectId == null) {
       return;
     }
-    
+
     // Clear current items
     displayedStatsItems.clear();
-    
+
     // Get the displayedProperties string from parameters
     String displayedPropsString = editorController.getObjectStringParameters(currentObjectId)
         .get("displayedProperties");
-    
+
     if (displayedPropsString != null && !displayedPropsString.isEmpty()) {
       // Split the comma-separated list and add each item
       String[] props = displayedPropsString.split(",");
