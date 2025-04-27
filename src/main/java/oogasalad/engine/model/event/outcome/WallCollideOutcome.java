@@ -38,63 +38,70 @@ public class WallCollideOutcome implements Outcome {
     String type = stringParameters.getOrDefault("type", "wall");
     for (GameObject collidedObject : collidedObjects) {
       if (collidedObject.getType().equals(type)) {
-        preventObjectMovement(gameObject, collidedObject);
+        if (trySnapToTop(gameObject, collidedObject)) {
+          // snapped & grounded—don’t do further separation
+          return;
+        }
+
+        // 2) otherwise do normal AABB separation
+        separateAlongShortestAxis(gameObject, collidedObject);
       }
     }
 
   }
 
-  private void preventObjectMovement(GameObject player, GameObject block) {
-    // fetch positions & sizes
-    double px = player.getXPosition();
-    double py = player.getYPosition();
-    double pw = player.getHitBoxWidth();
-    double ph = player.getHitBoxHeight();
+  /**
+   * Exactly your platform-land code, but returns true if we snapped.
+   */
+  private boolean trySnapToTop(GameObject player, GameObject block) {
+    int pBot = player.getYPosition() + player.getHitBoxHeight();
+    int pTop = player.getYPosition();
+    int bTop = block.getYPosition();
 
-    double bx = block.getXPosition();
-    double by = block.getYPosition();
-    double bw = block.getHitBoxWidth();
-    double bh = block.getHitBoxHeight();
+    double vy = player.getYVelocity();
+    boolean falling = vy >= 0;
+    boolean vertOverlap = pBot >= bTop && pTop < bTop;
+    boolean horizOverlap =
+        player.getXPosition() + player.getHitBoxWidth() > block.getXPosition() &&
+            player.getXPosition() < block.getXPosition() + block.getHitBoxWidth();
 
-    // compute overlaps
+    if (falling && vertOverlap && horizOverlap) {
+      // snap onto top of block
+      player.setYPosition(bTop - player.getHitBoxHeight() - 1);
+      player.setYVelocity(0);
+      player.setGrounded(true);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Your AABB “push‐out” logic for walls and ceilings.
+   */
+  private void separateAlongShortestAxis(GameObject player, GameObject block) {
+    double px = player.getXPosition(), py = player.getYPosition();
+    double pw = player.getHitBoxWidth(), ph = player.getHitBoxHeight();
+    double bx = block.getXPosition(), by = block.getYPosition();
+    double bw = block.getHitBoxWidth(), bh = block.getHitBoxHeight();
+
     double overlapX = Math.min(px + pw, bx + bw) - Math.max(px, bx);
     double overlapY = Math.min(py + ph, by + bh) - Math.max(py, by);
 
-    // decide which axis to resolve
     if (overlapY <= overlapX) {
-      // vertical resolution (ceiling or floor)
-      int playerBottom = (int)(py + ph);
-      int playerTop    = (int) py;
-      int blockTop     = (int) by;
-      double vy        = player.getYVelocity();
-      boolean falling  = vy >= 0;
-      boolean vertOK   = playerBottom >= blockTop && playerTop < blockTop;
-      boolean horizOK  = (px + pw) > bx && px < (bx + bw);
-
-      if (falling && vertOK && horizOK) {
-        // **snap** to the top surface
-        player.setYPosition(blockTop - (int)ph + 1);
-        player.setYVelocity(0);
-        return;
-      }
-
-      // else push out (ceiling or floor)
+      // ceiling/floor
       if (py < by) {
-        // hit the ceiling side
+        // hit ceiling underside
         player.setYPosition((int) (py - overlapY));
       } else {
-        // hit the floor side (from below)
+        // push floor‐side from below
         player.setYPosition((int) (py + overlapY));
       }
       player.setYVelocity(0);
-
     } else {
-      // horizontal resolution (walls)
+      // walls
       if (px < bx) {
-        // collided on left side of block
         player.setXPosition((int) (px - overlapX));
       } else {
-        // collided on right side
         player.setXPosition((int) (px + overlapX));
       }
       player.setXVelocity(0);
