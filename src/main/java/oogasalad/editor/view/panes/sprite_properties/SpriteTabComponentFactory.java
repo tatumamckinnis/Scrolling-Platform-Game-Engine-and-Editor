@@ -30,6 +30,8 @@ import org.apache.logging.log4j.Logger;
  * Fresh implementation of the “Sprites” tab. • Read-only field shows which template is bound to the
  * selected object. • “Change Template…” button opens a ChoiceDialog listing all templates. • X, Y,
  * Rotation, Flip fields push live edits to SpriteDataAPI.
+ *
+ * @author Jacob You, Billy McCune
  */
 public class SpriteTabComponentFactory implements EditorViewListener {
 
@@ -57,6 +59,11 @@ public class SpriteTabComponentFactory implements EditorViewListener {
   /* ── state ─────────────────────────────────────────────── */
   private UUID currentObjectId;                     // null == nothing selected
 
+  /**
+   * constructor for creating a new SpriteTabComponentFactory
+   *
+   * @param controller the editor controller of the application
+   */
   public SpriteTabComponentFactory(EditorController controller) {
     this.controller = Objects.requireNonNull(controller);
     this.templateMap = controller.getEditorDataAPI().getSpriteTemplateMap();
@@ -65,6 +72,12 @@ public class SpriteTabComponentFactory implements EditorViewListener {
   /* ---------------------------------------------------------------------- */
   /*                          public build-method                           */
   /* ---------------------------------------------------------------------- */
+
+  /**
+   * Creates a sprite pane
+   *
+   * @return a new ScrollPane object
+   */
   public ScrollPane createSpritePane() {
     buildControls();
 
