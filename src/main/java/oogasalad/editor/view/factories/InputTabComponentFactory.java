@@ -122,7 +122,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   * @return The identifier string.
   * @throws RuntimeException If the key is not found.
   */
-     private String getId(String key) {
+ public String getId(String key) {
   String value = identifierProps.getProperty(key);
   if (value == null || value.trim().isEmpty()) {
    LOG.error("Missing identifier in InputTab properties file for key: {}", key);
