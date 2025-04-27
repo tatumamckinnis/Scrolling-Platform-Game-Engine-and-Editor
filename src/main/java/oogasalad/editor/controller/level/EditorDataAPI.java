@@ -57,6 +57,7 @@ public class EditorDataAPI {
   private static final Logger LOG = LogManager.getLogger(EditorDataAPI.class);
   private static final FileParserApi DEFAULT_FILE_PARSER = new DefaultFileParser();
   private static final SaverStrategy DEFAULT_SAVER_STRATEGY = new XmlStrategy();
+  private static final String GAME_PATH = "data/gameData";
 
 
   private final IdentityDataManager identityAPI;
@@ -74,7 +75,7 @@ public class EditorDataAPI {
   private final FileParserApi fileParserAPI;
   private final SaverStrategy saverStrategy;
   private final EditorListenerNotifier listenerNotifier;
-  private String currentGameDirectoryPath;
+  private String currentGameName;
 
   /**
    * Constructs an EditorDataAPI instance, initializing the underlying {@link EditorLevelData} and
@@ -345,22 +346,28 @@ public class EditorDataAPI {
    * updates the game name in the underlying {@link EditorLevelData} based on the directory name
    * extracted from the path.
    *
-   * @param path The path to the current game directory.
+   * @param name The name of the current game
    */
-  public void setCurrentGameDirectoryPath(String path) {
-    this.currentGameDirectoryPath = path;
-    String gameName = extractGameNameFromPath(path); // Extract name from path
-    level.setGameName(gameName); // Use the existing setter
-    LOG.info("Current game directory path set to: {}, Game name set to: {}", path, gameName);
+  public void setCurrentGameName(String name) {
+    this.currentGameName = name;
+    level.setGameName(name); // Use the existing setter
+    LOG.info("Game name set to: {}", name);
   }
 
   /**
-   * Gets the file system path to the root directory of the currently loaded game project.
+   * Returns the on-disk path to the current game directory:
+   * <pre>data/gameData/&lt;gameName&gt;</pre>
+   * If the game name has not been set yet, the method returns {@code null}.
    *
-   * @return The path to the current game directory, or null if not set.
+   * @return full path string including the game name, or {@code null} when undefined
    */
-  public String getCurrentGameDirectoryPath() {
-    return currentGameDirectoryPath;
+  public String getGamePath() {
+    String gameName = level.getGameName();
+    if (gameName == null || gameName.isBlank()) {
+      LOG.warn("Game name has not been set – cannot build game path.");
+      return null;
+    }
+    return GAME_PATH + File.separator + gameName;
   }
 
   /**
@@ -499,28 +506,4 @@ public class EditorDataAPI {
       level.updateObjectInDataMap(object.getId(), object);
     }
   }
-
-  /**
-   * Extracts the presumed game name (the final directory component) from a file path.
-   *
-   * @param path The full path to the game directory.
-   * @return The extracted game name, or the original path if extraction fails.
-   */
-  private String extractGameNameFromPath(String path) {
-    if (path == null || path.isEmpty()) {
-      return "UnknownGame";
-    }
-    try {
-      File file = new File(path);
-      String name = file.getName();
-      if (name.isEmpty() && file.getParentFile() != null) {
-        name = file.getParentFile().getName();
-      }
-      return name.isEmpty() ? "UnknownGame" : name;
-    } catch (Exception e) {
-      LOG.warn("Could not extract game name from path '{}': {}", path, e.getMessage());
-      return path;
-    }
-  }
-
 }

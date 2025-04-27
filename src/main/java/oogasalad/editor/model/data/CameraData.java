@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class CameraData {
 
-  private static final String DEFAULT_CAMERA_TYPE = "TRACKER";
+  private static final String DEFAULT_CAMERA_TYPE = "Tracker";
 
   private String cameraType;
   private double cameraX;

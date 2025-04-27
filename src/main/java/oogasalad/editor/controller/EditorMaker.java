@@ -25,8 +25,6 @@ public class EditorMaker {
 
   private static final Logger LOG = LogManager.getLogger(EditorMaker.class);
 
-  private String gameDirectoryPath;
-
   /**
    * Initializes the core components of the editor application, including the data backend,
    * controller, view factory, and main scene. Also configures the primary stage.
@@ -49,14 +47,9 @@ public class EditorMaker {
       editorController = new ConcreteEditorController(editorDataAPI, listenerNotifier);
       LOG.info("ConcreteEditorController created.");
 
-      // Set the game directory path
-      if (gameDirectoryPath != null && !gameDirectoryPath.isEmpty()) {
-        editorDataAPI.setCurrentGameDirectoryPath(gameDirectoryPath);
-        LOG.info("Game directory path set to: {}", gameDirectoryPath);
-      } else {
-        LOG.warn("Game directory path is not provided. Prefab sprite resolution may fail.");
-        editorDataAPI.setCurrentGameDirectoryPath("data/gameData/unknown_game");
-      }
+      // Set the game directory name
+      LOG.warn("Game directory path is not provided. Prefab sprite resolution may fail.");
+      editorDataAPI.setCurrentGameName("untitled_game");
 
       // 3. Create the view factory using the controller
       EditorComponentFactory factory = new EditorComponentFactory(editorController);
