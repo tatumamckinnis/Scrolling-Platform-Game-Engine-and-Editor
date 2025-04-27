@@ -12,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import oogasalad.editor.view.eventui.EventsSectionBuilder;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -27,27 +28,50 @@ import static org.mockito.Mockito.*;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
 /**
- * Tests for EventsSectionBuilder using TestFX and Mockito. Verifies UI component creation
- * and interaction logic for adding, removing, and selecting events by their String IDs.
+ * Tests for EventsSectionBuilder using TestFX and Mockito.
+ * Verifies UI component creation, interaction logic, and handler callbacks
+ * for managing event identifiers.
  */
 @ExtendWith(ApplicationExtension.class)
 class EventsSectionBuilderTest {
 
-  private static final String UI_BUNDLE_BASE_NAME = "oogasalad.editor.view.resources.InputTabUI";
-  private static final String ADD_BUTTON_KEY = "addEventButton";
-  private static final String REMOVE_BUTTON_KEY = "removeEventButton";
+  /**
+   * Base name for the ResourceBundle containing UI strings for the input tab components.
+   */
+  private static final String UI_BUNDLE_BASE_NAME = "oogasalad.config.editor.resources.InputTabUI_en";
+
+  /**
+   * CSS ID for the event ID input text field.
+   */
   private static final String EVENT_ID_FIELD_ID = "#eventIdField";
+  /**
+   * CSS ID for the event list view.
+   */
   private static final String EVENT_LIST_VIEW_ID = "#eventListView";
+  /**
+   * CSS ID for the add event button.
+   */
+  private static final String ADD_BUTTON_ID = "#addEventButton";
+  /**
+   * CSS ID for the remove event button.
+   */
+  private static final String REMOVE_BUTTON_ID = "#removeEventButton";
 
-  @Mock private Consumer<String> mockAddHandler;
-  @Mock private Runnable mockRemoveHandler;
-  @Mock private Consumer<String> mockSelectionHandler;
 
-  @Captor private ArgumentCaptor<String> stringCaptor;
+  @Mock
+  private Consumer<String> mockAddHandler;
+  @Mock
+  private Runnable mockRemoveHandler;
+  @Mock
+  private Consumer<String> mockSelectionHandler;
+
+  @Captor
+  private ArgumentCaptor<String> stringCaptor;
 
   private ResourceBundle uiBundle;
   private EventsSectionBuilder builder;
   private Node rootNode;
+  private Stage stage;
 
   private AutoCloseable mockitoCloseable;
 
@@ -60,6 +84,7 @@ class EventsSectionBuilderTest {
    */
   @Start
   private void start(Stage stage) throws Exception {
+    this.stage = stage;
     mockitoCloseable = MockitoAnnotations.openMocks(this);
     uiBundle = ResourceBundle.getBundle(UI_BUNDLE_BASE_NAME);
 
@@ -68,11 +93,12 @@ class EventsSectionBuilderTest {
 
     StackPane rootPane = new StackPane(rootNode);
     Scene scene = new Scene(rootPane, 400, 300);
-    stage.setScene(scene);
-    stage.show();
 
-    assertNotNull(builder.getEventListView(), "Failed to get eventListView via getter");
-    assertNotNull(builder.getEventIdField(), "Failed to get eventIdField via getter");
+    Platform.runLater(() -> {
+      this.stage.setScene(scene);
+      this.stage.show();
+    });
+    waitForFxEvents();
   }
 
   /**
@@ -85,6 +111,12 @@ class EventsSectionBuilderTest {
     if (mockitoCloseable != null) {
       mockitoCloseable.close();
     }
+    Platform.runLater(() -> {
+      if (stage != null) {
+        stage.hide();
+      }
+    });
+    waitForFxEvents();
   }
 
   /**
@@ -113,20 +145,61 @@ class EventsSectionBuilderTest {
   void testComponentStructure() {
     assertNotNull(lookup(EVENT_LIST_VIEW_ID));
     assertNotNull(lookup(EVENT_ID_FIELD_ID));
-    assertNotNull(lookup("#addEventButton"));
-    assertNotNull(lookup("#removeEventButton"));
+    assertNotNull(lookup(ADD_BUTTON_ID));
+    assertNotNull(lookup(REMOVE_BUTTON_ID));
   }
 
   /**
+   * Tests constructor throws NullPointerException for null ResourceBundle.
+   */
+  @Test
+  void testConstructorNullBundleThrowsException() {
+    assertThrows(NullPointerException.class, () ->
+        new EventsSectionBuilder(null, mockAddHandler, mockRemoveHandler, mockSelectionHandler)
+    );
+  }
+
+  /**
+   * Tests constructor throws NullPointerException for null add handler.
+   */
+  @Test
+  void testConstructorNullAddHandlerThrowsException() {
+    assertThrows(NullPointerException.class, () ->
+        new EventsSectionBuilder(uiBundle, null, mockRemoveHandler, mockSelectionHandler)
+    );
+  }
+
+  /**
+   * Tests constructor throws NullPointerException for null remove handler.
+   */
+  @Test
+  void testConstructorNullRemoveHandlerThrowsException() {
+    assertThrows(NullPointerException.class, () ->
+        new EventsSectionBuilder(uiBundle, mockAddHandler, null, mockSelectionHandler)
+    );
+  }
+
+  /**
+   * Tests constructor throws NullPointerException for null selection handler.
+   */
+  @Test
+  void testConstructorNullSelectionHandlerThrowsException() {
+    assertThrows(NullPointerException.class, () ->
+        new EventsSectionBuilder(uiBundle, mockAddHandler, mockRemoveHandler, null)
+    );
+  }
+
+
+  /**
    * Tests that typing an event ID and clicking the "Add Event" button triggers the add handler
-   * with the correct event ID string.
+   * with the correct event ID string, and clears the input field.
    * @param robot TestFX robot for UI interaction.
    */
   @Test
-  void testAddButtonAddsEvent(FxRobot robot) {
+  void testAddButtonAddsEventAndClearsField(FxRobot robot) {
     String testEventId = "TestEvent1";
     TextField eventIdField = lookup(EVENT_ID_FIELD_ID);
-    Button addButton = lookup("#addEventButton");
+    Button addButton = lookup(ADD_BUTTON_ID);
 
     robot.clickOn(eventIdField).write(testEventId);
     waitForFxEvents();
@@ -135,7 +208,7 @@ class EventsSectionBuilderTest {
 
     verify(mockAddHandler).accept(stringCaptor.capture());
     assertEquals(testEventId, stringCaptor.getValue());
-    assertEquals("", eventIdField.getText());
+    assertEquals("", eventIdField.getText(), "Event ID field should be cleared after add");
   }
 
   /**
@@ -146,7 +219,7 @@ class EventsSectionBuilderTest {
   @Test
   void testAddButtonDoesNotAddEmptyEvent(FxRobot robot) {
     TextField eventIdField = lookup(EVENT_ID_FIELD_ID);
-    Button addButton = lookup("#addEventButton");
+    Button addButton = lookup(ADD_BUTTON_ID);
 
     robot.clickOn(eventIdField).write("   ");
     waitForFxEvents();
@@ -169,7 +242,7 @@ class EventsSectionBuilderTest {
   @Test
   void testRemoveButtonRemovesSelectedEvent(FxRobot robot) {
     ListView<String> eventListView = lookup(EVENT_LIST_VIEW_ID);
-    Button removeButton = lookup("#removeEventButton");
+    Button removeButton = lookup(REMOVE_BUTTON_ID);
     String itemToRemove = "EventToRemove";
 
     Platform.runLater(() -> eventListView.getItems().add(itemToRemove));
@@ -184,6 +257,7 @@ class EventsSectionBuilderTest {
 
     verify(mockRemoveHandler).run();
   }
+
 
 
   /**
@@ -212,5 +286,16 @@ class EventsSectionBuilderTest {
     waitForFxEvents();
     verify(mockSelectionHandler, times(2)).accept(stringCaptor.capture());
     assertEquals(event2, stringCaptor.getValue(), "Second selection incorrect");
+  }
+
+  /**
+   * Tests that the getter methods return the created UI components.
+   */
+  @Test
+  void testGettersReturnComponents() {
+    assertNotNull(builder.getEventListView());
+    assertNotNull(builder.getEventIdField());
+    assertSame(lookup(EVENT_LIST_VIEW_ID), builder.getEventListView());
+    assertSame(lookup(EVENT_ID_FIELD_ID), builder.getEventIdField());
   }
 }
