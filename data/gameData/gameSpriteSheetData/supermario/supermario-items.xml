@@ -6,7 +6,7 @@ y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
 -->
-<TextureAtlas imagePath="supermario-items.png" width="1648" height="32">
+<spriteFile imagePath="supermario-items.png" width="1648" height="32">
     <sprite n="mushroom-red.png" x="0" y="0" w="16" h="16"/>
     <sprite n="mushroom-green.png" x="16" y="0" w="16" h="16"/>
     <sprite n="items-objects-2.png" x="32" y="0" w="16" h="16"/>
@@ -315,4 +315,4 @@ h  => sprite height (may be trimmed)
     <sprite n="items-objects-305.png" x="1600" y="16" w="16" h="16"/>
     <sprite n="items-objects-306.png" x="1616" y="16" w="16" h="16"/>
     <sprite n="items-objects-307.png" x="1632" y="16" w="16" h="16"/>
-</TextureAtlas>
+</spriteFile>
