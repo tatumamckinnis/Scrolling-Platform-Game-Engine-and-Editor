@@ -1,5 +1,6 @@
 package oogasalad.editor.model.loader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import oogasalad.editor.model.data.SpriteSheetAtlas;
@@ -33,6 +34,7 @@ public class SpriteSheetLoader {
     return new SpriteSheetAtlas(
         atlasName,
         recordSheetData.imagePath(),
+        extractGameName(sheetFile),
         recordSheetData.sheetWidth(),
         recordSheetData.sheetHeight(),
         convertFrameData(recordSheetData.frames())
@@ -52,5 +54,10 @@ public class SpriteSheetLoader {
       ));
     }
     return frameDataList;
+  }
+
+  private static String extractGameName(String anyPath) {
+    File f = new File(anyPath).getAbsoluteFile();
+    return f.getParentFile().getName();
   }
 }

@@ -14,6 +14,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+import oogasalad.editor.model.data.SpriteSheetAtlas;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -751,8 +752,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
     if (object == null || object.getSpriteData() == null) {
       return null;
     }
-    String path = object.getSpriteData().getSpritePath();
-    return (path == null || path.trim().isEmpty()) ? null : path;
+
+    SpriteSheetAtlas atlas = editorController.getEditorDataAPI().getLevel().getAtlas(object.getId());
+    return atlas.getImageFile().getAbsolutePath();
   }
 
   /**

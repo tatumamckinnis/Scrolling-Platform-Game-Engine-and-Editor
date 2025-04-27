@@ -455,6 +455,43 @@ public class EditorLevelData {
   }
 
   /**
+   * Get the name of the atlas given an objectId
+   *
+   * @param objectId the id of the object to get the atlas of
+   * @return the name of the atlas
+   */
+  public SpriteSheetAtlas getAtlas(UUID objectId) {
+    EditorObject obj = myObjectDataMap.get(objectId);
+    if (obj == null) {
+      LOG.warn("getAtlasIdForObject: no object found for ID {}", objectId);
+      return null;
+    }
+
+    // sprite-data might be absent (e.g. prefab not yet assigned)
+    var spriteData = obj.getSpriteData();
+    if (spriteData == null) {
+      LOG.trace("getAtlasIdForObject: object {} has no SpriteData", objectId);
+      return null;
+    }
+
+    // every SpriteData built from a template keeps a reference to that template
+    String templateName = spriteData.getTemplateName();
+    SpriteTemplate template = spriteTemplateMap.getSpriteData(templateName);
+    if (template == null) {
+      LOG.trace("getAtlasIdForObject: object {} has SpriteData but no template", objectId);
+      return null;
+    }
+
+    String atlasFile = template.getAtlasFile();
+    if (atlasFile == null || atlasFile.isBlank()) {
+      LOG.trace("getAtlasIdForObject: template for object {} has empty atlasFile", objectId);
+      return null;
+    }
+
+    return spriteLibrary.getAtlas(atlasFile);
+  }
+
+  /**
    * Gets the layer priority of an editor object by its UUID.
    * This is a convenience method that gets the object, retrieves its identity data,
    * gets the layer from the identity data, and then gets the priority from the layer.
@@ -467,24 +504,24 @@ public class EditorLevelData {
       LOG.warn("Attempted to get layer priority with null UUID");
       return 0;
     }
-    
+
     EditorObject obj = myObjectDataMap.get(uuid);
     if (obj == null) {
       LOG.warn("Object with UUID {} not found when getting layer priority", uuid);
       return 0;
     }
-    
+
     if (obj.getIdentityData() == null) {
       LOG.warn("Object with UUID {} has null identity data", uuid);
       return 0;
     }
-    
+
     Layer layer = obj.getIdentityData().getLayer();
     if (layer == null) {
       LOG.warn("Object with UUID {} has null layer in its identity data", uuid);
       return 0;
     }
-    
+
     return layer.getPriority();
   }
 
@@ -497,17 +534,17 @@ public class EditorLevelData {
    */
   public List<EditorObject> getObjectsSortedByLayerPriority() {
     List<EditorObject> allObjects = new ArrayList<>(myObjectDataMap.values());
-    
+
     // Sort objects by layer priority (ascending order for rendering from back to front)
     allObjects.sort((obj1, obj2) -> {
       int priority1 = getObjectLayerPriorityInternal(obj1);
       int priority2 = getObjectLayerPriorityInternal(obj2);
       return Integer.compare(priority1, priority2);
     });
-    
+
     return allObjects;
   }
-  
+
   /**
    * Internal helper method to get the layer priority of an EditorObject.
    * Returns 0 if the object has null identity data or null layer.
@@ -519,7 +556,7 @@ public class EditorLevelData {
     if (obj == null || obj.getIdentityData() == null) {
       return 0;
     }
-    
+
     Layer layer = obj.getIdentityData().getLayer();
     return (layer != null) ? layer.getPriority() : 0;
   }
@@ -536,18 +573,18 @@ public class EditorLevelData {
       LOG.warn("Attempted to get objects from null or empty layer name");
       return Collections.emptyList();
     }
-    
+
     // Find the layer by name
     Layer targetLayer = myLayers.stream()
         .filter(layer -> layerName.equals(layer.getName()))
         .findFirst()
         .orElse(null);
-        
+
     if (targetLayer == null) {
       LOG.warn("Layer '{}' not found when getting objects", layerName);
       return Collections.emptyList();
     }
-    
+
     // Return all objects on this layer
     List<EditorObject> layerObjects = myLayerDataMap.get(targetLayer);
     return layerObjects != null ? new ArrayList<>(layerObjects) : Collections.emptyList();

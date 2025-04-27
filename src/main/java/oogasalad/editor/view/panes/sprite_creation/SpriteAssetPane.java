@@ -1,7 +1,9 @@
 package oogasalad.editor.view.panes.sprite_creation;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -17,59 +19,55 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
+import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * UI that lives inside the “Sprites” tab. Implements the buttons for the spritesheet editor and the
- * sprite creation.
- * TODO: Remove duplicate instantiation and checking of sprites
- *
- * @author Jacob You
+ * UI that lives inside the “Sprites” tab. Implements the buttons for sprite‑sheet import and
+ * sprite‑template creation/editing. Thumbnails use the absolute PNG path provided by
+ * {@link SpriteSheetAtlas#getImageFile()} and the header buttons are made larger for easier clicks.
  */
 public class SpriteAssetPane extends BorderPane {
 
   private static final Logger LOG = LogManager.getLogger(SpriteAssetPane.class);
 
-  private static final double BUTTON_SPACING = 5;
-  private static final double ICON_SIZE = 64;
-  private static final double GAP = 6;
+  private static final double BUTTON_SPACING = 8;
+  private static final double BUTTON_WIDTH   = 140;
+  private static final double BUTTON_HEIGHT  = 32;
+  private static final double ICON_SIZE      = 64;
+  private static final double GAP           = 6;
 
   private final EditorController editorController;
   private final SpriteTemplateMap spriteTemplateMap;
   private final TilePane gallery = new TilePane();
 
-  /**
-   * constructs a new Sprite Asset Pane
-   *
-   * @param editorController editor controller
-   * @param ownerWindow      window that contains the sprite asset pane
-   */
   public SpriteAssetPane(EditorController editorController, Window ownerWindow) {
     this.editorController = editorController;
     this.spriteTemplateMap = editorController.getEditorDataAPI().getSpriteTemplateMap();
 
-    Button importButton = new Button("Import Sheet");
+    // Header buttons
+    Button importButton    = new Button("Import Sheet");
     Button newSpriteButton = new Button("New Sprite");
 
-    importButton.getStyleClass().add("small-button");
-    newSpriteButton.getStyleClass().add("small-button");
+    importButton.getStyleClass().add("primary-button");
+    newSpriteButton.getStyleClass().add("primary-button");
+    importButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+    newSpriteButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
 
     importButton.setOnAction(e ->
         new ProcessSpriteSheetComponent(editorController, ownerWindow).show()
     );
 
     newSpriteButton.setOnAction(e -> {
-      SpriteSheetLibrary library =
-          editorController.getEditorDataAPI().getSpriteLibrary();
-
+      SpriteSheetLibrary library = editorController.getEditorDataAPI().getSpriteLibrary();
       SpriteTemplateComponent dialog =
           new SpriteTemplateComponent(editorController, ownerWindow, library);
-
       dialog.showAndWait();
       SpriteTemplate result = dialog.getResult();
       if (result != null) {
@@ -80,9 +78,11 @@ public class SpriteAssetPane extends BorderPane {
     });
 
     HBox header = new HBox(BUTTON_SPACING, importButton, newSpriteButton);
-    header.setPadding(new Insets(6));
+    header.setPadding(new Insets(10));
+    header.setAlignment(Pos.CENTER_LEFT);
     setTop(header);
 
+    // Gallery area
     gallery.setHgap(GAP);
     gallery.setVgap(GAP);
     gallery.setPadding(new Insets(GAP));
@@ -100,53 +100,56 @@ public class SpriteAssetPane extends BorderPane {
 
   private void refreshGallery() {
     gallery.getChildren().clear();
-    for (SpriteTemplate template : spriteTemplateMap.getSpriteMap().values()) {
-      gallery.getChildren().add(createThumbnail(template));
-    }
+    spriteTemplateMap.getSpriteMap().values()
+        .forEach(template -> gallery.getChildren().add(createThumbnail(template)));
     LOG.info("Refreshed gallery");
   }
 
   private Node createThumbnail(SpriteTemplate template) {
-    String fileName = template.getSpriteFile();
-    String gameName = editorController.getEditorDataAPI().getGameName();
-    Path imageFile = Paths.get("data", "graphicsData", gameName, fileName);
+    SpriteSheetLibrary library = editorController.getEditorDataAPI().getSpriteLibrary();
+    String atlasFile = template.getAtlasFile();
+    String atlasId   = atlasFile.contains(".") ? atlasFile.substring(0, atlasFile.lastIndexOf('.')) : atlasFile;
+    SpriteSheetAtlas atlas = library.getAtlas(atlasId);
 
-    Image sheet = new Image(imageFile.toUri().toString());
+    if (atlas == null) {
+      LOG.warn("Atlas '{}' not found for template '{}'", atlasId, template.getName());
+      return new Label(template.getName());
+    }
 
+    Image sheet = new Image(atlas.getImageFile().toURI().toString());
     FrameData baseFrame = template.getBaseFrame();
+
     ImageView imageView = new ImageView(sheet);
-    imageView.setViewport(
-        new Rectangle2D(baseFrame.x(), baseFrame.y(), baseFrame.width(), baseFrame.height()));
+    imageView.setViewport(new Rectangle2D(baseFrame.x(), baseFrame.y(), baseFrame.width(), baseFrame.height()));
     imageView.setFitWidth(ICON_SIZE);
     imageView.setFitHeight(ICON_SIZE);
     imageView.setPreserveRatio(true);
     imageView.setSmooth(true);
 
-    Label name = new Label(template.getName());
-    name.setMaxWidth(ICON_SIZE);
-    name.setWrapText(true);
-    name.setAlignment(Pos.CENTER);
+    Label nameLabel = new Label(template.getName());
+    nameLabel.setMaxWidth(ICON_SIZE);
+    nameLabel.setWrapText(true);
+    nameLabel.setAlignment(Pos.CENTER);
 
-    VBox cell = new VBox(4, imageView, name);
+    VBox cell = new VBox(4, imageView, nameLabel);
     cell.setAlignment(Pos.CENTER);
     cell.setOnMouseClicked(evt -> {
       if (evt.getClickCount() == 2) {
-        var dialog = new SpriteTemplateComponent(
+        SpriteTemplateComponent dialog = new SpriteTemplateComponent(
             editorController,
             getScene().getWindow(),
-            editorController.getEditorDataAPI().getSpriteLibrary(),
-            template
-        );
+            library,
+            template);
         dialog.showAndWait();
         SpriteTemplate updated = dialog.getResult();
         if (updated != null) {
           editorController.getEditorDataAPI().addSpriteTemplate(updated);
-          LOG.info("Added new sprite template: {}", updated.getName());
+          LOG.info("Updated sprite template: {}", updated.getName());
           refreshGallery();
         }
       }
     });
-    LOG.info("Created thumbnail");
+
     return cell;
   }
 }
