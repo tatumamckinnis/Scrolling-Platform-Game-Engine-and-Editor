@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for items-objects-3.png (untitled_game)
+-->
+<spriteFile imagePath="supermario-items.png">
+  <sprite name="items-objects-3.png" x="48" y="0" width="16" height="16">
+    <frames>
+      <frame name="items-objects-3.png" x="48" y="0" width="16" height="16"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

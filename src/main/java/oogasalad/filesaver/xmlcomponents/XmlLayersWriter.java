@@ -82,6 +82,8 @@ public class XmlLayersWriter implements XmlComponentWriter {
   }
 
   private void writeObjectTag(BufferedWriter writer, int blueprintId, List<GameObjectData> group) throws IOException {
+    String name = group.get(0).name();
+
     String coords = group.stream()
         .map(o -> String.format("(%d,%d)", o.x(), o.y()))
         .collect(Collectors.joining(", "));
@@ -90,7 +92,7 @@ public class XmlLayersWriter implements XmlComponentWriter {
         .map(o -> o.uniqueId().toString())
         .collect(Collectors.joining(", "));
 
-    writer.write(String.format(INDENT4 + "<object id=\"%d\" coordinates=\"%s\" uid=\"%s\" />\n", blueprintId, coords, uids));
+    writer.write(String.format(INDENT4 + "<object name = \"%s\" id=\"%d\" coordinates=\"%s\" uid=\"%s\" />\n", name, blueprintId, coords, uids));
   }
 }
 

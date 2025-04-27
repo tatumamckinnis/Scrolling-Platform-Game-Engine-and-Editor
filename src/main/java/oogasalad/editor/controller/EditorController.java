@@ -10,6 +10,7 @@ import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -422,7 +423,7 @@ public interface EditorController {
    * @throws GameObjectParseException if an error occurs while creating game objects
    */
   void loadLevelData(String fileName)
-      throws EditorSaveException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
+      throws EditorLoadException;
 
   /**
    * Sets the size of a single cell in the editor grid.

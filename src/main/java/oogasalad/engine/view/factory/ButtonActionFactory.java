@@ -11,6 +11,7 @@ import java.util.zip.DataFormatException;
 
 import oogasalad.editor.controller.EditorController;
 import oogasalad.engine.view.screen.HelpScreen;
+import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -356,9 +357,7 @@ public class ButtonActionFactory {
         try {
           LOG.info("Attempting to open level " + levelPath);
           editorController.loadLevelData(levelPath);
-        } catch (EditorSaveException | LayerParseException | LevelDataParseException |
-                 PropertyParsingException | SpriteParseException | EventParseException |
-                 HitBoxParseException | BlueprintParseException | GameObjectParseException e) {
+        } catch (EditorLoadException e) {
           throw new RuntimeException(e);
         }
       }

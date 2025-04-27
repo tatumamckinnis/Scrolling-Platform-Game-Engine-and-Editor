@@ -68,6 +68,7 @@ class EventConverterTest {
         eventDataList, new HashMap<>(), new HashMap<>(), new ArrayList<>());
     UUID uuid = UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8");
     gameObjectData = new GameObjectData(
+        "object",
         1,
         uuid,
         100,

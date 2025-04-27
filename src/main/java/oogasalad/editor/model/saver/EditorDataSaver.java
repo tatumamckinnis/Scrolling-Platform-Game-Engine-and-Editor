@@ -70,6 +70,7 @@ public class EditorDataSaver {
 
     Layer layer = object.getIdentityData().getLayer();
     return new GameObjectData(
+        object.getIdentityData().getName(),
         id,
         object.getIdentityData().getId(),
         object.getHitboxData().getX(),
