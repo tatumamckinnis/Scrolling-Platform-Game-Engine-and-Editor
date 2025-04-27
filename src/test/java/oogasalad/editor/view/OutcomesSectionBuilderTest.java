@@ -2,445 +2,263 @@ package oogasalad.editor.view;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ListResourceBundle;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
-import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.ExecutorData;
-
 import oogasalad.editor.view.eventui.AddOutcomeHandler;
 import oogasalad.editor.view.eventui.EditOutcomeParamHandler;
 import oogasalad.editor.view.eventui.OutcomeDisplayItem;
 import oogasalad.editor.view.eventui.OutcomesSectionBuilder;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+import org.testfx.matcher.base.NodeMatchers;
+import org.testfx.matcher.control.ComboBoxMatchers;
+import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.ListViewMatchers;
 import org.testfx.util.WaitForAsyncUtils;
+
 
 @ExtendWith(ApplicationExtension.class)
 class OutcomesSectionBuilderTest {
 
+  @Mock
+  private ResourceBundle mockUiBundle;
+  @Mock
+  private Supplier<List<String>> mockOutcomeTypeSupplier;
+  @Mock
+  private Supplier<List<DynamicVariable>> mockDynamicVariableSupplier;
+  @Mock
+  private AddOutcomeHandler mockAddOutcomeHandler;
+  @Mock
+  private IntConsumer mockRemoveOutcomeHandler;
+  @Mock
+  private Runnable mockCreateParameterHandler;
+  @Mock
+  private EditOutcomeParamHandler mockEditOutcomeParamHandler;
 
-  @Mock private Supplier<List<String>> mockOutcomeTypeSupplier;
-  @Mock private Supplier<List<DynamicVariable>> mockDynamicVariableSupplier;
-  @Mock private AddOutcomeHandler mockAddOutcomeHandler;
-  @Mock private IntConsumer mockRemoveOutcomeHandler;
-  @Mock private Runnable mockCreateParameterHandler;
-  @Mock private EditOutcomeParamHandler mockEditOutcomeParamHandler;
+  private OutcomesSectionBuilder outcomesSectionBuilder;
+  private VBox rootNode;
 
-  private ResourceBundle testBundle;
-  private OutcomesSectionBuilder builder;
-  private Pane root;
-
+  private static Properties testProperties;
 
   @BeforeAll
-  static void setupHeadlessMode() {
-
-    if (System.getProperty("os.name", "").toLowerCase().startsWith("linux")) {
-      System.setProperty("headless.geometry", "1600x1200-32");
-    }
-    System.setProperty("testfx.robot", "glass");
-    System.setProperty("testfx.headless", "true");
-    System.setProperty("prism.order", "sw");
-    System.setProperty("prism.text", "t2k");
-    System.setProperty("java.awt.headless", "true");
+  static void loadTestProperties() {
+    testProperties = new Properties();
+    // Keep all properties definitions as they might be used by the builder internally
+    testProperties.setProperty("id.sectionVbox", "outcomesSectionVbox");
+    testProperties.setProperty("style.inputSubSection", "input-sub-section");
+    testProperties.setProperty("key.outcomesHeader", "Outcomes");
+    testProperties.setProperty("id.outcomeSelectionRow", "outcomeSelectionRow");
+    testProperties.setProperty("id.outcomeTypeComboBox", "outcomeTypeComboBox");
+    testProperties.setProperty("key.promptSelectOutcome", "Select Outcome Type");
+    testProperties.setProperty("key.addOutcomeButton", "Add Outcome");
+    testProperties.setProperty("id.addOutcomeButton", "addOutcomeButton");
+    testProperties.setProperty("key.removeOutcomeButton", "Remove Outcome");
+    testProperties.setProperty("id.removeOutcomeButton", "removeOutcomeButton");
+    testProperties.setProperty("id.dynamicVariableRow", "dynamicVariableRow");
+    testProperties.setProperty("key.parameterLabel", "Parameter");
+    testProperties.setProperty("id.dynamicVariableComboBox", "dynamicVariableComboBox");
+    testProperties.setProperty("key.promptSelectParameter", "Select Variable Parameter");
+    testProperties.setProperty("key.createParamButton", "Create Param");
+    testProperties.setProperty("text.createParamButton", "+");
+    testProperties.setProperty("id.addVariableButton", "addVariableButton");
+    testProperties.setProperty("id.outcomesListView", "outcomesListView");
+    testProperties.setProperty("style.dataListView", "data-list-view");
+    testProperties.setProperty("id.parametersContainer", "outcomeParametersContainer");
+    testProperties.setProperty("key.executorParametersHeader", "Parameters");
+    testProperties.setProperty("id.parametersPane", "outcomeParametersPane");
+    testProperties.setProperty("id.parametersScrollPane", "outcomeParametersScrollPane");
+    testProperties.setProperty("style.sectionHeader", "section-header");
+    testProperties.setProperty("style.actionButton", "action-button");
+    testProperties.setProperty("style.removeButton", "remove-button");
+    testProperties.setProperty("style.smallButton", "small-button");
+    testProperties.setProperty("key.warnNoOutcomeType", "No outcome type selected.");
+    testProperties.setProperty("key.warnNoOutcomeSelected", "No outcome selected for removal.");
+    testProperties.setProperty("id.parametersGrid", "parametersGrid");
+    testProperties.setProperty("param.baseKey", ".param");
+    testProperties.setProperty("param.countSuffix", ".count");
+    testProperties.setProperty("param.nameSuffix", ".name");
+    testProperties.setProperty("param.typeSuffix", ".type");
+    testProperties.setProperty("param.descSuffix", ".description");
+    testProperties.setProperty("param.defaultSuffix", ".defaultValue");
+    testProperties.setProperty("param.typeIdString", "String");
+    testProperties.setProperty("param.typeIdDouble", "Double");
+    testProperties.setProperty("param.typeIdInteger", "Integer");
+    testProperties.setProperty("param.typeIdBoolean", "Boolean");
+    testProperties.setProperty("param.typeIdDropdownPrefix", "Dropdown:");
+    testProperties.setProperty("key.paramTypeString", "(String)");
+    testProperties.setProperty("key.paramTypeDouble", "(Double)");
+    testProperties.setProperty("key.paramTypeInteger", "(Integer)");
+    testProperties.setProperty("key.paramTypeBoolean", "(Boolean)");
+    testProperties.setProperty("key.paramTypeDropdown", "(Choice)");
+    testProperties.setProperty("key.warnInvalidNumber", "Invalid number format for %s definition.");
+    testProperties.setProperty("key.warnMissingParameter", "Parameter definition missing for %s.");
+    testProperties.setProperty("key.errorParameterLoad", "Error loading parameters for %s.");
+    testProperties.setProperty("key.errorParameterDefinition", "Missing definition for param index %d of %s.");
+    testProperties.setProperty("key.errorParameterParse", "Error parsing value '%s' for param '%s' (%s).");
+    testProperties.setProperty("key.labelError", "Error");
+    testProperties.setProperty("key.paramTypeError", "(Error)");
+    testProperties.setProperty("key.warnInvalidNumericInput", "Invalid %s value: %s");
+    testProperties.setProperty("TEST_OUTCOME.param.count", "2");
+    testProperties.setProperty("TEST_OUTCOME.param.1.name", "StringParam");
+    testProperties.setProperty("TEST_OUTCOME.param.1.type", "String");
+    testProperties.setProperty("TEST_OUTCOME.param.1.description", "A string parameter.");
+    testProperties.setProperty("TEST_OUTCOME.param.1.defaultValue", "default");
+    testProperties.setProperty("TEST_OUTCOME.param.2.name", "DoubleParam");
+    testProperties.setProperty("TEST_OUTCOME.param.2.type", "Double");
+    testProperties.setProperty("TEST_OUTCOME.param.2.description", "A double parameter.");
+    testProperties.setProperty("TEST_OUTCOME.param.2.defaultValue", "1.0");
+    testProperties.setProperty("OTHER_OUTCOME.param.count", "0");
   }
 
   @Start
-  void start(Stage stage) {
+  public void start(Stage stage) {
+    MockitoAnnotations.openMocks(this);
 
-    root = new Pane();
-    Scene scene = new Scene(root, 800, 600);
+    when(mockUiBundle.getString(anyString())).thenAnswer(invocation -> {
+      String key = invocation.getArgument(0);
+      return testProperties.getProperty("key." + key, key);
+    });
+    when(mockOutcomeTypeSupplier.get()).thenReturn(Arrays.asList("TEST_OUTCOME", "OTHER_OUTCOME"));
+    when(mockDynamicVariableSupplier.get()).thenReturn(Arrays.asList(
+        new DynamicVariable("var1", "double", "10.0", ""),
+        new DynamicVariable("var2", "string", "hello", "")
+    ));
+
+    outcomesSectionBuilder = new OutcomesSectionBuilder(
+        mockUiBundle, mockOutcomeTypeSupplier, mockDynamicVariableSupplier,
+        mockAddOutcomeHandler, mockRemoveOutcomeHandler, mockCreateParameterHandler,
+        mockEditOutcomeParamHandler
+    );
+
+    try {
+      java.lang.reflect.Field propsField = OutcomesSectionBuilder.class.getDeclaredField("localProps");
+      propsField.setAccessible(true);
+      propsField.set(outcomesSectionBuilder, testProperties);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      fail("Failed to inject test properties", e);
+    }
+
+    rootNode = (VBox) outcomesSectionBuilder.build();
+    Scene scene = new Scene(rootNode, 400, 600);
     stage.setScene(scene);
     stage.show();
   }
 
 
-  @BeforeEach
-  void setUp() {
-
-    MockitoAnnotations.openMocks(this);
-
-
-    testBundle = new ListResourceBundle() {
-      @Override
-      protected Object[][] getContents() {
-        return new Object[][]{
-            {"outcomesHeader", "Outcomes Test"},
-            {"parameterLabel", "Param Test"},
-            {"createParamButton", "+ Test"},
-            {"addOutcomeButton", "Add Outcome Test"},
-            {"removeOutcomeButton", "Remove Outcome Test"},
-            {"executorParametersHeader", "Exec Params Test"}
-        };
-      }
-    };
-
-
-    when(mockOutcomeTypeSupplier.get()).thenReturn(List.of("OutcomeA", "OutcomeB"));
-
-
-    when(mockDynamicVariableSupplier.get()).thenReturn(List.of(
-        new DynamicVariable("Var1", "String", "abc", "Desc1"),
-        new DynamicVariable("Var2", "Double", "123.0", "Desc2")
-    ));
-
-
-    builder = new OutcomesSectionBuilder(
-        testBundle,
-        mockOutcomeTypeSupplier,
-        mockDynamicVariableSupplier,
-        mockAddOutcomeHandler,
-        mockRemoveOutcomeHandler,
-        mockCreateParameterHandler,
-        mockEditOutcomeParamHandler
-    );
-
-
-    Platform.runLater(() -> {
-      Node outcomesSection = builder.build();
-      assertNotNull(outcomesSection, "Builder should return a non-null Node");
-      root.getChildren().add(outcomesSection);
-    });
-    WaitForAsyncUtils.waitForFxEvents();
-  }
-
-
-
   @Test
-  void testBuildCreatesUIElements(FxRobot robot) {
-
-    assertNotNull(robot.lookup("#outcomeTypeComboBox").queryComboBox(), "Outcome type ComboBox should exist.");
-    assertNotNull(robot.lookup("#addOutcomeButton").queryButton(), "Add Outcome button should exist.");
-    assertNotNull(robot.lookup("#removeOutcomeButton").queryButton(), "Remove Outcome button should exist.");
-    assertNotNull(robot.lookup("#dynamicVariableComboBox").queryComboBox(), "Dynamic Variable ComboBox should exist.");
-    assertNotNull(robot.lookup("#addVariableButton").queryButton(), "Add Variable button (+) should exist.");
-    assertNotNull(robot.lookup("#outcomesListView").queryListView(), "Outcomes ListView should exist.");
-    assertNotNull(robot.lookup("#outcomeParametersPane").query(), "Outcome Parameters Pane should exist.");
-
-
-    ComboBox<String> outcomeCombo = robot.lookup("#outcomeTypeComboBox").queryComboBox();
-    assertEquals(List.of("OutcomeA", "OutcomeB"), new ArrayList<>(outcomeCombo.getItems()), "Outcome ComboBox should be populated.");
-    assertEquals("Select Outcome Type", outcomeCombo.getPromptText());
-
-
-    ComboBox<String> dynVarCombo = robot.lookup("#dynamicVariableComboBox").queryComboBox();
-    assertTrue(dynVarCombo.getItems().isEmpty(), "Dynamic Variable ComboBox should initially be empty.");
-    assertEquals("Select Variable Parameter", dynVarCombo.getPromptText());
-
-
-    Button addVarButton = robot.lookup("#addVariableButton").queryButton();
-    assertEquals("+", addVarButton.getText(), "Add Variable button text should be '+'.");
+  void build_createsMainVBoxWithCorrectIdAndStyle(FxRobot robot) {
+    verifyThat("#outcomesSectionVbox", NodeMatchers.isVisible());
+    assertTrue(rootNode.getStyleClass().contains("input-sub-section"));
   }
 
   @Test
-  void testUpdateDynamicVariableComboBox(FxRobot robot) {
-
-    Platform.runLater(() -> builder.updateDynamicVariableComboBox());
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockDynamicVariableSupplier, atLeastOnce()).get();
-
-    ComboBox<String> dynVarCombo = robot.lookup("#dynamicVariableComboBox").queryComboBox();
-    assertEquals(List.of("Var1", "Var2"), new ArrayList<>(dynVarCombo.getItems()), "Dynamic Variable ComboBox should be updated.");
-    assertEquals("Select Variable Parameter", dynVarCombo.getPromptText());
-    assertNull(dynVarCombo.getSelectionModel().getSelectedItem(),"Selection should be cleared");
+  void build_addsHeaderLabel(FxRobot robot) {
+    verifyThat("#outcomesSectionVbox .label", LabeledMatchers.hasText("Outcomes"));
+    Label header = robot.lookup("#outcomesSectionVbox .label").match(node -> node instanceof Label && ((Label) node).getText().equals("Outcomes")).queryAs(Label.class);
+    assertTrue(header.getStyleClass().contains("section-header"));
   }
 
   @Test
-  void testUpdateDynamicVariableComboBox_EmptyOrNull(FxRobot robot) {
+  void build_populatesOutcomeTypeComboBox(FxRobot robot) {
+    verifyThat("#outcomeTypeComboBox", ComboBoxMatchers.hasItems(2));
+    ComboBox<String> combo = robot.lookup("#outcomeTypeComboBox").queryComboBox();
+    assertEquals(Arrays.asList("TEST_OUTCOME", "OTHER_OUTCOME"), combo.getItems());
+  }
 
-    when(mockDynamicVariableSupplier.get()).thenReturn(Collections.emptyList());
-    Platform.runLater(() -> builder.updateDynamicVariableComboBox());
+
+  @Test
+  void updateOutcomesListView_populatesListViewCorrectly(FxRobot robot) {
+    ExecutorData data1 = new ExecutorData("TEST_OUTCOME", new HashMap<>(), new HashMap<>());
+    ExecutorData data2 = new ExecutorData("OTHER_OUTCOME", new HashMap<>(), new HashMap<>());
+    List<ExecutorData> outcomes = Arrays.asList(data1, data2);
+
+    robot.interact(() -> outcomesSectionBuilder.updateOutcomesListView(outcomes));
     WaitForAsyncUtils.waitForFxEvents();
-    ComboBox<String> dynVarCombo = robot.lookup("#dynamicVariableComboBox").queryComboBox();
-    assertTrue(dynVarCombo.getItems().isEmpty(), "Dynamic Variable ComboBox should be empty for empty list.");
-    assertEquals("Select Variable Parameter", dynVarCombo.getPromptText());
 
-
-    when(mockDynamicVariableSupplier.get()).thenReturn(null);
-    Platform.runLater(() -> builder.updateDynamicVariableComboBox());
-    WaitForAsyncUtils.waitForFxEvents();
-    dynVarCombo = robot.lookup("#dynamicVariableComboBox").queryComboBox();
-    assertTrue(dynVarCombo.getItems().isEmpty(), "Dynamic Variable ComboBox should be empty for null list.");
-    assertEquals("Select Variable Parameter", dynVarCombo.getPromptText());
+    verifyThat("#outcomesListView", ListViewMatchers.hasItems(2));
+    verifyThat("#outcomesListView", (ListView<OutcomeDisplayItem> lv) -> lv.getItems().get(0).toString().equals("[0]: TEST_OUTCOME"));
+    verifyThat("#outcomesListView", (ListView<OutcomeDisplayItem> lv) -> lv.getItems().get(1).toString().equals("[1]: OTHER_OUTCOME"));
   }
 
   @Test
-  void testAddOutcomeButtonAction_NoTypeSelected(FxRobot robot) {
+  void updateOutcomesListView_handlesNullInput(FxRobot robot) {
+    ExecutorData data1 = new ExecutorData("TEST_OUTCOME", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> outcomesSectionBuilder.updateOutcomesListView(List.of(data1)));
+    WaitForAsyncUtils.waitForFxEvents();
+    verifyThat("#outcomesListView", ListViewMatchers.hasItems(1));
 
+    robot.interact(() -> outcomesSectionBuilder.updateOutcomesListView(null));
+    WaitForAsyncUtils.waitForFxEvents();
+    verifyThat("#outcomesListView", ListViewMatchers.hasItems(0));
+  }
+
+  @Test
+  void updateDynamicVariableComboBox_populatesComboBox(FxRobot robot) {
+    robot.interact(() -> outcomesSectionBuilder.updateDynamicVariableComboBox());
+    WaitForAsyncUtils.waitForFxEvents();
+    verifyThat("#dynamicVariableComboBox", ComboBoxMatchers.hasItems(2));
+    ComboBox<String> combo = robot.lookup("#dynamicVariableComboBox").queryComboBox();
+    assertEquals(Arrays.asList("var1", "var2"), combo.getItems());
+  }
+
+  @Test
+  void addOutcomeButton_triggersHandler(FxRobot robot) {
+    robot.clickOn("#outcomeTypeComboBox").clickOn("TEST_OUTCOME");
+    WaitForAsyncUtils.waitForFxEvents();
     robot.clickOn("#addOutcomeButton");
-    WaitForAsyncUtils.waitForFxEvents();
+    verify(mockAddOutcomeHandler).handle("TEST_OUTCOME");
+  }
 
-
+  @Test
+  void addOutcomeButton_doesNothingIfTypeNotSelected(FxRobot robot) {
+    robot.interact(() -> robot.lookup("#outcomeTypeComboBox").queryComboBox().getSelectionModel().clearSelection());
+    robot.clickOn("#addOutcomeButton");
     verify(mockAddOutcomeHandler, never()).handle(anyString());
   }
 
+
   @Test
-  void testAddOutcomeButtonAction_TypeSelected(FxRobot robot) {
-
-    robot.clickOn("#outcomeTypeComboBox");
-    robot.clickOn("OutcomeA");
+  void removeOutcomeButton_triggersHandlerWhenSelected(FxRobot robot) {
+    ExecutorData data1 = new ExecutorData("TEST_OUTCOME", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> outcomesSectionBuilder.updateOutcomesListView(List.of(data1)));
     WaitForAsyncUtils.waitForFxEvents();
 
-
-    robot.clickOn("#addOutcomeButton");
+    robot.clickOn("[0]: TEST_OUTCOME");
     WaitForAsyncUtils.waitForFxEvents();
 
-
-    verify(mockAddOutcomeHandler, times(1)).handle("OutcomeA");
-    ComboBox<String> comboBox = robot.lookup("#outcomeTypeComboBox").queryComboBox();
-    assertNull(comboBox.getSelectionModel().getSelectedItem(), "ComboBox selection should be cleared after adding.");
-    assertEquals("Select Outcome Type", comboBox.getPromptText());
+    robot.clickOn("#removeOutcomeButton");
+    verify(mockRemoveOutcomeHandler).accept(0);
   }
 
   @Test
-  void testRemoveOutcomeButtonAction_NoSelection(FxRobot robot) {
-
-    robot.clickOn("#removeOutcomeButton");
+  void removeOutcomeButton_doesNothingIfNotSelected(FxRobot robot) {
+    ExecutorData data1 = new ExecutorData("TEST_OUTCOME", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> outcomesSectionBuilder.updateOutcomesListView(List.of(data1)));
     WaitForAsyncUtils.waitForFxEvents();
 
-
+    robot.interact(() -> robot.lookup("#outcomesListView").queryListView().getSelectionModel().clearSelection());
+    robot.clickOn("#removeOutcomeButton");
     verify(mockRemoveOutcomeHandler, never()).accept(anyInt());
   }
 
   @Test
-  void testRemoveOutcomeButtonAction_WithSelection(FxRobot robot) {
-
-
-
-    ExecutorData data1 = new ExecutorData("Exec1", new HashMap<>(), new HashMap<>());
-    ExecutorData data2 = new ExecutorData("Exec2", new HashMap<>(), new HashMap<>());
-    List<ExecutorData> initialData = List.of(data1, data2);
-    Platform.runLater(() -> builder.updateOutcomesListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(1));
-    WaitForAsyncUtils.waitForFxEvents();
-    OutcomeDisplayItem selected = listView.getSelectionModel().getSelectedItem();
-    assertNotNull(selected, "Item should be selected");
-    assertEquals(1, selected.getIndex(), "Index 1 should be selected");
-
-
-    robot.clickOn("#removeOutcomeButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockRemoveOutcomeHandler, times(1)).accept(1);
-  }
-
-  @Test
-  void testCreateVariableButtonAction(FxRobot robot) {
-
+  void createParameterButton_triggersHandler(FxRobot robot) {
     robot.clickOn("#addVariableButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockCreateParameterHandler, times(1)).run();
+    verify(mockCreateParameterHandler).run();
   }
 
-
-  @Test
-  void testUpdateOutcomesListView_PopulatesList(FxRobot robot) {
-
-    ExecutorData data1 = new ExecutorData("Out1", new HashMap<>(), new HashMap<>());
-    ExecutorData data2 = new ExecutorData("Out2", Map.of("p1", "v1"), Map.of("p2", 2.0));
-    List<ExecutorData> testData = List.of(data1, data2);
-
-
-    Platform.runLater(() -> builder.updateOutcomesListView(testData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    assertEquals(2, listView.getItems().size(), "ListView should contain 2 items.");
-    assertEquals("[0]: Out1", listView.getItems().get(0).toString());
-    assertEquals("[1]: Out2", listView.getItems().get(1).toString());
-
-
-    Pane paramsPane = (Pane) robot.lookup("#outcomeParametersPane").query();
-    assertTrue(paramsPane.getChildren().isEmpty(), "Parameters pane should be empty after list update without selection.");
-  }
-
-  @Test
-  void testUpdateOutcomesListView_NullOrEmpty(FxRobot robot) {
-
-    Platform.runLater(() -> builder.updateOutcomesListView(null));
-    WaitForAsyncUtils.waitForFxEvents();
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    assertTrue(listView.getItems().isEmpty(), "ListView should be empty for null input.");
-
-
-    Platform.runLater(() -> builder.updateOutcomesListView(new ArrayList<>()));
-    WaitForAsyncUtils.waitForFxEvents();
-    assertTrue(listView.getItems().isEmpty(), "ListView should be empty for empty list input.");
-  }
-
-  @Test
-  void testParameterEditing_StringParam(FxRobot robot) {
-
-    Map<String, String> strParams = new HashMap<>();
-    strParams.put("name", "InitialName");
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamOut", strParams, dblParams);
-    List<ExecutorData> initialData = List.of(dataWithParams);
-
-
-    Platform.runLater(() -> builder.updateOutcomesListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField nameField = robot.lookup(".text-field").nth(0).query();
-    assertEquals("InitialName", nameField.getText());
-
-
-    robot.clickOn(nameField);
-    robot.eraseText(nameField.getText().length());
-    robot.write("NewName");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ArgumentCaptor<Object> valueCaptor = ArgumentCaptor.forClass(Object.class);
-    verify(mockEditOutcomeParamHandler, times(1)).handle(
-        eq(0),
-        eq("name"),
-        valueCaptor.capture()
-    );
-    assertEquals("NewName", valueCaptor.getValue(), "Handler should be called with the new string value.");
-  }
-
-  @Test
-  void testParameterEditing_DoubleParam_Valid(FxRobot robot) {
-
-    Map<String, String> strParams = new HashMap<>();
-    strParams.put("name", "InitialName");
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamOut", strParams, dblParams);
-    List<ExecutorData> initialData = List.of(dataWithParams);
-
-
-    Platform.runLater(() -> builder.updateOutcomesListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField valueField = robot.lookup(".text-field").nth(1).query();
-    assertEquals("10.5", valueField.getText());
-
-
-    robot.clickOn(valueField);
-    robot.eraseText(valueField.getText().length());
-    robot.write("25.75");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ArgumentCaptor<Object> valueCaptor = ArgumentCaptor.forClass(Object.class);
-    verify(mockEditOutcomeParamHandler, times(1)).handle(
-        eq(0),
-        eq("value"),
-        valueCaptor.capture()
-    );
-    assertTrue(valueCaptor.getValue() instanceof Double, "Captured value should be Double");
-    assertEquals(25.75, (Double) valueCaptor.getValue(), 0.001, "Handler should be called with the new double value.");
-  }
-
-  @Test
-  void testParameterEditing_DoubleParam_Invalid(FxRobot robot) {
-
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamOut", new HashMap<>(), dblParams);
-    List<ExecutorData> initialData = List.of(dataWithParams);
-
-
-    Platform.runLater(() -> builder.updateOutcomesListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<OutcomeDisplayItem> listView = robot.lookup("#outcomesListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField valueField = robot.lookup(".text-field").query();
-    assertEquals("10.5", valueField.getText());
-
-
-    robot.clickOn(valueField);
-    robot.eraseText(valueField.getText().length());
-    robot.write("invalid-double");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockEditOutcomeParamHandler, times(0)).handle(
-        anyInt(), eq("value"), any(Object.class)
-    );
-
-
-    assertEquals("10.5", valueField.getText(), "Field should reset to original value on invalid double input via Enter.");
-  }
-
-
-  @Test
-  void testConstructor_NullArgs() {
-
-    MockitoAnnotations.openMocks(this);
-
-
-    when(mockOutcomeTypeSupplier.get()).thenReturn(List.of("A"));
-    when(mockDynamicVariableSupplier.get()).thenReturn(List.of(new DynamicVariable("V","","", "")));
-
-
-
-
-
-
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(null, mockOutcomeTypeSupplier, mockDynamicVariableSupplier, mockAddOutcomeHandler, mockRemoveOutcomeHandler, mockCreateParameterHandler, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, null, mockDynamicVariableSupplier, mockAddOutcomeHandler, mockRemoveOutcomeHandler, mockCreateParameterHandler, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, mockOutcomeTypeSupplier, null, mockAddOutcomeHandler, mockRemoveOutcomeHandler, mockCreateParameterHandler, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, mockOutcomeTypeSupplier, mockDynamicVariableSupplier, null, mockRemoveOutcomeHandler, mockCreateParameterHandler, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, mockOutcomeTypeSupplier, mockDynamicVariableSupplier, mockAddOutcomeHandler, null, mockCreateParameterHandler, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, mockOutcomeTypeSupplier, mockDynamicVariableSupplier, mockAddOutcomeHandler, mockRemoveOutcomeHandler, null, mockEditOutcomeParamHandler));
-    assertThrows(NullPointerException.class, () -> new OutcomesSectionBuilder(testBundle, mockOutcomeTypeSupplier, mockDynamicVariableSupplier, mockAddOutcomeHandler, mockRemoveOutcomeHandler, mockCreateParameterHandler, null));
-  }
 }

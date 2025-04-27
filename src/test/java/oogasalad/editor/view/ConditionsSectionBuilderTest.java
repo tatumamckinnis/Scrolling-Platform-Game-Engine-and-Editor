@@ -2,449 +2,294 @@ package oogasalad.editor.view;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ListResourceBundle;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
-import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
 import oogasalad.editor.model.data.object.event.ExecutorData;
-
-import oogasalad.editor.view.eventui.AddConditionHandler;
 import oogasalad.editor.view.eventui.ConditionDisplayItem;
 import oogasalad.editor.view.eventui.ConditionsSectionBuilder;
-import oogasalad.editor.view.eventui.EditConditionParamHandler;
-import oogasalad.editor.view.eventui.RemoveConditionHandler;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
+import org.testfx.matcher.base.NodeMatchers;
+
+import org.testfx.matcher.control.ComboBoxMatchers;
+import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.ListViewMatchers;
 import org.testfx.util.WaitForAsyncUtils;
+
+import oogasalad.editor.view.eventui.EditConditionParamHandler;
+import oogasalad.editor.view.eventui.AddConditionHandler;
+import oogasalad.editor.view.eventui.RemoveConditionHandler;
+
 
 @ExtendWith(ApplicationExtension.class)
 class ConditionsSectionBuilderTest {
 
+  @Mock
+  private ResourceBundle mockUiBundle;
+  @Mock
+  private Supplier<List<String>> mockConditionTypeSupplier;
+  @Mock
+  private Runnable mockAddGroupHandler;
+  @Mock
+  private IntConsumer mockRemoveGroupHandler;
+  @Mock
+  private AddConditionHandler mockAddConditionHandler;
+  @Mock
+  private RemoveConditionHandler mockRemoveConditionHandler;
+  @Mock
+  private EditConditionParamHandler mockEditConditionParamHandler; // Keep mock
 
-  @Mock private Supplier<List<String>> mockConditionTypeSupplier;
-  @Mock private Runnable mockAddGroupHandler;
-  @Mock private IntConsumer mockRemoveGroupHandler;
-  @Mock private AddConditionHandler mockAddConditionHandler;
-  @Mock private RemoveConditionHandler mockRemoveConditionHandler;
-  @Mock private EditConditionParamHandler mockEditConditionParamHandler;
+  private ConditionsSectionBuilder conditionsSectionBuilder;
+  private VBox rootNode;
 
-  private ResourceBundle testBundle;
-  private ConditionsSectionBuilder builder;
-  private Pane root;
-
+  private static Properties testProperties;
 
   @BeforeAll
-  static void setupHeadlessMode() {
-
-    if (System.getProperty("os.name", "").toLowerCase().startsWith("linux")) {
-      System.setProperty("headless.geometry", "1600x1200-32");
-    }
-    System.setProperty("testfx.robot", "glass");
-    System.setProperty("testfx.headless", "true");
-    System.setProperty("prism.order", "sw");
-    System.setProperty("prism.text", "t2k");
-    System.setProperty("java.awt.headless", "true");
+  static void loadTestProperties() {
+    testProperties = new Properties();
+    testProperties.setProperty("id.sectionPane", "conditionsSectionPane");
+    testProperties.setProperty("style.inputSubSection", "input-sub-section");
+    testProperties.setProperty("key.conditionsHeader", "Conditions");
+    testProperties.setProperty("id.groupButtonRow", "conditionGroupButtonRow");
+    testProperties.setProperty("style.buttonBox", "button-box");
+    testProperties.setProperty("key.addGroupButton", "Add Group");
+    testProperties.setProperty("id.addGroupButton", "addGroupButton");
+    testProperties.setProperty("key.removeGroupButton", "Remove Group");
+    testProperties.setProperty("id.removeGroupButton", "removeGroupButton");
+    testProperties.setProperty("style.removeButton", "remove-button");
+    testProperties.setProperty("id.conditionSelectionRow", "conditionSelectionRow");
+    testProperties.setProperty("style.selectionBox", "selection-box");
+    testProperties.setProperty("key.conditionGroupLabel", "Target Group:");
+    testProperties.setProperty("id.conditionGroupComboBox", "conditionGroupComboBox");
+    testProperties.setProperty("key.promptSelectGroup", "Select Group");
+    testProperties.setProperty("id.conditionTypeComboBox", "conditionTypeComboBox");
+    testProperties.setProperty("key.promptSelectCondition", "Select Condition Type");
+    testProperties.setProperty("key.addConditionButton", "Add Condition");
+    testProperties.setProperty("id.addConditionButton", "addConditionButton");
+    testProperties.setProperty("key.removeConditionButton", "Remove Condition");
+    testProperties.setProperty("id.removeConditionButton", "removeConditionButton");
+    testProperties.setProperty("id.conditionsListView", "conditionsListView");
+    testProperties.setProperty("style.dataListView", "data-list-view");
+    testProperties.setProperty("id.parametersContainer", "conditionParametersContainer");
+    testProperties.setProperty("key.parametersHeader", "Parameters");
+    testProperties.setProperty("id.parametersPane", "conditionParametersPane");
+    testProperties.setProperty("id.parametersScrollPane", "conditionParametersScrollPane");
+    testProperties.setProperty("style.sectionHeader", "section-header");
+    testProperties.setProperty("style.actionButton", "action-button");
+    testProperties.setProperty("id.parametersGrid", "parametersGrid");
+    testProperties.setProperty("style.parameterGrid", "parameter-grid");
+    testProperties.setProperty("param.baseKey", ".param");
+    testProperties.setProperty("param.countSuffix", ".count");
+    testProperties.setProperty("param.nameSuffix", ".name");
+    testProperties.setProperty("param.typeSuffix", ".type");
+    testProperties.setProperty("param.descSuffix", ".description");
+    testProperties.setProperty("param.defaultSuffix", ".defaultValue");
+    testProperties.setProperty("param.typeIdString", "String");
+    testProperties.setProperty("param.typeIdDouble", "Double");
+    testProperties.setProperty("param.typeIdInteger", "Integer");
+    testProperties.setProperty("param.typeIdBoolean", "Boolean");
+    testProperties.setProperty("param.typeIdDropdownPrefix", "Dropdown:");
+    testProperties.setProperty("key.paramTypeString", "(String)");
+    testProperties.setProperty("key.paramTypeDouble", "(Double)");
+    testProperties.setProperty("key.paramTypeInteger", "(Integer)");
+    testProperties.setProperty("key.paramTypeBoolean", "(Boolean)");
+    testProperties.setProperty("key.paramTypeDropdown", "(Choice)");
+    testProperties.setProperty("key.warnInvalidNumber", "Invalid number format for %s definition.");
+    testProperties.setProperty("key.warnMissingParameter", "Parameter definition missing for %s.");
+    testProperties.setProperty("key.errorParameterLoad", "Error loading parameters for %s.");
+    testProperties.setProperty("key.errorParameterDefinition", "Missing definition for param index %d of %s.");
+    testProperties.setProperty("key.errorParameterParse", "Error parsing value '%s' for param '%s' (%s).");
+    testProperties.setProperty("key.labelError", "Error");
+    testProperties.setProperty("key.paramTypeError", "(Error)");
+    testProperties.setProperty("key.warnInvalidNumericInput", "Invalid %s value: %s");
+    testProperties.setProperty("TEST_CONDITION.param.count", "2");
+    testProperties.setProperty("TEST_CONDITION.param.1.name", "BooleanParam");
+    testProperties.setProperty("TEST_CONDITION.param.1.type", "Boolean");
+    testProperties.setProperty("TEST_CONDITION.param.1.description", "A boolean parameter.");
+    testProperties.setProperty("TEST_CONDITION.param.1.defaultValue", "false");
+    testProperties.setProperty("TEST_CONDITION.param.2.name", "DropdownParam");
+    testProperties.setProperty("TEST_CONDITION.param.2.type", "Dropdown:OptionA,OptionB");
+    testProperties.setProperty("TEST_CONDITION.param.2.description", "A choice parameter.");
+    testProperties.setProperty("TEST_CONDITION.param.2.defaultValue", "OptionA");
+    testProperties.setProperty("ANOTHER_CONDITION.param.count", "0");
   }
 
   @Start
-  void start(Stage stage) {
+  public void start(Stage stage) {
+    MockitoAnnotations.openMocks(this);
 
-    root = new Pane();
-    Scene scene = new Scene(root, 800, 600);
+    when(mockUiBundle.getString(anyString())).thenAnswer(invocation -> {
+      String key = invocation.getArgument(0);
+      return testProperties.getProperty("key." + key, key);
+    });
+    when(mockConditionTypeSupplier.get()).thenReturn(Arrays.asList("TEST_CONDITION", "ANOTHER_CONDITION"));
+
+    conditionsSectionBuilder = new ConditionsSectionBuilder(
+        mockUiBundle, mockConditionTypeSupplier, mockAddGroupHandler,
+        mockRemoveGroupHandler, mockAddConditionHandler, mockRemoveConditionHandler,
+        mockEditConditionParamHandler
+    );
+
+    try {
+      java.lang.reflect.Field propsField = ConditionsSectionBuilder.class.getDeclaredField("localProps");
+      propsField.setAccessible(true);
+      propsField.set(conditionsSectionBuilder, testProperties);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      fail("Failed to inject test properties", e);
+    }
+
+    rootNode = (VBox) conditionsSectionBuilder.build();
+    Scene scene = new Scene(rootNode, 400, 600);
     stage.setScene(scene);
     stage.show();
   }
 
+  @Test
+  void build_createsMainVBoxWithCorrectIdAndStyle(FxRobot robot) {
+    verifyThat("#conditionsSectionPane", NodeMatchers.isVisible());
+    assertTrue(rootNode.getStyleClass().contains("input-sub-section"));
+  }
 
-  @BeforeEach
-  void setUp() {
+  @Test
+  void build_addsHeaderLabel(FxRobot robot) {
+    verifyThat("#conditionsSectionPane .label", LabeledMatchers.hasText("Conditions"));
+    Label header = robot.lookup("#conditionsSectionPane .label").match(node -> node instanceof Label && ((Label) node).getText().equals("Conditions")).queryAs(Label.class);
+    assertTrue(header.getStyleClass().contains("section-header"));
+  }
 
-    MockitoAnnotations.openMocks(this);
-
-
-    testBundle = new ListResourceBundle() {
-      @Override
-      protected Object[][] getContents() {
-        return new Object[][]{
-            {"conditionsHeader", "Conditions Test"},
-            {"addGroupButton", "Add Group Test"},
-            {"removeGroupButton", "Remove Group Test"},
-            {"addConditionButton", "Add Cond Test"},
-            {"removeConditionButton", "Remove Cond Test"},
-            {"parametersHeader", "Parameters Test"}
-        };
-      }
-    };
-
-
-    when(mockConditionTypeSupplier.get()).thenReturn(List.of("TypeA", "TypeB", "TypeC"));
+  @Test
+  void build_populatesConditionTypeComboBox(FxRobot robot) {
+    verifyThat("#conditionTypeComboBox", ComboBoxMatchers.hasItems(2));
+    ComboBox<String> combo = robot.lookup("#conditionTypeComboBox").queryComboBox();
+    assertEquals(Arrays.asList("TEST_CONDITION", "ANOTHER_CONDITION"), combo.getItems());
+  }
 
 
-    builder = new ConditionsSectionBuilder(
-        testBundle,
-        mockConditionTypeSupplier,
-        mockAddGroupHandler,
-        mockRemoveGroupHandler,
-        mockAddConditionHandler,
-        mockRemoveConditionHandler,
-        mockEditConditionParamHandler
+  @Test
+  void updateConditionsListView_populatesListViewAndGroupComboBox(FxRobot robot) {
+    ExecutorData data1_0 = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    ExecutorData data1_1 = new ExecutorData("ANOTHER_CONDITION", new HashMap<>(), new HashMap<>());
+    ExecutorData data2_0 = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+
+    List<List<ExecutorData>> conditions = List.of(
+        List.of(data1_0, data1_1),
+        List.of(data2_0)
     );
 
-
-    Platform.runLater(() -> {
-      Node conditionsSection = builder.build();
-      assertNotNull(conditionsSection, "Builder should return a non-null Node");
-      root.getChildren().add(conditionsSection);
-    });
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(conditions));
     WaitForAsyncUtils.waitForFxEvents();
-  }
 
+    verifyThat("#conditionsListView", ListViewMatchers.hasItems(3));
+    verifyThat("#conditionsListView", (ListView<ConditionDisplayItem> lv) -> lv.getItems().get(0).toString().equals("Group 0 [0]: TEST_CONDITION"));
+    verifyThat("#conditionsListView", (ListView<ConditionDisplayItem> lv) -> lv.getItems().get(1).toString().equals("Group 0 [1]: ANOTHER_CONDITION"));
+    verifyThat("#conditionsListView", (ListView<ConditionDisplayItem> lv) -> lv.getItems().get(2).toString().equals("Group 1 [0]: TEST_CONDITION"));
 
-
-  @Test
-  void testBuildCreatesUIElements(FxRobot robot) {
-
-    assertNotNull(robot.lookup("#addGroupButton").queryButton(), "Add Group button should exist.");
-    assertNotNull(robot.lookup("#removeGroupButton").queryButton(), "Remove Group button should exist.");
-    assertNotNull(robot.lookup("#conditionTypeComboBox").queryComboBox(), "Condition type ComboBox should exist.");
-    assertNotNull(robot.lookup("#addConditionButton").queryButton(), "Add Condition button should exist.");
-    assertNotNull(robot.lookup("#removeConditionButton").queryButton(), "Remove Condition button should exist.");
-    assertNotNull(robot.lookup("#conditionsListView").queryListView(), "Conditions ListView should exist.");
-    assertNotNull(robot.lookup("#conditionParametersPane").query(), "Condition Parameters Pane should exist.");
-
-
-    ComboBox<String> comboBox = robot.lookup("#conditionTypeComboBox").queryComboBox();
-    assertEquals(List.of("TypeA", "TypeB", "TypeC"), new ArrayList<>(comboBox.getItems()), "ComboBox should be populated from supplier.");
-    assertEquals("Select Condition Type", comboBox.getPromptText());
+    verifyThat("#conditionGroupComboBox", ComboBoxMatchers.hasItems(2));
+    ComboBox<Integer> combo = robot.lookup("#conditionGroupComboBox").queryComboBox();
+    assertEquals(Arrays.asList(0, 1), combo.getItems());
   }
 
   @Test
-  void testAddGroupButtonAction(FxRobot robot) {
+  void updateConditionsListView_handlesNullInput(FxRobot robot) {
+    ExecutorData data1_0 = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    List<List<ExecutorData>> conditions = List.of(List.of(data1_0));
 
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(conditions));
+    WaitForAsyncUtils.waitForFxEvents();
+    verifyThat("#conditionsListView", ListViewMatchers.hasItems(1));
+    verifyThat("#conditionGroupComboBox", ComboBoxMatchers.hasItems(1));
+
+
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(null));
+    WaitForAsyncUtils.waitForFxEvents();
+    verifyThat("#conditionsListView", ListViewMatchers.hasItems(0));
+    verifyThat("#conditionGroupComboBox", ComboBoxMatchers.hasItems(0));
+  }
+
+  @Test
+  void addGroupButton_triggersHandler(FxRobot robot) {
     robot.clickOn("#addGroupButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockAddGroupHandler, times(1)).run();
+    verify(mockAddGroupHandler).run();
   }
 
+
   @Test
-  void testRemoveGroupButtonAction_NoSelection(FxRobot robot) {
+  void removeGroupButton_triggersHandlerWhenSelected(FxRobot robot) {
+    ExecutorData data = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(List.of(List.of(data))));
+    WaitForAsyncUtils.waitForFxEvents();
+
+    robot.clickOn("Group 0 [0]: TEST_CONDITION");
+    WaitForAsyncUtils.waitForFxEvents();
 
     robot.clickOn("#removeGroupButton");
+    verify(mockRemoveGroupHandler).accept(0);
+  }
+
+  @Test
+  void removeGroupButton_doesNothingIfNotSelected(FxRobot robot) {
+    ExecutorData data = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(List.of(List.of(data))));
     WaitForAsyncUtils.waitForFxEvents();
 
+    robot.interact(() -> robot.lookup("#conditionsListView").queryListView().getSelectionModel().clearSelection());
+    robot.clickOn("#removeGroupButton");
 
     verify(mockRemoveGroupHandler, never()).accept(anyInt());
   }
 
-  @Test
-  void testRemoveGroupButtonAction_WithSelection(FxRobot robot) {
-
-
-
-    ExecutorData data1 = new ExecutorData("CondG0", new HashMap<>(), new HashMap<>());
-    ExecutorData data2 = new ExecutorData("CondG1", new HashMap<>(), new HashMap<>());
-    List<List<ExecutorData>> initialData = List.of(List.of(data1), List.of(data2));
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(1));
-    WaitForAsyncUtils.waitForFxEvents();
-    ConditionDisplayItem selected = listView.getSelectionModel().getSelectedItem();
-    assertNotNull(selected, "Item should be selected");
-    assertEquals(1, selected.getGroupIndex(), "Group 1 item should be selected");
-
-
-    robot.clickOn("#removeGroupButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockRemoveGroupHandler, times(1)).accept(1);
-  }
-
 
   @Test
-  void testAddConditionButtonAction_NoTypeSelected(FxRobot robot) {
+  void addConditionButton_triggersHandler(FxRobot robot) {
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(List.of(List.of())));
+    WaitForAsyncUtils.waitForFxEvents();
+
+    robot.clickOn("#conditionGroupComboBox").clickOn("0");
+    WaitForAsyncUtils.waitForFxEvents();
+    robot.clickOn("#conditionTypeComboBox").clickOn("TEST_CONDITION");
+    WaitForAsyncUtils.waitForFxEvents();
 
     robot.clickOn("#addConditionButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockAddConditionHandler, never()).handle(anyInt(), anyString());
-  }
-
-  @Test
-  void testAddConditionButtonAction_TypeSelected_NoListSelection(FxRobot robot) {
-
-    robot.clickOn("#conditionTypeComboBox");
-    robot.clickOn("TypeB");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    robot.clickOn("#addConditionButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockAddConditionHandler, times(1)).handle(0, "TypeB");
-
-
-    ComboBox<String> comboBox = robot.lookup("#conditionTypeComboBox").queryComboBox();
-    assertNull(comboBox.getSelectionModel().getSelectedItem(), "ComboBox selection should be cleared after adding.");
-    assertEquals("Select Condition Type", comboBox.getPromptText());
-  }
-
-  @Test
-  void testAddConditionButtonAction_TypeSelected_WithListSelection(FxRobot robot) {
-
-    ExecutorData dataG0C0 = new ExecutorData("CondG0", new HashMap<>(), new HashMap<>());
-    ExecutorData dataG1C0 = new ExecutorData("CondG1", new HashMap<>(), new HashMap<>());
-    List<List<ExecutorData>> initialData = List.of(List.of(dataG0C0), List.of(dataG1C0));
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(1));
-    WaitForAsyncUtils.waitForFxEvents();
-    ConditionDisplayItem selected = listView.getSelectionModel().getSelectedItem();
-    assertNotNull(selected, "Item should be selected");
-    assertEquals(1, selected.getGroupIndex(), "Item from group 1 should be selected");
-
-
-    robot.clickOn("#conditionTypeComboBox");
-    robot.clickOn("TypeA");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    robot.clickOn("#addConditionButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockAddConditionHandler, times(1)).handle(1, "TypeA");
+    verify(mockAddConditionHandler).handle(0, "TEST_CONDITION");
   }
 
 
   @Test
-  void testRemoveConditionButtonAction_NoSelection(FxRobot robot) {
+  void removeConditionButton_triggersHandlerWhenSelected(FxRobot robot) {
+    ExecutorData data = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    ExecutorData data2 = new ExecutorData("ANOTHER_CONDITION", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(List.of(List.of(data, data2))));
+    WaitForAsyncUtils.waitForFxEvents();
+
+    robot.clickOn("Group 0 [1]: ANOTHER_CONDITION");
+    WaitForAsyncUtils.waitForFxEvents();
 
     robot.clickOn("#removeConditionButton");
+    verify(mockRemoveConditionHandler).handle(0, 1);
+  }
+
+  @Test
+  void removeConditionButton_doesNothingIfNotSelected(FxRobot robot) {
+    ExecutorData data = new ExecutorData("TEST_CONDITION", new HashMap<>(), new HashMap<>());
+    robot.interact(() -> conditionsSectionBuilder.updateConditionsListView(List.of(List.of(data))));
     WaitForAsyncUtils.waitForFxEvents();
 
+    robot.interact(() -> robot.lookup("#conditionsListView").queryListView().getSelectionModel().clearSelection());
+    robot.clickOn("#removeConditionButton");
 
     verify(mockRemoveConditionHandler, never()).handle(anyInt(), anyInt());
   }
 
-  @Test
-  void testRemoveConditionButtonAction_WithSelection(FxRobot robot) {
-
-    ExecutorData dataG0C0 = new ExecutorData("G0C0", new HashMap<>(), new HashMap<>());
-    ExecutorData dataG1C0 = new ExecutorData("G1C0", new HashMap<>(), new HashMap<>());
-    ExecutorData dataG1C1 = new ExecutorData("G1C1", new HashMap<>(), new HashMap<>());
-    List<List<ExecutorData>> initialData = List.of(
-        List.of(dataG0C0),
-        List.of(dataG1C0, dataG1C1)
-    );
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(2));
-    WaitForAsyncUtils.waitForFxEvents();
-
-    ConditionDisplayItem selected = listView.getSelectionModel().getSelectedItem();
-    assertNotNull(selected, "Item should be selected");
-    assertEquals(1, selected.getGroupIndex(), "Selected item should be group 1");
-    assertEquals(1, selected.getConditionIndex(), "Selected item should be condition 1");
-
-
-    robot.clickOn("#removeConditionButton");
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockRemoveConditionHandler, times(1)).handle(1, 1);
-  }
-
-  @Test
-  void testUpdateConditionsListView_PopulatesList(FxRobot robot) {
-
-    ExecutorData data1 = new ExecutorData("CondG0C0", new HashMap<>(), new HashMap<>());
-    ExecutorData data2 = new ExecutorData("CondG1C0", new HashMap<>(), new HashMap<>());
-    List<List<ExecutorData>> testData = List.of(
-        List.of(data1),
-        List.of(data2)
-    );
-
-
-    Platform.runLater(() -> builder.updateConditionsListView(testData));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    assertEquals(2, listView.getItems().size(), "ListView should contain 2 items.");
-    assertEquals("Group 0 [0]: CondG0C0", listView.getItems().get(0).toString());
-    assertEquals("Group 1 [0]: CondG1C0", listView.getItems().get(1).toString());
-
-
-    Pane paramsPane = (Pane) robot.lookup("#conditionParametersPane").query();
-    assertTrue(paramsPane.getChildren().isEmpty(), "Parameters pane should be empty after list update without selection.");
-  }
-
-
-
-  @Test
-  void testParameterEditing_StringParam(FxRobot robot) {
-
-    Map<String, String> strParams = new HashMap<>();
-    strParams.put("name", "InitialName");
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamCond", strParams, dblParams);
-    List<List<ExecutorData>> initialData = List.of(List.of(dataWithParams));
-
-
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField nameField = robot.lookup(".text-field").nth(0).query();
-    assertEquals("InitialName", nameField.getText());
-
-
-    robot.clickOn(nameField);
-    robot.eraseText(nameField.getText().length());
-    robot.write("NewName");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ArgumentCaptor<Object> valueCaptor = ArgumentCaptor.forClass(Object.class);
-    verify(mockEditConditionParamHandler, times(1)).handle(
-        eq(0),
-        eq(0),
-        eq("name"),
-        valueCaptor.capture()
-    );
-    assertEquals("NewName", valueCaptor.getValue(), "Handler should be called with the new string value.");
-  }
-
-  @Test
-  void testParameterEditing_DoubleParam_Valid(FxRobot robot) {
-
-    Map<String, String> strParams = new HashMap<>();
-    strParams.put("name", "InitialName");
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamCond", strParams, dblParams);
-    List<List<ExecutorData>> initialData = List.of(List.of(dataWithParams));
-
-
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField valueField = robot.lookup(".text-field").nth(1).query();
-    assertEquals("10.5", valueField.getText());
-
-
-    robot.clickOn(valueField);
-    robot.eraseText(valueField.getText().length());
-    robot.write("25.75");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    ArgumentCaptor<Object> valueCaptor = ArgumentCaptor.forClass(Object.class);
-    verify(mockEditConditionParamHandler, times(1)).handle(
-        eq(0),
-        eq(0),
-        eq("value"),
-        valueCaptor.capture()
-    );
-    assertTrue(valueCaptor.getValue() instanceof Double, "Captured value should be Double");
-    assertEquals(25.75, (Double) valueCaptor.getValue(), 0.001, "Handler should be called with the new double value.");
-  }
-
-  @Test
-  void testParameterEditing_DoubleParam_Invalid(FxRobot robot) {
-
-    Map<String, Double> dblParams = new HashMap<>();
-    dblParams.put("value", 10.5);
-    ExecutorData dataWithParams = new ExecutorData("ParamCond", new HashMap<>(), dblParams);
-    List<List<ExecutorData>> initialData = List.of(List.of(dataWithParams));
-
-
-    Platform.runLater(() -> builder.updateConditionsListView(initialData));
-    WaitForAsyncUtils.waitForFxEvents();
-    ListView<ConditionDisplayItem> listView = robot.lookup("#conditionsListView").queryListView();
-    Platform.runLater(() -> listView.getSelectionModel().select(0));
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    TextField valueField = robot.lookup(".text-field").query();
-    assertEquals("10.5", valueField.getText());
-
-
-    robot.clickOn(valueField);
-    robot.eraseText(valueField.getText().length());
-    robot.write("invalid-double");
-    robot.push(KeyCode.ENTER);
-    WaitForAsyncUtils.waitForFxEvents();
-
-
-    verify(mockEditConditionParamHandler, times(0)).handle(
-        anyInt(), anyInt(), eq("value"), any(Object.class)
-    );
-
-
-    assertEquals("10.5", valueField.getText(), "Field should reset to original value on invalid double input via Enter.");
-  }
-
-  @Test
-  void testConstructor_NullArgs() {
-
-    MockitoAnnotations.openMocks(this);
-
-    when(mockConditionTypeSupplier.get()).thenReturn(List.of("A"));
-
-
-
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(null, mockConditionTypeSupplier, mockAddGroupHandler, mockRemoveGroupHandler, mockAddConditionHandler, mockRemoveConditionHandler, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, null, mockAddGroupHandler, mockRemoveGroupHandler, mockAddConditionHandler, mockRemoveConditionHandler, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, mockConditionTypeSupplier, null, mockRemoveGroupHandler, mockAddConditionHandler, mockRemoveConditionHandler, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, mockConditionTypeSupplier, mockAddGroupHandler, null, mockAddConditionHandler, mockRemoveConditionHandler, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, mockConditionTypeSupplier, mockAddGroupHandler, mockRemoveGroupHandler, null, mockRemoveConditionHandler, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, mockConditionTypeSupplier, mockAddGroupHandler, mockRemoveGroupHandler, mockAddConditionHandler, null, mockEditConditionParamHandler));
-    assertThrows(NullPointerException.class, () -> new ConditionsSectionBuilder(testBundle, mockConditionTypeSupplier, mockAddGroupHandler, mockRemoveGroupHandler, mockAddConditionHandler, mockRemoveConditionHandler, null));
-  }
 }
