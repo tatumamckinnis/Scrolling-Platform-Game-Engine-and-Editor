@@ -273,7 +273,7 @@ public class OutcomesSectionBuilder {
    *
    * @param selectedItem The currently selected {@link OutcomeDisplayItem}, or null if none selected.
    */
-  private void updateParametersPane(OutcomeDisplayItem selectedItem) {
+  public void updateParametersPane(OutcomeDisplayItem selectedItem) {
     parametersPane.getChildren().clear();
     if (selectedItem == null || selectedItem.getData() == null) {
       return;
@@ -604,5 +604,11 @@ public class OutcomesSectionBuilder {
     }
 
     return button;
+  }
+/**
+ * Returns outcome list view
+ */
+  public ListView<OutcomeDisplayItem> getOutcomesListView() {
+    return outcomesListView;
   }
 }
