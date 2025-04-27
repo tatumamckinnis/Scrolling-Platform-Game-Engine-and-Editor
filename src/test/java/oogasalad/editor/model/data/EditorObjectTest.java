@@ -15,6 +15,7 @@ import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.event.EventData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -66,7 +67,9 @@ class EditorObjectTest {
         sampleSpriteData,
         sampleHitboxData,
         sampleCustomData,
-        sampleEventData
+        sampleEventData,
+        new HashMap<>(),
+        new HashMap<>()
     );
     assertEquals(sampleIdentityData, editorObject.getIdentityData());
     assertEquals(sampleInputData, editorObject.getInputData());

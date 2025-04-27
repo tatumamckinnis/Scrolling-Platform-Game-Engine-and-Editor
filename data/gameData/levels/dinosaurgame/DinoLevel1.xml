@@ -50,7 +50,7 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="DinoStart" type="player" id="111" spriteFile="dinostart.xml" hitBoxWidth="97"
-        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,69,87"
+        hitBoxHeight="101" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,69,87"
         velocityX="0" velocityY="0" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <displayedProperties propertyList="score,lives,rocket_duration,dash_duration"/>
@@ -497,6 +497,25 @@ interact with each other -->
       </conditions>
       <outcomes>
         <outcome name="RESET_VELOCITY">
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="37">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="r"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RELATIVE_TELEPORT">
+          <doubleParameters>
+            <parameter name="x_offset" value="50"/>
+            <parameter name="y_offset" value="100"/>
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>

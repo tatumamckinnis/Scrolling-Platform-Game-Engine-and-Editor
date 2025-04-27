@@ -25,6 +25,7 @@ import oogasalad.engine.model.event.outcome.MoveRightOutcome;
 import oogasalad.engine.model.event.outcome.Outcome;
 import oogasalad.engine.model.event.outcome.PatrolOutcome;
 import oogasalad.engine.model.event.outcome.PlatformPassThroughOutcome;
+import oogasalad.engine.model.event.outcome.RelativeTeleportOutcome;
 import oogasalad.engine.model.event.outcome.ResetVelocityOutcome;
 import oogasalad.engine.model.event.outcome.RestartLevelOutcome;
 import oogasalad.engine.model.event.outcome.RocketOutcome;
@@ -88,6 +89,7 @@ public class OutcomeExecutor {
     outcomeMap.put(OutcomeType.DASH, new DashOutcome(inputProvider));
     outcomeMap.put(OutcomeType.RESET_VELOCITY, new ResetVelocityOutcome());
     outcomeMap.put(OutcomeType.WIN_GAME, new WinGameOutcome(gameExecutor));
+    outcomeMap.put(OutcomeType.RELATIVE_TELEPORT, new RelativeTeleportOutcome());
   }
 
   private final Map<EventOutcome.OutcomeType, Outcome> outcomeMap;
