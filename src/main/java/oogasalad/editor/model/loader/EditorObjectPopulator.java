@@ -14,21 +14,12 @@ import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.event.CustomEventData;
-import oogasalad.editor.model.data.object.event.EditorEvent;
-import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
-import oogasalad.engine.model.event.Event;
-import oogasalad.engine.model.event.condition.EventCondition;
-import oogasalad.engine.model.event.outcome.EventOutcome;
-import oogasalad.engine.model.object.GameObject;
 import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.ConditionData;
-import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.HitBoxData;
-import oogasalad.fileparser.records.OutcomeData;
 import oogasalad.fileparser.records.SpriteData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -343,7 +334,7 @@ public class EditorObjectPopulator {
     setSpriteData(gameObjectData, object, blueprint);
     setHitboxData(gameObjectData, object, blueprint);
     setPhysicsData(object, blueprint);
-    setEventData(gameObjectData, object, blueprint);
+    setEventData(object, blueprint);
     LOG.info("Events:" + object.getCustomEventData().getEvents().keySet());
 
     object.setStringParameters(
@@ -431,10 +422,9 @@ public class EditorObjectPopulator {
     }
   }
 
-  private void setEventData(GameObjectData gameObjectData, EditorObject object,
+  private void setEventData(EditorObject object,
       BlueprintData blueprintData) {
-    EditorEventConverter eventConverter = new EditorEventConverter();
-    CustomEventData customEventData  = eventConverter.convertEventData(gameObjectData, object, blueprintData);
+    CustomEventData customEventData  = EditorEventConverter.convertEventData(object, blueprintData);
     object.setCustomEventData(customEventData);
   }
 
