@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  * Handles editing of events, conditions, and outcomes associated with editor objects.
  * Provides methods for adding, removing, modifying, and retrieving event-related data.
  *
- * @author Tatum McKinnis, Jacob You
+ * @author Jacob You
  */
 public class EditorEventHandler {
 
@@ -104,7 +104,6 @@ public class EditorEventHandler {
   public Map<String, EditorEvent> getEventsForObject(UUID objectId) {
     if (objectId == null) return Collections.emptyMap();
     try {
-      // Logic primarily interacts with InputData events via the UI
       Map<String, EditorEvent> events = editorDataAPI.getInputDataAPI().getEvents(objectId);
       return (events != null) ? events : Collections.emptyMap();
     } catch (Exception e) {
@@ -198,7 +197,7 @@ public class EditorEventHandler {
       notifier.notifyErrorOccurred("Indices cannot be negative for setEventConditionStringParameter.");
       return;
     }
-    handleParameterSetOperation(
+    handleParameterSetOperation(objectId,
         () -> editorDataAPI.getInputDataAPI().setEventConditionStringParameter(objectId, eventId, groupIndex, conditionIndex, paramName, value),
         String.format("set condition String param '%s' at [%d,%d] on event '%s', object %s", paramName, groupIndex, conditionIndex, eventId, objectId)
     );
@@ -220,7 +219,7 @@ public class EditorEventHandler {
       notifier.notifyErrorOccurred("Indices cannot be negative for setEventConditionDoubleParameter.");
       return;
     }
-    handleParameterSetOperation(
+    handleParameterSetOperation(objectId,
         () -> editorDataAPI.getInputDataAPI().setEventConditionDoubleParameter(objectId, eventId, groupIndex, conditionIndex, paramName, value),
         String.format("set condition Double param '%s' at [%d,%d] on event '%s', object %s", paramName, groupIndex, conditionIndex, eventId, objectId)
     );
@@ -315,7 +314,7 @@ public class EditorEventHandler {
       notifier.notifyErrorOccurred("Outcome index cannot be negative for setEventOutcomeStringParameter.");
       return;
     }
-    handleParameterSetOperation(
+    handleParameterSetOperation(objectId,
         () -> editorDataAPI.getInputDataAPI().setEventOutcomeStringParameter(objectId, eventId, outcomeIndex, paramName, value),
         String.format("set outcome String param '%s' at index %d on event '%s', object %s", paramName, outcomeIndex, eventId, objectId)
     );
@@ -336,7 +335,7 @@ public class EditorEventHandler {
       notifier.notifyErrorOccurred("Outcome index cannot be negative for setEventOutcomeDoubleParameter.");
       return;
     }
-    handleParameterSetOperation(
+    handleParameterSetOperation(objectId,
         () -> editorDataAPI.getInputDataAPI().setEventOutcomeDoubleParameter(objectId, eventId, outcomeIndex, paramName, value),
         String.format("set outcome Double param '%s' at index %d on event '%s', object %s", paramName, outcomeIndex, eventId, objectId)
     );
@@ -394,10 +393,11 @@ public class EditorEventHandler {
     }
   }
 
-  private void handleParameterSetOperation(Runnable operation, String logDescription) {
+  private void handleParameterSetOperation(UUID objectId, Runnable operation, String logDescription) {
     LOG.trace("Controller delegating {}", logDescription);
     try {
       operation.run();
+      notifier.notifyObjectUpdated(objectId);
     } catch (Exception e) {
       LOG.error("Failed to {}: {}", logDescription, e.getMessage(), e);
       notifier.notifyErrorOccurred("Failed to set parameter: " + e.getMessage());
