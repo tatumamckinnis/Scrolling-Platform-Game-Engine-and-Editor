@@ -22,11 +22,18 @@ import oogasalad.exceptions.SpriteParseException;
  * @author Gage Garcia
  */
 public class DashOutcome implements Outcome {
+
   private final InputProvider inputProvider;
 
+  /**
+   * constructs a new DashOutcome
+   *
+   * @param inputProvider provides input to the outcome
+   */
   public DashOutcome(InputProvider inputProvider) {
     this.inputProvider = inputProvider;
   }
+
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)
