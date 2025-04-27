@@ -150,6 +150,9 @@ public class EditorLevelData {
       myObjectDataMap.put(id, updatedObject);
       updated = true;
     }
+    else{
+      myObjectDataMap.put(id, updatedObject);
+    }
     LOG.debug("Updating object {} in data map: {}", id, updated ? "Success" : "Failed (not found)");
     return updated;
   }

@@ -3,7 +3,16 @@ package oogasalad.editor.model.saver.api;
 import java.io.IOException;
 import java.util.zip.DataFormatException;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
+import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 
 /**
@@ -38,5 +47,6 @@ public interface EditorFileConverterAPI {
    * @throws IOException         if the file cannot be accessed
    * @throws DataFormatException if the file's data cannot be parsed into valid Editor objects
    */
-  void loadFileToEditor() throws IOException, DataFormatException;
+  LevelData loadFileToEditor(String fileName)
+      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 }
