@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.records.CameraData;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.GameObjectData;
@@ -29,7 +30,7 @@ public class XMLStrategyTest {
   }
 
   @Test
-  void save_MapSize_XMLContainsMapSize() throws IOException {
+  void save_MapSize_XMLContainsMapSize() throws IOException, EditorSaveException {
     LevelData levelData = new LevelData("", -500, -700, 4000, 500, null, null, null);
     saver = new FileSaver();
 
@@ -42,7 +43,7 @@ public class XMLStrategyTest {
   }
 
   @Test
-  void save_CameraData_XMLContainCameraData() throws IOException {
+  void save_CameraData_XMLContainCameraData() throws IOException, EditorSaveException {
     CameraData cameraData = new CameraData("SideScrollingCamera",
         Map.of("followTarget", "player", "mode", "smooth"),
         Map.of("offsetX", 100.0, "offsetY", 50.0)
@@ -68,7 +69,7 @@ public class XMLStrategyTest {
   }
 
   @Test
-  void save_Layers_XMLContainsLayerData() throws IOException {
+  void save_Layers_XMLContainsLayerData() throws IOException, EditorSaveException {
     List<GameObjectData> gameObjects = List.of(
         new GameObjectData(60, UUID.fromString("129acc3a-3dc4-49c9-861e-a86cfc67c605"), -500, -700,
             10, ""),

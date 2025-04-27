@@ -33,6 +33,13 @@ public record SpriteData(
     List<AnimationData> animations
 ) {
 
+  /**
+   * Returns the base frame of this sprite.
+   * This is an alias for the record's baseImage component.
+   * The base frame is the default appearance of the sprite when no animation is playing.
+   *
+   * @return the base frame data
+   */
   public FrameData baseFrame() {
     return baseImage;
   }

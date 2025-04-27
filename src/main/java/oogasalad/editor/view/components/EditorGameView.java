@@ -1,12 +1,10 @@
 package oogasalad.editor.view.components;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +13,18 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -30,10 +34,9 @@ import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.editor.view.tools.DragPrefabPlacementTool;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.fileparser.records.BlueprintData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Displays a grid where visual game elements are added/updated. Implements EditorViewListener to
@@ -92,7 +95,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private int gridMaxBound;
 
   private boolean drawHitboxes = true;
-  private boolean snapToGrid = false;
+  private boolean snapToGrid = true;
 
   /**
    * Creates a new editor game view.
@@ -287,6 +290,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
    */
   private void setupEventHandlers() {
     objectCanvas.setOnMouseClicked(this::handleGridClick);
+    objectCanvas.setOnMousePressed(this::handleGridMousePressed);
+    objectCanvas.setOnMouseDragged(this::handleGridMouseDragged);
+    objectCanvas.setOnMouseReleased(this::handleGridMouseReleased);
 
     objectCanvas.setOnDragOver(event -> {
       Dragboard db = event.getDragboard();
@@ -501,6 +507,93 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
+   * Handles mouse press events to start drag operations.
+   * 
+   * @param event The MouseEvent associated with the press.
+   */
+  private void handleGridMousePressed(MouseEvent event) {
+    this.requestFocus();
+    
+    // Only handle left mouse button presses
+    if (!event.isPrimaryButtonDown()) {
+      return;
+    }
+    
+    // Skip if we don't have a drag-capable tool
+    if (!isDragCapableTool(currentTool)) {
+      return;
+    }
+    
+    double screenX = event.getX();
+    double screenY = event.getY();
+    
+    double[] worldCoords = screenToWorld(screenX, screenY);
+    double worldX = worldCoords[0];
+    double worldY = worldCoords[1];
+    
+    // Call the appropriate startDrag method based on the tool type
+    if (currentTool instanceof DragPrefabPlacementTool) {
+      ((DragPrefabPlacementTool) currentTool).startDrag(worldX, worldY);
+    }
+  }
+  
+  /**
+   * Handles mouse drag events to place objects during drag operations.
+   * 
+   * @param event The MouseEvent associated with the drag.
+   */
+  private void handleGridMouseDragged(MouseEvent event) {
+    // Only handle left mouse button drags
+    if (!event.isPrimaryButtonDown()) {
+      return;
+    }
+    
+    // Skip if we don't have a drag-capable tool
+    if (!isDragCapableTool(currentTool)) {
+      return;
+    }
+    
+    double screenX = event.getX();
+    double screenY = event.getY();
+    
+    double[] worldCoords = screenToWorld(screenX, screenY);
+    double worldX = worldCoords[0];
+    double worldY = worldCoords[1];
+    
+    // Call the appropriate dragTo method based on the tool type
+   if (currentTool instanceof DragPrefabPlacementTool) {
+      ((DragPrefabPlacementTool) currentTool).dragTo(worldX, worldY);
+    }
+  }
+  
+  /**
+   * Handles mouse release events to complete drag operations.
+   * 
+   * @param event The MouseEvent associated with the release.
+   */
+  private void handleGridMouseReleased(MouseEvent event) {
+    // Skip if we don't have a drag-capable tool
+    if (!isDragCapableTool(currentTool)) {
+      return;
+    }
+    
+    // Call the appropriate endDrag method based on the tool type
+   if (currentTool instanceof DragPrefabPlacementTool) {
+      ((DragPrefabPlacementTool) currentTool).endDrag();
+    }
+  }
+  
+  /**
+   * Checks if the current tool supports drag operations
+   * 
+   * @param tool The tool to check
+   * @return true if the tool implements the necessary drag operations
+   */
+  private boolean isDragCapableTool(ObjectInteractionTool tool) {
+    return tool instanceof DragPrefabPlacementTool;
+  }
+
+  /**
    * Sets the currently active object interaction tool for the view.
    *
    * @param tool The ObjectInteractionTool to activate, or null to deactivate interaction tools.
@@ -631,7 +724,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
-
   /**
    * Retrieves the sprite path associated with an object from the controller.
    *
@@ -648,9 +740,9 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Loads an image from the specified path string into the cache if it's not already present,
-   * has a different path than the cached version, or if the cached image is marked as errored.
-   * Handles converting absolute file paths to proper file URLs for JavaFX Image loading.
+   * Loads an image from the specified path string into the cache if it's not already present, has a
+   * different path than the cached version, or if the cached image is marked as errored. Handles
+   * converting absolute file paths to proper file URLs for JavaFX Image loading.
    *
    * @param id   The UUID of the object associated with the image.
    * @param path The path string (can be absolute file path or classpath resource).
@@ -682,7 +774,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
       return;
     }
 
-
     boolean needsLoading = cachedImage == null
         || !Objects.equals(cachedImage.getUrl(), urlString)
         || cachedImage.isError();
@@ -694,11 +785,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
         setupImageListeners(newImage, urlString);
         objectImages.put(id, newImage);
       } catch (IllegalArgumentException e) {
-        LOG.error("Failed to load image for {} - Invalid URL or resource not found: {}", id, urlString, e);
+        LOG.error("Failed to load image for {} - Invalid URL or resource not found: {}", id,
+            urlString, e);
         objectImages.remove(id);
         redrawObjects();
       } catch (Exception e) {
-        LOG.error("Unexpected error loading image for {} from URL {}: {}", id, urlString, e.getMessage(), e);
+        LOG.error("Unexpected error loading image for {} from URL {}: {}", id, urlString,
+            e.getMessage(), e);
         objectImages.remove(id);
         redrawObjects();
       }
@@ -807,12 +900,10 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
 
-
-
   /**
-   * Redraws the sprite visual for a specific object ID on the object canvas.
-   * Retrieves object data, checks for a loaded image, finds the correct frame,
-   * and draws the specific frame using its original dimensions.
+   * Redraws the sprite visual for a specific object ID on the object canvas. Retrieves object data,
+   * checks for a loaded image, finds the correct frame, and draws the specific frame using its
+   * original dimensions.
    *
    * @param id The UUID of the object whose sprite needs redrawing.
    */
@@ -836,18 +927,22 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
       LOG.debug("[redrawSprites ID: {}] Trying to display frame.", id);
       LOG.debug("[redrawSprites ID: {}] BaseFrame Name from SpriteData: '{}'", id, baseFrameName);
-      LOG.debug("[redrawSprites ID: {}] Frame Map Size: {}", id, frameMap != null ? frameMap.size() : "null map");
+      LOG.debug("[redrawSprites ID: {}] Frame Map Size: {}", id,
+          frameMap != null ? frameMap.size() : "null map");
       if (frameMap != null && baseFrameName != null) {
         LOG.debug("[redrawSprites ID: {}] Frame Map Keys: {}", id, frameMap.keySet());
-        LOG.debug("[redrawSprites ID: {}] Does map contain key '{}'? {}", id, baseFrameName, frameMap.containsKey(baseFrameName));
+        LOG.debug("[redrawSprites ID: {}] Does map contain key '{}'? {}", id, baseFrameName,
+            frameMap.containsKey(baseFrameName));
       }
 
       if (baseFrameName != null && frameMap != null && frameMap.containsKey(baseFrameName)) {
         displayFrame = frameMap.get(baseFrameName);
-        LOG.trace("[redrawSprites ID: {}] Using base frame '{}' retrieved from map.", id, baseFrameName);
+        LOG.trace("[redrawSprites ID: {}] Using base frame '{}' retrieved from map.", id,
+            baseFrameName);
       } else if (frameMap != null && !frameMap.isEmpty()) {
         displayFrame = frameMap.values().iterator().next();
-        LOG.warn("[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first available frame: {}",
+        LOG.warn(
+            "[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first available frame: {}",
             id, baseFrameName, frameMap.keySet(), displayFrame.name());
       }
 
@@ -861,15 +956,19 @@ public class EditorGameView extends Pane implements EditorViewListener {
         double dh = sh;
 
         if (sw > 0 && sh > 0) {
-          LOG.trace("[redrawSprites ID: {}] Drawing frame '{}' from [{},{},{},{}] to [{},{},{},{}] (Actual Size)",
+          LOG.trace(
+              "[redrawSprites ID: {}] Drawing frame '{}' from [{},{},{},{}] to [{},{},{},{}] (Actual Size)",
               id, displayFrame.name(), sx, sy, sw, sh, dx, dy, dw, dh);
           objectGraphicsContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
         } else {
-          LOG.warn("[redrawSprites ID: {}] Frame '{}' has invalid dimensions (w={}, h={}). Drawing placeholder.", id, displayFrame.name(), sw, sh);
+          LOG.warn(
+              "[redrawSprites ID: {}] Frame '{}' has invalid dimensions (w={}, h={}). Drawing placeholder.",
+              id, displayFrame.name(), sw, sh);
           drawPlaceholder(objectGraphicsContext, object, dx, dy);
         }
       } else {
-        LOG.error("[redrawSprites ID: {}] Could not determine display frame (baseFrameName='{}', mapKeys={}). Drawing placeholder.",
+        LOG.error(
+            "[redrawSprites ID: {}] Could not determine display frame (baseFrameName='{}', mapKeys={}). Drawing placeholder.",
             id, baseFrameName, frameMap != null ? frameMap.keySet() : "null map");
         drawPlaceholder(objectGraphicsContext, object, dx, dy);
       }
@@ -878,6 +977,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
       drawPlaceholder(objectGraphicsContext, object, dx, dy);
     }
   }
+
   /**
    * Redraws the hitbox visualization for a specific object ID on the object canvas. Retrieves
    * object data, gets hitbox dimensions, and draws a semi-transparent rectangle.
@@ -1001,11 +1101,13 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void setSnapToGrid(boolean doSnap) {
     this.snapToGrid = doSnap;
+    redrawObjects();
   }
 
   @Override
   public void setCellSize(int cellSize) {
     this.cellSize = cellSize;
+    redrawObjects();
   }
 
   /**
@@ -1035,10 +1137,17 @@ public class EditorGameView extends Pane implements EditorViewListener {
     return gridCanvas.getHeight();
   }
 
+  /**
+   * Refreshes all displayed objects, forcing a redraw of the object canvas.
+   * This is useful after operations that place many objects at once.
+   */
+  public void refreshDisplay() {
+    redrawObjects();
+  }
+
   public void removeAllObjects() {
     displayedObjectIds.clear();
     objectImages.clear();
     redrawObjects();
   }
-
 }

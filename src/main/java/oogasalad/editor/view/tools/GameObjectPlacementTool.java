@@ -1,10 +1,12 @@
 package oogasalad.editor.view.tools;
 
 import java.util.Objects;
-import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.view.components.EditorGameView;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.view.components.EditorGameView;
 
 /**
  * Concrete implementation of ObjectInteractionTool for placing standard game objects
@@ -16,7 +18,7 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
 
   private static final Logger LOG = LogManager.getLogger(GameObjectPlacementTool.class);
 
-  private final EditorGameView editorView;
+  protected final EditorGameView editorView;
   private final EditorController editorController;
   private final String objectGroup;
   private final String objectNamePrefix;
@@ -67,5 +69,41 @@ public class GameObjectPlacementTool implements ObjectInteractionTool {
       LOG.error("Error during placement request for object type '{}' at ({}, {}): {}", objectGroup,
           gridX, gridY, e.getMessage(), e);
     }
+  }
+  
+  /**
+   * Gets the editor view used by this tool.
+   * 
+   * @return The EditorGameView instance.
+   */
+  protected EditorGameView getEditorView() {
+    return editorView;
+  }
+  
+  /**
+   * Gets the editor controller used by this tool.
+   * 
+   * @return The EditorController instance.
+   */
+  protected EditorController getEditorController() {
+    return editorController;
+  }
+  
+  /**
+   * Gets the object group/type for this tool.
+   * 
+   * @return The object group string.
+   */
+  protected String getObjectGroup() {
+    return objectGroup;
+  }
+  
+  /**
+   * Gets the name prefix used for objects created by this tool.
+   * 
+   * @return The name prefix string.
+   */
+  protected String getObjectNamePrefix() {
+    return objectNamePrefix;
   }
 }

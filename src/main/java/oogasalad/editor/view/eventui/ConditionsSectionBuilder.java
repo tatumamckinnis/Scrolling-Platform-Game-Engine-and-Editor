@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
@@ -26,8 +29,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Builds the UI section for managing Conditions associated with an Event.
- * Handles condition groups, adding/removing conditions by type, and provides
- * UI for parameter editing based on definitions in properties files.
+ * Handles condition groups, adding/removing conditions by type, provides a dropdown
+ * to select the target group for adding conditions, and provides UI for parameter
+ * editing based on definitions in properties files.
  *
  * @author Tatum McKinnis
  */
@@ -46,6 +50,7 @@ public class ConditionsSectionBuilder {
   private final RemoveConditionHandler removeConditionHandler;
   private final EditConditionParamHandler editConditionParamHandler;
 
+  private ComboBox<Integer> conditionGroupComboBox;
   private ComboBox<String> conditionTypeComboBox;
   private ListView<ConditionDisplayItem> conditionsListView;
   private VBox parametersPane;
@@ -176,7 +181,8 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Creates the HBox containing the condition type ComboBox and the "Add Condition" / "Remove Condition" buttons.
+   * Creates the HBox containing the target group ComboBox, condition type ComboBox,
+   * and the "Add Condition" / "Remove Condition" buttons.
    *
    * @return The HBox Node for condition selection and management.
    */
@@ -186,6 +192,8 @@ public class ConditionsSectionBuilder {
     selectionBox.getStyleClass().add(getLocalProp("style.selectionBox"));
     selectionBox.setAlignment(Pos.CENTER_LEFT);
 
+    Label groupLabel = new Label(uiBundle.getString(getLocalProp("key.conditionGroupLabel")));
+    setupConditionGroupComboBox();
     setupConditionTypeComboBox();
 
     Button addConditionButton = createButton("key.addConditionButton", e -> handleAddConditionAction());
@@ -196,10 +204,20 @@ public class ConditionsSectionBuilder {
     removeConditionButton.setId(getLocalProp("id.removeConditionButton"));
     removeConditionButton.getStyleClass().add(getLocalProp("style.removeButton"));
 
-    selectionBox.getChildren().addAll(conditionTypeComboBox, addConditionButton, removeConditionButton);
+    selectionBox.getChildren().addAll(groupLabel, conditionGroupComboBox, conditionTypeComboBox, addConditionButton, removeConditionButton);
     HBox.setHgrow(conditionTypeComboBox, Priority.ALWAYS);
 
     return selectionBox;
+  }
+
+  /**
+   * Sets up the ComboBox for selecting the target condition group.
+   */
+  private void setupConditionGroupComboBox() {
+    conditionGroupComboBox = new ComboBox<>();
+    conditionGroupComboBox.setId(getLocalProp("id.conditionGroupComboBox"));
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+    conditionGroupComboBox.setMinWidth(Region.USE_PREF_SIZE);
   }
 
   /**
@@ -269,20 +287,31 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the action triggered by the "Add Condition" button.
+   * Reads the target group from the condition group combo box.
    */
   private void handleAddConditionAction() {
     String selectedType = conditionTypeComboBox.getSelectionModel().getSelectedItem();
+    Integer targetGroupIndex = conditionGroupComboBox.getValue();
+
     if (selectedType == null || selectedType.trim().isEmpty()) {
       LOG.warn("No condition type selected.");
       return;
     }
+    if (targetGroupIndex == null) {
+      LOG.warn("No target condition group selected. Defaulting to group 0 if available, otherwise skipping add.");
+      if (conditionGroupComboBox.getItems().isEmpty()) {
+        LOG.error("Cannot add condition: No groups exist.");
+        return;
+      }
+      targetGroupIndex = 0; // Default to the first group if available
+    }
 
-    ConditionDisplayItem selectedItem = conditionsListView.getSelectionModel().getSelectedItem();
-    int targetGroupIndex = (selectedItem != null) ? selectedItem.getGroupIndex() : 0;
 
     addConditionHandler.handle(targetGroupIndex, selectedType.trim());
     conditionTypeComboBox.getSelectionModel().clearSelection();
     conditionTypeComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectCondition")));
+    conditionGroupComboBox.getSelectionModel().clearSelection(); // Optionally clear group selection too
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
   }
 
   /**
@@ -318,22 +347,24 @@ public class ConditionsSectionBuilder {
 
     GridPane grid = createParametersGrid();
     String paramCountKey = executorName + getLocalProp("param.baseKey") + getLocalProp("param.countSuffix");
-    String paramCountStr = localProps.getProperty(paramCountKey);
+    int paramCount = Integer.parseInt(localProps.getProperty(paramCountKey));
 
-    if (paramCountStr == null) {
-      LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
-          executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
-      Label errorLabel = new Label(errorMsg);
-      parametersPane.getChildren().add(errorLabel);
-      return;
-    }
+    /**
+     * if (paramCountStr == null) {
+     *       LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
+     *           executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
+     *       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
+     *       Label errorLabel = new Label(errorMsg);
+     *       parametersPane.getChildren().add(errorLabel);
+     *       return;
+     *     }
+     */
+
 
     try {
-      int paramCount = Integer.parseInt(paramCountStr);
 
       for (int i = 1; i <= paramCount; i++) {
-        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + i;
+        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + "." + i;
         String name = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.nameSuffix"));
         String type = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.typeSuffix"));
         String description = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.descSuffix"), "");
@@ -346,13 +377,14 @@ public class ConditionsSectionBuilder {
           grid.add(errorLabel, 0, i-1, 2, 1);
           continue;
         }
+
         addParameterRow(grid, i - 1, name, type, description, defaultValue, selectedItem);
       }
       parametersPane.getChildren().add(grid);
       LOG.trace("Parameters pane updated for condition: {}", executorName);
 
     } catch (NumberFormatException e) {
-      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCountStr, e);
+      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCount, e);
       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnInvalidNumber")), executorName);
       Label errorLabel = new Label(errorMsg);
       parametersPane.getChildren().add(errorLabel);
@@ -391,74 +423,111 @@ public class ConditionsSectionBuilder {
    * @param defaultValue Default value string from properties.
    * @param item         The ConditionDisplayItem being edited.
    */
-  private void addParameterRow(GridPane grid, int rowIndex, String paramName, String paramType, String description, String defaultValue, ConditionDisplayItem item) {
+  private void addParameterRow(GridPane grid,
+      int rowIndex,
+      String paramName,
+      String paramType,
+      String description,
+      String defaultValue,
+      ConditionDisplayItem item) {
+    LOG.debug("addParameterRow: row={}, name='{}', type='{}', default='{}'",
+        rowIndex, paramName, paramType, defaultValue);
+
+    // 1) figure out the "human‐readable" type key
     String typeDisplayKey;
     Control inputControl;
     String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
-    String typeIdBoolean = getLocalProp("param.typeIdBoolean");
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-    String typeIdDropdownPrefix = getLocalProp("param.typeIdDropdownPrefix");
-    String typeIdString = getLocalProp("param.typeIdString");
+    LOG.debug("  currentValue = '{}'", currentValue);
 
+    String typeIdBool     = getLocalProp("param.typeIdBoolean");
+    String typeIdInt      = getLocalProp("param.typeIdInteger");
+    String typeIdDouble   = getLocalProp("param.typeIdDouble");
+    String typeIdDropdown = getLocalProp("param.typeIdDropdownPrefix");
+    String typeIdString   = getLocalProp("param.typeIdString");
 
     try {
-      if (paramType.equalsIgnoreCase(typeIdBoolean)) {
+      if (paramType.equalsIgnoreCase(typeIdBool)) {
         typeDisplayKey = getLocalProp("key.paramTypeBoolean");
-        CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(Boolean.parseBoolean(currentValue));
-        checkBox.setOnAction(e -> handleBooleanParamUpdate(item, paramName, checkBox.isSelected()));
-        inputControl = checkBox;
-      } else if (paramType.equalsIgnoreCase(typeIdInteger) || paramType.equalsIgnoreCase(typeIdDouble)) {
-        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInteger) ? getLocalProp("key.paramTypeInteger") : getLocalProp("key.paramTypeDouble");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, textField));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) {
-            handleNumericParamUpdate(item, paramName, paramType, textField);
-          }
+        LOG.debug("  branch=Boolean, key={}", typeDisplayKey);
+        CheckBox cb = new CheckBox();
+        cb.setSelected(Boolean.parseBoolean(currentValue));
+        cb.setOnAction(e -> handleBooleanParamUpdate(item, paramName, cb.isSelected()));
+        inputControl = cb;
+
+      } else if (paramType.equalsIgnoreCase(typeIdInt)
+          || paramType.equalsIgnoreCase(typeIdDouble)) {
+        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInt)
+            ? getLocalProp("key.paramTypeInteger")
+            : getLocalProp("key.paramTypeDouble");
+        LOG.debug("  branch=Numeric, key={}", typeDisplayKey);
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, tf));
+        tf.focusedProperty().addListener((obs, ov, nv) -> {
+          if (!nv) handleNumericParamUpdate(item, paramName, paramType, tf);
         });
-        inputControl = textField;
-      } else if (paramType.toUpperCase().startsWith(typeIdDropdownPrefix.toUpperCase())) {
+        inputControl = tf;
+
+      } else if (paramType.toUpperCase().startsWith(typeIdDropdown.toUpperCase())) {
         typeDisplayKey = getLocalProp("key.paramTypeDropdown");
-        String[] options = paramType.substring(typeIdDropdownPrefix.length()).split(",");
-        ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(options));
-        comboBox.setValue(currentValue);
-        comboBox.setOnAction(e -> handleStringParamUpdate(item, paramName, comboBox.getValue()));
-        inputControl = comboBox;
+        LOG.debug("  branch=Dropdown, key={}", typeDisplayKey);
+        String[] opts = paramType.substring(typeIdDropdown.length()).split(",");
+        ComboBox<String> cb = new ComboBox<>(FXCollections.observableArrayList(opts));
+        cb.setValue(currentValue);
+        cb.setOnAction(e -> handleStringParamUpdate(item, paramName, cb.getValue()));
+        inputControl = cb;
+
       } else {
         typeDisplayKey = getLocalProp("key.paramTypeString");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleStringParamUpdate(item, paramName, textField.getText()));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) {
-            handleStringParamUpdate(item, paramName, textField.getText());
-          }
+        LOG.debug("  branch=String, key={}", typeDisplayKey);
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleStringParamUpdate(item, paramName, tf.getText()));
+        tf.focusedProperty().addListener((obs, ov, nv) -> {
+          if (!nv) handleStringParamUpdate(item, paramName, tf.getText());
         });
-        inputControl = textField;
+        inputControl = tf;
       }
-    } catch (IllegalArgumentException e) {
-      LOG.error("Error parsing current value for parameter '{}' of type '{}': {}", paramName, paramType, currentValue, e);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.errorParameterParse")), paramName, paramType, currentValue);
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip(errorMsg));
-      typeDisplayKey = getLocalProp("key.paramTypeError");
+
+    } catch (Exception e) {
+      LOG.error("Error choosing control for param '{}': {}", paramName, e.getMessage());
+      // fallback to a simple label so the row still appears
+      typeDisplayKey = "key.paramTypeError";
+      inputControl  = new Label(currentValue);
     }
 
-    Label nameLabel = new Label(String.format("%s %s:", paramName, uiBundle.getString(typeDisplayKey)));
+    // 2) resolve the human‐readable type from uiBundle, but safely
+    String humanType;
+    try {
+      humanType = uiBundle.getString(typeDisplayKey);
+    } catch (MissingResourceException mre) {
+      LOG.warn("No UI text for key '{}', falling back to raw paramType", typeDisplayKey);
+      humanType = paramType;
+    }
+
+    // 3) build the label + tooltip
+    Label nameLabel = new Label(String.format("%s (%s):", paramName, humanType));
     if (description != null && !description.isEmpty()) {
       Tooltip tip = new Tooltip(description);
       nameLabel.setTooltip(tip);
-      if (inputControl != null) inputControl.setTooltip(tip);
+      inputControl.setTooltip(tip);
     }
 
+    // 4) put it on the grid
     grid.add(nameLabel, 0, rowIndex);
     grid.add(inputControl, 1, rowIndex);
     GridPane.setHgrow(inputControl, Priority.ALWAYS);
+
+    LOG.debug("  added row {}, label='{}', control={}", rowIndex, nameLabel.getText(), inputControl.getClass().getSimpleName());
   }
+
 
   /**
    * Retrieves the current value of a parameter from ExecutorData, falling back to defaultValue.
+   *
+   * @param data The ExecutorData containing parameters.
+   * @param paramName The name of the parameter.
+   * @param paramType The expected type from properties.
+   * @param defaultValue The default value if not found.
+   * @return The current value as a String.
    */
   private String getCurrentValueAsString(ExecutorData data, String paramName, String paramType, String defaultValue) {
     Map<String, String> stringParams = data.getStringParams();
@@ -483,6 +552,10 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a String parameter value (or Dropdown selection).
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param newValue  The new string value.
    */
   private void handleStringParamUpdate(ConditionDisplayItem item, String key, String newValue) {
     editConditionParamHandler.handle(item.getGroupIndex(), item.getConditionIndex(), key, newValue);
@@ -491,6 +564,10 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a Boolean parameter value.
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param newValue  The new boolean value.
    */
   private void handleBooleanParamUpdate(ConditionDisplayItem item, String key, boolean newValue) {
     editConditionParamHandler.handle(item.getGroupIndex(), item.getConditionIndex(), key, String.valueOf(newValue));
@@ -499,6 +576,11 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a numeric (Double/Integer) parameter value.
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param paramType The expected numeric type ("Integer" or "Double") from properties.
+   * @param textField The TextField containing the new numeric value.
    */
   private void handleNumericParamUpdate(ConditionDisplayItem item, String key, String paramType, TextField textField) {
     String newValueText = textField.getText();
@@ -525,19 +607,51 @@ public class ConditionsSectionBuilder {
 
 
   /**
-   * Updates the conditions ListView with the provided list of condition groups.
+   * Updates the conditions ListView and the condition group ComboBox
+   * with the provided list of condition groups.
    *
    * @param conditionGroups A list where each inner list represents a group of ExecutorData (conditions).
    */
   public void updateConditionsListView(List<List<ExecutorData>> conditionGroups) {
     ObservableList<ConditionDisplayItem> displayItems = FXCollections.observableArrayList();
+    int numGroups = 0;
     if (conditionGroups != null) {
       processConditionGroups(conditionGroups, displayItems);
+      numGroups = conditionGroups.size();
     }
     conditionsListView.setItems(displayItems);
-    updateParametersPane(null);
-    LOG.trace("Conditions list view updated with {} items.", displayItems.size());
+    updateConditionGroupComboBox(numGroups);
+    updateParametersPane(null); // Clear parameters when list changes
+    LOG.trace("Conditions list view updated with {} items across {} groups.", displayItems.size(), numGroups);
   }
+
+  /**
+   * Updates the items available in the condition group ComboBox based on the current number of groups.
+   *
+   * @param numGroups The current number of condition groups.
+   */
+  private void updateConditionGroupComboBox(int numGroups) {
+    if (conditionGroupComboBox == null) {
+      LOG.warn("Condition group combo box is null, cannot update.");
+      return;
+    }
+
+    Integer selectedGroup = conditionGroupComboBox.getValue();
+    List<Integer> groupIndices = IntStream.range(0, numGroups)
+        .boxed()
+        .collect(Collectors.toList());
+    conditionGroupComboBox.setItems(FXCollections.observableArrayList(groupIndices));
+
+    if (selectedGroup != null && selectedGroup < numGroups) {
+      conditionGroupComboBox.setValue(selectedGroup); // Preserve selection if still valid
+    } else {
+      conditionGroupComboBox.getSelectionModel().clearSelection(); // Clear selection if invalid or no groups
+    }
+
+    conditionGroupComboBox.setDisable(numGroups == 0); // Disable if there are no groups
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+  }
+
 
   /**
    * Iterates through the outer list of condition groups and processes each group.

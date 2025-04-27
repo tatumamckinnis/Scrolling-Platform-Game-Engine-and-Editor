@@ -27,6 +27,12 @@ public record AnimationData(
     List<String> frameNames
 ) {
 
+  /**
+   * Returns the length of each frame in the animation in ticks.
+   * This is an alias for the record's frameLen component.
+   *
+   * @return the duration of each frame in ticks
+   */
   public double frameLength() {
     return frameLen;
   }

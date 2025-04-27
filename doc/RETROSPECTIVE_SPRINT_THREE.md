@@ -60,17 +60,31 @@
 * Blockers/Issues in your way
     * Saving functionality needs to be finalized for save button to be completed
 
-### Team Member 3
+### Team Member 3 - Aksel
 
 * Work done this Sprint
+  * Wrote the file saver class which takes level data and turns it into an XML file
+  * Set up infrastructure to allow easy extension using strategies and components
 * Plan for next Sprint?
+  * Support multiplayer games over servers
 * Blockers/Issues in your way
+  * Learn how to set up a server, how to connect server. Don't know anything about the topic
+  * Need to do initial research and learning on how multiplayer works
 
-### Team Member 4
+### Team Member 4: Jacob
 
 * Work done this Sprint
+  * Finished adding extra level customization such as more tools, and access to more properties
+  * Began work on implementing sprite sheets as well as a sprite sheet editor to load sprites and make the sprite atlas file
+  * Implemented the ability to easily lock and unlock grid and toggle hitboxes in code, awaiting future implementation
+  * Built basic infrastructure to save from editor data to level data in the fileparser class
 * Plan for next Sprint?
+  * Finish the implementation of sprite sheets and allow the saving and loading of their XMLs and polish it.
+  * Implement the ability to assign an object a sprite based on the currently loaded objects
+  * Potentially create an editor to allow the user to make templates of sprites to assign to a specific object.
+  * Polish the editor with new implementations, tools, and quality of life additions.
 * Blockers/Issues in your way
+  * Need events and camera properties to be listed in some file that the editor can pull to display in the front end.
 
 ### Team Member 5
 

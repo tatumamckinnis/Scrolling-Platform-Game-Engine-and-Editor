@@ -6,9 +6,14 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,6 +34,7 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.components.EditorGameView;
 import oogasalad.editor.view.components.PrefabPalettePane;
 import oogasalad.editor.view.panes.chat.ChatBotPane;
+import oogasalad.editor.view.panes.editor_properties.EditorPropertiesDialog;
 import oogasalad.editor.view.panes.level_properties.LevelPropertiesDialog;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
 import oogasalad.editor.view.panes.sprite_creation.SpriteAssetPane;
@@ -36,12 +42,12 @@ import oogasalad.editor.view.panes.sprite_properties.SpriteTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.editor.view.tools.ClearAllTool;
 import oogasalad.editor.view.tools.DeleteTool;
+import oogasalad.editor.view.tools.DragPrefabPlacementTool;
 import oogasalad.editor.view.tools.GameObjectPlacementTool;
 import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.editor.view.tools.OnClickTool;
 import oogasalad.editor.view.tools.SelectionTool;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import oogasalad.fileparser.records.BlueprintData;
 
 /**
  * Factory class responsible for creating the main UI components of the Editor scene. Uses external
@@ -162,7 +168,7 @@ public class EditorComponentFactory {
    *
    * @return The fully assembled editor Scene object, ready to be set on the stage.
    */
-  public Scene createEditorScene() {
+  public Scene createEditorScene() throws IOException {
     SplitPane root = new SplitPane();
     root.setId(getId("id.editor.root"));
     int editorWidth = getIntProperty(getId("prop.editor.width"),
@@ -222,12 +228,12 @@ public class EditorComponentFactory {
     editorController.registerViewListener(gameView);
     LOG.debug("EditorGameView registered as listener.");
 
-    HBox toolbarBox = createToolbar();
+    Node toolbar = createToolbar();
 
     VBox mapContent = new VBox();
     mapContent.setId(getId("id.map.content.vbox"));
     mapContent.setAlignment(Pos.TOP_CENTER);
-    mapContent.getChildren().addAll(mapLabel, toolbarBox, gameView);
+    mapContent.getChildren().addAll(mapLabel, toolbar, gameView);
 
     VBox.setVgrow(gameView, Priority.ALWAYS);
 
@@ -289,7 +295,7 @@ public class EditorComponentFactory {
     return assetPane;
   }
 
-  private Pane createChatPane() {
+  private Pane createChatPane() throws IOException {
     // Header label
     Label chatLabel = createStyledLabel(
         uiBundle.getString(getId("key.chatbot.tab.title")),
@@ -319,7 +325,7 @@ public class EditorComponentFactory {
    * @return HBox node representing the toolbar.
    * @throws IllegalStateException if {@code gameView} has not been initialized.
    */
-  private HBox createToolbar() {
+  private Node createToolbar() {
     if (gameView == null) {
       String errorMsg = uiBundle.getString(getId("key.error.gameview.needed"));
       LOG.error(errorMsg);
@@ -329,6 +335,8 @@ public class EditorComponentFactory {
     HBox toolbar = new HBox();
     toolbar.setId(getId("id.map.toolbar"));
     toolbar.setAlignment(Pos.CENTER);
+    toolbar.setSpacing(10);
+    toolbar.setPadding(new Insets(5));  // Add some padding
 
     ToggleGroup toolGroup = new ToggleGroup();
 
@@ -341,6 +349,11 @@ public class EditorComponentFactory {
         entityType, entityPrefix);
     ToggleButton entityButton = createToolToggleButton(toolGroup,
         uiBundle.getString(getId("key.add.entity.tool")), entityTool, false);
+        
+    // Add a drag prefab placement tool button
+    ObjectInteractionTool dragPrefabTool = new DragPrefabPlacementTool(gameView, editorController);
+    ToggleButton dragPrefabButton = createToolToggleButton(toolGroup,
+        "Drag Prefab", dragPrefabTool, false);
 
     ObjectInteractionTool selectTool = new SelectionTool(gameView, editorController);
     ToggleButton selectButton = createToolToggleButton(toolGroup,
@@ -355,12 +368,74 @@ public class EditorComponentFactory {
         uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
 
     Button saveButton = createSaveButton();
+    
+    // Create and add the selected prefab display label
+    Label selectedPrefabLabel = createSelectedPrefabLabel();
 
     toolbar.getChildren()
-        .addAll(entityButton, selectButton, deleteButton, clearAllObjectsButton, saveButton);
+        .addAll(entityButton, dragPrefabButton, selectButton, deleteButton, clearAllObjectsButton, saveButton, selectedPrefabLabel);
     gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
-    return toolbar;
+    
+    // Create a horizontal scrollpane for the toolbar
+    ScrollPane scrollPane = new ScrollPane(toolbar);
+    scrollPane.setFitToHeight(true);  // Fit the content height
+    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Show horizontal scrollbar as needed
+    scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);  // Never show vertical scrollbar
+    scrollPane.setPannable(true);  // Allow the scrollpane to be panned by mouse dragging
+    
+    // Block vertical scrolling completely
+    scrollPane.setOnScroll(event -> {
+      if (event.getDeltaY() != 0) {
+        // Only allow horizontal scrolling
+        double newHvalue = scrollPane.getHvalue() - event.getDeltaY() / scrollPane.getContent().getBoundsInLocal().getWidth();
+        scrollPane.setHvalue(Math.max(0, Math.min(1, newHvalue)));
+        event.consume();
+      }
+    });
+    
+    // Disable vertical movement when panning
+    scrollPane.setOnMousePressed(event -> {
+      scrollPane.setPannable(true);
+    });
+    
+    scrollPane.setOnMouseDragged(event -> {
+      // Store original vertical position
+      double vvalue = scrollPane.getVvalue();
+      // After JavaFX does its panning, reset vertical position
+      scrollPane.setVvalue(vvalue);
+    });
+    
+    return scrollPane;
+  }
+
+  /**
+   * Creates a label that displays information about the currently selected prefab.
+   * The label updates whenever the selected prefab changes.
+   *
+   * @return A label displaying the currently selected prefab information
+   */
+  private Label createSelectedPrefabLabel() {
+    Label prefabLabel = new Label("No prefab selected");
+    prefabLabel.setId("selected-prefab-label");
+    prefabLabel.getStyleClass().add("prefab-info-label");
+    
+    // Update the label text when the selected prefab changes
+    prefabPalettePane.selectedPrefabProperty().addListener((obs, oldPrefab, newPrefab) -> {
+      if (newPrefab != null) {
+        prefabLabel.setText("Selected: " + newPrefab.type() + " (" + newPrefab.group() + ")");
+      } else {
+        prefabLabel.setText("No prefab selected");
+      }
+    });
+    
+    // Initialize with current selection if any
+    if (prefabPalettePane.getSelectedPrefab() != null) {
+      BlueprintData currentPrefab = prefabPalettePane.getSelectedPrefab();
+      prefabLabel.setText("Selected: " + currentPrefab.type() + " (" + currentPrefab.group() + ")");
+    }
+    
+    return prefabLabel;
   }
 
   /**
@@ -472,10 +547,16 @@ public class EditorComponentFactory {
     componentContent.setId(getId("id.component.content.vbox"));
     componentContent.getChildren().addAll(componentsLabel, tabPane);
 
-    Button levelPropsBtn = createLevelPropertiesButton();
-    VBox.setMargin(levelPropsBtn, new Insets(10, 0, 0, 0));
-    componentContent.getChildren().add(levelPropsBtn);
+    Button levelPropsBtn  = createLevelPropertiesButton();
+    Button editorPropsBtn = createEditorPropertiesButton();
 
+// now create an HBox to hold them horizontally, with 10px spacing
+    HBox buttonRow = new HBox(10, levelPropsBtn, editorPropsBtn);
+// if you still want that 10px top margin:
+    VBox.setMargin(buttonRow, new Insets(10, 0, 0, 0));
+
+// finally, add the HBox to your VBox container
+    componentContent.getChildren().add(buttonRow);
     VBox.setVgrow(tabPane, Priority.ALWAYS);
 
     componentPane.setCenter(componentContent);
@@ -541,6 +622,14 @@ public class EditorComponentFactory {
     Button btn = new Button("Level Properties…");
     btn.setOnAction(e -> {
       new LevelPropertiesDialog(editorController, btn.getScene().getWindow()).showAndWait();
+    });
+    return btn;
+  }
+
+  private Button createEditorPropertiesButton() {
+    Button btn = new Button("Editor Properties…");
+    btn.setOnAction(e -> {
+      new EditorPropertiesDialog(editorController, btn.getScene().getWindow()).showAndWait();
     });
     return btn;
   }
