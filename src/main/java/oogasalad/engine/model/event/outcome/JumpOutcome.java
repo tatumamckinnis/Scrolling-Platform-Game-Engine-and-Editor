@@ -14,7 +14,7 @@ public class JumpOutcome implements Outcome {
   public void execute(GameObject gameObject,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    double dy = gameObject.getDoubleParams().getOrDefault("JumpAmount", 60.0);
+    double dy = doubleParameters.getOrDefault("JumpAmount", 60.0);
     if (gameObject.isGrounded()) {
       gameObject.setYVelocity(-dy);
       gameObject.setGrounded(false); // Mark object as airborne

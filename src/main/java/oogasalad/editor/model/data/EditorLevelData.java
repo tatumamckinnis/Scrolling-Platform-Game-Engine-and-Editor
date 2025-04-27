@@ -12,11 +12,13 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Represents the level data used by the editor, including groups, layers, and mappings between
@@ -487,5 +489,104 @@ public class EditorLevelData {
     }
 
     return spriteLibrary.getAtlas(atlasFile);
+  }
+
+  /**
+   * Gets the layer priority of an editor object by its UUID.
+   * This is a convenience method that gets the object, retrieves its identity data,
+   * gets the layer from the identity data, and then gets the priority from the layer.
+   *
+   * @param uuid the UUID of the editor object
+   * @return the priority of the layer the object belongs to, or 0 if the object or its layer is not found
+   */
+  public int getObjectLayerPriority(UUID uuid) {
+    if (uuid == null) {
+      LOG.warn("Attempted to get layer priority with null UUID");
+      return 0;
+    }
+
+    EditorObject obj = myObjectDataMap.get(uuid);
+    if (obj == null) {
+      LOG.warn("Object with UUID {} not found when getting layer priority", uuid);
+      return 0;
+    }
+
+    if (obj.getIdentityData() == null) {
+      LOG.warn("Object with UUID {} has null identity data", uuid);
+      return 0;
+    }
+
+    Layer layer = obj.getIdentityData().getLayer();
+    if (layer == null) {
+      LOG.warn("Object with UUID {} has null layer in its identity data", uuid);
+      return 0;
+    }
+
+    return layer.getPriority();
+  }
+
+  /**
+   * Returns all editor objects sorted by layer priority, from lowest to highest (back to front).
+   * This is useful for rendering objects in the correct Z-order in the frontend.
+   * Objects with null layers or missing identity data will be placed at the bottom (lowest priority).
+   *
+   * @return a list of editor objects sorted by layer priority (ascending order)
+   */
+  public List<EditorObject> getObjectsSortedByLayerPriority() {
+    List<EditorObject> allObjects = new ArrayList<>(myObjectDataMap.values());
+
+    // Sort objects by layer priority (ascending order for rendering from back to front)
+    allObjects.sort((obj1, obj2) -> {
+      int priority1 = getObjectLayerPriorityInternal(obj1);
+      int priority2 = getObjectLayerPriorityInternal(obj2);
+      return Integer.compare(priority1, priority2);
+    });
+
+    return allObjects;
+  }
+
+  /**
+   * Internal helper method to get the layer priority of an EditorObject.
+   * Returns 0 if the object has null identity data or null layer.
+   *
+   * @param obj the EditorObject to get the layer priority for
+   * @return the layer priority, or 0 if unavailable
+   */
+  private int getObjectLayerPriorityInternal(EditorObject obj) {
+    if (obj == null || obj.getIdentityData() == null) {
+      return 0;
+    }
+
+    Layer layer = obj.getIdentityData().getLayer();
+    return (layer != null) ? layer.getPriority() : 0;
+  }
+
+  /**
+   * Returns all objects on a specific layer.
+   * This is useful for operations that need to manipulate or select objects from a particular layer.
+   *
+   * @param layerName the name of the layer to get objects from
+   * @return a list of editor objects on the specified layer, or an empty list if the layer doesn't exist
+   */
+  public List<EditorObject> getObjectsByLayer(String layerName) {
+    if (layerName == null || layerName.isEmpty()) {
+      LOG.warn("Attempted to get objects from null or empty layer name");
+      return Collections.emptyList();
+    }
+
+    // Find the layer by name
+    Layer targetLayer = myLayers.stream()
+        .filter(layer -> layerName.equals(layer.getName()))
+        .findFirst()
+        .orElse(null);
+
+    if (targetLayer == null) {
+      LOG.warn("Layer '{}' not found when getting objects", layerName);
+      return Collections.emptyList();
+    }
+
+    // Return all objects on this layer
+    List<EditorObject> layerObjects = myLayerDataMap.get(targetLayer);
+    return layerObjects != null ? new ArrayList<>(layerObjects) : Collections.emptyList();
   }
 }

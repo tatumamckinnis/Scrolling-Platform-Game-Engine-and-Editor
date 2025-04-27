@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.event.CollisionData;
 import oogasalad.editor.model.data.object.event.CustomEventData;
@@ -80,7 +81,7 @@ public class EditorObject {
   public EditorObject(EditorLevelData level) {
     this.level = level;
     this.editorConfig = level.getEditorConfig();
-    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", "", level.getFirstLayer());
+    this.identity = new IdentityData(UUID.randomUUID(), "Untitled", level.getGameName(), "", "", level.getFirstLayer());
     this.hitbox = new HitboxData(0, 0,
         Integer.parseInt(editorConfig.getProperty("defaultHitboxWidth")),
         Integer.parseInt(editorConfig.getProperty("defaultHitboxHeight")),

@@ -147,13 +147,13 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   @Override
   public void setSnapToGrid(boolean doSnap) {
-    //TODO: impelement
+    //TODO: implement
 
   }
 
   @Override
   public void setCellSize(int cellSize) {
-    //TODO: impelement
+    //TODO: implement
   }
 
   /**
@@ -390,13 +390,12 @@ public class InputTabComponentFactory implements EditorViewListener {
     if (!isSelected(true, true)) {
       return;
     }
-    System.out.println(paramName);
     handleEditParam(paramName, value,
         (strVal) -> editorController.setEventConditionStringParameter(currentObjectId,
             currentEventId, groupIndex, conditionIndex, paramName, strVal),
         (dblVal) -> editorController.setEventConditionDoubleParameter(currentObjectId,
             currentEventId, groupIndex, conditionIndex, paramName, dblVal),
-        getId("action.edit.condition.param")
+        getId("action.edit.condition.param") // Context key from identifiers file
     );
   }
 
@@ -472,8 +471,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    * @param value        The new value (expected String or Double).
    * @param stringSetter Lambda function to call if the value is a String.
    * @param doubleSetter Lambda function to call if the value is a Double.
-   * @param contextKey   The identifier key for the action description (e.g., "edit condition
-   *                     parameter").
+   * @param contextKey   The identifier key used for logging/error context (retrieved via getId).
    */
   private void handleEditParam(String paramName, Object value,
       Consumer<String> stringSetter, Consumer<Double> doubleSetter, String contextKey) {
@@ -488,19 +486,16 @@ public class InputTabComponentFactory implements EditorViewListener {
         String typeName = (value == null) ? "null" : value.getClass().getName();
         LOG.warn(String.format(uiBundle.getString(getId("key.error.unsupported.param.type")), typeName));
       }
+
     } catch (Exception e) {
       LOG.error("Error delegating edit parameter: {}", e.getMessage(), e);
-      showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
-          contextKey, e.getMessage());
       refreshConditionsAndOutcomesForEvent();
     }
   }
 
   /**
    * Opens the dialog for adding a new dynamic variable. Validates that an object is selected before
-   * opening. Handles the result from the dialog if a variable is successfully created. Note: This
-   * method is retained in case dynamic variable creation is needed elsewhere, but it's no longer
-   * directly linked to the Outcomes section builder.
+   * opening. Handles the result from the dialog if a variable is successfully created.
    */
   private void openAddDynamicVariableDialog() {
     LOG.debug("Opening 'Add Dynamic Variable' dialog.");
@@ -526,7 +521,6 @@ public class InputTabComponentFactory implements EditorViewListener {
       }
       editorController.addDynamicVariable(dynamicVar);
       LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
-      // Note: No longer automatically refreshing outcome builder's dynamic variable list
     } catch (Exception e) {
       LOG.error("Error delegating add dynamic variable: {}", e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
@@ -556,9 +550,6 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Retrieves the list of dynamic variables available for the currently selected object context.
-   * Handles potential errors during retrieval. Note: This method is retained in case dynamic
-   * variable context is needed elsewhere, but it's no longer directly linked to the Outcomes
-   * section builder's ComboBox.
    *
    * @return A list of available DynamicVariables, or an empty list if none or on error.
    */
@@ -596,7 +587,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     runOnFxThread(() -> {
       LOG.debug("Refreshing UI for object: {}", currentObjectId);
       refreshEventsList();
-      // No longer need to explicitly refresh dynamic variables for the outcomes section here
+      refreshDynamicVariables(); // Keep this for potential future use
     });
   }
 
@@ -621,6 +612,7 @@ public class InputTabComponentFactory implements EditorViewListener {
 
       if (previouslySelectedEvent != null && sortedEventIds.contains(previouslySelectedEvent)) {
         eventsSectionBuilder.getEventListView().getSelectionModel().select(previouslySelectedEvent);
+        refreshConditionsAndOutcomesForEvent();
       } else {
         clearConditionsAndOutcomesUI();
       }
@@ -711,15 +703,13 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the dynamic variable list, typically in response to changes. This method is now
-   * simplified as the outcome builder no longer displays this list directly. Ensures this runs on
-   * the FX thread.
+   * Refreshes the dynamic variable list display if needed by any UI component.
+   * Ensures this runs on the FX thread.
    */
   private void refreshDynamicVariables() {
     runOnFxThread(() -> {
       LOG.debug("Dynamic variables changed in context: {}", currentObjectId);
-      // Removed call: outcomesSectionBuilder.updateDynamicVariableComboBox();
-      // Other UI components needing dynamic variable updates could be refreshed here if needed.
+
     });
   }
 
@@ -745,7 +735,7 @@ public class InputTabComponentFactory implements EditorViewListener {
       eventsSectionBuilder.getEventListView().getItems().clear();
       eventsSectionBuilder.getEventIdField().clear();
       clearConditionsAndOutcomesUI();
-      refreshDynamicVariables(); // Still call in case other parts rely on it
+      refreshDynamicVariables();
       LOG.trace("Cleared all input tab UI to default state.");
     });
   }
@@ -763,7 +753,14 @@ public class InputTabComponentFactory implements EditorViewListener {
     if (requireObjectSelection && currentObjectId == null) {
       errorKey = getId("key.error.object.selection.required");
     } else if (requireEventSelection && currentEventId == null) {
-      errorKey = getId("key.error.event.selection.required");
+      if (eventsSectionBuilder.getEventListView().getSelectionModel().getSelectedItem() == null) {
+        errorKey = getId("key.error.event.selection.required");
+      } else {
+        currentEventId = eventsSectionBuilder.getEventListView().getSelectionModel().getSelectedItem();
+        if (currentEventId == null){ // Double check after re-sync attempt
+          errorKey = getId("key.error.event.selection.required");
+        }
+      }
     }
 
     if (errorKey != null) {
@@ -805,17 +802,15 @@ public class InputTabComponentFactory implements EditorViewListener {
    *
    * @param titleKey     The key (from identifiers file) for the alert title text.
    * @param formatKey    The key (from identifiers file) for the error message format string (e.g.,
-   *                     "Failed to %s: %s").
-   * @param actionKey    The key (from identifiers file) for the description of the action that
-   *                     failed.
+   * "Failed to %s: %s").
+   * @param actionDescription The description of the action that failed (now passed directly).
    * @param exceptionMsg The message obtained from the caught exception.
    */
-  private void showFormattedErrorAlert(String titleKey, String formatKey, String actionKey,
+  private void showFormattedErrorAlert(String titleKey, String formatKey, String actionDescription,
       String exceptionMsg) {
     String title = uiBundle.getString(titleKey);
     String format = uiBundle.getString(formatKey);
-    String action = uiBundle.getString(actionKey);
-    String contentText = String.format(format, action, exceptionMsg);
+    String contentText = String.format(format, actionDescription, exceptionMsg);
     showErrorAlert(titleKey, contentText);
   }
 
@@ -856,7 +851,12 @@ public class InputTabComponentFactory implements EditorViewListener {
       LOG.trace("InputTab received: onObjectUpdated {}", objectId);
       if (Objects.equals(this.currentObjectId, objectId)) {
         LOG.debug("Refreshing InputTab because selected object {} was updated.", objectId);
+        String selectedEventBefore = currentEventId;
         refreshEventsList();
+        if (selectedEventBefore != null && eventsSectionBuilder.getEventListView().getItems().contains(selectedEventBefore)) {
+          eventsSectionBuilder.getEventListView().getSelectionModel().select(selectedEventBefore);
+          handleEventSelectionChange(selectedEventBefore);
+        }
       }
       refreshDynamicVariables();
     });

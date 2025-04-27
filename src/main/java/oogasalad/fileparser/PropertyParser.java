@@ -34,6 +34,8 @@ import org.w3c.dom.NodeList;
  *   parser.parseStringProperties(blueprintElement, "property");
  * </pre>
  * </p>
+ *
+ * @author Billy McCune
  */
 public class PropertyParser {
 

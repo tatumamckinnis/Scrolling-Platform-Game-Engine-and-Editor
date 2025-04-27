@@ -115,8 +115,9 @@ public abstract class EditorEventDataManager {
    *
    * @param objectId the unique identifier of the editor object
    * @param eventId  the identifier of the event to be removed
+   * @return
    */
-  public void removeEvent(UUID objectId, String eventId) {
+  public boolean removeEvent(UUID objectId, String eventId) {
     EditorObject object = getObject(objectId);
     boolean removed = createDataIfAbsent(object).removeEvent(eventId);
     if (removed) {
@@ -124,6 +125,7 @@ public abstract class EditorEventDataManager {
     } else {
       LOG.warn("Attempted to remove non‑existent event '{}' for object {}", eventId, objectId);
     }
+    return removed;
   }
 
   /**

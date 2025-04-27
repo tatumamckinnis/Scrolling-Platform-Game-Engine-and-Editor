@@ -13,7 +13,7 @@ import java.util.Map;
  * @param stringProperties a map of custom string properties associated with the outcome.
  * @param doubleProperties a map of custom double properties associated with the outcome.
  *
- * @author Billy
+ * @author Billy McCune
  */
 public record OutcomeData(String name,
                           Map<String, String> stringProperties,

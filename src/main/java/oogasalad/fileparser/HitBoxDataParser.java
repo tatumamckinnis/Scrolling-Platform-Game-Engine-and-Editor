@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
  * into a {@link HitBoxData} object.
  * </p>
  *
- * @author Billy
+ * @author Billy McCune
  */
 public class HitBoxDataParser {
 

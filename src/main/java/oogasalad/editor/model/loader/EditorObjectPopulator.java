@@ -7,11 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import oogasalad.editor.model.EditorEventConverter;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
+import oogasalad.editor.model.data.object.event.CustomEventData;
 import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
@@ -19,8 +25,6 @@ import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Utility class responsible for populating an EditorObject with data from various sources like
@@ -29,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * ensures that necessary metadata like groups and layers are correctly handled within the
  * associated {@link EditorLevelData}.
  *
- * @author Tatum McKinnis
+ * @author Tatum McKinnis, Billy McCune
  */
 public class EditorObjectPopulator {
 
@@ -85,7 +89,7 @@ public class EditorObjectPopulator {
 
     Layer targetLayer = levelData.getFirstLayer();
 
-    IdentityData identity = new IdentityData(object.getId(), blueprint.type(), blueprint.group(),
+    IdentityData identity = new IdentityData(object.getId(), blueprint.type(), blueprint.gameName(), blueprint.group(), blueprint.type(),
         targetLayer);
     object.setIdentityData(identity);
 
@@ -211,7 +215,7 @@ public class EditorObjectPopulator {
         .stream().map(this::convertFrameData).filter(Objects::nonNull).collect(
             Collectors.toMap(FrameData::name,
                 frame -> frame, (existing, replacement) -> replacement));
-
+    frameMapModel.put(baseFrameRecord.name(), baseFrameRecord);
     Map<String, AnimationData> animationMapModel = recordSprite.animations().stream()
         .map(this::convertAnimationData).filter(Objects::nonNull).collect(
             Collectors.toMap(AnimationData::getName, anim -> anim,
@@ -228,15 +232,13 @@ public class EditorObjectPopulator {
     if (baseFrameName != null && frameMapModel.containsKey(baseFrameName)) {
       LOG.debug("Using exact match base frame name '{}' from blueprint record for sprite '{}'",
           baseFrameName, recordSprite.name());
-    }
-    else {
+    } else {
       if (!frameMapModel.isEmpty()) {
         baseFrameName = frameMapModel.keySet().iterator().next();
         LOG.warn(
             "Could not determine base frame from record or prefix/special case match for sprite '{}'. Falling back to first available frame name: '{}'",
             recordSprite.name(), baseFrameName);
-      }
-      else {
+      } else {
         LOG.warn(
             "No base frame name specified and no frames found for sprite record '{}'. Base frame name remains null.",
             recordSprite.name());
@@ -334,6 +336,8 @@ public class EditorObjectPopulator {
     setSpriteData(gameObjectData, object, blueprint);
     setHitboxData(gameObjectData, object, blueprint);
     setPhysicsData(object, blueprint);
+    setEventData(object, blueprint);
+    LOG.info("Events:" + object.getCustomEventData().getEvents().keySet());
 
     object.setStringParameters(
         blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
@@ -351,9 +355,31 @@ public class EditorObjectPopulator {
 
   private void setIdentityData(GameObjectData gameObjectData, EditorObject object,
       BlueprintData blueprint) {
-    String layerName = gameObjectData.layerName();
+    // Get the layer based on the z-value first
+    int zValue = gameObjectData.layer();
+    String layerName = "Layer_" + zValue;
     Layer defaultLayer = levelData.getFirstLayer();
-    Layer targetLayer = findLayerByName(layerName, defaultLayer);
+    
+    LOG.debug("Looking for layer with z-value {}, name '{}' for object {}", 
+        zValue, layerName, gameObjectData.uniqueId());
+    
+    // Try to find the layer that corresponds to this z-value
+    Layer targetLayer = null;
+    for (Layer layer : levelData.getLayers()) {
+      if (layer.getPriority() == zValue) {
+        targetLayer = layer;
+        LOG.debug("Found layer '{}' with matching priority {} for object {}", 
+            layer.getName(), zValue, gameObjectData.uniqueId());
+        break;
+      }
+    }
+    
+    // If no layer with matching priority found, fall back to name-based search
+    if (targetLayer == null) {
+      LOG.warn("No layer found with priority {} for object {}, falling back to name search", 
+          zValue, gameObjectData.uniqueId());
+      targetLayer = findLayerByName(layerName, defaultLayer);
+    }
 
     String group;
     if (blueprint.group() != null && !blueprint.group().trim().isEmpty()) {
@@ -362,9 +388,26 @@ public class EditorObjectPopulator {
       group = "default"; // TODO: Make a constant/property
     }
 
+    String type;
+    if (blueprint.type() != null && !blueprint.type().trim().isEmpty()) {
+      type = blueprint.type();
+    } else {
+      type = "default"; // TODO: Make a constant/property
+    }
+
+    String game;
+    if (blueprint.gameName() != null && !blueprint.gameName().trim().isEmpty()) {
+      game = blueprint.gameName();
+    } else {
+      game = "default"; // TODO: Make a constant/property
+    }
+
     IdentityData identity = new IdentityData(gameObjectData.uniqueId(), gameObjectData.name(),
-        group, targetLayer);
+        game, group, type, targetLayer);
     object.setIdentityData(identity);
+    
+    LOG.info("Assigned object {} to layer '{}' with priority {}", 
+        gameObjectData.uniqueId(), targetLayer.getName(), targetLayer.getPriority());
 
     levelData.addGroup(group);
     levelData.getObjectDataMap().put(object.getId(), object);
@@ -400,7 +443,8 @@ public class EditorObjectPopulator {
     object.setSpriteData(editorSpriteData);
   }
 
-  private void setHitboxData(GameObjectData gameObjectData, EditorObject object, BlueprintData blueprint) {
+  private void setHitboxData(GameObjectData gameObjectData, EditorObject object,
+      BlueprintData blueprint) {
     if (blueprint.hitBoxData() != null) {
       HitBoxData hitbox = blueprint.hitBoxData();
       int hitboxX = gameObjectData.x();
@@ -417,6 +461,12 @@ public class EditorObjectPopulator {
           blueprint.blueprintId(), gameObjectData.uniqueId(), gameObjectData.x(),
           gameObjectData.y());
     }
+  }
+
+  private void setEventData(EditorObject object,
+      BlueprintData blueprintData) {
+    CustomEventData customEventData  = EditorEventConverter.convertEventData(object, blueprintData);
+    object.setCustomEventData(customEventData);
   }
 
   private void setPhysicsData(EditorObject object, BlueprintData blueprint) {
@@ -446,12 +496,33 @@ public class EditorObjectPopulator {
       LOG.warn("Layer name is null or empty, using default layer '{}'", defaultLayer.getName());
       return defaultLayer;
     }
+    
+    // If the name is in the format "Layer_X", try to match by z-value
+    if (name.startsWith("Layer_")) {
+      try {
+        int zValue = Integer.parseInt(name.substring("Layer_".length()));
+        
+        // Try to find a layer with the matching priority (z-value)
+        for (Layer layer : levelData.getLayers()) {
+          if (layer.getPriority() == zValue) {
+            LOG.debug("Found layer '{}' by z-value {}", layer.getName(), zValue);
+            return layer;
+          }
+        }
+        LOG.debug("No layer found with z-value {}, continuing with name search", zValue);
+      } catch (NumberFormatException e) {
+        LOG.debug("Could not parse z-value from layer name '{}', using name search", name);
+      }
+    }
+    
+    // Try to find by exact name match
     for (Layer layer : levelData.getLayers()) {
       if (layer.getName() != null && layer.getName().equals(name)) {
-        LOG.trace("Found layer '{}' by name.", name);
+        LOG.debug("Found layer '{}' by exact name match", name);
         return layer;
       }
     }
+    
     LOG.warn("Layer with name '{}' not found in EditorLevelData, using default layer '{}'", name,
         defaultLayer.getName());
     return defaultLayer;
@@ -462,13 +533,32 @@ public class EditorObjectPopulator {
     LOG.error(
         "BlueprintData not found for blueprintId {} (GameObjectData {}). Creating minimal error object.",
         gameObjectData.blueprintId(), gameObjectData.uniqueId());
-    Layer errorLayer = levelData.getFirstLayer();
-    String layerName =
-        gameObjectData.layerName() != null ? gameObjectData.layerName() : errorLayer.getName();
-    Layer targetLayer = findLayerByName(layerName, errorLayer);
+        
+    // Try to find the layer by z-value first
+    int zValue = gameObjectData.layer();
+    Layer targetLayer = null;
+    
+    // Look for a layer with matching priority first
+    for (Layer layer : levelData.getLayers()) {
+      if (layer.getPriority() == zValue) {
+        targetLayer = layer;
+        LOG.debug("Found layer '{}' with matching priority {} for error object", 
+            layer.getName(), zValue);
+        break;
+      }
+    }
+    
+    // If no matching layer found, use the first layer
+    if (targetLayer == null) {
+      targetLayer = levelData.getFirstLayer();
+      LOG.warn("No layer found with priority {} for error object, using default layer", zValue);
+    }
+    
     IdentityData errorIdentity = new IdentityData(gameObjectData.uniqueId(),
-        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), "ERROR",
+        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), 
+        "ERROR", "ERROR", "ERROR",
         targetLayer);
+        
     object.setIdentityData(errorIdentity);
     object.setSpriteData(createDefaultSpriteData(gameObjectData.x(), gameObjectData.y()));
     object.getHitboxData().setX(gameObjectData.x());
@@ -478,6 +568,10 @@ public class EditorObjectPopulator {
     levelData.getObjectDataMap().put(object.getId(), object);
     levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>())
         .add(object);
+        
+    LOG.info("Created error object and assigned to layer '{}' with priority {}", 
+        targetLayer.getName(), targetLayer.getPriority());
+        
     return object;
   }
 }
