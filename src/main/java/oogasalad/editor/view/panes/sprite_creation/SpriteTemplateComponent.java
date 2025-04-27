@@ -71,6 +71,13 @@ public class SpriteTemplateComponent extends Stage {
   private final Button okButton = new Button("OK");
   private final Button cancelButton = new Button("Cancel");
 
+  /**
+   * Constructor for making a new Sprite template component
+   *
+   * @param editorController the editor controller of the application
+   * @param owner            the window that owns the component
+   * @param library          the Sprite Sheet Library to pull data from
+   */
   public SpriteTemplateComponent(
       EditorController editorController,
       Window owner,
@@ -90,6 +97,14 @@ public class SpriteTemplateComponent extends Stage {
     setScene(new Scene(createRoot(), WINDOW_W, WINDOW_H));
   }
 
+  /**
+   * Other constructor for a sprite template component
+   *
+   * @param editorController the editor controller of the application
+   * @param owner            the window that owns the component
+   * @param library          the Sprite Sheet Library to pull data from
+   * @param toEdit           the SpriteTemplate to edit
+   */
   public SpriteTemplateComponent(EditorController editorController,
       Window owner,
       SpriteSheetLibrary library,

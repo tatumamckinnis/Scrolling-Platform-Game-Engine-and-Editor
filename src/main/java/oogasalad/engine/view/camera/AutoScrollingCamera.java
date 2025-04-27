@@ -19,8 +19,6 @@ public class AutoScrollingCamera implements Camera {
   private double scrollSpeedX;
   private double scrollSpeedY; // Change if vertical scrolling is needed
   // Current accumulated offsets for the camera
-  private double currentOffsetX ;
-  private double currentOffsetY;
   private double xOffset;
   private double yOffset;
   private double zoom;
@@ -43,8 +41,8 @@ public class AutoScrollingCamera implements Camera {
     yOffset += scrollSpeedY;
     // Apply the offsets to the game world.
     // Negative translation moves the world in the opposite direction to simulate camera movement.
-    gameWorld.setTranslateX(-currentOffsetX);
-    gameWorld.setTranslateY(-currentOffsetY);
+    gameWorld.setTranslateX(-xOffset);
+    gameWorld.setTranslateY(-yOffset);
   }
 
   @Override

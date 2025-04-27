@@ -74,6 +74,11 @@ public class SpriteSheetProcessorPane extends BorderPane {
 
   private interface RegionStrategy {
 
+    /**
+     * computes the region
+     *
+     * @param img image to computer
+     */
     void compute(Image img);
   }
 
@@ -542,7 +547,8 @@ public class SpriteSheetProcessorPane extends BorderPane {
     Stage st = new Stage();
     st.setTitle("Sprite‑Sheet Processor");
     st.initOwner(owner);
-    st.setScene(new Scene(new SpriteSheetProcessorPane(controller, owner), DIALOG_WIDTH, DIALOG_HEIGHT));
+    st.setScene(
+        new Scene(new SpriteSheetProcessorPane(controller, owner), DIALOG_WIDTH, DIALOG_HEIGHT));
     st.show();
   }
 }

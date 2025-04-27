@@ -51,8 +51,8 @@ public class TrackerCamera implements Camera {
     }
     try {
       scaleWorld(gameWorld);
-      gameWorld.setTranslateX(CAMERA_OFFSET_X - viewObjectToTrack.getXPosition());
-      gameWorld.setTranslateY(CAMERA_OFFSET_Y - viewObjectToTrack.getYPosition());
+      gameWorld.setTranslateX(xOffset - viewObjectToTrack.getXPosition());
+      gameWorld.setTranslateY(yOffset - viewObjectToTrack.getYPosition());
     } catch (Exception e) {
       throw new NoSuchElementException(resourceManager.getText("exceptions","ObjectDoesntExist"));
     }
