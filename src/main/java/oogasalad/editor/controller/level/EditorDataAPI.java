@@ -14,7 +14,6 @@ import oogasalad.editor.controller.object.IdentityDataManager;
 import oogasalad.editor.controller.object.InputDataManager;
 import oogasalad.editor.controller.object.PhysicsDataManager;
 import oogasalad.editor.controller.object.SpriteDataManager;
-import oogasalad.editor.model.EditorObjectPopulator;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
@@ -22,22 +21,13 @@ import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
-import oogasalad.editor.model.saver.EditorFileConverter;
+import oogasalad.editor.model.loader.LevelDataConverter;
+import oogasalad.editor.model.EditorFileConverter;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
-import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
-import oogasalad.exceptions.LevelDataParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
-import oogasalad.fileparser.records.BlueprintData;
-import oogasalad.fileparser.records.GameObjectData;
-import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -74,6 +64,7 @@ public class EditorDataAPI {
   private final CameraDataManager cameraAPI;
   private final FileParserApi fileParserAPI;
   private final SaverStrategy saverStrategy;
+  private final LevelDataConverter levelDataConverter;
   private final EditorListenerNotifier listenerNotifier;
   private String currentGameName;
 
@@ -105,6 +96,7 @@ public class EditorDataAPI {
     this.spriteSheetAPI = new SpriteSheetDataManager(level, saverStrategy, fileParserAPI);
 
     this.fileConverterAPI = new EditorFileConverter();
+    this.levelDataConverter = new LevelDataConverter();
     LOG.info("EditorDataAPI initialized with new EditorLevelData.");
   }
 
@@ -478,32 +470,19 @@ public class EditorDataAPI {
   }
 
   /**
-   * Loads level data from the specified file and populates the editor's internal object map.
+   * Loads level data from the specified file and updates the editor's object map.
    *
-   * <p>This method parses the provided level file into {@link LevelData}, extracts all
-   * {@link GameObjectData} and their corresponding {@link BlueprintData}, and uses an
-   * {@link EditorObjectPopulator} to create {@link EditorObject}s. Each object is then added to the
-   * editor's level data map for later use by the editor view or controller.</p>
+   * <p>This method parses the level file using the {@code levelDataConverter},
+   * repopulates the level with game objects, and notifies listeners of each newly added
+   * object.</p>
    *
    * @param fileName the path to the level file to load
-   * @throws LayerParseException      if there is an error parsing layer information
-   * @throws LevelDataParseException  if there is an error parsing the overall level structure
-   * @throws PropertyParsingException if object properties fail to parse
-   * @throws SpriteParseException     if sprite information fails to load
-   * @throws EventParseException      if event definitions fail to parse
-   * @throws HitBoxParseException     if hit box definitions are invalid
-   * @throws BlueprintParseException  if blueprint data cannot be interpreted
-   * @throws GameObjectParseException if an error occurs while creating game objects
+   * @throws EditorLoadException if an error occurs during file loading or parsing
    */
-  public void loadLevelData(String fileName)
-      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
-    LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
-    Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
-    List<GameObjectData> gameObjectData = levelData.gameObjects();
-    EditorObjectPopulator populator = new EditorObjectPopulator(level);
-    for (GameObjectData gameObject : gameObjectData) {
-      EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
-      level.updateObjectInDataMap(object.getId(), object);
-    }
+  public void loadLevelData(String fileName) throws EditorLoadException {
+    levelDataConverter.loadLevelData(level, fileConverterAPI, fileName);
+    getObjectDataMap().forEach((key, value) -> {
+      listenerNotifier.notifyObjectAdded(key);
+    });
   }
 }

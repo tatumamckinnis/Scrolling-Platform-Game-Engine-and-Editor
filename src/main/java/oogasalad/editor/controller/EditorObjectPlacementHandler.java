@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.model.EditorObjectPopulator;
+import oogasalad.editor.model.loader.EditorObjectPopulator;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;

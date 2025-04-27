@@ -29,6 +29,11 @@ import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
 
+/**
+ * Displays a UserData Screen wher the user can change their information
+ *
+ * @author Billy McCune
+ */
 public class UserDataScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -39,11 +44,19 @@ public class UserDataScreen extends Display {
   private final String stylesheet;
   private final ButtonActionFactory actionFactory;
 
+  /**
+   * constructs a new userdata screen instance
+   *
+   * @param viewState viewstate of view
+   * @param user      the user
+   */
   public UserDataScreen(ViewState viewState, UserData user) {
-    this.user          = user;
-    this.viewState     = viewState;
-    this.stylesheet    = Objects.requireNonNull(
-        getClass().getResource(resourceManager.getConfig("engine/view/userDataScene", "userData.stylesheet"))).toExternalForm();
+    this.user = user;
+    this.viewState = viewState;
+    this.stylesheet = Objects.requireNonNull(
+            getClass().getResource(
+                resourceManager.getConfig("engine/view/userDataScene", "userData.stylesheet")))
+        .toExternalForm();
     this.actionFactory = new ButtonActionFactory(viewState);
     initializeUserDataScreen();
   }
@@ -52,13 +65,17 @@ public class UserDataScreen extends Display {
     // Root pane
     BorderPane root = new BorderPane();
     root.setPadding(new Insets(
-        Double.parseDouble(resourceManager.getConfig("engine/view/userDataScene", "userData.root.padding"))
+        Double.parseDouble(
+            resourceManager.getConfig("engine/view/userDataScene", "userData.root.padding"))
     ));
-    root.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.root.style"));
+    root.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.root.style"));
 
     // Top: Back button via ButtonActionFactory
-    String backId = resourceManager.getConfig("engine/view/userDataScene", "userData.back.button.id");
-    Button back = new Button(resourceManager.getConfig("engine/view/userDataScene", "userData.back.button.text"));
+    String backId = resourceManager.getConfig("engine/view/userDataScene",
+        "userData.back.button.id");
+    Button back = new Button(
+        resourceManager.getConfig("engine/view/userDataScene", "userData.back.button.text"));
     back.setId(backId);
     back.setId("backToSplash");
     back.setOnAction(e -> actionFactory.getAction("backToSplash").run());
@@ -71,7 +88,8 @@ public class UserDataScreen extends Display {
     // Left: Profile image
     VBox leftBox = new VBox(15);
     leftBox.setAlignment(Pos.TOP_CENTER);
-    leftBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.left.box.style"));
+    leftBox.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.left.box.style"));
     File imgFile = user.userImage();
     if (imgFile != null && imgFile.exists()) {
       ImageView iv = new ImageView(new Image(imgFile.toURI().toString()));
@@ -80,13 +98,13 @@ public class UserDataScreen extends Display {
       iv.setPreserveRatio(true);
       leftBox.getChildren().add(iv);
     }
-    
+
     // Add Edit Profile button
     Button editProfileButton = new Button("Edit Profile");
     editProfileButton.getStyleClass().add("edit-profile-button");
     editProfileButton.setOnAction(e -> navigateToProfileEditScreen());
     leftBox.getChildren().add(editProfileButton);
-    
+
     // Add Logout button
     Button logoutButton = new Button("Logout");
     logoutButton.getStyleClass().add("logout-button");
@@ -96,29 +114,36 @@ public class UserDataScreen extends Display {
     // Right: Info & Stats
     VBox rightBox = new VBox(10);
     rightBox.setAlignment(Pos.TOP_LEFT);
-    rightBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.right.box.style"));
+    rightBox.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.right.box.style"));
 
     // Basic Info grid
     GridPane infoGrid = new GridPane();
     infoGrid.setVgap(8);
     infoGrid.setHgap(10);
-    infoGrid.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.info.grid.style"));
+    infoGrid.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.info.grid.style"));
 
-    Label l1 = new Label("Username:");      
-    l1.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label l1 = new Label("Username:");
+    l1.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v1 = new Label(user.username());
-    Label l2 = new Label("Display Name:");  
-    l2.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label l2 = new Label("Display Name:");
+    l2.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v2 = new Label(user.displayName());
-    Label l3 = new Label("Email:");         
-    l3.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label l3 = new Label("Email:");
+    l3.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v3 = new Label(user.email());
-    Label l4 = new Label("Language:");      
-    l4.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label l4 = new Label("Language:");
+    l4.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
     Label v4 = new Label(user.language());
-    Label l5 = new Label("Bio:");           
-    l5.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
-    Label v5 = new Label(user.bio());       
+    Label l5 = new Label("Bio:");
+    l5.getStyleClass()
+        .add(resourceManager.getConfig("engine/view/userDataScene", "userData.label.style"));
+    Label v5 = new Label(user.bio());
     v5.setWrapText(true);
 
     infoGrid.addRow(0, l1, v1);
@@ -131,7 +156,8 @@ public class UserDataScreen extends Display {
 
     // Games Accordion
     Accordion gamesAcc = new Accordion();
-    gamesAcc.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.game.accordion.style"));
+    gamesAcc.getStyleClass().add(
+        resourceManager.getConfig("engine/view/userDataScene", "userData.game.accordion.style"));
     for (UserGameData g : user.userGameData()) {
       VBox gameBox = new VBox(5);
       gameBox.setPadding(new Insets(10));
@@ -150,7 +176,8 @@ public class UserDataScreen extends Display {
 
       // Levels Accordion
       Accordion levelsAcc = new Accordion();
-      levelsAcc.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.level.accordion.style"));
+      levelsAcc.getStyleClass().add(
+          resourceManager.getConfig("engine/view/userDataScene", "userData.level.accordion.style"));
       for (UserLevelData lvl : g.playerLevelStatMap().values()) {
         VBox lvlBox = new VBox(4);
         lvlBox.setPadding(new Insets(5));
@@ -186,7 +213,8 @@ public class UserDataScreen extends Display {
     // Centering both image & stats
     HBox centerBox = new HBox(30, leftBox, scroll);
     centerBox.setAlignment(Pos.CENTER);
-    centerBox.getStyleClass().add(resourceManager.getConfig("engine/view/userDataScene", "userData.center.container.style"));
+    centerBox.getStyleClass().add(
+        resourceManager.getConfig("engine/view/userDataScene", "userData.center.container.style"));
     root.setCenter(centerBox);
 
     // Attach
@@ -194,18 +222,24 @@ public class UserDataScreen extends Display {
     this.getStylesheets().add(stylesheet);
   }
 
-  @Override public void removeGameObjectImage(ImmutableGameObject gameObject) { }
+  @Override
+  public void removeGameObjectImage(ImmutableGameObject gameObject) {
+    //No implementation needed
+  }
 
   @Override
   public void addGameObjectImage(ImmutableGameObject gameObject) {
-
+//No implementation needed
   }
 
-  @Override public void renderPlayerStats(ImmutableGameObject player)      { }
+  @Override
+  public void renderPlayerStats(ImmutableGameObject player) {
+    //No implementation needed
+  }
 
   @Override
   public void renderEndGameScreen(boolean gameWon) {
-
+//No implementation needed
   }
 
   /**

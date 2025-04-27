@@ -31,6 +31,21 @@ import oogasalad.userData.SessionManager;
 import oogasalad.userData.UserDataApiDefault;
 import oogasalad.userData.records.UserData;
 
+/**
+ * A JavaFX-based login and signup screen for the game editor application.
+ *
+ * <p>The {@code LoginScreen} provides functionality for:
+ * <ul>
+ *   <li>Logging in existing users with username and password</li>
+ *   <li>Creating new user accounts via signup</li>
+ *   <li>Managing session persistence (remember me functionality)</li>
+ *   <li>Displaying error or success messages based on login/signup outcomes</li>
+ * </ul>
+ *
+ * <p>This screen does not support in-game rendering operations (adding game object images, rendering player stats, etc.).</p>
+ *
+ * @author Billy McCune
+ */
 public class LoginScreen extends Display {
 
   private static final Logger LOG = LogManager.getLogger();
@@ -43,6 +58,11 @@ public class LoginScreen extends Display {
   private final SessionManager sessionManager;
   private Label statusMessage;
 
+  /**
+   * Constructs a new {@code LoginScreen} and initializes all UI components.
+   *
+   * @param viewState the shared view state across the application
+   */
   public LoginScreen(ViewState viewState) {
     this.viewState = viewState;
     this.stylesheet = Objects.requireNonNull(
@@ -50,7 +70,7 @@ public class LoginScreen extends Display {
     this.actionFactory = new ButtonActionFactory(viewState);
     this.userDataApi = new UserDataApiDefault();
     this.sessionManager = new SessionManager();
-    
+
     // Ensure the user data directory exists
     try {
       File userDataDir = new File("data/userData");
@@ -60,7 +80,7 @@ public class LoginScreen extends Display {
     } catch (Exception e) {
       LOG.error("Failed to create user data directory", e);
     }
-    
+
     initializeLoginScreen();
   }
 
@@ -84,19 +104,19 @@ public class LoginScreen extends Display {
     TabPane tabPane = new TabPane();
     tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     tabPane.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.tab.pane.style"));
-    
+
     Tab loginTab = new Tab(resourceManager.getConfig("engine/view/loginScreen", "login.tab.text"));
     loginTab.setContent(createLoginForm());
-    
+
     Tab signupTab = new Tab(resourceManager.getConfig("engine/view/loginScreen", "signup.tab.text"));
     signupTab.setContent(createSignupForm());
-    
+
     tabPane.getTabs().addAll(loginTab, signupTab);
-    
+
     // Status message area
     statusMessage = new Label();
     statusMessage.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.status.message.style"));
-    
+
     VBox centerBox = new VBox(20, tabPane, statusMessage);
     centerBox.setAlignment(Pos.CENTER);
     root.setCenter(centerBox);
@@ -105,75 +125,75 @@ public class LoginScreen extends Display {
     this.getChildren().add(root);
     this.getStylesheets().add(stylesheet);
   }
-  
+
   private VBox createLoginForm() {
     VBox loginBox = new VBox(15);
     loginBox.setAlignment(Pos.CENTER);
     loginBox.setPadding(new Insets(25));
     loginBox.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.form.style"));
-    
+
     Label usernameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "login.username.label"));
     TextField usernameField = new TextField();
     usernameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "login.username.prompt"));
-    
+
     Label passwordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "login.password.label"));
     PasswordField passwordField = new PasswordField();
     passwordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "login.password.prompt"));
-    
+
     // Check if we have saved credentials and pre-fill the fields
     if (sessionManager.hasActiveSession()) {
       usernameField.setText(sessionManager.getSavedUsername());
       passwordField.setText(sessionManager.getSavedPassword());
     }
-    
+
     // Add "Remember Me" checkbox
     CheckBox rememberMeCheckbox = new CheckBox(resourceManager.getConfig("engine/view/loginScreen", "login.remember.me.text"));
     rememberMeCheckbox.setSelected(sessionManager.hasActiveSession());
-    
+
     Button loginButton = new Button(resourceManager.getConfig("engine/view/loginScreen", "login.button.text"));
     loginButton.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "login.button.style"));
     loginButton.setOnAction(e -> handleLogin(
-        usernameField.getText(), 
-        passwordField.getText(), 
+        usernameField.getText(),
+        passwordField.getText(),
         rememberMeCheckbox.isSelected()
     ));
-    
+
     loginBox.getChildren().addAll(
-        usernameLabel, usernameField, 
+        usernameLabel, usernameField,
         passwordLabel, passwordField,
         rememberMeCheckbox,
         loginButton
     );
-    
+
     return loginBox;
   }
-  
+
   private VBox createSignupForm() {
     VBox signupBox = new VBox(15);
     signupBox.setAlignment(Pos.CENTER);
     signupBox.setPadding(new Insets(25));
     signupBox.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "signup.form.style"));
-    
+
     Label usernameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.username.label"));
     TextField usernameField = new TextField();
     usernameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.username.prompt"));
-    
+
     Label displayNameLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.displayName.label"));
     TextField displayNameField = new TextField();
     displayNameField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.displayName.prompt"));
-    
+
     Label emailLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.email.label"));
     TextField emailField = new TextField();
     emailField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.email.prompt"));
-    
+
     Label passwordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.password.label"));
     PasswordField passwordField = new PasswordField();
     passwordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.password.prompt"));
-    
+
     Label confirmPasswordLabel = new Label(resourceManager.getConfig("engine/view/loginScreen", "signup.confirmPassword.label"));
     PasswordField confirmPasswordField = new PasswordField();
     confirmPasswordField.setPromptText(resourceManager.getConfig("engine/view/loginScreen", "signup.confirmPassword.prompt"));
-    
+
     Button signupButton = new Button(resourceManager.getConfig("engine/view/loginScreen", "signup.button.text"));
     signupButton.getStyleClass().add(resourceManager.getConfig("engine/view/loginScreen", "signup.button.style"));
     signupButton.setOnAction(e -> handleSignup(
@@ -183,7 +203,7 @@ public class LoginScreen extends Display {
         passwordField.getText(),
         confirmPasswordField.getText()
     ));
-    
+
     signupBox.getChildren().addAll(
         usernameLabel, usernameField,
         displayNameLabel, displayNameField,
@@ -192,16 +212,16 @@ public class LoginScreen extends Display {
         confirmPasswordLabel, confirmPasswordField,
         signupButton
     );
-    
+
     return signupBox;
   }
-  
+
   private void handleLogin(String username, String password, boolean rememberMe) {
     if (username.isEmpty() || password.isEmpty()) {
       showError("Username and password cannot be empty");
       return;
     }
-    
+
     try {
       UserData userData = userDataApi.parseUserData(username, password);
       actionFactory.navigateToUserProfile(userData).run();
@@ -215,38 +235,38 @@ public class LoginScreen extends Display {
       showError("Error logging in: " + e.getMessage());
     }
   }
-  
-  private void handleSignup(String username, String displayName, String email, 
+
+  private void handleSignup(String username, String displayName, String email,
                             String password, String confirmPassword) {
     // Validate inputs
-    if (username.isEmpty() || displayName.isEmpty() || email.isEmpty() || 
+    if (username.isEmpty() || displayName.isEmpty() || email.isEmpty() ||
         password.isEmpty() || confirmPassword.isEmpty()) {
       showError("All fields are required");
       return;
     }
-    
+
     if (!password.equals(confirmPassword)) {
       showError("Passwords do not match");
       return;
     }
-    
+
     // Check if username already exists
     File userFile = new File("data/userData/" + username + ".xml");
     if (userFile.exists()) {
       showError("Username already exists");
       return;
     }
-    
+
     try {
       // Create default user image file in the userData directory
       File defaultImage = new File("data/userData/" + username + "-avatar.txt");
-      
+
       // Create the parent directory if it doesn't exist
       File parentDir = defaultImage.getParentFile();
       if (!parentDir.exists()) {
         parentDir.mkdirs();
       }
-      
+
       // Create a placeholder file for the avatar
       if (!defaultImage.exists()) {
         try {
@@ -255,13 +275,13 @@ public class LoginScreen extends Display {
           java.io.FileWriter writer = new java.io.FileWriter(defaultImage);
           writer.write("Avatar placeholder for user: " + username);
           writer.close();
-          
+
           LOG.info("Created default avatar for user: " + username);
         } catch (Exception e) {
           LOG.warn("Could not create default avatar file", e);
         }
       }
-      
+
       // Create new user data
       UserData newUser = new UserData(
           username,
@@ -274,27 +294,27 @@ public class LoginScreen extends Display {
           null, // No avatar sprite
           new ArrayList<>() // Empty game data list
       );
-      
+
       // Write to file
       userDataApi.writeNewUserData(newUser);
-      
+
       // Show success and switch to profile screen
       showSuccess("Account created successfully!");
-      
+
       // Login with the new account (just use the newly created user data directly)
       actionFactory.navigateToUserProfile(newUser).run();
-      
+
     } catch (Exception e) {
       LOG.error("Error creating user", e);
       showError("Error creating account: " + e.getMessage());
     }
   }
-  
+
   private void showError(String message) {
     statusMessage.setText(message);
     statusMessage.setTextFill(Color.RED);
   }
-  
+
   private void showSuccess(String message) {
     statusMessage.setText(message);
     statusMessage.setTextFill(Color.GREEN);
@@ -307,6 +327,7 @@ public class LoginScreen extends Display {
 
   @Override
   public void addGameObjectImage(ImmutableGameObject gameObject) {
+    // Not applicable for login screen
 
   }
 
@@ -319,4 +340,4 @@ public class LoginScreen extends Display {
   public void renderEndGameScreen(boolean gameWon) {
     throw new UnsupportedOperationException(resourceManager.getText("exceptions", "CannotDisplayEndGameScreen"));
   }
-} 
+}

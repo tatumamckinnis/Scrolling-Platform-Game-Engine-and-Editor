@@ -39,6 +39,7 @@ public class GameObjectDataParser {
     try {
       int blueprintId = Integer.parseInt(gameObjectElement.getAttribute("id"));
 
+      String nameAttr = gameObjectElement.getAttribute("name");
       String uidAttr = gameObjectElement.getAttribute("uid");
       String[] uidArray = uidAttr.split(",");
       String coordinates = gameObjectElement.getAttribute("coordinates");
@@ -54,7 +55,7 @@ public class GameObjectDataParser {
 
         if (index < uidArray.length) {
           UUID uuid = UUID.fromString(uidArray[index].trim());
-          gameObjectDataList.add(new GameObjectData(blueprintId, uuid, x, y, z, ""));
+          gameObjectDataList.add(new GameObjectData(nameAttr, blueprintId, uuid, x, y, z, ""));
         } else {
           break;
         }

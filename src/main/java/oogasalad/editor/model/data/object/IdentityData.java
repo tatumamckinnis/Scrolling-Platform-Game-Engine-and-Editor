@@ -24,8 +24,11 @@ public class IdentityData {
    * @param name  the name of the editor object
    * @param type the type to which the editor object belongs
    * @param layer the layer associated with the editor object
+   *
+   * @author Jacob You
    */
   public IdentityData(UUID id, String name, String type, Layer layer) {
+    this.name = name;
     this.id = id;
     this.name = name;
     this.type = type;

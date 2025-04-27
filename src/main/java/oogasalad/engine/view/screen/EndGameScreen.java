@@ -31,6 +31,11 @@ public class EndGameScreen extends GameOverlayScreen {
   private String overlayStylesheet;
   private ViewState viewState;
 
+  /**
+   * constructs a new end game screen instance
+   *
+   * @param viewState the viewstate of the view
+   */
   public EndGameScreen(ViewState viewState) {
     super(viewState);
     this.viewState = viewState;
@@ -58,7 +63,8 @@ public class EndGameScreen extends GameOverlayScreen {
         .add(resourceManager.getConfig(endGameScreenResource, "background.style"));
     alignBox(combinedBox,
         Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "boxSpacing")));
-    combinedBox.setPrefSize(Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "screen.width")),
+    combinedBox.setPrefSize(
+        Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "screen.width")),
         Integer.parseInt(resourceManager.getConfig(endGameScreenResource, "screen.height"))
     );
     this.getChildren().add(combinedBox);
@@ -76,7 +82,6 @@ public class EndGameScreen extends GameOverlayScreen {
     int winFont = Integer.parseInt(
         resourceManager.getConfig(endGameScreenResource, "primaryFont"));
     Text winText = createStyledText(winMessage, new Font(winFont), wrappingWidth);
-
 
     // Finally, combine both text messages together
     textBox.getChildren().addAll(winText);

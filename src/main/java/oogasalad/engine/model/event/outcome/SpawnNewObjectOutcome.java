@@ -26,6 +26,11 @@ public class SpawnNewObjectOutcome implements Outcome {
 
   private final GameExecutor executor;
 
+  /**
+   * constructs a new SpawnNewObjectOutcome
+   *
+   * @param gameExecutor game executor that executes some aspect of the game
+   */
   public SpawnNewObjectOutcome(GameExecutor gameExecutor) {
     this.executor = gameExecutor;
   }
@@ -40,7 +45,7 @@ public class SpawnNewObjectOutcome implements Outcome {
     int y = (int) Math.ceil(doubleParameters.get("y"));
     int layer = (int) Math.ceil(doubleParameters.get("layer"));
     String layerName = stringParameters.get("layer_name");
-    GameObjectData data = new GameObjectData(blueprintId, uniqueId, x, y, layer, layerName);
+    GameObjectData data = new GameObjectData("EventSpawnedObject", blueprintId, uniqueId, x, y, layer, layerName);
     executor.addGameObject(data);
   }
   /**

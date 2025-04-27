@@ -10,13 +10,17 @@ import java.util.UUID;
  * ordering.
  * </p>
  *
+ * @param name        the name of the object in the editor
  * @param blueprintId the blueprint identifier associated with the game object.
  * @param uniqueId    the unique identifier for the game object.
  * @param x           the x-coordinate of the game object's position.
  * @param y           the y-coordinate of the game object's position.
  * @param layer       the draw layer or z-layer for background/foreground ordering.
+ *
+ * @author Billy McCune, Jacob You
  */
 public record GameObjectData(
+    String name, // Purely editor purposes
     int blueprintId,
     UUID uniqueId,
     int x,

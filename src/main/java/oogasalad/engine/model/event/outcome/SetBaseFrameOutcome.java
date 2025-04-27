@@ -15,10 +15,20 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 
+/**
+ * Sets the object base frame when event occurs
+ *
+ * @author Billy McCune
+ */
 public class SetBaseFrameOutcome implements Outcome {
 
   private AnimationHandlerApi animationHandler;
 
+  /**
+   * constructs a new SetBaseFrameOutcome
+   *
+   * @param animationHandler handles changes the frame
+   */
   public SetBaseFrameOutcome(AnimationHandlerApi animationHandler) {
     this.animationHandler = animationHandler;
   }

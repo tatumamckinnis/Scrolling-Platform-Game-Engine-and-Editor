@@ -71,15 +71,15 @@ public class XMLStrategyTest {
   @Test
   void save_Layers_XMLContainsLayerData() throws IOException, EditorSaveException {
     List<GameObjectData> gameObjects = List.of(
-        new GameObjectData(60, UUID.fromString("129acc3a-3dc4-49c9-861e-a86cfc67c605"), -500, -700,
+        new GameObjectData("",60, UUID.fromString("129acc3a-3dc4-49c9-861e-a86cfc67c605"), -500, -700,
             10, ""),
-        new GameObjectData(60, UUID.fromString("6fd71b4d-f513-4109-982d-63c229489ac7"), 140, -700,
+        new GameObjectData("",60, UUID.fromString("6fd71b4d-f513-4109-982d-63c229489ac7"), 140, -700,
             10, ""),
-        new GameObjectData(1, UUID.fromString("d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"), 0, 500, 1,
+        new GameObjectData("",1, UUID.fromString("d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"), 0, 500, 1,
             ""),
-        new GameObjectData(2, UUID.fromString("3f780051-ec51-4c02-bc98-82d450d12397"), 480, 500, 1,
+        new GameObjectData("",2, UUID.fromString("3f780051-ec51-4c02-bc98-82d450d12397"), 480, 500, 1,
             ""),
-        new GameObjectData(111, UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8"), 100, 400,
+        new GameObjectData("",111, UUID.fromString("e816f04c-3047-4e30-9e20-2e601a99dde8"), 100, 400,
             1, "")
     );
 

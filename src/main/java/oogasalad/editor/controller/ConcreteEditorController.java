@@ -16,8 +16,10 @@ import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
+import oogasalad.editor.model.loader.LevelDataConverter;
 import oogasalad.editor.view.EditorViewListener;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
@@ -548,11 +550,8 @@ public class ConcreteEditorController implements EditorController {
 
   @Override
   public void loadLevelData(String fileName)
-      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
+      throws EditorLoadException {
     editorDataAPI.loadLevelData(fileName);
-    editorDataAPI.getObjectDataMap().forEach((key, value) -> {
-      listenerNotifier.notifyObjectAdded(key);
-    });
   }
 
   @Override

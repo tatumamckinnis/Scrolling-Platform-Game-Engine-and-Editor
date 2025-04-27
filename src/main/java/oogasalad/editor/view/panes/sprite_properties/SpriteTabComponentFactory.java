@@ -234,18 +234,22 @@ public class SpriteTabComponentFactory implements EditorViewListener {
 
   @Override
   public void onObjectAdded(UUID id) {
+    //No method body required
   }
 
   @Override
   public void onDynamicVariablesChanged() {
+    //No method body required
   }
 
   @Override
   public void onErrorOccurred(String msg) {
+    //No method body required
   }
 
   @Override
   public void onPrefabsChanged() {
+    //No method body required
   }
 
   /**
@@ -256,12 +260,12 @@ public class SpriteTabComponentFactory implements EditorViewListener {
 
   @Override
   public void setSnapToGrid(boolean doSnap) {
-
+    //No method body required
   }
 
   @Override
   public void setCellSize(int cellSize) {
-
+    //No method body required
   }
 
   private int safeInt(String s) {

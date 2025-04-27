@@ -16,6 +16,11 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 
+/**
+ * StopObjectAnimationsOutcome stops the object from animating when even occurs
+ *
+ * @author Billy McCune
+ */
 public class stopObjectAnimationsOutcome implements Outcome {
 
   private AnimationHandlerApi animationHandler;
