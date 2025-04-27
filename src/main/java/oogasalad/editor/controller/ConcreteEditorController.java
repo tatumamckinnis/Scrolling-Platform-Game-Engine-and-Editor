@@ -17,7 +17,15 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,14 +65,15 @@ public class ConcreteEditorController implements EditorController {
    * @param editorDataAPI The central API for accessing and modifying editor data. Cannot be null.
    * @param listenerNotifier The notifier responsible for broadcasting events to registered view listeners. Cannot be null.
    */
-  public ConcreteEditorController(EditorDataAPI editorDataAPI, EditorListenerNotifier listenerNotifier) {
+  public ConcreteEditorController(EditorDataAPI editorDataAPI,
+      EditorListenerNotifier listenerNotifier) {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null.");
-    this.listenerNotifier = Objects.requireNonNull(listenerNotifier, "ListenerNotifier cannot be null.");
+    this.listenerNotifier = Objects.requireNonNull(listenerNotifier,
+        "ListenerNotifier cannot be null.");
     this.objectPlacementHandler = new EditorObjectPlacementHandler(editorDataAPI, listenerNotifier);
     this.prefabManager = new EditorPrefabManager(editorDataAPI, listenerNotifier);
     this.eventHandler = new EditorEventHandler(editorDataAPI, listenerNotifier);
     this.objectQueryHandler = new EditorObjectQueryHandler(editorDataAPI);
-
 
     LOG.info("ConcreteEditorController initialized with helper classes.");
   }
@@ -154,7 +163,8 @@ public class ConcreteEditorController implements EditorController {
   @Override
   public void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
       double worldY, int cellSize) {
-    UUID newObjectId = objectPlacementHandler.placeStandardObject(objectGroup, objectNamePrefix, worldX, worldY, cellSize);
+    UUID newObjectId = objectPlacementHandler.placeStandardObject(objectGroup, objectNamePrefix,
+        worldX, worldY, cellSize);
     if (newObjectId != null) {
       notifyObjectSelected(newObjectId);
     }
@@ -187,8 +197,10 @@ public class ConcreteEditorController implements EditorController {
         }
         LOG.debug("Successfully processed removal for object {}", objectId);
       } else {
-        LOG.warn("Removal request processed but object {} was not found or not removed by backend.", objectId);
-        listenerNotifier.notifyErrorOccurred("Object with ID " + objectId + " could not be removed (not found).");
+        LOG.warn("Removal request processed but object {} was not found or not removed by backend.",
+            objectId);
+        listenerNotifier.notifyErrorOccurred(
+            "Object with ID " + objectId + " could not be removed (not found).");
       }
     } catch (Exception e) {
       LOG.error("Error during object removal for ID {}: {}", objectId, e.getMessage(), e);
@@ -211,8 +223,10 @@ public class ConcreteEditorController implements EditorController {
         LOG.debug("Successfully processed update for object {}", objectId);
         listenerNotifier.notifyObjectUpdated(objectId);
       } else {
-        LOG.warn("Update request processed but object {} was not found or not updated by backend.", objectId);
-        listenerNotifier.notifyErrorOccurred("Object with ID " + objectId + " could not be updated (not found).");
+        LOG.warn("Update request processed but object {} was not found or not updated by backend.",
+            objectId);
+        listenerNotifier.notifyErrorOccurred(
+            "Object with ID " + objectId + " could not be updated (not found).");
       }
     } catch (Exception e) {
       LOG.error("Error during object update for ID {}: {}", objectId, e.getMessage(), e);
@@ -285,7 +299,8 @@ public class ConcreteEditorController implements EditorController {
    * {@inheritDoc}
    */
   @Override
-  public void addEventCondition(UUID objectId, String eventId, int groupIndex, String conditionType) {
+  public void addEventCondition(UUID objectId, String eventId, int groupIndex,
+      String conditionType) {
     eventHandler.addEventCondition(objectId, eventId, groupIndex, conditionType);
   }
 
@@ -293,7 +308,8 @@ public class ConcreteEditorController implements EditorController {
    * {@inheritDoc}
    */
   @Override
-  public void removeEventCondition(UUID objectId, String eventId, int groupIndex, int conditionIndex) {
+  public void removeEventCondition(UUID objectId, String eventId, int groupIndex,
+      int conditionIndex) {
     eventHandler.removeEventCondition(objectId, eventId, groupIndex, conditionIndex);
   }
 
@@ -309,16 +325,20 @@ public class ConcreteEditorController implements EditorController {
    * {@inheritDoc}
    */
   @Override
-  public void setEventConditionStringParameter(UUID objectId, String eventId, int groupIndex, int conditionIndex, String paramName, String value) {
-    eventHandler.setEventConditionStringParameter(objectId, eventId, groupIndex, conditionIndex, paramName, value);
+  public void setEventConditionStringParameter(UUID objectId, String eventId, int groupIndex,
+      int conditionIndex, String paramName, String value) {
+    eventHandler.setEventConditionStringParameter(objectId, eventId, groupIndex, conditionIndex,
+        paramName, value);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public void setEventConditionDoubleParameter(UUID objectId, String eventId, int groupIndex, int conditionIndex, String paramName, Double value) {
-    eventHandler.setEventConditionDoubleParameter(objectId, eventId, groupIndex, conditionIndex, paramName, value);
+  public void setEventConditionDoubleParameter(UUID objectId, String eventId, int groupIndex,
+      int conditionIndex, String paramName, Double value) {
+    eventHandler.setEventConditionDoubleParameter(objectId, eventId, groupIndex, conditionIndex,
+        paramName, value);
   }
 
   /**
@@ -357,7 +377,8 @@ public class ConcreteEditorController implements EditorController {
    * {@inheritDoc}
    */
   @Override
-  public void setEventOutcomeStringParameter(UUID objectId, String eventId, int outcomeIndex, String paramName, String value) {
+  public void setEventOutcomeStringParameter(UUID objectId, String eventId, int outcomeIndex,
+      String paramName, String value) {
     eventHandler.setEventOutcomeStringParameter(objectId, eventId, outcomeIndex, paramName, value);
   }
 
@@ -365,7 +386,8 @@ public class ConcreteEditorController implements EditorController {
    * {@inheritDoc}
    */
   @Override
-  public void setEventOutcomeDoubleParameter(UUID objectId, String eventId, int outcomeIndex, String paramName, Double value) {
+  public void setEventOutcomeDoubleParameter(UUID objectId, String eventId, int outcomeIndex,
+      String paramName, Double value) {
     eventHandler.setEventOutcomeDoubleParameter(objectId, eventId, outcomeIndex, paramName, value);
   }
 
@@ -406,7 +428,8 @@ public class ConcreteEditorController implements EditorController {
           variable.getName(), e.getMessage());
       listenerNotifier.notifyErrorOccurred("Failed to add variable: " + e.getMessage());
     } catch (Exception e) {
-      LOG.error("Unexpected error adding dynamic variable '{}': {}", variable.getName(), e.getMessage(), e);
+      LOG.error("Unexpected error adding dynamic variable '{}': {}", variable.getName(),
+          e.getMessage(), e);
       listenerNotifier.notifyErrorOccurred("Failed to add variable: " + e.getMessage());
     }
   }
@@ -518,17 +541,20 @@ public class ConcreteEditorController implements EditorController {
   }
 
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void saveLevelData(String fileName) throws EditorSaveException {
     editorDataAPI.saveLevelData(fileName);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+  public void loadLevelData(String fileName)
+      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
+    editorDataAPI.loadLevelData(fileName);
+    editorDataAPI.getObjectDataMap().forEach((key, value) -> {
+      listenerNotifier.notifyObjectAdded(key);
+    });
+  }
+
   @Override
   public void setCellSize(int cellSize) {
     if (cellSize > 0) {
@@ -537,26 +563,17 @@ public class ConcreteEditorController implements EditorController {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public int getCellSize() {
     return cellSize;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void setSnapToGrid(boolean doSnap) {
     this.snapToGrid = doSnap;
     listenerNotifier.notifySnapToGridChanged(doSnap);
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public boolean isSnapToGrid() {
     return snapToGrid;

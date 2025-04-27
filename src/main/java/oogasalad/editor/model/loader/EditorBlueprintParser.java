@@ -1,4 +1,5 @@
 package oogasalad.editor.model.loader;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,10 +14,8 @@ import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.HitBoxDataParser;
 import oogasalad.fileparser.PropertyParser;
-import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
-import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
 import oogasalad.fileparser.records.SpriteRequest;
@@ -27,10 +26,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Editor-specific BlueprintDataParser.
- * Parses XML blueprint data into a map of {@link BlueprintData} records.
- * Uses the EditorSpriteParser for sprite data resolution.
- * Handles parser initialization internally.
+ * Editor-specific BlueprintDataParser. Parses XML blueprint data into a map of
+ * {@link BlueprintData} records. Uses the EditorSpriteParser for sprite data resolution. Handles
+ * parser initialization internally.
  *
  * @author Tatum McKinnis
  */
@@ -47,13 +45,23 @@ public class EditorBlueprintParser {
   private List<EventData> myEventDataList;
   private final PropertyParser propertyParser;
 
-  /** Constructs a new EditorBlueprintParser. */
+  private record BasicAttributes(int id, double velocityX, double velocityY, double rotation,
+                                 boolean isFlipped, String originalType, String spriteName,
+                                 String spriteFileAttr) {
+
+  }
+
+  /**
+   * Constructs a new EditorBlueprintParser.
+   */
   public EditorBlueprintParser() {
     propertyParser = new PropertyParser();
     myHitBoxDataParser = new HitBoxDataParser();
   }
 
-  /** Lazily initializes the EditorSpriteParser. */
+  /**
+   * Lazily initializes the EditorSpriteParser.
+   */
   private boolean ensureSpriteParserInitialized() {
     if (mySpriteDataParser == null) {
       try {
@@ -68,7 +76,9 @@ public class EditorBlueprintParser {
   }
 
 
-  /** Extracts blueprint data from the provided XML root element. */
+  /**
+   * Extracts blueprint data from the provided XML root element.
+   */
   public Map<Integer, BlueprintData> getBlueprintData(Element root, List<EventData> eventList)
       throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
 
@@ -81,7 +91,9 @@ public class EditorBlueprintParser {
     List<BlueprintData> gameObjectDataList = new ArrayList<>();
     for (int i = 0; i < gameNodes.getLength(); i++) {
       Node node = gameNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
+      if (!(node instanceof Element)) {
+        continue;
+      }
       Element gameElement = (Element) node;
       gameName = gameElement.getAttribute("name");
       try {
@@ -93,23 +105,32 @@ public class EditorBlueprintParser {
     return createBlueprintDataMap(gameObjectDataList);
   }
 
-  /** Creates a map from a list of BlueprintData records. */
-  private Map<Integer, BlueprintData> createBlueprintDataMap(List<BlueprintData> blueprintDataList) {
+  /**
+   * Creates a map from a list of BlueprintData records.
+   */
+  private Map<Integer, BlueprintData> createBlueprintDataMap(
+      List<BlueprintData> blueprintDataList) {
     Map<Integer, BlueprintData> blueprintDataMap = new HashMap<>();
     for (BlueprintData data : blueprintDataList) {
-      if(data != null) blueprintDataMap.put(data.blueprintId(), data);
+      if (data != null) {
+        blueprintDataMap.put(data.blueprintId(), data);
+      }
     }
     return blueprintDataMap;
   }
 
-  /** Parses blueprint data within a <game> element. */
+  /**
+   * Parses blueprint data within a <game> element.
+   */
   private List<BlueprintData> parseByGame(Element gameNode)
       throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
     NodeList objectGroupNodes = gameNode.getElementsByTagName("objectGroup");
     List<BlueprintData> gameObjectsList = new ArrayList<>();
     for (int i = 0; i < objectGroupNodes.getLength(); i++) {
       Node node = objectGroupNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
+      if (!(node instanceof Element)) {
+        continue;
+      }
       Element objectGroup = (Element) node;
       groupName = objectGroup.getAttribute("name");
       gameObjectsList.addAll(parseByObjectGroup(objectGroup));
@@ -117,114 +138,124 @@ public class EditorBlueprintParser {
     return gameObjectsList;
   }
 
-  /** Parses blueprint data within an <objectGroup> element. */
-  private List<BlueprintData> parseByObjectGroup(Element objectGroupNode)
-      throws BlueprintParseException, HitBoxParseException, PropertyParsingException, EventParseException {
-    List<BlueprintData> gameObjectsGroupList = new ArrayList<>();
-    NodeList gameObjectNodes = objectGroupNode.getElementsByTagName("object");
-    for (int i = 0; i < gameObjectNodes.getLength(); i++) {
-      Node node = gameObjectNodes.item(i);
-      if (!(node instanceof Element)) { continue; }
-      Element gameObjectNode = (Element) node;
-      try {
-        BlueprintData bpData = parseGameObjectData(gameObjectNode);
-        if(bpData != null) gameObjectsGroupList.add(bpData);
-      } catch (Exception e) {
-        String idAttr = gameObjectNode.hasAttribute("id") ? gameObjectNode.getAttribute("id") : "[unknown ID]";
-        LOG.error("Skipping object id={} due to parsing error within group '{}': {}", idAttr, groupName, e.getMessage(), e);
+  /**
+   * Parses blueprint data within an <objectGroup> element.
+   */
+  private List<BlueprintData> parseByObjectGroup(Element objectGroupNode) {
+    List<BlueprintData> results = new ArrayList<>();
+    NodeList nodes = objectGroupNode.getElementsByTagName("object");
+    for (int i = 0; i < nodes.getLength(); i++) {
+      Node n = nodes.item(i);
+      if (n instanceof Element elt) {
+        safeParseBlueprint(elt, results);
       }
     }
-    return gameObjectsGroupList;
+    return results;
+  }
+
+  private void safeParseBlueprint(Element elt, List<BlueprintData> out) {
+    try {
+      BlueprintData bp = parseGameObjectData(elt);
+      if (bp != null) {
+        out.add(bp);
+      }
+    } catch (Exception e) {
+      String id = elt.hasAttribute("id") ? elt.getAttribute("id") : "[unknown ID]";
+      LOG.error("Skipping object id={} due to parsing error within group '{}': {}", id, groupName,
+          e.getMessage(), e);
+    }
   }
 
   /**
-   * Parses a single game object node into a BlueprintData record.
-   * Uses the EditorSpriteParser and passes the FULL relative path.
+   * Parses a single game object node into a BlueprintData record. Uses the EditorSpriteParser and
+   * passes the FULL relative path.
+   *
+   * @param gameObjectNode
+   * @return
    */
   private BlueprintData parseGameObjectData(Element gameObjectNode)
       throws BlueprintParseException, HitBoxParseException, PropertyParsingException {
 
-    int id = -1;
-    String originalType = "";
-    String spriteName = "";
-    String currentGroupName = this.groupName;
+    // 1) read all basic attrs in one place
+    BasicAttributes a = extractBasicAttributes(gameObjectNode);
 
+    // 2) resolve SpriteData (with all the try/catch fallback logic)
+    SpriteData sprite = resolveSpriteData(a);
+
+    // 3) parse the rest of the pieces
+    HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
+    List<EventData> events = getAssociatedEventData(gameObjectNode);
+    Map<String, Double> doubleProps = propertyParser.parseDoubleProperties(gameObjectNode,
+        "doubleProperties", "property");
+    Map<String, String> stringProps = propertyParser.parseStringProperties(gameObjectNode,
+        "stringProperties", "property");
+    List<String> displayedProps = getDisplayedProperties(gameObjectNode);
+
+    LOG.debug(
+        "Creating BlueprintData for id={}, type={}, sprite='{}', imageFile='{}', baseFrame={}, frames={}, animations={}",
+        a.id, a.originalType, sprite.name(),
+        sprite.spriteFile() != null ? sprite.spriteFile().getPath() : "null",
+        sprite.baseFrame() != null ? sprite.baseFrame().name() : "null", sprite.frames().size(),
+        sprite.animations().size());
+
+    return new BlueprintData(a.id, a.velocityX, a.velocityY, a.rotation, a.isFlipped, gameName,
+        this.groupName, a.originalType, sprite, hitBoxData, events, stringProps, doubleProps,
+        displayedProps);
+  }
+
+  /** Pulls out all the primitive attrs and throws immediately on bad format. */
+  private BasicAttributes extractBasicAttributes(Element o) {
+    int id             = Integer.parseInt(o.getAttribute("id"));
+    double vx          = Double.parseDouble(o.getAttribute("velocityX"));
+    double vy          = Double.parseDouble(o.getAttribute("velocityY"));
+    double rot         = Double.parseDouble(o.getAttribute("rotation"));
+    boolean flipped    = Boolean.parseBoolean(o.getAttribute("flipped"));
+    String type        = o.getAttribute("type");
+    String name        = o.getAttribute("spriteName");
+    String fileAttr    = o.getAttribute("spriteFile");
+    return new BasicAttributes(id, vx, vy, rot, flipped, type, name, fileAttr);
+  }
+
+  private SpriteData resolveSpriteData(BasicAttributes a) {
+    if (mySpriteDataParser == null
+        || gameName == null || gameName.isBlank()
+        || a.spriteName.isBlank()
+        || a.spriteFileAttr.isBlank()) {
+      LOG.warn("Skipping sprite parsing for blueprint {} (missing parser/info)", a.id);
+      return createDefaultSpriteData(a.spriteName);
+    }
+
+    SpriteRequest req = new SpriteRequest(
+        gameName, groupName, a.originalType, a.spriteName, a.spriteFileAttr);
     try {
-      id = Integer.parseInt(gameObjectNode.getAttribute("id"));
-      double velocityX = Double.parseDouble(gameObjectNode.getAttribute("velocityX"));
-      double velocityY = Double.parseDouble(gameObjectNode.getAttribute("velocityY"));
-      double rotation = Double.parseDouble(gameObjectNode.getAttribute("rotation"));
-      boolean isFlipped = Boolean.parseBoolean(gameObjectNode.getAttribute("flipped"));
-      originalType = gameObjectNode.getAttribute("type");
-      spriteName = gameObjectNode.getAttribute("spriteName");
-      String spriteFileAttr = gameObjectNode.getAttribute("spriteFile");
-
-      SpriteData spriteData = null;
-
-      if (mySpriteDataParser != null &&
-          gameName != null && !gameName.isEmpty() &&
-          spriteName != null && !spriteName.isEmpty() &&
-          spriteFileAttr != null && !spriteFileAttr.isEmpty()) {
-
-        SpriteRequest request = new SpriteRequest(gameName, currentGroupName, originalType, spriteName, spriteFileAttr);
-        LOG.debug("Attempting sprite request for blueprint {} with: {}", id, request);
-
-        try {
-          spriteData = mySpriteDataParser.getSpriteData(request);
-
-          if (spriteData == null || spriteData.baseFrame() == null || spriteData.spriteFile() == null || spriteData.spriteFile().getPath().isEmpty()) {
-            LOG.error("EditorSpriteParser returned invalid/incomplete data for request {}. Creating default.", request);
-            spriteData = createDefaultSpriteData(spriteName);
-          }
-
-        } catch (SpriteParseException spe) {
-          LOG.error("Failed to parse sprite data for blueprint {} (Request: {}): {}", id, request, spe.getMessage());
-          spriteData = createDefaultSpriteData(spriteName);
-        } catch (Exception e) {
-          LOG.error("Unexpected error getting sprite data for blueprint {} (Request: {}): {}", id, request, e.getMessage(), e);
-          spriteData = createDefaultSpriteData(spriteName);
-        }
-      } else {
-        if (mySpriteDataParser == null) { LOG.error("Skipping sprite data parsing for blueprint {} because EditorSpriteParser failed.", id);}
-        else { LOG.warn("Skipping sprite data parsing for blueprint {} due to missing info...", id); }
-        spriteData = createDefaultSpriteData(spriteName != null ? spriteName : "Unknown_" + id);
+      SpriteData sd = mySpriteDataParser.getSpriteData(req);
+      if (sd == null
+          || sd.baseFrame() == null
+          || sd.spriteFile() == null
+          || sd.spriteFile().getPath().isEmpty()) {
+        LOG.error("Incomplete SpriteData for {} → using default", req);
+        return createDefaultSpriteData(a.spriteName);
       }
-
-      HitBoxData hitBoxData = myHitBoxDataParser.getHitBoxData(gameObjectNode);
-      List<EventData> eventDataList = getAssociatedEventData(gameObjectNode);
-      Map<String, Double> doubleProperties = propertyParser.parseDoubleProperties(gameObjectNode, "doubleProperties", "property");
-      Map<String, String> stringProperties = propertyParser.parseStringProperties(gameObjectNode, "stringProperties", "property");
-      List<String> displayedProperties = getDisplayedProperties(gameObjectNode);
-
-      LOG.debug("Creating BlueprintData for id={}, type={}, sprite='{}', imageFile='{}', baseFrame={}, frames={}, animations={}",
-          id, originalType, spriteData.name(),
-          spriteData.spriteFile() != null ? spriteData.spriteFile().getPath() : "null",
-          spriteData.baseFrame() != null ? spriteData.baseFrame().name() : "null",
-          spriteData.frames().size(), spriteData.animations().size());
-
-      return new BlueprintData(
-          id, velocityX, velocityY, rotation, isFlipped,
-          gameName, currentGroupName, originalType,
-          spriteData,
-          hitBoxData, eventDataList,
-          stringProperties, doubleProperties, displayedProperties
-      );
-    } catch (NumberFormatException e) {
-      throw new BlueprintParseException("Blueprint attribute has invalid number format for id=" + id + ": " + e.getMessage(), e);
-    } catch (HitBoxParseException | PropertyParsingException e) {
-      throw e;
+      return sd;
     } catch (Exception e) {
-      throw new BlueprintParseException("Unexpected error parsing blueprint object id=" + id + ": " + e.getMessage(), e);
+      LOG.error("Error fetching sprite for {}: {} → using default",
+          req, e.getMessage());
+      return createDefaultSpriteData(a.spriteName);
     }
   }
 
-  /** Creates a default/empty SpriteData record for fallback */
+  /**
+   * Creates a default/empty SpriteData record for fallback
+   */
   private SpriteData createDefaultSpriteData(String name) {
     String safeName = (name != null && !name.trim().isEmpty()) ? name : "Unknown";
-    return new SpriteData(safeName, new File(""), null, Collections.emptyList(), Collections.emptyList());
+    return new SpriteData(safeName, new File(""), null, Collections.emptyList(),
+        Collections.emptyList());
   }
 
-  /** Creates the event data list... */
+  /**
+   * Creates the event data list...
+   */
   private List<EventData> getAssociatedEventData(Element gameObjectNode) {
     String eventIds = gameObjectNode.getAttribute("eventIDs");
     List<EventData> eventDataList = new ArrayList<>();
@@ -234,31 +265,44 @@ public class EditorBlueprintParser {
         String trimmedId = eventId.trim();
         if (!trimmedId.isEmpty()) {
           EventData event = findEventById(trimmedId);
-          if (event != null) { eventDataList.add(event); }
-          else { LOG.warn("EventData not found for eventID: '{}' referenced in blueprint.", trimmedId); }
+          if (event != null) {
+            eventDataList.add(event);
+          } else {
+            LOG.warn("EventData not found for eventID: '{}' referenced in blueprint.", trimmedId);
+          }
         }
       }
     }
     return eventDataList;
   }
 
-  /** Retrieves the EventData matching the provided event ID... */
+  /**
+   * Retrieves the EventData matching the provided event ID...
+   */
   private EventData findEventById(String id) {
-    if (myEventDataList == null) return null;
+    if (myEventDataList == null) {
+      return null;
+    }
     for (EventData eventData : myEventDataList) {
-      if (Objects.equals(id, eventData.eventId())) { return eventData; }
+      if (Objects.equals(id, eventData.eventId())) {
+        return eventData;
+      }
     }
     return null;
   }
 
-  /** Retrieves the displayed properties list... */
+  /**
+   * Retrieves the displayed properties list...
+   */
   private List<String> getDisplayedProperties(Element gameObjectNode) {
     NodeList nodes = gameObjectNode.getElementsByTagName(DISPLAYED_PROPERTIES_TAG);
     if (nodes.getLength() > 0 && nodes.item(0) instanceof Element) {
       Element displayedPropertiesElement = (Element) nodes.item(0);
       if (displayedPropertiesElement.hasAttribute(PROPERTY_LIST_ATTR)) {
         String list = displayedPropertiesElement.getAttribute(PROPERTY_LIST_ATTR);
-        if (list != null && !list.trim().isEmpty()) { return List.of(list.split(",")); }
+        if (list != null && !list.trim().isEmpty()) {
+          return List.of(list.split(","));
+        }
       }
     }
     return Collections.emptyList();

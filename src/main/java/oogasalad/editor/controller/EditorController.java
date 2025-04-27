@@ -4,12 +4,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import oogasalad.editor.controller.level.EditorDataAPI;
-import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.view.EditorViewListener;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 
 /**
@@ -90,14 +98,16 @@ public interface EditorController {
    * @param objectNamePrefix The prefix for the object's name.
    * @param worldX           The x-coordinate in world space where the object should be placed.
    * @param worldY           The y-coordinate in world space where the object should be placed.
-   * @param cellSize         The current grid cell size (may be used for snapping or default sizing).
+   * @param cellSize         The current grid cell size (may be used for snapping or default
+   *                         sizing).
    */
   void requestObjectPlacement(String objectGroup, String objectNamePrefix, double worldX,
       double worldY, int cellSize);
 
 
   /**
-   * Handles a request from the view to place an object based on a prefab blueprint onto the canvas.
+   * Handles a request from the view to place an object based on a prefab blueprint onto the
+   * canvas.
    *
    * @param prefabData The BlueprintData representing the prefab to place.
    * @param worldX     The x-coordinate in world space where the object should be placed.
@@ -116,7 +126,7 @@ public interface EditorController {
    * Handles a request from the view or internal logic to update an existing object's data.
    *
    * @param updatedObject The EditorObject containing the new data. Its ID identifies the object to
-   * update.
+   *                      update.
    */
   void requestObjectUpdate(EditorObject updatedObject);
 
@@ -149,7 +159,7 @@ public interface EditorController {
    *
    * @param objectId The UUID of the object to modify.
    * @param eventId  The identifier of the event type to add (e.g., "CollisionWithEnemy",
-   * "KeyPressA").
+   *                 "KeyPressA").
    */
   void addEvent(UUID objectId, String eventId);
 
@@ -185,7 +195,7 @@ public interface EditorController {
    * @param eventId       The identifier of the event.
    * @param groupIndex    The index of the condition group (OR block) to add to.
    * @param conditionType The type identifier of the condition to add (e.g., "IsGrounded",
-   * "VariableEquals").
+   *                      "VariableEquals").
    */
   void addEventCondition(UUID objectId, String eventId, int groupIndex, String conditionType);
 
@@ -263,7 +273,7 @@ public interface EditorController {
    * @param objectId    The UUID of the object.
    * @param eventId     The identifier of the event.
    * @param outcomeType The type identifier of the outcome to add (e.g., "MoveForward",
-   * "DestroySelf").
+   *                    "DestroySelf").
    */
   void addEventOutcome(UUID objectId, String eventId, String outcomeType);
 
@@ -321,19 +331,19 @@ public interface EditorController {
   ExecutorData getEventOutcomeData(UUID objectId, String eventId, int outcomeIndex);
 
   /**
-   * Adds a global dynamic variable to the editor's context.
-   * Note: This manages variables separate from per-object parameters.
+   * Adds a global dynamic variable to the editor's context. Note: This manages variables separate
+   * from per-object parameters.
    *
    * @param variable The {@link DynamicVariable} to add.
    */
   void addDynamicVariable(DynamicVariable variable);
 
   /**
-   * Retrieves a list of all available global dynamic variables.
-   * Note: This manages variables separate from per-object parameters.
+   * Retrieves a list of all available global dynamic variables. Note: This manages variables
+   * separate from per-object parameters.
    *
    * @param objectId The UUID of the currently selected object (context, may not be used for global
-   * vars).
+   *                 vars).
    * @return A list of {@link DynamicVariable} objects.
    */
   List<DynamicVariable> getAvailableDynamicVariables(UUID objectId);
@@ -343,8 +353,8 @@ public interface EditorController {
    * Sets or updates a custom string parameter for a specific object.
    *
    * @param objectId The UUID of the object to modify.
-   * @param key The non-empty key for the parameter.
-   * @param value The string value to set.
+   * @param key      The non-empty key for the parameter.
+   * @param value    The string value to set.
    */
   void setObjectStringParameter(UUID objectId, String key, String value);
 
@@ -352,8 +362,8 @@ public interface EditorController {
    * Sets or updates a custom double parameter for a specific object.
    *
    * @param objectId The UUID of the object to modify.
-   * @param key The non-empty key for the parameter.
-   * @param value The double value to set.
+   * @param key      The non-empty key for the parameter.
+   * @param value    The double value to set.
    */
   void setObjectDoubleParameter(UUID objectId, String key, Double value);
 
@@ -361,7 +371,7 @@ public interface EditorController {
    * Removes a custom parameter (either string or double) with the specified key from an object.
    *
    * @param objectId The UUID of the object to modify.
-   * @param key The non-empty key of the parameter to remove.
+   * @param key      The non-empty key of the parameter to remove.
    */
   void removeObjectParameter(UUID objectId, String key);
 
@@ -369,7 +379,8 @@ public interface EditorController {
    * Retrieves a map of all custom string parameters associated with the specified object.
    *
    * @param objectId The UUID of the object.
-   * @return An unmodifiable map of string key-value pairs, or an empty map if none exist or the object is not found.
+   * @return An unmodifiable map of string key-value pairs, or an empty map if none exist or the
+   * object is not found.
    */
   Map<String, String> getObjectStringParameters(UUID objectId);
 
@@ -377,7 +388,8 @@ public interface EditorController {
    * Retrieves a map of all custom double parameters associated with the specified object.
    *
    * @param objectId The UUID of the object.
-   * @return An unmodifiable map of double key-value pairs, or an empty map if none exist or the object is not found.
+   * @return An unmodifiable map of double key-value pairs, or an empty map if none exist or the
+   * object is not found.
    */
   Map<String, Double> getObjectDoubleParameters(UUID objectId);
 
@@ -391,30 +403,53 @@ public interface EditorController {
   void saveLevelData(String fileName) throws EditorSaveException;
 
   /**
-   * Sets the grid cell size used by the editor view.
+   * Loads level data from the specified file into the editor.
    *
-   * @param cellSize The size of grid cells in pixels (must be positive).
+   * <p>This method parses the provided file to extract and populate all necessary
+   * editor components, including layers, game objects, properties, events, sprites, hitboxes, and
+   * blueprints. It prepares the editor's internal data structures so that the level can be edited
+   * or displayed.</p>
+   *
+   * @param fileName the path to the level file to load
+   * @throws EditorSaveException      if an error occurs while saving editor state
+   * @throws LayerParseException      if there is an error parsing layer data
+   * @throws LevelDataParseException  if the overall level data fails to parse
+   * @throws PropertyParsingException if object properties cannot be parsed
+   * @throws SpriteParseException     if sprite data fails to load
+   * @throws EventParseException      if event definitions fail to parse
+   * @throws HitBoxParseException     if hit box information is invalid
+   * @throws BlueprintParseException  if blueprint data is corrupted or invalid
+   * @throws GameObjectParseException if an error occurs while creating game objects
+   */
+  void loadLevelData(String fileName)
+      throws EditorSaveException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
+
+  /**
+   * Sets the size of a single cell in the editor grid.
+   *
+   * @param cellSize the size (in pixels) of each grid cell
    */
   void setCellSize(int cellSize);
 
   /**
-   * Gets the current grid cell size.
+   * Returns the current size of a single cell in the editor grid.
    *
-   * @return The cell size in pixels.
+   * @return the size (in pixels) of each grid cell
    */
   int getCellSize();
 
   /**
-   * Sets whether object placement and movement should snap to the grid.
+   * Enables or disables snapping objects to the grid during editing.
    *
-   * @param doSnap True to enable snapping, false otherwise.
+   * @param doSnap {@code true} to enable snapping to grid, {@code false} to allow free placement
    */
   void setSnapToGrid(boolean doSnap);
 
   /**
-   * Checks if snap-to-grid is currently enabled.
+   * Returns whether snapping to the grid is currently enabled.
    *
-   * @return True if snapping is enabled, false otherwise.
+   * @return {@code true} if snapping to grid is enabled, {@code false} otherwise
    */
   boolean isSnapToGrid();
+
 }

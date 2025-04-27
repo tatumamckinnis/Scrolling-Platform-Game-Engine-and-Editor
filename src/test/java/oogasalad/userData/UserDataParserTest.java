@@ -2,14 +2,12 @@ package oogasalad.userData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
 
 import oogasalad.userData.parser.UserDataParser;
 import org.junit.jupiter.api.Test;

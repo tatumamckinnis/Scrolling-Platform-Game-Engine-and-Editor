@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for overworld-brick (supermario)
+-->
+<spriteFile imagePath="supermario-blocks.png">
+  <sprite name="overworld-brick" x="160" y="0" width="16" height="16">
+    <frames>
+      <frame name="overworld-brick" x="160" y="0" width="16" height="16"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

@@ -168,7 +168,7 @@ public class EditorComponentFactory {
    *
    * @return The fully assembled editor Scene object, ready to be set on the stage.
    */
-  public Scene createEditorScene() {
+  public Scene createEditorScene() throws IOException {
     SplitPane root = new SplitPane();
     root.setId(getId("id.editor.root"));
     int editorWidth = getIntProperty(getId("prop.editor.width"),
@@ -295,7 +295,7 @@ public class EditorComponentFactory {
     return assetPane;
   }
 
-  private Pane createChatPane() {
+  private Pane createChatPane() throws IOException {
     // Header label
     Label chatLabel = createStyledLabel(
         uiBundle.getString(getId("key.chatbot.tab.title")),

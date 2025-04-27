@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-160" minY="-80" maxX="1" maxY="1">
+  <cameraData type="TRACKER">
+    <stringProperties>
+    </stringProperties>
+    <doubleProperties>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_0" width="161" height="81" z="0">
+      <data>
+        <object id="1" coordinates="(-160,-80)" uid="4215582f-a7ea-41eb-bb96-bc6b9af97277" />
+        <object id="2" coordinates="(-32,-16)" uid="8f691fa3-6602-4334-9062-5d1c5f0b6bf7" />
+      </data>
+    </layer>
+  </layers>
+  <game name="unknown_game">
+    <objectGroup name="entities">
+      <object
+  spriteName="Bird1"
+  type="entities"
+  id="1"
+  spriteFile="bird1.xml"
+  hitBoxWidth="97"
+  hitBoxHeight="68"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+            <property name="" value="fly"/>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks">
+      <object
+  spriteName="overworld-brick"
+  type="blocks"
+  id="2"
+  spriteFile="overworld-brick.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+  </events>
+</map>

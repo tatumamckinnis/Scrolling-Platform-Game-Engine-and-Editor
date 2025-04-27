@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for mushroom-green.png (supermario)
+-->
+<spriteFile imagePath="supermario-items.png">
+  <sprite name="mushroom-green.png" x="16" y="0" width="16" height="16">
+    <frames>
+      <frame name="mushroom-green.png" x="16" y="0" width="16" height="16"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

@@ -100,10 +100,25 @@ public interface GameManagerAPI {
    */
   void setLanguage(String language);
 
+  /**
+   * Returns the current player object associated with the editor or game.
+   *
+   * @return the player object, or {@code null} if no player is currently set
+   */
   Object getPlayer();
 
+  /**
+   * Returns the name of the currently selected game.
+   *
+   * @return the current game name, or {@code null} if no game is selected
+   */
   String getCurrentGameName();
 
+  /**
+   * Returns the name of the currently selected level.
+   *
+   * @return the current level name, or {@code null} if no level is selected
+   */
   String getCurrentLevelName();
 
   /**
