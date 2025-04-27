@@ -26,6 +26,11 @@ public class SpawnNewObjectOutcome implements Outcome {
 
   private final GameExecutor executor;
 
+  /**
+   * constructs a new SpawnNewObjectOutcome
+   *
+   * @param gameExecutor game executor that executes some aspect of the game
+   */
   public SpawnNewObjectOutcome(GameExecutor gameExecutor) {
     this.executor = gameExecutor;
   }

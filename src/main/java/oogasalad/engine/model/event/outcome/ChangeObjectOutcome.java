@@ -22,12 +22,19 @@ import oogasalad.fileparser.records.GameObjectData;
  *
  * @author Gage Garcia
  */
-public class ChangeObjectOutcome implements Outcome{
+public class ChangeObjectOutcome implements Outcome {
+
   private final GameExecutor gameExecutor;
 
+  /**
+   * constructs a new ChangeObjectOutCome
+   *
+   * @param executor game executor that executes some aspect of the game
+   */
   public ChangeObjectOutcome(GameExecutor executor) {
     this.gameExecutor = executor;
   }
+
   @Override
   public void execute(GameObject gameObject, Map<String, String> stringParameters,
       Map<String, Double> doubleParameters)
@@ -39,7 +46,8 @@ public class ChangeObjectOutcome implements Outcome{
     int y = gameObject.getYPosition();
     int layer = (int) Math.ceil(doubleParameters.get("layer"));
     String layerName = stringParameters.get("layer_name");
-    GameObjectData data = new GameObjectData("EventChangedObject", blueprintId, uniqueId, x, y, layer, layerName);
+    GameObjectData data = new GameObjectData("EventChangedObject", blueprintId, uniqueId, x, y,
+        layer, layerName);
     gameExecutor.addGameObject(data); //add new one
 
   }

@@ -37,20 +37,20 @@
     </userGameData>
     <userGameData>
       <gameName>dinosaurgame</gameName>
-      <lastPlayed>Sat Apr 26 23:55:52 EDT 2025</lastPlayed>
+      <lastPlayed>Sun Apr 27 08:48:53 EDT 2025</lastPlayed>
       <playerHighestGameStatMap>
         <stat name="dash_duration">-6</stat>
-        <stat name="score">139</stat>
+        <stat name="score">203</stat>
         <stat name="rocket_duration">-6</stat>
         <stat name="lives">1</stat>
       </playerHighestGameStatMap>
       <playerLevelStatMap>
         <level>
         <levelName>DinoLevel1</levelName>
-        <lastPlayed>Sat Apr 26 23:55:52 EDT 2025</lastPlayed>
+        <lastPlayed>Sun Apr 27 08:48:53 EDT 2025</lastPlayed>
           <levelHighestStatMap>
             <stat name="dash_duration">0</stat>
-            <stat name="score">139</stat>
+            <stat name="score">203</stat>
             <stat name="rocket_duration">0</stat>
             <stat name="lives">200000</stat>
           </levelHighestStatMap>

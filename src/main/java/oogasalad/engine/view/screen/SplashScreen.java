@@ -74,7 +74,7 @@ public class SplashScreen extends Display {
 
   @Override
   public void addGameObjectImage(ImmutableGameObject gameObject) {
-
+    //No implementation needed
   }
 
   @Override

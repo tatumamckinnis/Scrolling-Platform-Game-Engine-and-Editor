@@ -14,6 +14,11 @@ import oogasalad.exceptions.LevelDataParseException;
 import oogasalad.exceptions.PropertyParsingException;
 import oogasalad.exceptions.SpriteParseException;
 
+/**
+ * Move outcome moves the object
+ *
+ * @author Billy McCune
+ */
 public class MoveOutcome implements Outcome {
 
   @Override
