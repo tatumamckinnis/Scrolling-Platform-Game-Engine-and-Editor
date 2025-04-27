@@ -25,7 +25,7 @@ import oogasalad.filesaver.savestrategy.SaverStrategy;
  * from a file into the editor. The methods currently have placeholder implementations and will need
  * to be completed.
  *
- * @author Jacob You
+ * @author Jacob You, Alana Zinkin
  */
 public class EditorFileConverter implements EditorFileConverterAPI {
 

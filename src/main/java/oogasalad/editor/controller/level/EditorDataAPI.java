@@ -424,6 +424,24 @@ public class EditorDataAPI {
     return cameraAPI;
   }
 
+  /**
+   * Loads level data from the specified file and populates the editor's internal object map.
+   *
+   * <p>This method parses the provided level file into {@link LevelData}, extracts all
+   * {@link GameObjectData} and their corresponding {@link BlueprintData}, and uses an
+   * {@link EditorObjectPopulator} to create {@link EditorObject}s. Each object is then added to the
+   * editor's level data map for later use by the editor view or controller.</p>
+   *
+   * @param fileName the path to the level file to load
+   * @throws LayerParseException      if there is an error parsing layer information
+   * @throws LevelDataParseException  if there is an error parsing the overall level structure
+   * @throws PropertyParsingException if object properties fail to parse
+   * @throws SpriteParseException     if sprite information fails to load
+   * @throws EventParseException      if event definitions fail to parse
+   * @throws HitBoxParseException     if hit box definitions are invalid
+   * @throws BlueprintParseException  if blueprint data cannot be interpreted
+   * @throws GameObjectParseException if an error occurs while creating game objects
+   */
   public void loadLevelData(String fileName)
       throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);

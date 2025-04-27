@@ -228,6 +228,25 @@ public interface EditorController {
    */
   void saveLevelData(String fileName) throws EditorSaveException;
 
+  /**
+   * Loads level data from the specified file into the editor.
+   *
+   * <p>This method parses the provided file to extract and populate all necessary
+   * editor components, including layers, game objects, properties, events, sprites, hitboxes, and
+   * blueprints. It prepares the editor's internal data structures so that the level can be edited
+   * or displayed.</p>
+   *
+   * @param fileName the path to the level file to load
+   * @throws EditorSaveException      if an error occurs while saving editor state
+   * @throws LayerParseException      if there is an error parsing layer data
+   * @throws LevelDataParseException  if the overall level data fails to parse
+   * @throws PropertyParsingException if object properties cannot be parsed
+   * @throws SpriteParseException     if sprite data fails to load
+   * @throws EventParseException      if event definitions fail to parse
+   * @throws HitBoxParseException     if hit box information is invalid
+   * @throws BlueprintParseException  if blueprint data is corrupted or invalid
+   * @throws GameObjectParseException if an error occurs while creating game objects
+   */
   void loadLevelData(String fileName)
       throws EditorSaveException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException;
 }

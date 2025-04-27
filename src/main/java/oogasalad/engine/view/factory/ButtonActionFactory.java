@@ -331,24 +331,28 @@ public class ButtonActionFactory {
     };
   }
 
+  /**
+   * Creates a {@link Runnable} that initializes a new editor window and optionally loads a
+   * specified game level into the editor if valid game and level names are provided.
+   *
+   * <p>When executed, this runnable creates a new {@link Stage}, initializes the editor
+   * components, and attempts to load the specified level from the game's file path. If either the
+   * game or level is {@code null}, the editor opens without preloading a level.</p>
+   *
+   * @param game  the name of the selected game, or {@code null} if no game is selected
+   * @param level the name of the selected level, or {@code null} if no level is selected
+   * @return a {@link Runnable} that opens the editor and optionally loads the selected level
+   * @throws RuntimeException if any error occurs while loading the level
+   */
   public Runnable startEditor(String game, String level) {
-    LOG.info("selected game: " + game + " selected level: " + level);
     return () -> {
-      if (game != null && level != null) {
-        String levelPath = gamesFilePath + game + "/" + level;
-        openEditor(levelPath).run();
-      } else {
-        openEditor(null).run();
-      }
-    };
-  }
+      LOG.info("Selected game: " + game + " Selected level: " + level);
 
-
-  private Runnable openEditor(String levelPath) {
-    return () -> {
       EditorMaker editor = new EditorMaker();
       EditorController editorController = editor.initialize(new Stage());
-      if (levelPath != null) {
+
+      if (game != null && level != null) {
+        String levelPath = gamesFilePath + game + "/" + level;
         try {
           LOG.info("Attempting to open level " + levelPath);
           editorController.loadLevelData(levelPath);
@@ -411,8 +415,8 @@ public class ButtonActionFactory {
     };
   }
 
-   /* Action to navigate to the user profile screen.
-      */
+  /* Action to navigate to the user profile screen.
+   */
   private Runnable goToProfile() {
     return () -> {
       try {
@@ -513,6 +517,7 @@ public class ButtonActionFactory {
 
   /**
    * Navigate to the user profile/data screen with the specified user data
+   *
    * @param userData The user data to display
    * @return A runnable that navigates to the UserDataScreen
    */
@@ -528,6 +533,7 @@ public class ButtonActionFactory {
 
   /**
    * Navigate to the profile edit screen for the specified user data
+   *
    * @param userData The user data to edit
    * @return A runnable that navigates to the ProfileEditScreen
    */
@@ -542,8 +548,8 @@ public class ButtonActionFactory {
   }
 
   /**
-   * Opens a file chooser dialog and returns the selected file.
-   * This method exists to handle access to the stage, which is restricted for security reasons.
+   * Opens a file chooser dialog and returns the selected file. This method exists to handle access
+   * to the stage, which is restricted for security reasons.
    *
    * @param fileChooser The configured FileChooser to display
    * @return The selected File, or null if no file was selected

@@ -236,29 +236,27 @@ public class SplashScreen extends Display {
     double buttonHeight = Integer.parseInt(
         resourceManager.getConfig(splashConfig, "splash.button.height"));
 
-    // Add language selector first
     makeLanguageSelector(splashBox, comboBoxTexts, comboBoxIDs, comboBoxStyles, buttonWidth,
         buttonHeight);
-    // Then add game and level selectors
     makeGameAndLevelSelectors(splashBox, comboBoxTexts, comboBoxIDs, comboBoxStyles, buttonWidth,
         buttonHeight);
-    // Add any other relevant buttons
     makeSplashButtons(buttonIDs, buttonTexts, buttonWidth, buttonHeight, buttonStyles, splashBox);
-
-    Button startEditor = new Button();
-    startEditor.setId("startEditor");
-    startEditor.setText(resourceManager.getText(displayedText, "splash.button.startEditor.text"));
-    startEditor.setPrefSize(buttonWidth, buttonHeight);
-    splashBox.getChildren().add(startEditor);
-    setEditorButtonAction(startEditor);
-    setButtonStyle(startEditor, resourceManager.getConfig(splashConfig, "splash.button.startEditor.id"), resourceManager.getConfig(splashConfig, "splash.button.startEditor.style"));
-    // Add network buttons
+    makeStartEditorButton(buttonWidth, buttonHeight, splashBox);
     makeOnlineWidgets(buttonWidth, buttonHeight, splashBox);
 
     int buttonSpacing = Integer.parseInt(
         resourceManager.getConfig(splashConfig, "splash.button.spacing"));
     alignSplashButtonBox(splashBox, buttonSpacing);
     return splashBox;
+  }
+
+  private void makeStartEditorButton(double buttonWidth, double buttonHeight, VBox splashBox) {
+    Button startEditor = new Button();
+    startEditor.setText(resourceManager.getText(displayedText, "splash.button.startEditor.text"));
+    startEditor.setPrefSize(buttonWidth, buttonHeight);
+    setEditorButtonAction(startEditor);
+    setButtonStyle(startEditor, resourceManager.getConfig(splashConfig, "splash.button.startEditor.id"), resourceManager.getConfig(splashConfig, "splash.button.startEditor.style"));
+    splashBox.getChildren().add(startEditor);
   }
 
   private void makeOnlineWidgets(double buttonWidth, double buttonHeight, VBox splashBox) {
@@ -486,9 +484,6 @@ public class SplashScreen extends Display {
         resourceManager.getConfig(splashConfig, "splash.button.gameLevel.style"),
         resourceManager.getConfig(splashConfig, "splash.button.select.language.style")
     };
-  }
-
-  private void addOnlineButtons(VBox splashBox) {
   }
 
   private void setLanguageComboBoxButtonAction(ComboBox<String> comboBox) {
