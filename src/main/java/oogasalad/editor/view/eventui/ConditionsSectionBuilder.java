@@ -332,7 +332,7 @@ public class ConditionsSectionBuilder {
    *
    * @param selectedItem The currently selected ConditionDisplayItem, or null if none selected.
    */
-  private void updateParametersPane(ConditionDisplayItem selectedItem) {
+  public void updateParametersPane(ConditionDisplayItem selectedItem) {
     parametersPane.getChildren().clear();
     if (selectedItem == null || selectedItem.getData() == null) {
       return;
@@ -715,5 +715,11 @@ public class ConditionsSectionBuilder {
     button.setOnAction(handler);
     button.getStyleClass().add(getLocalProp("style.actionButton"));
     return button;
+  }
+  /**
+  Returns condition list view
+   */
+  public ListView<ConditionDisplayItem> getConditionsListView() {
+    return conditionsListView;
   }
 }
