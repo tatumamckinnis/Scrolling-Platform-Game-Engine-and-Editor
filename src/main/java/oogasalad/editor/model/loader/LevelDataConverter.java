@@ -2,7 +2,6 @@ package oogasalad.editor.model.loader;
 
 import java.util.List;
 import java.util.Map;
-import oogasalad.editor.model.EditorObjectPopulator;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;

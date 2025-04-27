@@ -1,4 +1,4 @@
-package oogasalad.editor.model;
+package oogasalad.editor.model.loader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,8 +14,11 @@ import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
 import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
+import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.SpriteData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,7 +95,7 @@ public class EditorObjectPopulator {
     }
 
     String resolvedImagePath = "";
-    oogasalad.fileparser.records.SpriteData recordSprite = blueprint.spriteData();
+    SpriteData recordSprite = blueprint.spriteData();
     if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile()
         .getPath().isEmpty()) {
       resolvedImagePath = recordSprite.spriteFile().getPath();
@@ -106,15 +109,15 @@ public class EditorObjectPopulator {
     } else {
       LOG.warn("Blueprint {} spriteData or spriteFile is null/empty.", blueprint.blueprintId());
     }
-    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertRecordToModelSpriteData(
+    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertSpriteData(
         recordSprite, resolvedImagePath, x, y, blueprint.rotation(), blueprint.isFlipped());
     object.setSpriteData(modelSpriteData);
 
     if (blueprint.hitBoxData() != null) {
-      oogasalad.fileparser.records.HitBoxData bpHD = blueprint.hitBoxData();
+      HitBoxData bpHD = blueprint.hitBoxData();
       int hitboxX = (int) (x + bpHD.spriteDx());
       int hitboxY = (int) (y + bpHD.spriteDy());
-      oogasalad.editor.model.data.object.HitboxData modelHitbox = new oogasalad.editor.model.data.object.HitboxData(
+      HitboxData modelHitbox = new HitboxData(
           hitboxX, hitboxY, bpHD.hitBoxWidth(), bpHD.hitBoxHeight(), bpHD.shape());
       object.setHitboxData(modelHitbox);
     } else {
@@ -125,14 +128,7 @@ public class EditorObjectPopulator {
           blueprint.blueprintId(), (int) x, (int) y);
     }
 
-    PhysicsData physics = object.getPhysicsData();
-    Map<String, Double> doubleProps = blueprint.doubleProperties();
-    physics.setVelocityX(blueprint.velocityX());
-    physics.setVelocityY(blueprint.velocityY());
-    if (doubleProps != null) {
-      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
-      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
-    }
+    setPhysicsData(object, blueprint);
 
     object.setStringParameters(
         blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
@@ -185,7 +181,7 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Converts a {@link oogasalad.fileparser.records.SpriteData} record (from file parsing) into an
+   * Converts a {@link SpriteData} record (from file parsing) into an
    * {@link oogasalad.editor.model.data.object.sprite.SpriteData} model object used by the editor.
    * This handles the conversion of frames and animations, resolves the image path, and sets initial
    * positional and rotational properties. Includes logic to handle potential base frame name
@@ -200,25 +196,24 @@ public class EditorObjectPopulator {
    * @return the corresponding editor sprite data model object. Returns a default if recordSprite is
    * null.
    */
-  private oogasalad.editor.model.data.object.sprite.SpriteData convertRecordToModelSpriteData(
-      oogasalad.fileparser.records.SpriteData recordSprite, String imagePath, double x, double y,
+  private oogasalad.editor.model.data.object.sprite.SpriteData convertSpriteData(
+      SpriteData recordSprite, String imagePath, double x, double y,
       double rotation, boolean isFlipped) {
 
     if (recordSprite == null) {
       LOG.warn("Input SpriteData record is null. Using default sprite data.");
-      return createDefaultModelSpriteData(x, y);
+      return createDefaultSpriteData(x, y);
     }
 
-    oogasalad.editor.model.data.object.sprite.FrameData baseFrameModel = convertRecordToModelFrame(
-        recordSprite.baseFrame());
+    FrameData baseFrameRecord = convertFrameData(recordSprite.baseFrame());
 
-    Map<String, oogasalad.editor.model.data.object.sprite.FrameData> frameMapModel = recordSprite.frames()
-        .stream().map(this::convertRecordToModelFrame).filter(Objects::nonNull).collect(
-            Collectors.toMap(oogasalad.editor.model.data.object.sprite.FrameData::name,
+    Map<String, FrameData> frameMapModel = recordSprite.frames()
+        .stream().map(this::convertFrameData).filter(Objects::nonNull).collect(
+            Collectors.toMap(FrameData::name,
                 frame -> frame, (existing, replacement) -> replacement));
 
     Map<String, AnimationData> animationMapModel = recordSprite.animations().stream()
-        .map(this::convertRecordToModelAnimation).filter(Objects::nonNull).collect(
+        .map(this::convertAnimationData).filter(Objects::nonNull).collect(
             Collectors.toMap(AnimationData::getName, anim -> anim,
                 (existing, replacement) -> replacement));
 
@@ -226,54 +221,28 @@ public class EditorObjectPopulator {
         recordSprite.name(), (int) x, (int) y, rotation, isFlipped, frameMapModel,
         animationMapModel, imagePath);
 
-    String baseFrameNameToSet = null;
-    String baseFrameNameFromRecord =
-        (baseFrameModel != null && baseFrameModel.name() != null && !baseFrameModel.name()
-            .isEmpty()) ? baseFrameModel.name() : null;
+    String baseFrameName =
+        (baseFrameRecord != null && baseFrameRecord.name() != null && !baseFrameRecord.name()
+            .isEmpty()) ? baseFrameRecord.name() : null;
 
-    if (baseFrameNameFromRecord != null && frameMapModel.containsKey(baseFrameNameFromRecord)) {
-      baseFrameNameToSet = baseFrameNameFromRecord;
+    if (baseFrameName != null && frameMapModel.containsKey(baseFrameName)) {
       LOG.debug("Using exact match base frame name '{}' from blueprint record for sprite '{}'",
-          baseFrameNameToSet, recordSprite.name());
-    } else if ("Bird".equals(baseFrameNameFromRecord) && frameMapModel.containsKey("Bird1")) {
-      baseFrameNameToSet = "Bird1";
-      LOG.warn(
-          "Exact base frame name 'Bird' not found. Explicitly using existing frame 'Bird1' as requested for sprite '{}'.",
-          recordSprite.name());
-    } else if ("big-mario".equals(baseFrameNameFromRecord) && frameMapModel.containsKey(
-        "big-mario-stand-right")) {
-      baseFrameNameToSet = "big-mario-stand-right";
-      LOG.warn(
-          "Exact base frame name 'big-mario' not found. Explicitly using existing frame '{}' as requested for sprite '{}'.",
-          baseFrameNameToSet, recordSprite.name());
-    } else if (baseFrameNameFromRecord != null) {
-      String foundPrefixMatch = null;
-      for (String actualFrameName : frameMapModel.keySet()) {
-        if (actualFrameName != null && actualFrameName.startsWith(baseFrameNameFromRecord)) {
-          foundPrefixMatch = actualFrameName;
-          LOG.warn(
-              "Exact base frame name '{}' not found, and special cases didn't apply. Found frame '{}' starting with it. Using this as base frame for sprite '{}'.",
-              baseFrameNameFromRecord, foundPrefixMatch, recordSprite.name());
-          break;
-        }
+          baseFrameName, recordSprite.name());
+    }
+    else {
+      if (!frameMapModel.isEmpty()) {
+        baseFrameName = frameMapModel.keySet().iterator().next();
+        LOG.warn(
+            "Could not determine base frame from record or prefix/special case match for sprite '{}'. Falling back to first available frame name: '{}'",
+            recordSprite.name(), baseFrameName);
       }
-      baseFrameNameToSet = foundPrefixMatch;
+      else {
+        LOG.warn(
+            "No base frame name specified and no frames found for sprite record '{}'. Base frame name remains null.",
+            recordSprite.name());
+      }
+      modelSpriteData.setBaseFrameName(baseFrameName);
     }
-
-    if (baseFrameNameToSet == null && !frameMapModel.isEmpty()) {
-      baseFrameNameToSet = frameMapModel.keySet().iterator().next();
-      LOG.warn(
-          "Could not determine base frame from record or prefix/special case match for sprite '{}'. Falling back to first available frame name: '{}'",
-          recordSprite.name(), baseFrameNameToSet);
-    }
-
-    if (baseFrameNameToSet == null && frameMapModel.isEmpty()) {
-      LOG.warn(
-          "No base frame name specified and no frames found for sprite record '{}'. Base frame name remains null.",
-          recordSprite.name());
-    }
-
-    modelSpriteData.setBaseFrameName(baseFrameNameToSet);
 
     LOG.info(
         "Converted sprite record '{}': Image='{}', BaseFrameNameSet='{}', Frames={}, Animations={}",
@@ -286,18 +255,17 @@ public class EditorObjectPopulator {
 
   /**
    * Converts a {@link oogasalad.fileparser.records.FrameData} record (from fileparser) into an
-   * {@link oogasalad.editor.model.data.object.sprite.FrameData} model object used by the editor.
-   * Returns null if the input record is null.
+   * {@link FrameData} model object used by the editor. Returns null if the input record is null.
    *
    * @param recordFrame the frame data record from the file parser.
    * @return the corresponding editor frame data model object, or null.
    */
-  private oogasalad.editor.model.data.object.sprite.FrameData convertRecordToModelFrame(
+  private FrameData convertFrameData(
       oogasalad.fileparser.records.FrameData recordFrame) {
     if (recordFrame == null) {
       return null;
     }
-    return new oogasalad.editor.model.data.object.sprite.FrameData(recordFrame.name(),
+    return new FrameData(recordFrame.name(),
         recordFrame.x(), recordFrame.y(), recordFrame.width(), recordFrame.height());
   }
 
@@ -309,7 +277,7 @@ public class EditorObjectPopulator {
    * @param recordAnimation the animation data record from the file parser.
    * @return the corresponding editor animation data model object, or null.
    */
-  private AnimationData convertRecordToModelAnimation(
+  private AnimationData convertAnimationData(
       oogasalad.fileparser.records.AnimationData recordAnimation) {
     if (recordAnimation == null) {
       return null;
@@ -328,7 +296,7 @@ public class EditorObjectPopulator {
    * @param y the default y-coordinate.
    * @return a default editor sprite data model object.
    */
-  private oogasalad.editor.model.data.object.sprite.SpriteData createDefaultModelSpriteData(
+  private oogasalad.editor.model.data.object.sprite.SpriteData createDefaultSpriteData(
       double x, double y) {
     return new oogasalad.editor.model.data.object.sprite.SpriteData("DefaultSprite", (int) x,
         (int) y, 0.0, false, Map.of(), Map.of(), "");
@@ -363,60 +331,9 @@ public class EditorObjectPopulator {
     }
 
     setIdentityData(gameObjectData, object, blueprint);
-
-    if (blueprint.group() != null && !blueprint.group().trim().isEmpty()) {
-      levelData.addGroup(blueprint.group());
-      LOG.debug("Ensured group '{}' exists in level data while loading GameObjectData.",
-          blueprint.group());
-    }
-
-    String resolvedImagePath = "";
-    oogasalad.fileparser.records.SpriteData recordSprite = blueprint.spriteData();
-    if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile()
-        .getPath().isEmpty()) {
-      resolvedImagePath = recordSprite.spriteFile().getPath();
-      LOG.debug("Loading GameObject: Using image path from blueprint record: {}",
-          resolvedImagePath);
-      if (!new File(resolvedImagePath).isAbsolute() || !new File(resolvedImagePath).exists()) {
-        LOG.warn(
-            "Image path from blueprint record is relative or does not exist when loading GameObject: {}. Sprite might not load.",
-            resolvedImagePath);
-        resolvedImagePath = "";
-      }
-    } else {
-      LOG.warn("Blueprint {} for GameObject {} has no spriteData/spriteFile.",
-          blueprint.blueprintId(), gameObjectData.uniqueId());
-    }
-    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertRecordToModelSpriteData(
-        recordSprite, resolvedImagePath, gameObjectData.x(), gameObjectData.y(),
-        blueprint.rotation(), blueprint.isFlipped());
-    object.setSpriteData(modelSpriteData);
-
-    if (blueprint.hitBoxData() != null) {
-      oogasalad.fileparser.records.HitBoxData bpHitbox = blueprint.hitBoxData();
-      int hitboxX = gameObjectData.x() + bpHitbox.spriteDx();
-      int hitboxY = gameObjectData.y() + bpHitbox.spriteDy();
-      oogasalad.editor.model.data.object.HitboxData modelHitbox = new oogasalad.editor.model.data.object.HitboxData(
-          hitboxX, hitboxY, bpHitbox.hitBoxWidth(), bpHitbox.hitBoxHeight(), bpHitbox.shape());
-      object.setHitboxData(modelHitbox);
-    } else {
-      HitboxData defaultHitbox = object.getHitboxData();
-      defaultHitbox.setX(gameObjectData.x());
-      defaultHitbox.setY(gameObjectData.y());
-      LOG.warn(
-          "Blueprint {} (GameObject {}) has no HitBoxData, using default hitbox positioned at ({}, {}).",
-          blueprint.blueprintId(), gameObjectData.uniqueId(), gameObjectData.x(),
-          gameObjectData.y());
-    }
-
-    PhysicsData physics = object.getPhysicsData();
-    Map<String, Double> doubleProps = blueprint.doubleProperties();
-    physics.setVelocityX(blueprint.velocityX());
-    physics.setVelocityY(blueprint.velocityY());
-    if (doubleProps != null) {
-      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
-      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
-    }
+    setSpriteData(gameObjectData, object, blueprint);
+    setHitboxData(gameObjectData, object, blueprint);
+    setPhysicsData(object, blueprint);
 
     object.setStringParameters(
         blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
@@ -438,15 +355,79 @@ public class EditorObjectPopulator {
     Layer defaultLayer = levelData.getFirstLayer();
     Layer targetLayer = findLayerByName(layerName, defaultLayer);
 
+    String group;
+    if (blueprint.group() != null && !blueprint.group().trim().isEmpty()) {
+      group = blueprint.group();
+    } else {
+      group = "default"; // TODO: Make a constant/property
+    }
+
     IdentityData identity = new IdentityData(gameObjectData.uniqueId(), gameObjectData.name(),
-        blueprint.group(), targetLayer);
+        group, targetLayer);
     object.setIdentityData(identity);
 
+    levelData.addGroup(group);
     levelData.getObjectDataMap().put(object.getId(), object);
     levelData.getObjectLayerDataMap().values()
         .forEach(list -> list.removeIf(obj -> obj.getId().equals(object.getId())));
     levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>())
         .add(object);
+  }
+
+  private void setSpriteData(GameObjectData gameObjectData, EditorObject object,
+      BlueprintData blueprint) {
+    String spriteFilePath = "";
+    SpriteData recordSprite = blueprint.spriteData();
+    if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile()
+        .getPath().isEmpty()) {
+      spriteFilePath = recordSprite.spriteFile().getPath();
+
+    }
+    if (spriteFilePath.isEmpty()) {
+      LOG.warn("Blueprint {} for GameObject {} has no spriteData/spriteFile.",
+          blueprint.blueprintId(), gameObjectData.uniqueId());
+    }
+    HitBoxData hitboxData = blueprint.hitBoxData();
+    int spriteX = gameObjectData.x();
+    int spriteY = gameObjectData.y();
+    if (hitboxData != null) {
+      spriteX += hitboxData.spriteDx();
+      spriteY += hitboxData.spriteDy();
+    }
+    oogasalad.editor.model.data.object.sprite.SpriteData editorSpriteData = convertSpriteData(
+        recordSprite, spriteFilePath, spriteX, spriteY,
+        blueprint.rotation(), blueprint.isFlipped());
+    object.setSpriteData(editorSpriteData);
+  }
+
+  private void setHitboxData(GameObjectData gameObjectData, EditorObject object, BlueprintData blueprint) {
+    if (blueprint.hitBoxData() != null) {
+      HitBoxData hitbox = blueprint.hitBoxData();
+      int hitboxX = gameObjectData.x();
+      int hitboxY = gameObjectData.y();
+      HitboxData editorHitbox = new HitboxData(
+          hitboxX, hitboxY, hitbox.hitBoxWidth(), hitbox.hitBoxHeight(), hitbox.shape());
+      object.setHitboxData(editorHitbox);
+    } else {
+      HitboxData defaultHitbox = object.getHitboxData();
+      defaultHitbox.setX(gameObjectData.x());
+      defaultHitbox.setY(gameObjectData.y());
+      LOG.warn(
+          "Blueprint {} (GameObject {}) has no HitBoxData, using default hitbox positioned at ({}, {}).",
+          blueprint.blueprintId(), gameObjectData.uniqueId(), gameObjectData.x(),
+          gameObjectData.y());
+    }
+  }
+
+  private void setPhysicsData(EditorObject object, BlueprintData blueprint) {
+    PhysicsData physics = object.getPhysicsData();
+    Map<String, Double> doubleProps = blueprint.doubleProperties();
+    physics.setVelocityX(blueprint.velocityX());
+    physics.setVelocityY(blueprint.velocityY());
+    if (doubleProps != null) {
+      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
+      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
+    }
   }
 
   /**
@@ -489,7 +470,7 @@ public class EditorObjectPopulator {
         "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), "ERROR",
         targetLayer);
     object.setIdentityData(errorIdentity);
-    object.setSpriteData(createDefaultModelSpriteData(gameObjectData.x(), gameObjectData.y()));
+    object.setSpriteData(createDefaultSpriteData(gameObjectData.x(), gameObjectData.y()));
     object.getHitboxData().setX(gameObjectData.x());
     object.getHitboxData().setY(gameObjectData.y());
     levelData.addGroup("ERROR");
