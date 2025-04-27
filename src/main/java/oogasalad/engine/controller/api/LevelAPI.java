@@ -31,7 +31,14 @@ public interface LevelAPI {
   void selectGame(String filePath)
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, LayerParseException;
 
+  /**
+   * Create a game object from a GameObjectData record
+   *
+   * @param gameObjectData the record holding the game object data
+   * @return a new GameObject
+   */
   GameObject makeObjectFromData(GameObjectData gameObjectData);
+
   /**
    * Lists all available levels to play
    *

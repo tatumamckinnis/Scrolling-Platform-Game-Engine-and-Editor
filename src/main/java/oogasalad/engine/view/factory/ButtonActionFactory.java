@@ -222,6 +222,31 @@ public class ButtonActionFactory {
     };
   }
 
+  /**
+   * Restarts the current game by reloading all necessary resources, resetting game state, and
+   * reinitializing the view and model components.
+   *
+   * <p>This method handles re-parsing level data, reloading sprites, events, blueprints,
+   * and game objects, and reconstructing the game's layers and hitboxes as needed.</p>
+   *
+   * @throws DataFormatException       if there is an error decompressing or processing data
+   * @throws IOException               if there is an input/output error while loading resources
+   * @throws ClassNotFoundException    if a class required during dynamic loading cannot be found
+   * @throws InvocationTargetException if reflection fails during object construction
+   * @throws NoSuchMethodException     if a method required for reflection cannot be found
+   * @throws InstantiationException    if an instance cannot be created via reflection
+   * @throws IllegalAccessException    if a reflective operation attempts to access a restricted
+   *                                   class
+   * @throws LayerParseException       if layer data fails to parse
+   * @throws LevelDataParseException   if overall level structure is invalid
+   * @throws PropertyParsingException  if object properties cannot be parsed correctly
+   * @throws SpriteParseException      if sprite or sprite sheet information fails to load
+   * @throws EventParseException       if event configurations are invalid
+   * @throws HitBoxParseException      if hitbox definitions are invalid
+   * @throws BlueprintParseException   if blueprint data is missing or corrupted
+   * @throws GameObjectParseException  if game objects fail to initialize properly
+   * @throws RenderingException        if there is a failure during game rendering
+   */
   public void restart()
       throws DataFormatException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException, LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException, RenderingException {
     savePlayerProgress().run();
