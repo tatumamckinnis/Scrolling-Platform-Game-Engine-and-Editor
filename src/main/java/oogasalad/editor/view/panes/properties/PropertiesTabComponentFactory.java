@@ -10,10 +10,6 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,7 +29,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.object.EditorObject; // Import EditorObject
 import oogasalad.editor.view.EditorViewListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Builds the "Properties" tab UI, displaying Identity, Hitbox data, and custom object parameters.
@@ -41,7 +40,7 @@ import oogasalad.editor.view.EditorViewListener;
  * Group selection via ComboBox and allows adding/removing string and double parameters for the
  * selected object.
  *
- * @author Tatum McKinnis, Billy McCune
+ * @author Tatum McKinnis
  */
 public class PropertiesTabComponentFactory implements EditorViewListener {
 
@@ -56,9 +55,6 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   private TextField uuidField;
   private TextField nameField;
-  private ComboBox<String> gameNameComboBox;
-  private ComboBox<String> typeComboBox;
-  private TextField customTypeField;
   private ComboBox<String> groupComboBox;
 
   private TextField xField;
@@ -115,7 +111,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Builds a VBox containing fields for Identity data: Name (TextField) + Group (ComboBox).
+   * Builds a VBox containing fields for Identity data: UUID, Name, Group.
    *
    * @return A {@link VBox} containing the identity UI controls.
    */
@@ -135,72 +131,6 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     nameField = createIdentityTextField("Name",
         (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI().setName(id, value));
 
-    // Create the game name dropdown
-    gameNameComboBox = new ComboBox<>();
-    gameNameComboBox.setPromptText("Select Game");
-    gameNameComboBox.setMaxWidth(Double.MAX_VALUE);
-    gameNameComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal != null && !Objects.equals(oldVal, newVal)) {
-        LOG.debug("Game Name ComboBox value changed to: '{}' for object {}", newVal, currentObjectId);
-        editorController.getEditorDataAPI().getIdentityDataAPI().setGame(currentObjectId, newVal);
-      }
-    });
-    
-    // Create the type ComboBox with fixed options
-    typeComboBox = new ComboBox<>();
-    typeComboBox.getItems().addAll("player", "custom");
-    typeComboBox.setPromptText("Select Type");
-    typeComboBox.setMaxWidth(Double.MAX_VALUE);
-    typeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-      if (currentObjectId != null && newVal != null && !Objects.equals(oldVal, newVal)) {
-        // If "custom" is selected, show the custom field but don't update type yet
-        if ("custom".equals(newVal)) {
-          customTypeField.setVisible(true);
-          customTypeField.setManaged(true);
-          // Only update if we have a custom value, otherwise wait for user input
-          if (!customTypeField.getText().isEmpty()) {
-            editorController.getEditorDataAPI().getIdentityDataAPI()
-                .setType(currentObjectId, customTypeField.getText());
-            LOG.debug("Set type to custom value '{}' for object {}", 
-                customTypeField.getText(), currentObjectId);
-          }
-        } else {
-          // For built-in types like "player", update directly and hide custom field
-          customTypeField.setVisible(false);
-          customTypeField.setManaged(false);
-          editorController.getEditorDataAPI().getIdentityDataAPI().setType(currentObjectId, newVal);
-          LOG.debug("Set type to '{}' for object {}", newVal, currentObjectId);
-        }
-      }
-    });
-    
-    // Create the custom type field
-    customTypeField = new TextField();
-    customTypeField.setPromptText("Enter custom type...");
-    customTypeField.setVisible(false);
-    customTypeField.setManaged(false);
-    customTypeField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null && "custom".equals(typeComboBox.getValue())) {
-        String customType = customTypeField.getText();
-        if (customType != null && !customType.trim().isEmpty()) {
-          editorController.getEditorDataAPI().getIdentityDataAPI()
-              .setType(currentObjectId, customType);
-          LOG.debug("Custom type field focus lost. Updated object {} type to: {}", 
-              currentObjectId, customType);
-        }
-      }
-    });
-
-    // Create a VBox to hold the type components
-    VBox typeVBox = new VBox(5);
-    typeVBox.getChildren().addAll(typeComboBox, customTypeField);
-    HBox.setHgrow(typeVBox, Priority.ALWAYS);
-    
-    // Create an HBox to hold the type VBox and the player checkbox horizontally
-    HBox typeContainer = new HBox(10);
-    typeContainer.getChildren().addAll(typeVBox);
-    HBox.setHgrow(typeVBox, Priority.ALWAYS);
-
     groupComboBox = new ComboBox<>();
     groupComboBox.setPromptText("Select Group");
     groupComboBox.setMaxWidth(Double.MAX_VALUE);
@@ -210,21 +140,17 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         if (NO_GROUP_OPTION.equals(newVal)) {
           groupToSet = "";
         }
-
         LOG.debug("Group ComboBox value changed to: '{}' for object {}", groupToSet,
             currentObjectId);
         editorController.getEditorDataAPI().getIdentityDataAPI()
             .setGroup(currentObjectId, groupToSet);
-
+        requestObjectUpdate(); // Ensure change is registered for saving
       }
     });
 
     box.getChildren()
         .addAll(identityLabel, uuidLabel, uuidField,
-            new Label("Name"), nameField,
-            new Label("Game Name"), gameNameComboBox,
-            new Label("Type"), typeContainer,
-            new Label("Group"), groupComboBox);
+            new Label("Name"), nameField, new Label("Group"), groupComboBox);
 
     return box;
   }
@@ -328,7 +254,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Handles the action of adding a new string parameter based on the input fields. Performs basic
-   * validation and calls the controller.
+   * validation and calls the controller. Requests object update after adding.
    */
   private void addStringParameter() {
     if (currentObjectId == null) {
@@ -345,11 +271,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     editorController.setObjectStringParameter(currentObjectId, key.trim(), value);
     paramKeyField.clear();
     paramStringValueField.clear();
+    requestObjectUpdate();
   }
 
   /**
    * Handles the action of adding a new double parameter based on the input fields. Performs
-   * validation (key not empty, value is a valid double) and calls the controller.
+   * validation (key not empty, value is a valid double) and calls the controller. Requests object
+   * update after adding.
    */
   private void addDoubleParameter() {
     if (currentObjectId == null) {
@@ -372,6 +300,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       editorController.setObjectDoubleParameter(currentObjectId, key.trim(), value);
       paramKeyField.clear();
       paramDoubleValueField.clear();
+      requestObjectUpdate();
     } catch (NumberFormatException e) {
       showError("Invalid double value: " + valueStr);
     }
@@ -379,7 +308,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   /**
    * Handles the action of removing the parameter selected in the list view. Parses the key from the
-   * selected item string and calls the controller.
+   * selected item string and calls the controller. Requests object update after removal.
    */
   private void removeSelectedParameter() {
     if (currentObjectId == null) {
@@ -393,6 +322,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     Optional<String> keyOpt = parseKeyFromDisplayString(selectedItem);
     if (keyOpt.isPresent()) {
       editorController.removeObjectParameter(currentObjectId, keyOpt.get());
+      requestObjectUpdate();
     } else {
       LOG.error("Could not parse key from selected parameter item: {}", selectedItem);
       showError("Could not determine parameter key to remove.");
@@ -418,7 +348,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Factory method for creating identity text fields (Name). Updates model on focus lost.
+   * Factory method for creating identity text fields (Name). Updates model on focus lost and
+   * requests object update.
    *
    * @param prompt The prompt text for the field.
    * @param setter The BiConsumer to call when updating the model.
@@ -428,7 +359,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     TextField textField = new TextField();
     textField.setPromptText(prompt);
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValue = textField.getText();
         String modelValue = editorController.getEditorDataAPI().getIdentityDataAPI()
             .getName(currentObjectId);
@@ -436,6 +367,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           LOG.debug("Name field focus lost. Updating object {} name to: {}", currentObjectId,
               currentValue);
           setter.accept(currentObjectId, currentValue);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -446,7 +378,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   /**
    * Factory method to create a TextField for a numeric hitbox property (X, Y, Width, Height).
    * Attaches a listener that parses the input as an integer and updates the model via the setter
-   * only when focus is lost. Includes basic numeric input filtering.
+   * only when focus is lost. Includes basic numeric input filtering and requests object update.
    *
    * @param promptText The prompt text for the field.
    * @param setter     The BiConsumer to call when updating the model.
@@ -461,7 +393,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       }
     });
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValueStr = textField.getText();
         int value = parseSafeInt(currentValueStr);
         int modelValue = getModelHitboxValue(promptText, currentObjectId);
@@ -469,6 +401,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           LOG.debug("Hitbox field '{}' focus lost. Updating object {} to: {}", promptText,
               currentObjectId, value);
           setter.accept(currentObjectId, value);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -506,7 +439,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Creates the TextField for the hitbox shape property. Updates on focus lost.
+   * Creates the TextField for the hitbox shape property. Updates on focus lost and requests object
+   * update.
    *
    * @return A configured {@link TextField} for the shape property.
    */
@@ -514,7 +448,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     TextField textField = new TextField();
     textField.setPromptText("Shape (e.g. RECTANGLE)");
     textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-      if (!newVal && currentObjectId != null) {
+      if (!newVal && currentObjectId != null) { // Focus lost
         String currentValue = textField.getText();
         String modelValue = editorController.getEditorDataAPI().getHitboxDataAPI()
             .getShape(currentObjectId);
@@ -523,6 +457,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
               currentValue);
           editorController.getEditorDataAPI().getHitboxDataAPI()
               .setShape(currentObjectId, currentValue);
+          requestObjectUpdate(); // Trigger update notification
         }
       }
     });
@@ -691,42 +626,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         .getName(currentObjectId);
     nameField.setText(Objects.toString(currentName, ""));
 
-    // Populate and set game name dropdown
-    String currentGame = editorController.getEditorDataAPI().getIdentityDataAPI()
-        .getObjectGame(currentObjectId);
-    List<String> availableGames = editorController.getEditorDataAPI().getGames();
-    gameNameComboBox.getItems().clear();
-    gameNameComboBox.getItems().addAll(availableGames);
-    
-    if (currentGame != null && !currentGame.isEmpty() && availableGames.contains(currentGame)) {
-      gameNameComboBox.setValue(currentGame);
-    } else if (!availableGames.isEmpty()) {
-      // Default to first available game if current game not set or invalid
-      gameNameComboBox.setValue(availableGames.get(0));
-    }
-
-    // Set type field
-    String currentType = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
-    
-    // Check if current type is "player" or something custom
-    if (currentType == null || currentType.isEmpty()) {
-      typeComboBox.setValue(null);
-      customTypeField.setText("");
-      customTypeField.setVisible(false);
-      customTypeField.setManaged(false);
-    } else if ("player".equals(currentType)) {
-      typeComboBox.setValue("player");
-      customTypeField.setVisible(false);
-      customTypeField.setManaged(false);
-    } else {
-      // For any other type, set to custom
-      typeComboBox.setValue("custom");
-      customTypeField.setText(currentType);
-      customTypeField.setVisible(true);
-      customTypeField.setManaged(true);
-    }
-
-    // Populate and set group dropdown
+    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getGroup(currentObjectId);
     List<String> availableGroups = editorController.getEditorDataAPI().getGroups();
     ObservableList<String> groupOptions = FXCollections.observableArrayList();
     groupOptions.add(NO_GROUP_OPTION);
@@ -735,8 +636,6 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     isUpdatingGroupComboBox = true;
     groupComboBox.setItems(groupOptions);
 
-    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
-        .getGroup(currentObjectId);
     if (currentGroup != null && !currentGroup.isEmpty() && availableGroups.contains(currentGroup)) {
       groupComboBox.setValue(currentGroup);
     } else {
@@ -744,8 +643,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
     isUpdatingGroupComboBox = false;
 
-    LOG.trace("Populated identity fields: Name='{}', Game='{}', Type='{}', Group='{}', Options={}", 
-        currentName, currentGame, currentType, groupComboBox.getValue(), groupOptions);
+    LOG.trace("Populated identity fields: Name='{}', Group='{}', Options={}", currentName,
+        groupComboBox.getValue(), groupOptions);
   }
 
   /**
@@ -814,37 +713,30 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Clears all property fields and lists when no object is selected or an error occurs. Called only
-   * internally from the refresh methods.
+   * Internal method to clear all fields, called on the FX thread. Resets state related to the
+   * selected object and clears UI control contents.
    */
   private void clearFieldsInternal() {
-    // Clear identity fields
-    uuidField.clear();
-    nameField.clear();
-    gameNameComboBox.getItems().clear();
-    typeComboBox.setValue(null);
-    customTypeField.clear();
-    customTypeField.setVisible(false);
-    customTypeField.setManaged(false);
-
+    LOG.debug("Clearing properties fields.");
+    currentObjectId = null;
+    uuidField.setText("");
+    nameField.setText("");
     isUpdatingGroupComboBox = true;
     groupComboBox.getItems().clear();
-    groupComboBox.getItems().add(NO_GROUP_OPTION);
-    groupComboBox.setValue(NO_GROUP_OPTION);
+    groupComboBox.setValue(null);
+    groupComboBox.setPromptText("Select Group");
     isUpdatingGroupComboBox = false;
 
-    // Clear hitbox fields
-    xField.clear();
-    yField.clear();
-    widthField.clear();
-    heightField.clear();
-    shapeField.clear();
+    xField.setText("");
+    yField.setText("");
+    widthField.setText("");
+    heightField.setText("");
+    shapeField.setText("");
 
-    // Clear parameter lists
     parameterItems.clear();
-
-    currentObjectId = null;
-    LOG.debug("All property fields cleared.");
+    paramKeyField.clear();
+    paramStringValueField.clear();
+    paramDoubleValueField.clear();
   }
 
   /**
@@ -879,5 +771,20 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       groupComboBox.setValue(NO_GROUP_OPTION);
     }
     isUpdatingGroupComboBox = false;
+  }
+
+  /**
+   * Helper method to request an update for the currently selected object.
+   * Avoids issues if no object is currently selected.
+   */
+  private void requestObjectUpdate() {
+    if (currentObjectId != null) {
+      EditorObject currentObject = editorController.getEditorObject(currentObjectId);
+      if (currentObject != null) {
+        editorController.requestObjectUpdate(currentObject);
+      } else {
+        LOG.warn("Attempted to request update for object ID {} but it was not found.", currentObjectId);
+      }
+    }
   }
 }
