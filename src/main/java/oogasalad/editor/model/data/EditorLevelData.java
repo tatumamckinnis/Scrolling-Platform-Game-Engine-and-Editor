@@ -3,6 +3,7 @@ package oogasalad.editor.model.data;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -301,34 +302,31 @@ public class EditorLevelData {
       return false;
     }
 
-    Layer layerToRemove = null;
-    for (Layer layer : myLayers) {
-      if (layer.getName().equals(layerName)) {
-        layerToRemove = layer;
-        break;
-      }
-    }
-
-    if (layerToRemove == null) {
+    var maybeLayer = myLayers.stream()
+        .filter(layer -> layer.getName().equals(layerName))
+        .findFirst();
+    if (maybeLayer.isEmpty()) {
       LOG.warn("Layer '{}' not found for removal.", layerName);
       return false;
     }
+    Layer layerToRemove = maybeLayer.get();
 
-    List<EditorObject> objectsInLayer = myLayerDataMap.get(layerToRemove);
-    if (objectsInLayer != null && !objectsInLayer.isEmpty()) {
-      LOG.warn("Cannot remove non-empty layer '{}'. It contains {} objects.", layerName,
-          objectsInLayer.size());
+    var objects = myLayerDataMap.getOrDefault(layerToRemove, Collections.emptyList());
+    if (!objects.isEmpty()) {
+      LOG.warn("Cannot remove non-empty layer '{}'. It contains {} objects.",
+          layerName, objects.size());
       return false;
     }
 
-    boolean layerRemoved = myLayers.remove(layerToRemove);
+    boolean removed = myLayers.remove(layerToRemove);
     myLayerDataMap.remove(layerToRemove);
-    if (layerRemoved) {
+
+    if (removed) {
       LOG.debug("Removed empty layer: {}", layerName);
     } else {
       LOG.error("Failed to remove layer '{}' from list, though it was found.", layerName);
     }
-    return layerRemoved;
+    return removed;
   }
 
 
