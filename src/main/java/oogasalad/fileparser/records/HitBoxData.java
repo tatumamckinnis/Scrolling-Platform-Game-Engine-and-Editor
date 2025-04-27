@@ -12,6 +12,8 @@ package oogasalad.fileparser.records;
  * @param hitBoxHeight the height of the hitbox.
  * @param spriteDx     the horizontal offset of the sprite relative to the hitbox.
  * @param spriteDy     the vertical offset of the sprite relative to the hitbox.
+ *
+ * @author Billy McCune
  */
 public record HitBoxData(
     String shape,

@@ -18,7 +18,7 @@ import oogasalad.fileparser.records.LevelData;
 
 /**
  * Unit tests for the EditorDataSaver utility.
- * @author Jacob You
+ * @author Jacob You, Billy McCune
  */
 class EditorDataSaverTest {
 
@@ -36,8 +36,8 @@ class EditorDataSaverTest {
     levelMock = mock(EditorLevelData.class);
 
     Layer layer0 = new Layer("layer0", 0);
-    IdentityData idA = new IdentityData(UUID.randomUUID(), "ObjA", "", layer0);
-    IdentityData idB = new IdentityData(UUID.randomUUID(), "ObjB", "", layer0);
+    IdentityData idA = new IdentityData(UUID.randomUUID(), "ObjA", "","","", layer0);
+    IdentityData idB = new IdentityData(UUID.randomUUID(), "ObjB", "","","", layer0);
 
     HitboxData hb = new HitboxData(10, 20, 30, 40, "rectangle");
 

@@ -35,7 +35,7 @@ import org.w3c.dom.NodeList;
  * </pre>
  * </p>
  *
- * @author Billy
+ * @author Billy McCune
  */
 public class BlueprintDataParser {
 

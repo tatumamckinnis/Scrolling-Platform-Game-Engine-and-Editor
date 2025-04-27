@@ -14,6 +14,7 @@ package oogasalad.fileparser.records;
  * @param type       the type folder name (e.g., characters, obstacles)
  * @param spriteName the name of the sprite to retrieve
  * @param spriteFile the name of the XML file containing the sprite's data
+ *
  * @author Billy McCune
  */
 public record SpriteRequest(String gameName, String group, String type, String spriteName,
