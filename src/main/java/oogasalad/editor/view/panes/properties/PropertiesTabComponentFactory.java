@@ -1,6 +1,7 @@
 package oogasalad.editor.view.panes.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.apache.logging.log4j.Logger;
  * Group selection via ComboBox and allows adding/removing string and double parameters for the
  * selected object.
  *
- * @author Tatum McKinnis
+ * @author Tatum McKinnis, Billy McCune
  */
 public class PropertiesTabComponentFactory implements EditorViewListener {
 
@@ -55,6 +56,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
   private TextField uuidField;
   private TextField nameField;
+  private ComboBox<String> gameNameComboBox;
+  private ComboBox<String> typeComboBox;
+  private TextField customTypeField;
   private ComboBox<String> groupComboBox;
 
   private TextField xField;
@@ -62,6 +66,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private TextField widthField;
   private TextField heightField;
   private TextField shapeField;
+
+  private ListView<String> displayedStatsListView;
+  private ComboBox<String> availableStatsComboBox;
+  private Button addStatButton;
+  private Button removeStatButton;
+  private VBox displayedStatsSection;
+  private final ObservableList<String> displayedStatsItems = FXCollections.observableArrayList();
 
   private ListView<String> parametersListView;
   private TextField paramKeyField;
@@ -100,9 +111,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
     VBox identitySection = buildIdentitySection();
     VBox hitboxSection = buildHitboxSection();
+    VBox displayedStatsSection = buildDisplayedStatsSection();
     TitledPane parametersSection = buildParametersSection();
 
-    contentBox.getChildren().addAll(identitySection, hitboxSection, parametersSection);
+    contentBox.getChildren().addAll(identitySection, hitboxSection, displayedStatsSection, parametersSection);
 
     ScrollPane scrollPane = new ScrollPane(contentBox);
     scrollPane.setFitToWidth(true);
@@ -131,6 +143,86 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     nameField = createIdentityTextField("Name",
         (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI().setName(id, value));
 
+    // Create the game name dropdown
+    gameNameComboBox = new ComboBox<>();
+    gameNameComboBox.setPromptText("Select Game");
+    gameNameComboBox.setMaxWidth(Double.MAX_VALUE);
+    gameNameComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+      if (currentObjectId != null && newVal != null && !Objects.equals(oldVal, newVal)) {
+        LOG.debug("Game Name ComboBox value changed to: '{}' for object {}", newVal, currentObjectId);
+        editorController.getEditorDataAPI().getIdentityDataAPI().setGame(currentObjectId, newVal);
+      }
+    });
+    
+    // Create the type ComboBox with fixed options
+    typeComboBox = new ComboBox<>();
+    typeComboBox.getItems().addAll("player", "custom");
+    typeComboBox.setPromptText("Select Type");
+    typeComboBox.setMaxWidth(Double.MAX_VALUE);
+    typeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+      if (currentObjectId != null && newVal != null && !Objects.equals(oldVal, newVal)) {
+        // If "custom" is selected, show the custom field but don't update type yet
+        if ("custom".equals(newVal)) {
+          customTypeField.setVisible(true);
+          customTypeField.setManaged(true);
+          // Only update if we have a custom value, otherwise wait for user input
+          if (!customTypeField.getText().isEmpty()) {
+            editorController.getEditorDataAPI().getIdentityDataAPI()
+                .setType(currentObjectId, customTypeField.getText());
+            LOG.debug("Set type to custom value '{}' for object {}", 
+                customTypeField.getText(), currentObjectId);
+          }
+
+          // Hide the displayed stats section for non-player objects
+          displayedStatsSection.setVisible(false);
+          displayedStatsSection.setManaged(false);
+        } else {
+          // For built-in types like "player", update directly and hide custom field
+          customTypeField.setVisible(false);
+          customTypeField.setManaged(false);
+          editorController.getEditorDataAPI().getIdentityDataAPI().setType(currentObjectId, newVal);
+          LOG.debug("Set type to '{}' for object {}", newVal, currentObjectId);
+
+          // Show the displayed stats section only for player objects
+          boolean isPlayer = "player".equals(newVal);
+          displayedStatsSection.setVisible(isPlayer);
+          displayedStatsSection.setManaged(isPlayer);
+
+          if (isPlayer) {
+            // Populate available stats from parameters
+            updateAvailableStatsComboBox();
+          }
+        }
+      }
+    });
+    
+    // Create the custom type field
+    customTypeField = new TextField();
+    customTypeField.setPromptText("Enter custom type...");
+    customTypeField.setVisible(false);
+    customTypeField.setManaged(false);
+    customTypeField.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal && currentObjectId != null && "custom".equals(typeComboBox.getValue())) {
+        String customType = customTypeField.getText();
+        if (customType != null && !customType.trim().isEmpty()) {
+          editorController.getEditorDataAPI().getIdentityDataAPI()
+              .setType(currentObjectId, customType);
+          LOG.debug("Custom type field focus lost. Updated object {} type to: {}", 
+              currentObjectId, customType);
+        }
+      }
+    });
+
+    // Create a VBox to hold the type components
+    VBox typeVBox = new VBox(5);
+    typeVBox.getChildren().addAll(typeComboBox, customTypeField);
+    HBox.setHgrow(typeVBox, Priority.ALWAYS);
+    
+    // Create an HBox to hold the type VBox and the player checkbox horizontally
+    HBox typeContainer = new HBox(10);
+    typeContainer.getChildren().addAll(typeVBox);
+    HBox.setHgrow(typeVBox, Priority.ALWAYS);
+
     groupComboBox = new ComboBox<>();
     groupComboBox.setPromptText("Select Group");
     groupComboBox.setMaxWidth(Double.MAX_VALUE);
@@ -150,7 +242,10 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
 
     box.getChildren()
         .addAll(identityLabel, uuidLabel, uuidField,
-            new Label("Name"), nameField, new Label("Group"), groupComboBox);
+            new Label("Name"), nameField,
+            new Label("Game Name"), gameNameComboBox,
+            new Label("Type"), typeContainer,
+            new Label("Group"), groupComboBox);
 
     return box;
   }
@@ -626,8 +721,51 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         .getName(currentObjectId);
     nameField.setText(Objects.toString(currentName, ""));
 
-    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
-        .getGroup(currentObjectId);
+    // Populate and set game name dropdown
+    String currentGame = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getObjectGame(currentObjectId);
+    List<String> availableGames = editorController.getEditorDataAPI().getGames();
+    gameNameComboBox.getItems().clear();
+    gameNameComboBox.getItems().addAll(availableGames);
+    
+    if (currentGame != null && !currentGame.isEmpty() && availableGames.contains(currentGame)) {
+      gameNameComboBox.setValue(currentGame);
+    } else if (!availableGames.isEmpty()) {
+      // Default to first available game if current game not set or invalid
+      gameNameComboBox.setValue(availableGames.get(0));
+    }
+
+    // Set type field
+    String currentType = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
+    
+    // Check if current type is "player" or something custom
+    if (currentType == null || currentType.isEmpty()) {
+      typeComboBox.setValue(null);
+      customTypeField.setText("");
+      customTypeField.setVisible(false);
+      customTypeField.setManaged(false);
+      displayedStatsSection.setVisible(false);
+      displayedStatsSection.setManaged(false);
+    } else if ("player".equals(currentType)) {
+      typeComboBox.setValue("player");
+      customTypeField.setVisible(false);
+      customTypeField.setManaged(false);
+
+      // Show and populate displayed stats section for player objects
+      displayedStatsSection.setVisible(true);
+      displayedStatsSection.setManaged(true);
+      updateAvailableStatsComboBox();
+    } else {
+      // For any other type, set to custom
+      typeComboBox.setValue("custom");
+      customTypeField.setText(currentType);
+      customTypeField.setVisible(true);
+      customTypeField.setManaged(true);
+      displayedStatsSection.setVisible(false);
+      displayedStatsSection.setManaged(false);
+    }
+
+    // Populate and set group dropdown
     List<String> availableGroups = editorController.getEditorDataAPI().getGroups();
     ObservableList<String> groupOptions = FXCollections.observableArrayList();
     groupOptions.add(NO_GROUP_OPTION);
@@ -636,6 +774,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     isUpdatingGroupComboBox = true;
     groupComboBox.setItems(groupOptions);
 
+    String currentGroup = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getGroup(currentObjectId);
     if (currentGroup != null && !currentGroup.isEmpty() && availableGroups.contains(currentGroup)) {
       groupComboBox.setValue(currentGroup);
     } else {
@@ -697,6 +837,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       LOG.trace("Refreshed parameter list for object {}: {} items.", currentObjectId,
           parameterItems.size());
 
+      // If this is a player object, update the available stats dropdown
+      String type = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
+      if ("player".equals(type) && displayedStatsSection.isVisible()) {
+        // Update available parameters in stats dropdown
+        updateAvailableStatsComboBox();
+      }
+
     } catch (Exception e) {
       LOG.error("Failed to refresh parameter list for object {}: {}", currentObjectId,
           e.getMessage(), e);
@@ -717,26 +864,39 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
    * selected object and clears UI control contents.
    */
   private void clearFieldsInternal() {
-    LOG.debug("Clearing properties fields.");
-    currentObjectId = null;
-    uuidField.setText("");
-    nameField.setText("");
+    // Clear identity fields
+    uuidField.clear();
+    nameField.clear();
+    gameNameComboBox.getItems().clear();
+    typeComboBox.setValue(null);
+    customTypeField.clear();
+    customTypeField.setVisible(false);
+    customTypeField.setManaged(false);
+
+    // Clear displayed stats section
+    displayedStatsItems.clear();
+    availableStatsComboBox.getItems().clear();
+    displayedStatsSection.setVisible(false);
+    displayedStatsSection.setManaged(false);
+
     isUpdatingGroupComboBox = true;
     groupComboBox.getItems().clear();
-    groupComboBox.setValue(null);
-    groupComboBox.setPromptText("Select Group");
+    groupComboBox.getItems().add(NO_GROUP_OPTION);
+    groupComboBox.setValue(NO_GROUP_OPTION);
     isUpdatingGroupComboBox = false;
 
-    xField.setText("");
-    yField.setText("");
-    widthField.setText("");
-    heightField.setText("");
-    shapeField.setText("");
+    // Clear hitbox fields
+    xField.clear();
+    yField.clear();
+    widthField.clear();
+    heightField.clear();
+    shapeField.clear();
 
+    // Clear parameter lists
     parameterItems.clear();
-    paramKeyField.clear();
-    paramStringValueField.clear();
-    paramDoubleValueField.clear();
+
+    currentObjectId = null;
+    LOG.debug("All property fields cleared.");
   }
 
   /**
@@ -785,6 +945,176 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       } else {
         LOG.warn("Attempted to request update for object ID {} but it was not found.", currentObjectId);
       }
+    }
+  }
+
+  /**
+   * Builds a VBox containing the displayed stats section for player objects.
+   * This section allows selecting which parameters should be displayed as stats in the game.
+   * Only appears when the object type is "player".
+   *
+   * @return A {@link VBox} containing the displayed stats controls.
+   */
+  private VBox buildDisplayedStatsSection() {
+    displayedStatsSection = new VBox(8);
+    displayedStatsSection.getStyleClass().add("input-sub-section");
+    displayedStatsSection.setVisible(false);
+    displayedStatsSection.setManaged(false);
+
+    Label statsLabel = new Label("Displayed Stats");
+    statsLabel.getStyleClass().add("section-header");
+
+    // List view showing currently selected stats to display
+    displayedStatsListView = new ListView<>(displayedStatsItems);
+    displayedStatsListView.setPlaceholder(new Label("No stats selected for display"));
+    displayedStatsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    displayedStatsListView.setPrefHeight(120);
+
+    // Dropdown for selecting parameters to add as stats
+    availableStatsComboBox = new ComboBox<>();
+    availableStatsComboBox.setPromptText("Select parameter to display");
+    availableStatsComboBox.setMaxWidth(Double.MAX_VALUE);
+
+    // Add button
+    addStatButton = new Button("Add as Stat");
+    addStatButton.setOnAction(e -> addDisplayedStat());
+    addStatButton.disableProperty().bind(availableStatsComboBox.valueProperty().isNull());
+
+    // Remove button
+    removeStatButton = new Button("Remove");
+    removeStatButton.setOnAction(e -> removeDisplayedStat());
+    removeStatButton.disableProperty()
+        .bind(displayedStatsListView.getSelectionModel().selectedItemProperty().isNull());
+
+    // Layout for buttons
+    HBox buttonBox = new HBox(10, addStatButton, removeStatButton);
+    buttonBox.setAlignment(Pos.CENTER_RIGHT);
+
+    // Instruction label
+    Label instructionLabel = new Label(
+        "Select which parameters should be displayed as stats for this player");
+    instructionLabel.setWrapText(true);
+
+    displayedStatsSection.getChildren().addAll(
+        statsLabel,
+        instructionLabel,
+        new Label("Available Parameters:"),
+        availableStatsComboBox,
+        new Label("Selected Stats:"),
+        displayedStatsListView,
+        buttonBox
+    );
+
+    return displayedStatsSection;
+  }
+
+  /**
+   * Adds the selected parameter to the displayed stats list.
+   */
+  private void addDisplayedStat() {
+    if (currentObjectId == null) {
+      return;
+    }
+
+    String selectedParam = availableStatsComboBox.getValue();
+    if (selectedParam != null && !displayedStatsItems.contains(selectedParam)) {
+      displayedStatsItems.add(selectedParam);
+      updateDisplayedStats();
+    }
+  }
+
+  /**
+   * Removes the selected stat from the displayed stats list.
+   */
+  private void removeDisplayedStat() {
+    if (currentObjectId == null) {
+      return;
+    }
+
+    String selectedStat = displayedStatsListView.getSelectionModel().getSelectedItem();
+    if (selectedStat != null) {
+      displayedStatsItems.remove(selectedStat);
+      updateDisplayedStats();
+    }
+  }
+
+  /**
+   * Updates the displayed stats string parameter on the current object.
+   */
+  private void updateDisplayedStats() {
+    if (currentObjectId == null) {
+      return;
+    }
+
+    // Convert the ObservableList to a String list and save in the appropriate format
+    List<String> displayedStats = new ArrayList<>(displayedStatsItems);
+
+    // Set the "displayedProperties" parameter
+    editorController.setObjectStringParameter(currentObjectId, "displayedProperties",
+        String.join(",", displayedStats));
+
+    LOG.debug("Updated displayed stats for player {}: {}", currentObjectId, displayedStats);
+  }
+
+  /**
+   * Updates the available stats combo box with current parameters from the object.
+   */
+  private void updateAvailableStatsComboBox() {
+    if (currentObjectId == null) {
+      return;
+    }
+
+    // Clear existing items
+    availableStatsComboBox.getItems().clear();
+
+    // Get all parameters for this object
+    List<String> paramOptions = new ArrayList<>();
+
+    // Add string parameters
+    Map<String, String> stringParams = editorController.getObjectStringParameters(currentObjectId);
+    if (stringParams != null) {
+      stringParams.keySet().forEach(key -> {
+        if (!key.equals("displayedProperties")) { // Don't include our meta parameter
+          paramOptions.add(key);
+        }
+      });
+    }
+
+    // Add double parameters
+    Map<String, Double> doubleParams = editorController.getObjectDoubleParameters(currentObjectId);
+    if (doubleParams != null) {
+      paramOptions.addAll(doubleParams.keySet());
+    }
+
+    // Sort alphabetically
+    Collections.sort(paramOptions);
+
+    // Add to combo box
+    availableStatsComboBox.getItems().addAll(paramOptions);
+
+    // Load currently displayed stats
+    loadDisplayedStats();
+  }
+
+  /**
+   * Loads the currently selected displayed stats from the object's parameters.
+   */
+  private void loadDisplayedStats() {
+    if (currentObjectId == null) {
+      return;
+    }
+
+    // Clear current items
+    displayedStatsItems.clear();
+
+    // Get the displayedProperties string from parameters
+    String displayedPropsString = editorController.getObjectStringParameters(currentObjectId)
+        .get("displayedProperties");
+
+    if (displayedPropsString != null && !displayedPropsString.isEmpty()) {
+      // Split the comma-separated list and add each item
+      String[] props = displayedPropsString.split(",");
+      displayedStatsItems.addAll(Arrays.asList(props));
     }
   }
 }

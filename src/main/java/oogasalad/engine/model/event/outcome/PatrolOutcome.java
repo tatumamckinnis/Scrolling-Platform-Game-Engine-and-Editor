@@ -26,7 +26,7 @@ public class PatrolOutcome implements Outcome {
   public void execute(GameObject gameObject,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    double dx = gameObject.getDoubleParams().getOrDefault("MovementAmount", 4.0);
+    double dx = doubleParameters.getOrDefault("MovementAmount", 4.0);
     if (gameObject.getXPosition() < 0) {
       gameObject.setXVelocity(dx);
     } else if (gameObject.getXPosition() + gameObject.getHitBoxWidth()

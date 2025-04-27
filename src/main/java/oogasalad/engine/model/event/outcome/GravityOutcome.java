@@ -27,7 +27,7 @@ public class GravityOutcome implements Outcome {
   public void execute(GameObject gameObject,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    double dy = gameObject.getDoubleParams().getOrDefault("ApplyGravityAmount", 5.0);
+    double dy = doubleParameters.getOrDefault("ApplyGravityAmount", 5.0);
     List<GameObject> collisions = collisionHandler.getCollisions(gameObject);
     if (collisions.isEmpty()) {
       gameObject.setGrounded(false);
