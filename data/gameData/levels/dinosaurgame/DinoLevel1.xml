@@ -58,7 +58,7 @@ interact with each other -->
           <stringProperties>
           </stringProperties>
           <doubleProperties>
-            <property name="lives" value="1"/>
+            <property name="lives" value="100"/>
             <property name="score" value="100"/>
             <property name="rocket_duration" value="0"/>
             <property name="dash_duration" value="0"/>
@@ -173,7 +173,7 @@ interact with each other -->
       <outcomes>
         <outcome name="APPLY_GRAVITY">
           <doubleParameters>
-            <parameter name="ApplyGravityAmount" value="0.1"/>
+            <parameter name="ApplyGravityAmount" value="10.0"/>
           </doubleParameters>
         </outcome>
       </outcomes>
