@@ -28,22 +28,14 @@ public class EditorMaker {
   private String gameDirectoryPath;
 
   /**
-   * Constructs an EditorMaker and initializes the editor UI using the provided primary stage.
-   *
-   * @param primaryStage the JavaFX {@link Stage} to attach the editor scene to
-   */
-  public EditorMaker(Stage primaryStage) {
-    initialize(primaryStage);
-  }
-
-  /**
    * Initializes the core components of the editor application, including the data backend,
    * controller, view factory, and main scene. Also configures the primary stage.
    *
    * @param primaryStage the stage on which the editor UI should be displayed
    */
-  private void initialize(Stage primaryStage) {
+  public EditorController initialize(Stage primaryStage) {
     LOG.info("Starting Editor Application...");
+    EditorController editorController;
     try {
       // --- Dependency Setup ---
 
@@ -54,7 +46,7 @@ public class EditorMaker {
       LOG.debug("EditorDataAPI instance created.");
 
       // 2. Create the editor controller
-      EditorController editorController = new ConcreteEditorController(editorDataAPI, listenerNotifier);
+      editorController = new ConcreteEditorController(editorDataAPI, listenerNotifier);
       LOG.info("ConcreteEditorController created.");
 
       // Set the game directory path
@@ -83,7 +75,10 @@ public class EditorMaker {
     } catch (Exception e) {
       LOG.fatal("Failed to initialize and start Editor Application", e);
       showInitializationError(e);
+      throw new NullPointerException("Editor Controller initialization failed");
     }
+    return editorController;
+
   }
 
   /**

@@ -19,7 +19,7 @@ import oogasalad.fileparser.records.LevelData;
 /**
  * Interface for interacting with GameControllers
  *
- * @author Gage Garcia
+ * @author Gage Garcia, Alana Zinkin
  */
 
 public interface GameControllerAPI {
@@ -42,7 +42,6 @@ public interface GameControllerAPI {
    */
   ImmutableGameObject getViewObjectByUUID(String uuid);
 
-
   /**
    * Advances the game state by one "tick" or step, typically by: 1) Calling each phase controller
    * (input, physics, collision, etc.) 2) Resolving any post-update tasks (e.g. removing destroyed
@@ -63,9 +62,25 @@ public interface GameControllerAPI {
    */
   Camera getCamera();
 
+  /**
+   * Returns the current player object associated with the editor or game.
+   *
+   * @return the player object, or {@code null} if no player is currently set
+   */
   Object getPlayer();
 
+  /**
+   * Returns the name of the currently selected game.
+   *
+   * @return the current game name, or {@code null} if no game is selected
+   */
   String getCurrentGameName();
 
+  /**
+   * Returns the name of the currently selected level.
+   *
+   * @return the current level name, or {@code null} if no level is selected
+   */
   String getCurrentLevelName();
+
 }

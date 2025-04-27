@@ -26,7 +26,8 @@ public class EditorApplication extends Application {
    */
   @Override
   public void start(Stage primaryStage) {
-    new EditorMaker(primaryStage);
+    EditorMaker editor = new EditorMaker();
+    editor.initialize(primaryStage);
   }
 
   /**

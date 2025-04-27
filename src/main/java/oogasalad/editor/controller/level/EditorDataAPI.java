@@ -14,6 +14,7 @@ import oogasalad.editor.controller.object.IdentityDataManager;
 import oogasalad.editor.controller.object.InputDataManager;
 import oogasalad.editor.controller.object.PhysicsDataManager;
 import oogasalad.editor.controller.object.SpriteDataManager;
+import oogasalad.editor.model.EditorObjectPopulator;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
@@ -23,9 +24,20 @@ import oogasalad.editor.model.data.object.DynamicVariableContainer;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.saver.EditorFileConverter;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
+import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorSaveException;
+import oogasalad.exceptions.EventParseException;
+import oogasalad.exceptions.GameObjectParseException;
+import oogasalad.exceptions.HitBoxParseException;
+import oogasalad.exceptions.LayerParseException;
+import oogasalad.exceptions.LevelDataParseException;
+import oogasalad.exceptions.PropertyParsingException;
+import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.GameObjectData;
+import oogasalad.fileparser.records.LevelData;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
 import org.apache.logging.log4j.LogManager;
@@ -34,9 +46,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * Provides a comprehensive API to manage editor data, acting as a facade for various underlying
  * data managers and the core {@link EditorLevelData}. It handles operations related to editor
- * objects (creation, retrieval, update, removal), layers, groups, sprite assets (sheets, templates),
- * camera settings, custom object parameters, and level saving/loading integration. This API simplifies
- * interaction with the editor's data model for the controller layer.
+ * objects (creation, retrieval, update, removal), layers, groups, sprite assets (sheets,
+ * templates), camera settings, custom object parameters, and level saving/loading integration. This
+ * API simplifies interaction with the editor's data model for the controller layer.
  *
  * @author Jacob You
  */
@@ -69,14 +81,16 @@ public class EditorDataAPI {
    * all related data managers, including the modified {@link IdentityDataManager} which now handles
    * per-object parameters.
    *
-   * @param listenerNotifier The notifier for broadcasting changes to view listeners. Must not be null.
+   * @param listenerNotifier The notifier for broadcasting changes to view listeners. Must not be
+   *                         null.
    * @author Jacob You, Tatum McKinnis
    */
   public EditorDataAPI(EditorListenerNotifier listenerNotifier) {
     this.fileParserAPI = DEFAULT_FILE_PARSER;
     this.saverStrategy = DEFAULT_SAVER_STRATEGY;
 
-    this.listenerNotifier = Objects.requireNonNull(listenerNotifier, "ListenerNotifier cannot be null");
+    this.listenerNotifier = Objects.requireNonNull(listenerNotifier,
+        "ListenerNotifier cannot be null");
     this.level = new EditorLevelData();
     this.identityAPI = new IdentityDataManager(level); // Handles identity + parameters
     this.hitboxAPI = new HitboxDataManager(level);
@@ -111,7 +125,9 @@ public class EditorDataAPI {
    * @return the corresponding {@link EditorObject} or null if no object is found or ID is null.
    */
   public EditorObject getEditorObject(UUID id) {
-    if (id == null) return null;
+    if (id == null) {
+      return null;
+    }
     return level.getEditorObject(id);
   }
 
@@ -144,10 +160,11 @@ public class EditorDataAPI {
   }
 
   /**
-   * Updates an existing editor object with new data provided in the {@code updatedObject}.
-   * The object is identified by the ID within {@code updatedObject}.
+   * Updates an existing editor object with new data provided in the {@code updatedObject}. The
+   * object is identified by the ID within {@code updatedObject}.
    *
-   * @param updatedObject the editor object containing the updated data. Must not be null and must have a valid ID.
+   * @param updatedObject the editor object containing the updated data. Must not be null and must
+   *                      have a valid ID.
    * @return whether the object was successfully found and updated in the underlying data map.
    */
   public boolean updateEditorObject(EditorObject updatedObject) {
@@ -233,8 +250,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Removes the group identified by the provided group name from the editor level's list.
-   * Fails if any existing editor object is still assigned to this group.
+   * Removes the group identified by the provided group name from the editor level's list. Fails if
+   * any existing editor object is still assigned to this group.
    *
    * @param groupName the name of the group to remove.
    * @return true if the group was successfully removed (and no objects used it), false otherwise.
@@ -245,8 +262,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the underlying {@link EditorLevelData} instance managed by this API.
-   * Use with caution, prefer using specific API methods when possible.
+   * Gets the underlying {@link EditorLevelData} instance managed by this API. Use with caution,
+   * prefer using specific API methods when possible.
    *
    * @return the current {@link EditorLevelData}.
    */
@@ -274,7 +291,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link InputDataManager} used by the editor to manage input-related events and data.
+   * Retrieves the {@link InputDataManager} used by the editor to manage input-related events and
+   * data.
    *
    * @return the InputDataManager instance.
    */
@@ -283,7 +301,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link PhysicsDataManager} used by the editor to manage object physics properties.
+   * Retrieves the {@link PhysicsDataManager} used by the editor to manage object physics
+   * properties.
    *
    * @return the PhysicsDataManager instance.
    */
@@ -292,7 +311,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link CollisionDataManager} used by the editor to manage collision-related events and data.
+   * Retrieves the {@link CollisionDataManager} used by the editor to manage collision-related
+   * events and data.
    *
    * @return the CollisionDataManager instance.
    */
@@ -301,7 +321,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Retrieves the {@link SpriteDataManager} used by the editor to manage object sprite properties and templates.
+   * Retrieves the {@link SpriteDataManager} used by the editor to manage object sprite properties
+   * and templates.
    *
    * @return the SpriteDataManager instance.
    */
@@ -310,8 +331,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the container holding global dynamic variables for this instance of the API.
-   * Note: This is separate from the per-object parameters managed by IdentityDataManager.
+   * Gets the container holding global dynamic variables for this instance of the API. Note: This is
+   * separate from the per-object parameters managed by IdentityDataManager.
    *
    * @return the {@link DynamicVariableContainer} instance.
    */
@@ -320,9 +341,9 @@ public class EditorDataAPI {
   }
 
   /**
-   * Sets the file system path to the root directory of the currently loaded game project.
-   * Also updates the game name in the underlying {@link EditorLevelData} based on the
-   * directory name extracted from the path.
+   * Sets the file system path to the root directory of the currently loaded game project. Also
+   * updates the game name in the underlying {@link EditorLevelData} based on the directory name
+   * extracted from the path.
    *
    * @param path The path to the current game directory.
    */
@@ -352,7 +373,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the {@link SpriteSheetDataManager} instance for managing sprite sheet assets (loading, saving).
+   * Gets the {@link SpriteSheetDataManager} instance for managing sprite sheet assets (loading,
+   * saving).
    *
    * @return The current SpriteSheetDataManager instance.
    */
@@ -361,8 +383,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Notifies all registered view listeners that an error has occurred, providing a descriptive message.
-   * This is typically called by data managers when operations fail.
+   * Notifies all registered view listeners that an error has occurred, providing a descriptive
+   * message. This is typically called by data managers when operations fail.
    *
    * @param errorMessage the error message to be reported to the listeners.
    */
@@ -372,7 +394,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Returns the current {@link SpriteSheetLibrary} containing loaded sprite sheet data for the level.
+   * Returns the current {@link SpriteSheetLibrary} containing loaded sprite sheet data for the
+   * level.
    *
    * @return the sprite library for the current level.
    */
@@ -381,8 +404,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Returns an unmodifiable view of the map containing all {@link EditorObject} instances in the current level,
-   * keyed by their UUID.
+   * Returns an unmodifiable view of the map containing all {@link EditorObject} instances in the
+   * current level, keyed by their UUID.
    *
    * @return an unmodifiable map of object UUID to EditorObject.
    */
@@ -391,8 +414,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Adds a {@link SpriteTemplate} to the sprite template mapping for the current level.
-   * Notifies listeners that the sprite templates have changed.
+   * Adds a {@link SpriteTemplate} to the sprite template mapping for the current level. Notifies
+   * listeners that the sprite templates have changed.
    *
    * @param spriteTemplate The sprite template to add to the level mapping. Must not be null.
    */
@@ -403,7 +426,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Gets the {@link SpriteTemplateMap} containing all defined sprite templates for the current level.
+   * Gets the {@link SpriteTemplateMap} containing all defined sprite templates for the current
+   * level.
    *
    * @return the {@link SpriteTemplateMap} for the current level.
    */
@@ -412,7 +436,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Returns the name of the game associated with the current level, typically derived from the game directory path.
+   * Returns the name of the game associated with the current level, typically derived from the game
+   * directory path.
    *
    * @return the game name as a {@code String}, or null if not set.
    */
@@ -421,8 +446,8 @@ public class EditorDataAPI {
   }
 
   /**
-   * Saves the current editor level data (including objects, layers, groups, camera, parameters, etc.)
-   * to a file using the configured file converter and saver strategy.
+   * Saves the current editor level data (including objects, layers, groups, camera, parameters,
+   * etc.) to a file using the configured file converter and saver strategy.
    *
    * @param fileName the name (or path) of the file to save to.
    * @throws EditorSaveException if an error occurs during the saving process.
@@ -433,9 +458,9 @@ public class EditorDataAPI {
   }
 
   /**
-   * Returns the {@link CameraDataManager} for interacting with the level's camera data.
-   * The {@code camType} parameter is currently ignored but kept for potential future use
-   * with multiple camera types.
+   * Returns the {@link CameraDataManager} for interacting with the level's camera data. The
+   * {@code camType} parameter is currently ignored but kept for potential future use with multiple
+   * camera types.
    *
    * @param camType the camera type requested (currently ignored).
    * @return the {@link CameraDataManager} instance.
@@ -443,6 +468,36 @@ public class EditorDataAPI {
   public CameraDataManager getCameraAPI(String camType) {
     // Currently ignores camType, always returns the single camera manager
     return cameraAPI;
+  }
+
+  /**
+   * Loads level data from the specified file and populates the editor's internal object map.
+   *
+   * <p>This method parses the provided level file into {@link LevelData}, extracts all
+   * {@link GameObjectData} and their corresponding {@link BlueprintData}, and uses an
+   * {@link EditorObjectPopulator} to create {@link EditorObject}s. Each object is then added to the
+   * editor's level data map for later use by the editor view or controller.</p>
+   *
+   * @param fileName the path to the level file to load
+   * @throws LayerParseException      if there is an error parsing layer information
+   * @throws LevelDataParseException  if there is an error parsing the overall level structure
+   * @throws PropertyParsingException if object properties fail to parse
+   * @throws SpriteParseException     if sprite information fails to load
+   * @throws EventParseException      if event definitions fail to parse
+   * @throws HitBoxParseException     if hit box definitions are invalid
+   * @throws BlueprintParseException  if blueprint data cannot be interpreted
+   * @throws GameObjectParseException if an error occurs while creating game objects
+   */
+  public void loadLevelData(String fileName)
+      throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
+    LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
+    Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
+    List<GameObjectData> gameObjectData = levelData.gameObjects();
+    EditorObjectPopulator populator = new EditorObjectPopulator(level);
+    for (GameObjectData gameObject : gameObjectData) {
+      EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
+      level.updateObjectInDataMap(object.getId(), object);
+    }
   }
 
   /**
