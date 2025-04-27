@@ -508,38 +508,38 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
   /**
    * Handles mouse press events to start drag operations.
-   * 
+   *
    * @param event The MouseEvent associated with the press.
    */
   private void handleGridMousePressed(MouseEvent event) {
     this.requestFocus();
-    
+
     // Only handle left mouse button presses
     if (!event.isPrimaryButtonDown()) {
       return;
     }
-    
+
     // Skip if we don't have a drag-capable tool
     if (!isDragCapableTool(currentTool)) {
       return;
     }
-    
+
     double screenX = event.getX();
     double screenY = event.getY();
-    
+
     double[] worldCoords = screenToWorld(screenX, screenY);
     double worldX = worldCoords[0];
     double worldY = worldCoords[1];
-    
+
     // Call the appropriate startDrag method based on the tool type
     if (currentTool instanceof DragPrefabPlacementTool) {
       ((DragPrefabPlacementTool) currentTool).startDrag(worldX, worldY);
     }
   }
-  
+
   /**
    * Handles mouse drag events to place objects during drag operations.
-   * 
+   *
    * @param event The MouseEvent associated with the drag.
    */
   private void handleGridMouseDragged(MouseEvent event) {
@@ -547,28 +547,28 @@ public class EditorGameView extends Pane implements EditorViewListener {
     if (!event.isPrimaryButtonDown()) {
       return;
     }
-    
+
     // Skip if we don't have a drag-capable tool
     if (!isDragCapableTool(currentTool)) {
       return;
     }
-    
+
     double screenX = event.getX();
     double screenY = event.getY();
-    
+
     double[] worldCoords = screenToWorld(screenX, screenY);
     double worldX = worldCoords[0];
     double worldY = worldCoords[1];
-    
+
     // Call the appropriate dragTo method based on the tool type
-   if (currentTool instanceof DragPrefabPlacementTool) {
+    if (currentTool instanceof DragPrefabPlacementTool) {
       ((DragPrefabPlacementTool) currentTool).dragTo(worldX, worldY);
     }
   }
-  
+
   /**
    * Handles mouse release events to complete drag operations.
-   * 
+   *
    * @param event The MouseEvent associated with the release.
    */
   private void handleGridMouseReleased(MouseEvent event) {
@@ -576,16 +576,16 @@ public class EditorGameView extends Pane implements EditorViewListener {
     if (!isDragCapableTool(currentTool)) {
       return;
     }
-    
+
     // Call the appropriate endDrag method based on the tool type
-   if (currentTool instanceof DragPrefabPlacementTool) {
+    if (currentTool instanceof DragPrefabPlacementTool) {
       ((DragPrefabPlacementTool) currentTool).endDrag();
     }
   }
-  
+
   /**
    * Checks if the current tool supports drag operations
-   * 
+   *
    * @param tool The tool to check
    * @return true if the tool implements the necessary drag operations
    */
@@ -1096,6 +1096,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
    */
   @Override
   public void onSpriteTemplateChanged() {
+    //TODO implement
   }
 
   @Override
@@ -1138,13 +1139,16 @@ public class EditorGameView extends Pane implements EditorViewListener {
   }
 
   /**
-   * Refreshes all displayed objects, forcing a redraw of the object canvas.
-   * This is useful after operations that place many objects at once.
+   * Refreshes all displayed objects, forcing a redraw of the object canvas. This is useful after
+   * operations that place many objects at once.
    */
   public void refreshDisplay() {
     redrawObjects();
   }
 
+  /**
+   * removes all objects from the game scene
+   */
   public void removeAllObjects() {
     displayedObjectIds.clear();
     objectImages.clear();

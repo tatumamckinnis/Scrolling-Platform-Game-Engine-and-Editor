@@ -494,36 +494,42 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
    */
   @Override
   public void onSpriteTemplateChanged() {
+    //TODO: implement
   }
 
   @Override
   public void setSnapToGrid(boolean doSnap) {
-
+    //TODO: implement
   }
 
   @Override
   public void setCellSize(int cellSize) {
-
+    //TODO: implement
   }
 
   @Override
   public void onObjectRemoved(UUID objectId) {
+    //TODO: implement
   }
 
   @Override
   public void onObjectUpdated(UUID objectId) {
+    //TODO: implement
   }
 
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
+    //TODO: implement
   }
 
   @Override
   public void onObjectAdded(UUID objectId) {
+    //TODO: implement
   }
 
   @Override
   public void onDynamicVariablesChanged() {
+    //TODO: implement
   }
 
   @Override

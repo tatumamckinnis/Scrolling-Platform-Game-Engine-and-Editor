@@ -120,13 +120,24 @@ public class EditorListenerNotifier {
     viewListeners.forEach(EditorViewListener::onSpriteTemplateChanged);
   }
 
+  /**
+   * Notifies all registered view listeners that the snap-to-grid setting has changed.
+   *
+   * @param doSnap {@code true} to enable snap-to-grid, {@code false} to disable it
+   */
   public void notifySnapToGridChanged(boolean doSnap) {
     LOG.debug("Notifying listeners: Snap to grid changed");
     viewListeners.forEach(listener -> listener.setSnapToGrid(doSnap));
   }
 
+  /**
+   * Notifies all registered view listeners that the cell size has changed.
+   *
+   * @param cellSize the new cell size in pixels
+   */
   public void notifyCellSizeChanged(int cellSize) {
     LOG.debug("Notifying listeners: Cell size changed");
     viewListeners.forEach(listener -> listener.setCellSize(cellSize));
   }
+
 }

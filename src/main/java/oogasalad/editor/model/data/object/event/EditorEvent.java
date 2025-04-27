@@ -35,7 +35,10 @@ public class EditorEvent {
   }
 
 
-
+  /**
+   * Adds an outcome to the event
+   * @param outcome outcome to add to the event
+   */
   public void addOutcome(ExecutorData outcome) {
     outcomes.add(outcome);
   }
