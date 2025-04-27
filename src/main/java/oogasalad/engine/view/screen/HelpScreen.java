@@ -17,6 +17,12 @@ public class HelpScreen {
 
   private static final ResourceManagerAPI resourceManager = ResourceManager.getInstance();
   private static final String help = "help";
+  private static final String listTagOpen = "<li>";
+  private static final String listTagClose = "</li>";
+  private static final String headerTwoOpen = "<h2>";
+  private static final String headerTwoClose = "</h2>";
+  private static final String paragraphOpen = "<p>";
+  private static final String paragraphClose = "</p>";
 
   /**
    * opens up a help documentation window providing information about the program to assist users
@@ -49,35 +55,35 @@ public class HelpScreen {
   }
 
   private static void buildHTMLTipsSection(StringBuilder html, ResourceManagerAPI resourceManager) {
-    html.append("<h2>").append(resourceManager.getText(help, "help.build.header"))
-        .append("</h2>");
-    html.append("<p>").append(resourceManager.getText(help, "help.build.steps")).append("</p>");
-    html.append("<h2>").append(resourceManager.getText(help, "help.tips.header")).append("</h2>");
-    html.append("<p>").append(resourceManager.getText(help, "help.tips.list")).append("</p>");
+    html.append(headerTwoOpen).append(resourceManager.getText(help, "help.build.header"))
+        .append(headerTwoClose);
+    html.append(paragraphOpen).append(resourceManager.getText(help, "help.build.steps")).append(paragraphClose);
+    html.append(headerTwoOpen).append(resourceManager.getText(help, "help.tips.header")).append(headerTwoClose);
+    html.append(paragraphOpen).append(resourceManager.getText(help, "help.tips.list")).append(paragraphClose);
   }
 
   private static void buildHTMLButtons(StringBuilder html, ResourceManagerAPI resourceManager) {
     html.append("<ul>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.selectGameType"))
-        .append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.selectLevel"))
-        .append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.startEngine"))
-        .append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.startEditor"))
-        .append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.help")).append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.playAnother"))
-        .append("</li>");
-    html.append("<li>").append(resourceManager.getText(help, "help.menu.selectLanguage"))
-        .append("</li>");
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.selectGameType"))
+        .append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.selectLevel"))
+        .append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.startEngine"))
+        .append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.startEditor"))
+        .append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.help")).append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.playAnother"))
+        .append(listTagClose);
+    html.append(listTagOpen).append(resourceManager.getText(help, "help.menu.selectLanguage"))
+        .append(listTagClose);
     html.append("</ul>");
   }
 
   private static void buildHTMLTitle(StringBuilder html, ResourceManagerAPI resourceManager) {
     html.append("<h1>").append(resourceManager.getText(help, "help.title")).append("</h1>");
-    html.append("<p>").append(resourceManager.getText(help, "help.intro")).append("</p>");
-    html.append("<h2>").append(resourceManager.getText(help, "help.menu.header")).append("</h2>");
+    html.append(paragraphOpen).append(resourceManager.getText(help, "help.intro")).append(paragraphClose);
+    html.append(headerTwoOpen).append(resourceManager.getText(help, "help.menu.header")).append(headerTwoClose);
   }
 
 }
