@@ -127,7 +127,7 @@ interact with each other -->
       <outcomes>
         <outcome name="JUMP">
           <doubleParameters>
-            <parameter name="JumpAmount" value="20"/>
+            <parameter name="JumpAmount" value="100"/>
           </doubleParameters>
           <stringParameters>
             <parameter name="jumpType" value="Floaty"/>
