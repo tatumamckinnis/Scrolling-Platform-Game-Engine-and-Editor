@@ -172,10 +172,10 @@ public class InputTabComponentFactory implements EditorViewListener {
     outcomesSectionBuilder = new OutcomesSectionBuilder(
         uiBundle,
         this::getOutcomeTypeNames,
-        this::getDynamicVariablesForObject,
+        // removed: this::getDynamicVariablesForObject,
         this::handleAddOutcome,
         this::handleRemoveOutcome,
-        this::openAddDynamicVariableDialog,
+        // removed: this::openAddDynamicVariableDialog,
         this::handleEditOutcomeParam
     );
   }
@@ -484,6 +484,8 @@ public class InputTabComponentFactory implements EditorViewListener {
    * Opens the dialog for adding a new dynamic variable.
    * Validates that an object is selected before opening.
    * Handles the result from the dialog if a variable is successfully created.
+   * Note: This method is retained in case dynamic variable creation is needed elsewhere,
+   * but it's no longer directly linked to the Outcomes section builder.
    */
   private void openAddDynamicVariableDialog() {
     LOG.debug("Opening 'Add Dynamic Variable' dialog.");
@@ -509,6 +511,7 @@ public class InputTabComponentFactory implements EditorViewListener {
       }
       editorController.addDynamicVariable(dynamicVar);
       LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
+      // Note: No longer automatically refreshing outcome builder's dynamic variable list
     } catch (Exception e) {
       LOG.error("Error delegating add dynamic variable: {}", e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
@@ -538,7 +541,9 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Retrieves the list of dynamic variables available for the currently selected object context.
-   * Handles potential errors during retrieval. Used by the Outcomes section builder.
+   * Handles potential errors during retrieval.
+   * Note: This method is retained in case dynamic variable context is needed elsewhere,
+   * but it's no longer directly linked to the Outcomes section builder's ComboBox.
    *
    * @return A list of available DynamicVariables, or an empty list if none or on error.
    */
@@ -569,13 +574,13 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Refreshes the entire UI related to the currently selected object,
-   * specifically the events list and the dynamic variable list used by outcomes.
+   * specifically the events list.
    */
   private void refreshUIForObject() {
     runOnFxThread(() -> {
       LOG.debug("Refreshing UI for object: {}", currentObjectId);
       refreshEventsList();
-      refreshDynamicVariables();
+      // No longer need to explicitly refresh dynamic variables for the outcomes section here
     });
   }
 
@@ -683,13 +688,15 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the list of dynamic variables available in the Outcomes section's combo box.
+   * Refreshes the dynamic variable list, typically in response to changes.
+   * This method is now simplified as the outcome builder no longer displays this list directly.
    * Ensures this runs on the FX thread.
    */
   private void refreshDynamicVariables() {
     runOnFxThread(() -> {
-      LOG.debug("Refreshing dynamic variables UI for object context: {}", currentObjectId);
-      outcomesSectionBuilder.updateDynamicVariableComboBox();
+      LOG.debug("Dynamic variables changed in context: {}", currentObjectId);
+      // Removed call: outcomesSectionBuilder.updateDynamicVariableComboBox();
+      // Other UI components needing dynamic variable updates could be refreshed here if needed.
     });
   }
 
@@ -716,7 +723,7 @@ public class InputTabComponentFactory implements EditorViewListener {
       eventsSectionBuilder.getEventListView().getItems().clear();
       eventsSectionBuilder.getEventIdField().clear();
       clearConditionsAndOutcomesUI();
-      refreshDynamicVariables();
+      refreshDynamicVariables(); // Still call in case other parts rely on it
       LOG.trace("Cleared all input tab UI to default state.");
     });
   }

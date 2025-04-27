@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,6 +20,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
@@ -26,8 +29,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Builds the UI section for managing Conditions associated with an Event.
- * Handles condition groups, adding/removing conditions by type, and provides
- * UI for parameter editing based on definitions in properties files.
+ * Handles condition groups, adding/removing conditions by type, provides a dropdown
+ * to select the target group for adding conditions, and provides UI for parameter
+ * editing based on definitions in properties files.
  *
  * @author Tatum McKinnis
  */
@@ -46,6 +50,7 @@ public class ConditionsSectionBuilder {
   private final RemoveConditionHandler removeConditionHandler;
   private final EditConditionParamHandler editConditionParamHandler;
 
+  private ComboBox<Integer> conditionGroupComboBox;
   private ComboBox<String> conditionTypeComboBox;
   private ListView<ConditionDisplayItem> conditionsListView;
   private VBox parametersPane;
@@ -176,7 +181,8 @@ public class ConditionsSectionBuilder {
   }
 
   /**
-   * Creates the HBox containing the condition type ComboBox and the "Add Condition" / "Remove Condition" buttons.
+   * Creates the HBox containing the target group ComboBox, condition type ComboBox,
+   * and the "Add Condition" / "Remove Condition" buttons.
    *
    * @return The HBox Node for condition selection and management.
    */
@@ -186,6 +192,8 @@ public class ConditionsSectionBuilder {
     selectionBox.getStyleClass().add(getLocalProp("style.selectionBox"));
     selectionBox.setAlignment(Pos.CENTER_LEFT);
 
+    Label groupLabel = new Label(uiBundle.getString(getLocalProp("key.conditionGroupLabel")));
+    setupConditionGroupComboBox();
     setupConditionTypeComboBox();
 
     Button addConditionButton = createButton("key.addConditionButton", e -> handleAddConditionAction());
@@ -196,10 +204,20 @@ public class ConditionsSectionBuilder {
     removeConditionButton.setId(getLocalProp("id.removeConditionButton"));
     removeConditionButton.getStyleClass().add(getLocalProp("style.removeButton"));
 
-    selectionBox.getChildren().addAll(conditionTypeComboBox, addConditionButton, removeConditionButton);
+    selectionBox.getChildren().addAll(groupLabel, conditionGroupComboBox, conditionTypeComboBox, addConditionButton, removeConditionButton);
     HBox.setHgrow(conditionTypeComboBox, Priority.ALWAYS);
 
     return selectionBox;
+  }
+
+  /**
+   * Sets up the ComboBox for selecting the target condition group.
+   */
+  private void setupConditionGroupComboBox() {
+    conditionGroupComboBox = new ComboBox<>();
+    conditionGroupComboBox.setId(getLocalProp("id.conditionGroupComboBox"));
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+    conditionGroupComboBox.setMinWidth(Region.USE_PREF_SIZE);
   }
 
   /**
@@ -269,20 +287,31 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the action triggered by the "Add Condition" button.
+   * Reads the target group from the condition group combo box.
    */
   private void handleAddConditionAction() {
     String selectedType = conditionTypeComboBox.getSelectionModel().getSelectedItem();
+    Integer targetGroupIndex = conditionGroupComboBox.getValue();
+
     if (selectedType == null || selectedType.trim().isEmpty()) {
       LOG.warn("No condition type selected.");
       return;
     }
+    if (targetGroupIndex == null) {
+      LOG.warn("No target condition group selected. Defaulting to group 0 if available, otherwise skipping add.");
+      if (conditionGroupComboBox.getItems().isEmpty()) {
+        LOG.error("Cannot add condition: No groups exist.");
+        return;
+      }
+      targetGroupIndex = 0; // Default to the first group if available
+    }
 
-    ConditionDisplayItem selectedItem = conditionsListView.getSelectionModel().getSelectedItem();
-    int targetGroupIndex = (selectedItem != null) ? selectedItem.getGroupIndex() : 0;
 
     addConditionHandler.handle(targetGroupIndex, selectedType.trim());
     conditionTypeComboBox.getSelectionModel().clearSelection();
     conditionTypeComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectCondition")));
+    conditionGroupComboBox.getSelectionModel().clearSelection(); // Optionally clear group selection too
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
   }
 
   /**
@@ -493,6 +522,12 @@ public class ConditionsSectionBuilder {
 
   /**
    * Retrieves the current value of a parameter from ExecutorData, falling back to defaultValue.
+   *
+   * @param data The ExecutorData containing parameters.
+   * @param paramName The name of the parameter.
+   * @param paramType The expected type from properties.
+   * @param defaultValue The default value if not found.
+   * @return The current value as a String.
    */
   private String getCurrentValueAsString(ExecutorData data, String paramName, String paramType, String defaultValue) {
     Map<String, String> stringParams = data.getStringParams();
@@ -517,6 +552,10 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a String parameter value (or Dropdown selection).
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param newValue  The new string value.
    */
   private void handleStringParamUpdate(ConditionDisplayItem item, String key, String newValue) {
     editConditionParamHandler.handle(item.getGroupIndex(), item.getConditionIndex(), key, newValue);
@@ -525,6 +564,10 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a Boolean parameter value.
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param newValue  The new boolean value.
    */
   private void handleBooleanParamUpdate(ConditionDisplayItem item, String key, boolean newValue) {
     editConditionParamHandler.handle(item.getGroupIndex(), item.getConditionIndex(), key, String.valueOf(newValue));
@@ -533,6 +576,11 @@ public class ConditionsSectionBuilder {
 
   /**
    * Handles the update of a numeric (Double/Integer) parameter value.
+   *
+   * @param item      The ConditionDisplayItem being edited.
+   * @param key       The parameter key (name).
+   * @param paramType The expected numeric type ("Integer" or "Double") from properties.
+   * @param textField The TextField containing the new numeric value.
    */
   private void handleNumericParamUpdate(ConditionDisplayItem item, String key, String paramType, TextField textField) {
     String newValueText = textField.getText();
@@ -559,19 +607,51 @@ public class ConditionsSectionBuilder {
 
 
   /**
-   * Updates the conditions ListView with the provided list of condition groups.
+   * Updates the conditions ListView and the condition group ComboBox
+   * with the provided list of condition groups.
    *
    * @param conditionGroups A list where each inner list represents a group of ExecutorData (conditions).
    */
   public void updateConditionsListView(List<List<ExecutorData>> conditionGroups) {
     ObservableList<ConditionDisplayItem> displayItems = FXCollections.observableArrayList();
+    int numGroups = 0;
     if (conditionGroups != null) {
       processConditionGroups(conditionGroups, displayItems);
+      numGroups = conditionGroups.size();
     }
     conditionsListView.setItems(displayItems);
-    updateParametersPane(null);
-    LOG.trace("Conditions list view updated with {} items.", displayItems.size());
+    updateConditionGroupComboBox(numGroups);
+    updateParametersPane(null); // Clear parameters when list changes
+    LOG.trace("Conditions list view updated with {} items across {} groups.", displayItems.size(), numGroups);
   }
+
+  /**
+   * Updates the items available in the condition group ComboBox based on the current number of groups.
+   *
+   * @param numGroups The current number of condition groups.
+   */
+  private void updateConditionGroupComboBox(int numGroups) {
+    if (conditionGroupComboBox == null) {
+      LOG.warn("Condition group combo box is null, cannot update.");
+      return;
+    }
+
+    Integer selectedGroup = conditionGroupComboBox.getValue();
+    List<Integer> groupIndices = IntStream.range(0, numGroups)
+        .boxed()
+        .collect(Collectors.toList());
+    conditionGroupComboBox.setItems(FXCollections.observableArrayList(groupIndices));
+
+    if (selectedGroup != null && selectedGroup < numGroups) {
+      conditionGroupComboBox.setValue(selectedGroup); // Preserve selection if still valid
+    } else {
+      conditionGroupComboBox.getSelectionModel().clearSelection(); // Clear selection if invalid or no groups
+    }
+
+    conditionGroupComboBox.setDisable(numGroups == 0); // Disable if there are no groups
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+  }
+
 
   /**
    * Iterates through the outer list of condition groups and processes each group.

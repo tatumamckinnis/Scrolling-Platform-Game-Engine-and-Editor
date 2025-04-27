@@ -2,6 +2,7 @@ package oogasalad.editor.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -20,8 +21,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Utility class responsible for populating an EditorObject with data.
- * Includes logic to ensure groups are added to the level data.
+ * Utility class responsible for populating an EditorObject with data from various sources like
+ * blueprints or game object data records. It handles the conversion between record formats and
+ * editor model formats, including identity, sprite, hitbox, physics, and custom parameters. It
+ * also ensures that necessary metadata like groups and layers are correctly handled within the
+ * associated {@link EditorLevelData}.
  *
  * @author Tatum McKinnis
  */
@@ -33,6 +37,8 @@ public class EditorObjectPopulator {
 
   /**
    * Constructs an EditorObjectPopulator associated with a specific level.
+   *
+   * @param levelData the {@link EditorLevelData} instance this populator will interact with. Must not be null.
    */
   public EditorObjectPopulator(EditorLevelData levelData) {
     this.levelData = Objects.requireNonNull(levelData, "levelData cannot be null");
@@ -40,7 +46,10 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Creates a new default EditorObject and registers it.
+   * Creates a new default EditorObject, initializes its components, and registers it
+   * within the associated {@link EditorLevelData}.
+   *
+   * @return the newly created default {@link EditorObject}.
    */
   public EditorObject createDefaultObject() {
     LOG.debug("Creating default EditorObject.");
@@ -52,11 +61,18 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Creates and populates an EditorObject from a BlueprintData record.
-   * Assumes the BlueprintData's spriteData record contains resolved image path and parsed frame/animation data.
-   * Registers the new object with EditorLevelData and ensures its group is added globally.
+   * Creates and populates an {@link EditorObject} from a {@link BlueprintData} record and initial position.
+   * This method translates the blueprint's properties (identity, sprite, hitbox, physics, custom parameters)
+   * into the editor's object model format. It also registers the new object with the {@link EditorLevelData}
+   * and ensures its group and layer are correctly handled.
+   *
+   * @param blueprint the {@link BlueprintData} record containing the object's template information. Must not be null.
+   * @param x the initial x-coordinate for the object (typically sprite position).
+   * @param y the initial y-coordinate for the object (typically sprite position).
+   * @return the newly created and populated {@link EditorObject}.
    */
   public EditorObject populateFromBlueprint(BlueprintData blueprint, double x, double y) {
+    Objects.requireNonNull(blueprint, "Blueprint cannot be null");
     LOG.debug("Populating EditorObject from blueprint ID: {}, Type: {}", blueprint.blueprintId(), blueprint.type());
     EditorObject object = new EditorObject(levelData);
 
@@ -116,6 +132,11 @@ public class EditorObjectPopulator {
       trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
     }
 
+    object.setStringParameters(blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
+    object.setDoubleParameters(blueprint.doubleProperties() != null ? blueprint.doubleProperties() : new HashMap<>());
+    LOG.debug("Populated {} string parameters and {} double parameters from blueprint.",
+        object.getStringParameters().size(), object.getDoubleParameters().size());
+
     levelData.getObjectDataMap().put(object.getId(), object);
     levelData.getObjectLayerDataMap().values().forEach(list -> list.removeIf(obj -> obj.getId().equals(object.getId())));
     levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>()).add(object);
@@ -126,7 +147,13 @@ public class EditorObjectPopulator {
 
 
   /**
-   * Helper to safely set physics properties.
+   * Helper method to safely set a physics property (like gravity or jump force) on a
+   * {@link PhysicsData} object from a {@link Double} value. Logs a warning if the value is null
+   * or if setting the property fails.
+   *
+   * @param physics the {@link PhysicsData} object to modify.
+   * @param propertyName the name of the property to set (e.g., "gravity").
+   * @param value the {@link Double} value to set, can be null.
    */
   private void trySetPhysicsProperty(PhysicsData physics, String propertyName, Double value) {
     if (value == null) return;
@@ -142,10 +169,18 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Converts a SpriteData record into a SpriteData model object.
-   * Includes workaround logic for base frame name inconsistency.
-   * Prioritizes 'Bird1' if base frame is 'Bird' and 'Bird1' exists.
-   * Prioritizes 'big-mario-stand-right' if base frame is 'big-mario' and 'big-mario-stand-right' exists.
+   * Converts a {@link oogasalad.fileparser.records.SpriteData} record (from file parsing) into
+   * an {@link oogasalad.editor.model.data.object.sprite.SpriteData} model object used by the editor.
+   * This handles the conversion of frames and animations, resolves the image path, and sets initial
+   * positional and rotational properties. Includes logic to handle potential base frame name inconsistencies.
+   *
+   * @param recordSprite the sprite data record from the file parser. Can be null.
+   * @param imagePath the resolved, potentially absolute, path to the sprite sheet image.
+   * @param x the initial x-coordinate for the sprite.
+   * @param y the initial y-coordinate for the sprite.
+   * @param rotation the initial rotation angle for the sprite.
+   * @param isFlipped the initial horizontal flip state for the sprite.
+   * @return the corresponding editor sprite data model object. Returns a default if recordSprite is null.
    */
   private oogasalad.editor.model.data.object.sprite.SpriteData convertRecordToModelSpriteData(
       oogasalad.fileparser.records.SpriteData recordSprite, String imagePath,
@@ -220,7 +255,12 @@ public class EditorObjectPopulator {
 
 
   /**
-   * Converts a FrameData record (from fileparser) to a FrameData model object.
+   * Converts a {@link oogasalad.fileparser.records.FrameData} record (from fileparser) into
+   * an {@link oogasalad.editor.model.data.object.sprite.FrameData} model object used by the editor.
+   * Returns null if the input record is null.
+   *
+   * @param recordFrame the frame data record from the file parser.
+   * @return the corresponding editor frame data model object, or null.
    */
   private oogasalad.editor.model.data.object.sprite.FrameData convertRecordToModelFrame(oogasalad.fileparser.records.FrameData recordFrame) {
     if (recordFrame == null) return null;
@@ -228,7 +268,12 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Converts an AnimationData record (from fileparser) to an AnimationData model object.
+   * Converts an {@link oogasalad.fileparser.records.AnimationData} record (from fileparser) into
+   * an {@link AnimationData} model object used by the editor. Handles null frame name lists.
+   * Returns null if the input record is null.
+   *
+   * @param recordAnimation the animation data record from the file parser.
+   * @return the corresponding editor animation data model object, or null.
    */
   private AnimationData convertRecordToModelAnimation(oogasalad.fileparser.records.AnimationData recordAnimation) {
     if (recordAnimation == null) return null;
@@ -237,7 +282,12 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Creates a default SpriteData object for the model.
+   * Creates a default {@link oogasalad.editor.model.data.object.sprite.SpriteData} object
+   * for the editor model, used as a fallback when conversion fails or input is missing.
+   *
+   * @param x the default x-coordinate.
+   * @param y the default y-coordinate.
+   * @return a default editor sprite data model object.
    */
   private oogasalad.editor.model.data.object.sprite.SpriteData createDefaultModelSpriteData(double x, double y) {
     return new oogasalad.editor.model.data.object.sprite.SpriteData(
@@ -247,11 +297,20 @@ public class EditorObjectPopulator {
 
 
   /**
-   * Creates and populates an EditorObject from a GameObjectData record, using a map
-   * of blueprints to retrieve template information. Correctly handles Layer assignment.
-   * Registers the loaded object with EditorLevelData and ensures its group is added globally.
+   * Creates and populates an {@link EditorObject} from a {@link GameObjectData} record and a map of
+   * available {@link BlueprintData}. This is typically used when loading a level file. It retrieves
+   * the corresponding blueprint based on the ID in the GameObjectData, then populates the object
+   * using the blueprint's template information and the specific instance data (position, layer)
+   * from GameObjectData. It also registers the object with the {@link EditorLevelData}.
+   * If the blueprint is not found, a minimal error object is created.
+   *
+   * @param gameObjectData the {@link GameObjectData} record containing instance-specific information. Must not be null.
+   * @param blueprintMap a map from blueprint ID to {@link BlueprintData}, used to find the template. Must not be null.
+   * @return the newly created and populated {@link EditorObject}.
    */
   public EditorObject populateFromGameObjectData(GameObjectData gameObjectData, Map<Integer, BlueprintData> blueprintMap) {
+    Objects.requireNonNull(gameObjectData, "GameObjectData cannot be null");
+    Objects.requireNonNull(blueprintMap, "Blueprint map cannot be null");
     LOG.debug("Populating EditorObject from GameObjectData ID: {}, BlueprintID: {}", gameObjectData.uniqueId(), gameObjectData.blueprintId());
     EditorObject object = new EditorObject(levelData);
 
@@ -337,6 +396,11 @@ public class EditorObjectPopulator {
       trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
     }
 
+    object.setStringParameters(blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
+    object.setDoubleParameters(blueprint.doubleProperties() != null ? blueprint.doubleProperties() : new HashMap<>());
+    LOG.debug("Populated {} string parameters and {} double parameters from GameObjectData/Blueprint.",
+        object.getStringParameters().size(), object.getDoubleParameters().size());
+
     levelData.getObjectDataMap().put(object.getId(), object);
     levelData.getObjectLayerDataMap().values().forEach(list -> list.removeIf(obj -> obj.getId().equals(object.getId())));
     levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>()).add(object);
@@ -348,7 +412,13 @@ public class EditorObjectPopulator {
   }
 
   /**
-   * Helper method to find a Layer by name, returning a default if not found.
+   * Helper method to find a {@link Layer} within the {@link EditorLevelData} by its name.
+   * If the name is null, empty, or no matching layer is found, it returns the provided default layer
+   * and logs a warning.
+   *
+   * @param name the name of the layer to find.
+   * @param defaultLayer the {@link Layer} to return if the lookup fails. Must not be null.
+   * @return the found {@link Layer} or the defaultLayer.
    */
   private Layer findLayerByName(String name, Layer defaultLayer) {
     Objects.requireNonNull(defaultLayer, "Default layer cannot be null in findLayerByName");
