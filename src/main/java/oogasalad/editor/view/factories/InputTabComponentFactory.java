@@ -390,6 +390,7 @@ public class InputTabComponentFactory implements EditorViewListener {
     if (!isSelected(true, true)) {
       return;
     }
+    System.out.println(paramName);
     handleEditParam(paramName, value,
         (strVal) -> editorController.setEventConditionStringParameter(currentObjectId,
             currentEventId, groupIndex, conditionIndex, paramName, strVal),
@@ -476,8 +477,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    */
   private void handleEditParam(String paramName, Object value,
       Consumer<String> stringSetter, Consumer<Double> doubleSetter, String contextKey) {
-    String contextDescription = uiBundle.getString(contextKey);
-    LOG.trace("Edit Param: Context='{}', Param='{}', Value='{}'", contextDescription, paramName,
+    LOG.trace("Edit Param: Param='{}', Value='{}'", paramName,
         value);
     try {
       if (value instanceof String strValue) {
@@ -486,11 +486,10 @@ public class InputTabComponentFactory implements EditorViewListener {
         doubleSetter.accept(doubleValue);
       } else {
         String typeName = (value == null) ? "null" : value.getClass().getName();
-        LOG.warn(String.format(uiBundle.getString(getId("key.error.unsupported.param.type")),
-            contextDescription, typeName));
+        LOG.warn(String.format(uiBundle.getString(getId("key.error.unsupported.param.type")), typeName));
       }
     } catch (Exception e) {
-      LOG.error("Error delegating edit parameter ({}): {}", contextDescription, e.getMessage(), e);
+      LOG.error("Error delegating edit parameter: {}", e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
           contextKey, e.getMessage());
       refreshConditionsAndOutcomesForEvent();

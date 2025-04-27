@@ -451,4 +451,41 @@ public class EditorLevelData {
   public void setGameName(String gameName) {
     this.gameName = gameName;
   }
+
+  /**
+   * Get the name of the atlas given an objectId
+   *
+   * @param objectId the id of the object to get the atlas of
+   * @return the name of the atlas
+   */
+  public SpriteSheetAtlas getAtlas(UUID objectId) {
+    EditorObject obj = myObjectDataMap.get(objectId);
+    if (obj == null) {
+      LOG.warn("getAtlasIdForObject: no object found for ID {}", objectId);
+      return null;
+    }
+
+    // sprite-data might be absent (e.g. prefab not yet assigned)
+    var spriteData = obj.getSpriteData();
+    if (spriteData == null) {
+      LOG.trace("getAtlasIdForObject: object {} has no SpriteData", objectId);
+      return null;
+    }
+
+    // every SpriteData built from a template keeps a reference to that template
+    String templateName = spriteData.getTemplateName();
+    SpriteTemplate template = spriteTemplateMap.getSpriteData(templateName);
+    if (template == null) {
+      LOG.trace("getAtlasIdForObject: object {} has SpriteData but no template", objectId);
+      return null;
+    }
+
+    String atlasFile = template.getAtlasFile();
+    if (atlasFile == null || atlasFile.isBlank()) {
+      LOG.trace("getAtlasIdForObject: template for object {} has empty atlasFile", objectId);
+      return null;
+    }
+
+    return spriteLibrary.getAtlas(atlasFile);
+  }
 }

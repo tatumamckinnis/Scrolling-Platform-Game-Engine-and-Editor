@@ -1,5 +1,8 @@
 package oogasalad.editor.model.data;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 
@@ -13,7 +16,35 @@ import oogasalad.editor.model.data.object.sprite.FrameData;
  * @param frames    The list of {@link FrameData}
  * @author Jacob You
  */
-public record SpriteSheetAtlas(String atlasName, String imagePath, int width, int height,
+public record SpriteSheetAtlas(String atlasName, String imagePath, String gameName, int width,
+                               int height,
                                List<FrameData> frames) {
 
+  /**
+   * Absolute path to the atlas XML file.
+   */
+  public Path getXmlPath() {
+    return Paths.get("")                     // current working dir
+        .toAbsolutePath()
+        .resolve("data")
+        .resolve("gameData")
+        .resolve(gameName)
+        .resolve(atlasName + ".xml");
+  }
+
+  /** Absolute path to the sprite-sheet PNG file. */
+  public Path getImagePath() {
+    return Paths.get("")
+        .toAbsolutePath()
+        .resolve("data")
+        .resolve("graphicsData")
+        .resolve(gameName)
+        .resolve(imagePath);
+  }
+
+  /** Convenience wrappers if you need a File (e.g. for JavaFX Image). */
+  public File getXmlFile()   { return getXmlPath().toFile();   }
+
+  /** Convenience wrappers if you need a File (e.g. for JavaFX Image). */
+  public File getImageFile() { return getImagePath().toFile(); }
 }
