@@ -41,7 +41,12 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
   private final EditorController editorController;
   private final ResourceBundle uiResources;
 
-
+  /**
+   * constructs a new prefab placement tool
+   *
+   * @param editorView       the editor game view
+   * @param editorController editor controller
+   */
   public PrefabPlacementTool(EditorGameView editorView, EditorController editorController) {
     this.editorView = Objects.requireNonNull(editorView, "EditorGameView cannot be null.");
     this.editorController = Objects.requireNonNull(editorController,
@@ -78,9 +83,8 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
   }
 
   /**
-   * Checks if the prefab's sprite exists. If not, prompts the user to locate it or proceed
-   * without. Returns an Optional containing the (potentially updated) BlueprintData or empty if
-   * cancelled.
+   * Checks if the prefab's sprite exists. If not, prompts the user to locate it or proceed without.
+   * Returns an Optional containing the (potentially updated) BlueprintData or empty if cancelled.
    */
   private Optional<BlueprintData> resolveSpriteForPlacement(BlueprintData originalPrefab) {
     SpriteData spriteData = originalPrefab.spriteData();
@@ -98,7 +102,7 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     }
 
     String relativePath = safeGetPath(spriteData.spriteFile());
-    
+
     // Handle case when the path might be an absolute path
     if (new File(relativePath).isAbsolute()) {
       // For absolute paths, just check if the file exists directly
@@ -111,7 +115,7 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
       // If absolute path doesn't exist, extract just the filename for later use
       relativePath = absoluteFile.getName();
     }
-    
+
     Path targetPath = Paths.get(currentGameDirectory, relativePath);
 
     if (Files.exists(targetPath) && Files.isRegularFile(targetPath)) {
@@ -198,7 +202,8 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     );
 
     return new BlueprintData(
-        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(), prefab.isFlipped(),
+        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(),
+        prefab.isFlipped(),
         prefab.gameName(), prefab.group(), prefab.type(),
         emptySpriteData,
         prefab.hitBoxData(),
@@ -308,7 +313,8 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
     );
 
     return new BlueprintData(
-        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(), prefab.isFlipped(),
+        prefab.blueprintId(), prefab.velocityX(), prefab.velocityY(), prefab.rotation(),
+        prefab.isFlipped(),
         prefab.gameName(), prefab.group(), prefab.type(),
         newSpriteData,
         prefab.hitBoxData(),
@@ -327,16 +333,16 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
 
   /**
    * Gets the editor view used by this tool.
-   * 
+   *
    * @return The EditorGameView instance.
    */
   protected EditorGameView getEditorView() {
     return editorView;
   }
-  
+
   /**
    * Gets the editor controller used by this tool.
-   * 
+   *
    * @return The EditorController instance.
    */
   protected EditorController getEditorController() {

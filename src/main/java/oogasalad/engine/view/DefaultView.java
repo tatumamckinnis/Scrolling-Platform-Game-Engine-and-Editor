@@ -74,7 +74,7 @@ public class DefaultView implements ViewAPI {
 
     currentScene = new Scene(currentDisplay, width, height);
     currentScene.setOnMouseMoved(e -> {
-      this.mousePosition = new Point((int)e.getSceneX(), (int)e.getSceneY());
+      this.mousePosition = new Point((int) e.getSceneX(), (int) e.getSceneY());
     });
   }
 
@@ -187,6 +187,11 @@ public class DefaultView implements ViewAPI {
     }
   }
 
+  /**
+   * Renders the overlap screen when the game ends
+   *
+   * @param gameWon whether the game has been won
+   */
   public void renderEndGameScreen(boolean gameWon) {
     LOG.info("Game is over: " + gameWon);
     currentDisplay.renderEndGameScreen(gameWon);

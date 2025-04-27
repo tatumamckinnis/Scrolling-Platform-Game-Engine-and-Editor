@@ -45,14 +45,6 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
   }
 
   /**
-   * Constructor sets outcome type
-   *
-   * @param outcomeType enum representing type of outcome
-   */
-  public EventOutcome {
-  }
-
-  /**
    * @return outcome type enum
    */
   @Override

@@ -21,6 +21,7 @@ public abstract class Display extends Group {
    */
   public void renderGameObjects(List<ImmutableGameObject> gameObjects)
       throws RenderingException, FileNotFoundException {
+    //No implementation is needed
   }
 
   /**
@@ -31,6 +32,7 @@ public abstract class Display extends Group {
    * @param camera a camera instance which the node should shift relative to.
    */
   public void shiftNode(Camera camera) {
+    //No implementation is needed
   }
 
   /**

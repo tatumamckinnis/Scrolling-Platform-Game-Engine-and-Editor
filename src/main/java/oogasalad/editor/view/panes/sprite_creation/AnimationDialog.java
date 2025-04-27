@@ -19,6 +19,11 @@ import oogasalad.editor.model.data.object.sprite.FrameData;
  */
 public class AnimationDialog extends Dialog<AnimationData> {
 
+  /**
+   * constructor for creating a new animation dialog given a list of available frames
+   *
+   * @param availableFrames a list of frames
+   */
   public AnimationDialog(List<FrameData> availableFrames) {
     setTitle("New Animation");
     getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -79,18 +84,22 @@ public class AnimationDialog extends Dialog<AnimationData> {
   }
 
   private HBox createMoveButtons(ListView<FrameData> avail, ListView<FrameData> chosen) {
-    Button btnAdd    = new Button("▶");
+    Button btnAdd = new Button("▶");
     Button btnRemove = new Button("◀");
-    Button btnUp     = new Button("▲");
-    Button btnDown   = new Button("▼");
+    Button btnUp = new Button("▲");
+    Button btnDown = new Button("▼");
 
     btnAdd.setOnAction(e -> {
       FrameData f = avail.getSelectionModel().getSelectedItem();
-      if (f != null) chosen.getItems().add(f);
+      if (f != null) {
+        chosen.getItems().add(f);
+      }
     });
     btnRemove.setOnAction(e -> {
       int i = chosen.getSelectionModel().getSelectedIndex();
-      if (i >= 0) chosen.getItems().remove(i);
+      if (i >= 0) {
+        chosen.getItems().remove(i);
+      }
     });
     btnUp.setOnAction(e -> moveSelected(chosen, -1));
     btnDown.setOnAction(e -> moveSelected(chosen, +1));
@@ -119,10 +128,10 @@ public class AnimationDialog extends Dialog<AnimationData> {
     GridPane grid = new GridPane();
     grid.setHgap(10);
     grid.setVgap(8);
-    grid.add(new Label("Name:"),   0, 0);
-    grid.add(nameField,            1, 0);
+    grid.add(new Label("Name:"), 0, 0);
+    grid.add(nameField, 1, 0);
     grid.add(new Label("Length:"), 0, 1);
-    grid.add(lengthField,          1, 1);
+    grid.add(lengthField, 1, 1);
     grid.add(new Label("Frames:"), 0, 2);
     grid.add(new HBox(5, availList, moveButtons, chosenList), 1, 2);
     return grid;

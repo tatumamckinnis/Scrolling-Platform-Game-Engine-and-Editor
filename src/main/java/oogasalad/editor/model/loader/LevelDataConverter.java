@@ -18,6 +18,11 @@ import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
 
+/**
+ * LevelData Converter converts data from level data to editor object Data
+ *
+ * @author Alana Zinkin
+ */
 public class LevelDataConverter {
 
   /**
@@ -38,7 +43,8 @@ public class LevelDataConverter {
    * @throws BlueprintParseException  if blueprint data cannot be interpreted
    * @throws GameObjectParseException if an error occurs while creating game objects
    */
-  public void loadLevelData(EditorLevelData editorLevelData, EditorFileConverterAPI fileConverterAPI,
+  public void loadLevelData(EditorLevelData editorLevelData,
+      EditorFileConverterAPI fileConverterAPI,
       String fileName) throws EditorLoadException {
     try {
       LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);

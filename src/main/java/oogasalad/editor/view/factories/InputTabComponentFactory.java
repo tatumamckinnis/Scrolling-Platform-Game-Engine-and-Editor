@@ -36,10 +36,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Factory responsible for creating the content panel for the "Input" tab.
- * It coordinates various section builders (Events, Conditions, Outcomes) and handles
- * communication between the UI sections and the {@link EditorController}.
- * Implements {@link EditorViewListener} to react to relevant data changes.
+ * Factory responsible for creating the content panel for the "Input" tab. It coordinates various
+ * section builders (Events, Conditions, Outcomes) and handles communication between the UI sections
+ * and the {@link EditorController}. Implements {@link EditorViewListener} to react to relevant data
+ * changes.
+ *
  * @author Tatum McKinnis
  */
 public class InputTabComponentFactory implements EditorViewListener {
@@ -60,15 +61,16 @@ public class InputTabComponentFactory implements EditorViewListener {
   private String currentEventId;
 
   /**
-   * Constructs the factory, initializing dependencies and loading resources.
-   * Loads identifiers and the primary UI resource bundle.
+   * Constructs the factory, initializing dependencies and loading resources. Loads identifiers and
+   * the primary UI resource bundle.
    *
    * @param editorController The main controller for editor actions.
    * @throws NullPointerException if editorController is null.
    * @throws RuntimeException     if essential resources (identifiers, UI bundle) cannot be loaded.
    */
   public InputTabComponentFactory(EditorController editorController) {
-    this.editorController = Objects.requireNonNull(editorController, "EditorController cannot be null.");
+    this.editorController = Objects.requireNonNull(editorController,
+        "EditorController cannot be null.");
     this.identifierProps = loadIdentifierProperties();
 
     String uiBundleBaseName = getId("ui.bundle.name");
@@ -78,7 +80,8 @@ public class InputTabComponentFactory implements EditorViewListener {
       String errorMsgFormat = getId("key.error.bundle.load.fatal");
       String errorMsg = String.format(errorMsgFormat, uiBundleBaseName);
       LOG.fatal(errorMsg, e);
-      throw new RuntimeException(String.format(getId("key.error.bundle.load.runtime"), uiBundleBaseName), e);
+      throw new RuntimeException(
+          String.format(getId("key.error.bundle.load.runtime"), uiBundleBaseName), e);
     }
 
     createSectionBuilders();
@@ -87,19 +90,24 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Loads the identifier strings (keys, CSS classes, IDs, paths) from the properties file.
+   *
    * @return A Properties object containing the loaded identifiers.
    * @throws RuntimeException If the properties file cannot be found or read.
    */
   private Properties loadIdentifierProperties() {
     Properties props = new Properties();
-    try (InputStream input = InputTabComponentFactory.class.getResourceAsStream(IDENTIFIERS_PROPERTIES_PATH)) {
+    try (InputStream input = InputTabComponentFactory.class.getResourceAsStream(
+        IDENTIFIERS_PROPERTIES_PATH)) {
       if (input == null) {
-        LOG.error("CRITICAL: Unable to find identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH);
-        throw new RuntimeException("Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
+        LOG.error("CRITICAL: Unable to find identifiers properties file: {}",
+            IDENTIFIERS_PROPERTIES_PATH);
+        throw new RuntimeException(
+            "Missing required identifiers properties file: " + IDENTIFIERS_PROPERTIES_PATH);
       }
       props.load(input);
     } catch (IOException ex) {
-      LOG.error("CRITICAL: Error loading identifiers properties file: {}", IDENTIFIERS_PROPERTIES_PATH, ex);
+      LOG.error("CRITICAL: Error loading identifiers properties file: {}",
+          IDENTIFIERS_PROPERTIES_PATH, ex);
       throw new RuntimeException("Error loading identifiers properties file", ex);
     }
     return props;
@@ -107,6 +115,7 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Retrieves an identifier value from the loaded identifier properties.
+   *
    * @param key The key for the identifier.
    * @return The identifier string.
    * @throws RuntimeException If the key is not found.
@@ -121,8 +130,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Logs prefab changes; no direct UI update needed in this factory itself.
+   * {@inheritDoc} Logs prefab changes; no direct UI update needed in this factory itself.
    */
   @Override
   public void onPrefabsChanged() {
@@ -139,17 +147,18 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   @Override
   public void setSnapToGrid(boolean doSnap) {
+    //TODO: impelement
 
   }
 
   @Override
   public void setCellSize(int cellSize) {
-
+    //TODO: impelement
   }
 
   /**
-   * Initializes the builders for the Events, Conditions, and Outcomes UI sections,
-   * passing them necessary resources and handler method references.
+   * Initializes the builders for the Events, Conditions, and Outcomes UI sections, passing them
+   * necessary resources and handler method references.
    */
   private void createSectionBuilders() {
     eventsSectionBuilder = new EventsSectionBuilder(
@@ -181,10 +190,9 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Creates the main content Pane for the Input Tab.
-   * This involves building each section (Events, Conditions, Outcomes) using their respective
-   * builders and arranging them vertically within a ScrollPane anchored to fill its parent.
-   * Layout (padding, spacing) is controlled via CSS.
+   * Creates the main content Pane for the Input Tab. This involves building each section (Events,
+   * Conditions, Outcomes) using their respective builders and arranging them vertically within a
+   * ScrollPane anchored to fill its parent. Layout (padding, spacing) is controlled via CSS.
    *
    * @return A Pane containing the fully assembled Input Tab UI.
    */
@@ -219,8 +227,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the change event when a different event is selected in the events list view.
-   * Updates the internal state and triggers a refresh of the conditions and outcomes sections.
+   * Handles the change event when a different event is selected in the events list view. Updates
+   * the internal state and triggers a refresh of the conditions and outcomes sections.
    *
    * @param selectedEventId The ID of the newly selected event, or null if deselected.
    */
@@ -256,15 +264,17 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Handles the request to remove the currently selected event.
-   * Validates selection and delegates to the controller. Refreshes the list on success.
-   * Shows an error alert on failure or if selection is invalid.
+   * Handles the request to remove the currently selected event. Validates selection and delegates
+   * to the controller. Refreshes the list on success. Shows an error alert on failure or if
+   * selection is invalid.
    */
   private void handleRemoveEvent() {
     LOG.debug("Remove Event action triggered.");
-    String selectedEvent = eventsSectionBuilder.getEventListView().getSelectionModel().getSelectedItem();
+    String selectedEvent = eventsSectionBuilder.getEventListView().getSelectionModel()
+        .getSelectedItem();
     if (!isSelected(true, false) || selectedEvent == null) {
-      showErrorAlert(getId("key.error.selection.needed"), uiBundle.getString(getId("key.error.event.remove.selection")));
+      showErrorAlert(getId("key.error.selection.needed"),
+          uiBundle.getString(getId("key.error.event.remove.selection")));
       return;
     }
     try {
@@ -279,8 +289,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to add a new condition group to the currently selected event.
-   * Validates selection and delegates to the controller. Refreshes UI on success.
+   * Handles the request to add a new condition group to the currently selected event. Validates
+   * selection and delegates to the controller. Refreshes UI on success.
    */
   private void handleAddConditionGroup() {
     LOG.debug("Add Condition Group action triggered.");
@@ -299,8 +309,8 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * Handles the request to remove a condition group from the currently selected event.
-   * Validates selection and delegates to the controller. Refreshes UI on success.
+   * Handles the request to remove a condition group from the currently selected event. Validates
+   * selection and delegates to the controller. Refreshes UI on success.
    *
    * @param groupIndex The index of the condition group to remove.
    */
@@ -320,8 +330,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to add a condition of a specific type to a specific group within the current event.
-   * Validates selection and delegates to the controller. Refreshes UI on success.
+   * Handles the request to add a condition of a specific type to a specific group within the
+   * current event. Validates selection and delegates to the controller. Refreshes UI on success.
    *
    * @param groupIndex    The index of the group to add the condition to.
    * @param conditionType The string identifier of the condition type to add.
@@ -332,7 +342,8 @@ public class InputTabComponentFactory implements EditorViewListener {
       return;
     }
     try {
-      editorController.addEventCondition(currentObjectId, currentEventId, groupIndex, conditionType);
+      editorController.addEventCondition(currentObjectId, currentEventId, groupIndex,
+          conditionType);
       refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating add condition: {}", e.getMessage(), e);
@@ -349,12 +360,14 @@ public class InputTabComponentFactory implements EditorViewListener {
    * @param conditionIndex The index of the condition within the group to remove.
    */
   private void handleRemoveCondition(int groupIndex, int conditionIndex) {
-    LOG.debug("Remove Condition action triggered for group {}, index {}", groupIndex, conditionIndex);
+    LOG.debug("Remove Condition action triggered for group {}, index {}", groupIndex,
+        conditionIndex);
     if (!isSelected(true, true)) {
       return;
     }
     try {
-      editorController.removeEventCondition(currentObjectId, currentEventId, groupIndex, conditionIndex);
+      editorController.removeEventCondition(currentObjectId, currentEventId, groupIndex,
+          conditionIndex);
       refreshConditionsAndOutcomesForEvent();
     } catch (Exception e) {
       LOG.error("Error delegating remove condition: {}", e.getMessage(), e);
@@ -364,15 +377,16 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to edit a parameter of a specific condition.
-   * Delegates the parameter update to the appropriate controller method based on value type.
+   * Handles the request to edit a parameter of a specific condition. Delegates the parameter update
+   * to the appropriate controller method based on value type.
    *
    * @param groupIndex     The index of the group containing the condition.
    * @param conditionIndex The index of the condition within the group.
    * @param paramName      The name of the parameter to edit.
    * @param value          The new value for the parameter (expected String or Double).
    */
-  private void handleEditConditionParam(int groupIndex, int conditionIndex, String paramName, Object value) {
+  private void handleEditConditionParam(int groupIndex, int conditionIndex, String paramName,
+      Object value) {
     if (!isSelected(true, true)) {
       return;
     }
@@ -386,8 +400,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to add an outcome of a specific type to the current event.
-   * Validates selection and delegates to the controller. Refreshes UI on success.
+   * Handles the request to add an outcome of a specific type to the current event. Validates
+   * selection and delegates to the controller. Refreshes UI on success.
    *
    * @param outcomeType The string identifier of the outcome type to add.
    */
@@ -407,8 +421,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to remove a specific outcome from the current event.
-   * Validates selection and delegates to the controller. Refreshes UI on success.
+   * Handles the request to remove a specific outcome from the current event. Validates selection
+   * and delegates to the controller. Refreshes UI on success.
    *
    * @param outcomeIndex The index of the outcome to remove.
    */
@@ -428,8 +442,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the request to edit a parameter of a specific outcome.
-   * Delegates the parameter update to the appropriate controller method based on value type.
+   * Handles the request to edit a parameter of a specific outcome. Delegates the parameter update
+   * to the appropriate controller method based on value type.
    *
    * @param outcomeIndex The index of the outcome.
    * @param paramName    The name of the parameter to edit.
@@ -449,20 +463,22 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Generic helper method to handle editing either a condition or outcome parameter.
-   * Determines the type of the value and calls the appropriate setter lambda.
-   * Includes error handling and UI refresh logic.
+   * Generic helper method to handle editing either a condition or outcome parameter. Determines the
+   * type of the value and calls the appropriate setter lambda. Includes error handling and UI
+   * refresh logic.
    *
    * @param paramName    The name of the parameter being edited.
    * @param value        The new value (expected String or Double).
    * @param stringSetter Lambda function to call if the value is a String.
    * @param doubleSetter Lambda function to call if the value is a Double.
-   * @param contextKey   The identifier key for the action description (e.g., "edit condition parameter").
+   * @param contextKey   The identifier key for the action description (e.g., "edit condition
+   *                     parameter").
    */
   private void handleEditParam(String paramName, Object value,
       Consumer<String> stringSetter, Consumer<Double> doubleSetter, String contextKey) {
     String contextDescription = uiBundle.getString(contextKey);
-    LOG.trace("Edit Param: Context='{}', Param='{}', Value='{}'", contextDescription, paramName, value);
+    LOG.trace("Edit Param: Context='{}', Param='{}', Value='{}'", contextDescription, paramName,
+        value);
     try {
       if (value instanceof String strValue) {
         stringSetter.accept(strValue);
@@ -470,7 +486,8 @@ public class InputTabComponentFactory implements EditorViewListener {
         doubleSetter.accept(doubleValue);
       } else {
         String typeName = (value == null) ? "null" : value.getClass().getName();
-        LOG.warn(String.format(uiBundle.getString(getId("key.error.unsupported.param.type")), contextDescription, typeName));
+        LOG.warn(String.format(uiBundle.getString(getId("key.error.unsupported.param.type")),
+            contextDescription, typeName));
       }
     } catch (Exception e) {
       LOG.error("Error delegating edit parameter ({}): {}", contextDescription, e.getMessage(), e);
@@ -481,11 +498,10 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Opens the dialog for adding a new dynamic variable.
-   * Validates that an object is selected before opening.
-   * Handles the result from the dialog if a variable is successfully created.
-   * Note: This method is retained in case dynamic variable creation is needed elsewhere,
-   * but it's no longer directly linked to the Outcomes section builder.
+   * Opens the dialog for adding a new dynamic variable. Validates that an object is selected before
+   * opening. Handles the result from the dialog if a variable is successfully created. Note: This
+   * method is retained in case dynamic variable creation is needed elsewhere, but it's no longer
+   * directly linked to the Outcomes section builder.
    */
   private void openAddDynamicVariableDialog() {
     LOG.debug("Opening 'Add Dynamic Variable' dialog.");
@@ -498,8 +514,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Handles the addition of a new dynamic variable received from the dialog.
-   * Delegates the addition to the controller and handles potential errors.
+   * Handles the addition of a new dynamic variable received from the dialog. Delegates the addition
+   * to the controller and handles potential errors.
    *
    * @param dynamicVar The DynamicVariable object created by the dialog.
    */
@@ -520,8 +536,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Retrieves the names of available condition types (enums).
-   * Used to populate the condition type selection ComboBox.
+   * Retrieves the names of available condition types (enums). Used to populate the condition type
+   * selection ComboBox.
    *
    * @return A sorted list of condition type names.
    */
@@ -530,8 +546,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Retrieves the names of available outcome types (enums).
-   * Used to populate the outcome type selection ComboBox.
+   * Retrieves the names of available outcome types (enums). Used to populate the outcome type
+   * selection ComboBox.
    *
    * @return A sorted list of outcome type names.
    */
@@ -541,9 +557,9 @@ public class InputTabComponentFactory implements EditorViewListener {
 
   /**
    * Retrieves the list of dynamic variables available for the currently selected object context.
-   * Handles potential errors during retrieval.
-   * Note: This method is retained in case dynamic variable context is needed elsewhere,
-   * but it's no longer directly linked to the Outcomes section builder's ComboBox.
+   * Handles potential errors during retrieval. Note: This method is retained in case dynamic
+   * variable context is needed elsewhere, but it's no longer directly linked to the Outcomes
+   * section builder's ComboBox.
    *
    * @return A list of available DynamicVariables, or an empty list if none or on error.
    */
@@ -554,7 +570,8 @@ public class InputTabComponentFactory implements EditorViewListener {
     try {
       return editorController.getAvailableDynamicVariables(currentObjectId);
     } catch (Exception e) {
-      LOG.error("Failed to get dynamic variables for object {}: {}", currentObjectId, e.getMessage(), e);
+      LOG.error("Failed to get dynamic variables for object {}: {}", currentObjectId,
+          e.getMessage(), e);
       return Collections.emptyList();
     }
   }
@@ -573,8 +590,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the entire UI related to the currently selected object,
-   * specifically the events list.
+   * Refreshes the entire UI related to the currently selected object, specifically the events
+   * list.
    */
   private void refreshUIForObject() {
     runOnFxThread(() -> {
@@ -608,7 +625,8 @@ public class InputTabComponentFactory implements EditorViewListener {
       } else {
         clearConditionsAndOutcomesUI();
       }
-      LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId, sortedEventIds.size());
+      LOG.debug("Refreshed events list for object {}: {} events.", currentObjectId,
+          sortedEventIds.size());
     });
   }
 
@@ -616,7 +634,8 @@ public class InputTabComponentFactory implements EditorViewListener {
    * Fetches the map of events associated with the currently selected object ID from the controller.
    * Handles potential errors during fetching.
    *
-   * @return A Map of event IDs to EditorEvent objects, or null if an error occurs, or empty map if no object selected.
+   * @return A Map of event IDs to EditorEvent objects, or null if an error occurs, or empty map if
+   * no object selected.
    */
   private Map<String, EditorEvent> fetchEventsForCurrentObject() {
     if (currentObjectId == null) {
@@ -625,7 +644,8 @@ public class InputTabComponentFactory implements EditorViewListener {
     try {
       return editorController.getEventsForObject(currentObjectId);
     } catch (Exception e) {
-      LOG.error("Controller failed to get events for object {}: {}", currentObjectId, e.getMessage(), e);
+      LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
+          e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
           getId("action.fetch.events"), e.getMessage());
       return null;
@@ -633,8 +653,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the Conditions and Outcomes sections based on the currently selected event.
-   * Fetches the relevant data from the controller and updates the respective section builders.
+   * Refreshes the Conditions and Outcomes sections based on the currently selected event. Fetches
+   * the relevant data from the controller and updates the respective section builders.
    */
   public void refreshConditionsAndOutcomesForEvent() {
     runOnFxThread(() -> {
@@ -648,10 +668,11 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Fetches the list of condition groups (each group is a list of conditions) for the current event.
-   * Handles cases where no object or event is selected, and errors during fetching.
+   * Fetches the list of condition groups (each group is a list of conditions) for the current
+   * event. Handles cases where no object or event is selected, and errors during fetching.
    *
-   * @return A List of Lists of ExecutorData representing condition groups, or null if no event/object selected or error.
+   * @return A List of Lists of ExecutorData representing condition groups, or null if no
+   * event/object selected or error.
    */
   private List<List<ExecutorData>> fetchConditionsForCurrentEvent() {
     if (currentObjectId == null || currentEventId == null) {
@@ -660,7 +681,8 @@ public class InputTabComponentFactory implements EditorViewListener {
     try {
       return editorController.getEventConditions(currentObjectId, currentEventId);
     } catch (Exception e) {
-      LOG.error("Controller failed to get conditions for event {}: {}", currentEventId, e.getMessage(), e);
+      LOG.error("Controller failed to get conditions for event {}: {}", currentEventId,
+          e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
           getId("action.fetch.conditions"), e.getMessage());
       return null;
@@ -668,10 +690,11 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Fetches the list of outcomes for the current event.
-   * Handles cases where no object or event is selected, and errors during fetching.
+   * Fetches the list of outcomes for the current event. Handles cases where no object or event is
+   * selected, and errors during fetching.
    *
-   * @return A List of ExecutorData representing outcomes, or null if no event/object selected or error.
+   * @return A List of ExecutorData representing outcomes, or null if no event/object selected or
+   * error.
    */
   private List<ExecutorData> fetchOutcomesForCurrentEvent() {
     if (currentObjectId == null || currentEventId == null) {
@@ -680,7 +703,8 @@ public class InputTabComponentFactory implements EditorViewListener {
     try {
       return editorController.getEventOutcomes(currentObjectId, currentEventId);
     } catch (Exception e) {
-      LOG.error("Controller failed to get outcomes for event {}: {}", currentEventId, e.getMessage(), e);
+      LOG.error("Controller failed to get outcomes for event {}: {}", currentEventId,
+          e.getMessage(), e);
       showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
           getId("action.fetch.outcomes"), e.getMessage());
       return null;
@@ -688,9 +712,9 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Refreshes the dynamic variable list, typically in response to changes.
-   * This method is now simplified as the outcome builder no longer displays this list directly.
-   * Ensures this runs on the FX thread.
+   * Refreshes the dynamic variable list, typically in response to changes. This method is now
+   * simplified as the outcome builder no longer displays this list directly. Ensures this runs on
+   * the FX thread.
    */
   private void refreshDynamicVariables() {
     runOnFxThread(() -> {
@@ -701,8 +725,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Clears the UI displays for conditions and outcomes. Typically called when the selected event changes
-   * or is deselected. Ensures this runs on the FX thread.
+   * Clears the UI displays for conditions and outcomes. Typically called when the selected event
+   * changes or is deselected. Ensures this runs on the FX thread.
    */
   private void clearConditionsAndOutcomesUI() {
     runOnFxThread(() -> {
@@ -714,9 +738,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Resets the entire Input Tab UI to its default (empty/deselected) state.
-   * Clears event list, event input field, conditions, and outcomes.
-   * Ensures this runs on the FX thread.
+   * Resets the entire Input Tab UI to its default (empty/deselected) state. Clears event list,
+   * event input field, conditions, and outcomes. Ensures this runs on the FX thread.
    */
   private void clearAllUIToDefault() {
     runOnFxThread(() -> {
@@ -729,8 +752,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Checks if the required selections (object and/or event) are currently active.
-   * If a required selection is missing, logs a warning and shows an error alert.
+   * Checks if the required selections (object and/or event) are currently active. If a required
+   * selection is missing, logs a warning and shows an error alert.
    *
    * @param requireObjectSelection If true, checks if {@code currentObjectId} is not null.
    * @param requireEventSelection  If true, checks if {@code currentEventId} is not null.
@@ -770,22 +793,26 @@ public class InputTabComponentFactory implements EditorViewListener {
         String cssUrl = Objects.requireNonNull(getClass().getResource(cssPath)).toExternalForm();
         alert.getDialogPane().getStylesheets().add(cssUrl);
       } catch (Exception e) {
-        LOG.warn(String.format(uiBundle.getString(getId("key.error.css.apply.failed")), cssPath, e.getMessage()));
+        LOG.warn(String.format(uiBundle.getString(getId("key.error.css.apply.failed")), cssPath,
+            e.getMessage()));
       }
       alert.showAndWait();
     });
   }
 
   /**
-   * Displays a standard error alert dialog using localized text for the title
-   * and a formatted message for the content.
+   * Displays a standard error alert dialog using localized text for the title and a formatted
+   * message for the content.
    *
-   * @param titleKey       The key (from identifiers file) for the alert title text.
-   * @param formatKey      The key (from identifiers file) for the error message format string (e.g., "Failed to %s: %s").
-   * @param actionKey      The key (from identifiers file) for the description of the action that failed.
-   * @param exceptionMsg   The message obtained from the caught exception.
+   * @param titleKey     The key (from identifiers file) for the alert title text.
+   * @param formatKey    The key (from identifiers file) for the error message format string (e.g.,
+   *                     "Failed to %s: %s").
+   * @param actionKey    The key (from identifiers file) for the description of the action that
+   *                     failed.
+   * @param exceptionMsg The message obtained from the caught exception.
    */
-  private void showFormattedErrorAlert(String titleKey, String formatKey, String actionKey, String exceptionMsg) {
+  private void showFormattedErrorAlert(String titleKey, String formatKey, String actionKey,
+      String exceptionMsg) {
     String title = uiBundle.getString(titleKey);
     String format = uiBundle.getString(formatKey);
     String action = uiBundle.getString(actionKey);
@@ -795,8 +822,7 @@ public class InputTabComponentFactory implements EditorViewListener {
 
 
   /**
-   * {@inheritDoc}
-   * Refreshes the dynamic variable list when an object is added.
+   * {@inheritDoc} Refreshes the dynamic variable list when an object is added.
    */
   @Override
   public void onObjectAdded(UUID objectId) {
@@ -805,9 +831,8 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Clears the entire UI if the removed object was the one selected.
-   * Refreshes the dynamic variable list regardless. Ensures execution on the FX thread.
+   * {@inheritDoc} Clears the entire UI if the removed object was the one selected. Refreshes the
+   * dynamic variable list regardless. Ensures execution on the FX thread.
    */
   @Override
   public void onObjectRemoved(UUID objectId) {
@@ -823,8 +848,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Refreshes the events list if the updated object is the one currently selected.
+   * {@inheritDoc} Refreshes the events list if the updated object is the one currently selected.
    * Refreshes the dynamic variable list regardless. Ensures execution on the FX thread.
    */
   @Override
@@ -840,9 +864,9 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Updates the current object ID and refreshes the entire UI if the selection differs.
-   * Clears the UI if deselected. Refreshes dynamic variables. Ensures execution on the FX thread.
+   * {@inheritDoc} Updates the current object ID and refreshes the entire UI if the selection
+   * differs. Clears the UI if deselected. Refreshes dynamic variables. Ensures execution on the FX
+   * thread.
    */
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
@@ -862,8 +886,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Refreshes the dynamic variable list display. Ensures execution on the FX thread.
+   * {@inheritDoc} Refreshes the dynamic variable list display. Ensures execution on the FX thread.
    */
   @Override
   public void onDynamicVariablesChanged() {
@@ -874,8 +897,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * {@inheritDoc}
-   * Shows an error alert dialog with the provided message.
+   * {@inheritDoc} Shows an error alert dialog with the provided message.
    */
   @Override
   public void onErrorOccurred(String errorMessage) {

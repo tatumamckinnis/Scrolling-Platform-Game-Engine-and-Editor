@@ -572,6 +572,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
    */
   @Override
   public void setSnapToGrid(boolean doSnap) {
+    //No action needed in this component
   }
 
   /**
@@ -579,6 +580,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
    */
   @Override
   public void setCellSize(int cellSize) {
+    //No action needed in this component
   }
 
   /**
