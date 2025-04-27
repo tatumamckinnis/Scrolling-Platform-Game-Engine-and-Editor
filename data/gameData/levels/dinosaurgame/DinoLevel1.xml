@@ -13,8 +13,8 @@ interact with each other -->
     </stringProperties>
     <doubleProperties>
       <property name="zoom" value="1.0" />
-      <property name="cameraOffsetX" value="0"/>
-      <property name="cameraOffsetY" value="0"/>
+      <property name="cameraOffsetX" value="600.0"/>
+      <property name="cameraOffsetY" value="500.0"/>
     </doubleProperties>
   </cameraData>
   <layers>
