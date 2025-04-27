@@ -22,6 +22,8 @@ import oogasalad.editor.view.tools.ConfigLoader;
 
 /**
  * ChatBotPane provides a simple UI for sending messages to ChatBotApi and displaying responses.
+ *
+ * @author Billy McCune
  */
 public class ChatBotPane extends BorderPane {
 

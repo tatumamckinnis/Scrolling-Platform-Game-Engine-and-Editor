@@ -18,7 +18,7 @@ import java.util.List;
  * each corresponding to a group of conditions.
  * @param outcomes   the list of outcomes associated with the event.
  *
- * @author Billy
+ * @author Billy McCune
  */
 public record EventData(
     String type,

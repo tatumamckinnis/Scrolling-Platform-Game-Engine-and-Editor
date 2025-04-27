@@ -33,6 +33,7 @@ public class CameraData {
     this.cameraType = DEFAULT_CAMERA_TYPE;
     this.stringParams = new HashMap<>();
     this.doubleParams = new HashMap<>();
+    doubleParams.put("zoom", 1.0);
   }
 
   /**

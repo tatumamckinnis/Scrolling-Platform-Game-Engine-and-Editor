@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  * ensures that necessary metadata like groups and layers are correctly handled within the
  * associated {@link EditorLevelData}.
  *
- * @author Tatum McKinnis
+ * @author Tatum McKinnis, Billy McCune
  */
 public class EditorObjectPopulator {
 
@@ -87,7 +87,8 @@ public class EditorObjectPopulator {
 
     Layer targetLayer = levelData.getFirstLayer();
 
-    IdentityData identity = new IdentityData(object.getId(), blueprint.type(), blueprint.group(),
+    IdentityData identity = new IdentityData(object.getId(), blueprint.type(), blueprint.gameName(), blueprint.group(),
+        blueprint.type(),
         targetLayer);
     object.setIdentityData(identity);
 
@@ -364,8 +365,22 @@ public class EditorObjectPopulator {
       group = "default"; // TODO: Make a constant/property
     }
 
+    String type;
+    if (blueprint.type() != null && !blueprint.type().trim().isEmpty()) {
+      type = blueprint.type();
+    } else {
+      type = "default"; // TODO: Make a constant/property
+    }
+
+    String game;
+    if (blueprint.gameName() != null && !blueprint.gameName().trim().isEmpty()) {
+      game = blueprint.gameName();
+    } else {
+      game = "default"; // TODO: Make a constant/property
+    }
+
     IdentityData identity = new IdentityData(gameObjectData.uniqueId(), gameObjectData.name(),
-        group, targetLayer);
+        game, group , type, targetLayer);
     object.setIdentityData(identity);
 
     levelData.addGroup(group);
@@ -476,7 +491,7 @@ public class EditorObjectPopulator {
         gameObjectData.layerName() != null ? gameObjectData.layerName() : errorLayer.getName();
     Layer targetLayer = findLayerByName(layerName, errorLayer);
     IdentityData errorIdentity = new IdentityData(gameObjectData.uniqueId(),
-        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), "ERROR",
+        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), "ERROR", "ERROR","ERROR",
         targetLayer);
     object.setIdentityData(errorIdentity);
     object.setSpriteData(createDefaultSpriteData(gameObjectData.x(), gameObjectData.y()));
