@@ -172,10 +172,10 @@ public class InputTabComponentFactory implements EditorViewListener {
     outcomesSectionBuilder = new OutcomesSectionBuilder(
         uiBundle,
         this::getOutcomeTypeNames,
-        // removed: this::getDynamicVariablesForObject,
+        this::getDynamicVariablesForObject,
         this::handleAddOutcome,
         this::handleRemoveOutcome,
-        // removed: this::openAddDynamicVariableDialog,
+        this::openAddDynamicVariableDialog,
         this::handleEditOutcomeParam
     );
   }
