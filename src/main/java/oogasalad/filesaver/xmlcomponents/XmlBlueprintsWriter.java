@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.EventData;
 import oogasalad.fileparser.records.HitBoxData;
@@ -133,6 +134,13 @@ public class XmlBlueprintsWriter implements XmlComponentWriter {
         "property"
     ).write();
     writer.write(INDENT4 + "</properties>\n");
+
+    // Add displayedProperties element for player objects
+    if ("player".equals(blueprint.type()) && !blueprint.displayedProperties().isEmpty()) {
+      List<String> displayedProps = blueprint.displayedProperties();
+      writer.write(INDENT4 + String.format("<displayedProperties propertyList=\"%s\"/>\n",
+          String.join(",", displayedProps)));
+    }
 
     writer.write(INDENT3 + "</object>\n");
   }

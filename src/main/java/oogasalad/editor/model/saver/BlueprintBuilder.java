@@ -2,6 +2,7 @@ package oogasalad.editor.model.saver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +61,15 @@ public class BlueprintBuilder {
     doubleProps.putIfAbsent("gravity", obj.getPhysicsData().getGravity());
     doubleProps.putIfAbsent("jump_force", obj.getPhysicsData().getJumpForce());
 
-    List<String> displayList = List.of(); // TODO: Determine if this needs to be populated from somewhere
+    // Handle displayed properties list
+    List<String> displayList = new ArrayList<>();
+    String displayedPropsStr = stringProps.get("displayedProperties");
+    if (displayedPropsStr != null && !displayedPropsStr.isEmpty()) {
+      String[] props = displayedPropsStr.split(",");
+      displayList.addAll(Arrays.asList(props));
+      // Remove the temporary string parameter since we now store it in the proper field
+      stringProps.remove("displayedProperties");
+    }
 
     return new BlueprintData(
         BLUEPRINT_PLACEHOLDER_ID,
