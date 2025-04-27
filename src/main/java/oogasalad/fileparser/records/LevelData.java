@@ -21,7 +21,7 @@ import java.util.Map;
  * @param cameraData        the cameraData which defines the camera type and properties.
  * @param gameBluePrintData a map of blueprint data, where each key is a blueprint ID.
  * @param gameObjects       a list of game object data present in the level.
- * @author Billy
+ * @author Billy McCune
  */
 public record LevelData(
     String name,

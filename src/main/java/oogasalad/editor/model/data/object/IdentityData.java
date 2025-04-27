@@ -8,13 +8,15 @@ import oogasalad.editor.model.data.Layer;
  * information for an editor object, including a unique identifier, name, type, and the layer to
  * which the object belongs.
  *
- * @author Jacob You
+ * @author Jacob You, Billy McCune
  */
 public class IdentityData {
 
   private UUID id;
   private String name;
   private String type;
+  private String game;
+  private String group;
   private Layer layer;
 
   /**
@@ -27,10 +29,12 @@ public class IdentityData {
    *
    * @author Jacob You
    */
-  public IdentityData(UUID id, String name, String type, Layer layer) {
+  public IdentityData(UUID id, String name, String game, String group, String type, Layer layer) {
     this.name = name;
     this.id = id;
     this.name = name;
+    this.game = game;
+    this.group = group;
     this.type = type;
     this.layer = layer;
 
@@ -70,6 +74,14 @@ public class IdentityData {
     return layer;
   }
 
+  public String getGame() {
+    return game;
+  }
+
+  public String getGroup() {
+    return group;
+  }
+
   /**
    * Sets the unique identifier (UUID) for the editor object.
    *
@@ -104,6 +116,14 @@ public class IdentityData {
    */
   public void setLayer(Layer layer) {
     this.layer = layer;
+  }
+
+  public void setGame(String game) {
+    this.game = game;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
   }
 }
 
