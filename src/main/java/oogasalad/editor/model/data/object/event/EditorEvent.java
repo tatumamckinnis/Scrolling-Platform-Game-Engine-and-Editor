@@ -153,8 +153,10 @@ public class EditorEvent {
   /**
    * Adds a conditionGroup to the event.
    */
-  public void addConditionGroup() {
-    conditions.add(new ArrayList<>());
+  public int addConditionGroup() {
+    List<ExecutorData> conditionGroup = new ArrayList<>();
+    conditions.add(conditionGroup);
+    return conditions.indexOf(conditionGroup);
   }
 
   /**
