@@ -21,8 +21,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
-import oogasalad.editor.model.data.event_enum.ConditionType;
-import oogasalad.editor.model.data.event_enum.OutcomeType;
+import oogasalad.engine.model.event.condition.EventCondition.ConditionType;
+import oogasalad.engine.model.event.outcome.EventOutcome.OutcomeType;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
@@ -172,10 +172,10 @@ public class InputTabComponentFactory implements EditorViewListener {
     outcomesSectionBuilder = new OutcomesSectionBuilder(
         uiBundle,
         this::getOutcomeTypeNames,
-        // removed: this::getDynamicVariablesForObject,
+        this::getDynamicVariablesForObject,
         this::handleAddOutcome,
         this::handleRemoveOutcome,
-        // removed: this::openAddDynamicVariableDialog,
+        this::openAddDynamicVariableDialog,
         this::handleEditOutcomeParam
     );
   }

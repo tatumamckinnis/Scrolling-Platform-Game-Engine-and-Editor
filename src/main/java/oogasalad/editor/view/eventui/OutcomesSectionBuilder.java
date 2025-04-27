@@ -10,6 +10,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -20,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,11 +40,14 @@ public class OutcomesSectionBuilder {
   private final ResourceBundle uiBundle;
   private final Properties localProps;
   private final Supplier<List<String>> outcomeTypeSupplier;
+  private final Supplier<List<DynamicVariable>> dynamicVariableSupplier;
   private final AddOutcomeHandler addOutcomeHandler;
   private final IntConsumer removeOutcomeHandler;
+  private final Runnable createParameterHandler;
   private final EditOutcomeParamHandler editOutcomeParamHandler;
 
   private ComboBox<String> outcomeTypeComboBox;
+  private ComboBox<String> dynamicVariableComboBox;
   private ListView<OutcomeDisplayItem> outcomesListView;
   private VBox parametersPane;
 
@@ -52,21 +57,27 @@ public class OutcomesSectionBuilder {
    *
    * @param uiBundle                 The resource bundle for UI text.
    * @param outcomeTypeSupplier     Supplies available outcome types (e.g., "Move", "Attack").
+   * @param dynamicVariableSupplier Supplies current dynamic variables available in the game context.
    * @param addOutcomeHandler       Handler for creating new outcomes.
    * @param removeOutcomeHandler    Handler for removing the selected outcome by index.
+   * @param createParameterHandler  Handler for initiating the creation of a new dynamic variable.
    * @param editOutcomeParamHandler Handler for editing existing outcome parameters.
    * @throws NullPointerException if uiBundle or any handler/supplier is null.
    * @throws RuntimeException if the local properties file cannot be loaded.
    */
   public OutcomesSectionBuilder(ResourceBundle uiBundle,
       Supplier<List<String>> outcomeTypeSupplier,
+      Supplier<List<DynamicVariable>> dynamicVariableSupplier,
       AddOutcomeHandler addOutcomeHandler,
       IntConsumer removeOutcomeHandler,
+      Runnable createParameterHandler,
       EditOutcomeParamHandler editOutcomeParamHandler) {
     this.uiBundle = Objects.requireNonNull(uiBundle);
     this.outcomeTypeSupplier = Objects.requireNonNull(outcomeTypeSupplier);
+    this.dynamicVariableSupplier = Objects.requireNonNull(dynamicVariableSupplier);
     this.addOutcomeHandler = Objects.requireNonNull(addOutcomeHandler);
     this.removeOutcomeHandler = Objects.requireNonNull(removeOutcomeHandler);
+    this.createParameterHandler = Objects.requireNonNull(createParameterHandler);
     this.editOutcomeParamHandler = Objects.requireNonNull(editOutcomeParamHandler);
     this.localProps = loadLocalProperties();
   }
@@ -92,28 +103,16 @@ public class OutcomesSectionBuilder {
   }
 
   /**
-   * Retrieves an identifier value (e.g., CSS class name, UI key name) from the loaded local properties,
-   * stripping any trailing comments starting with '#'.
+   * Retrieves an identifier value (e.g., CSS class name, UI key name) from the loaded local properties.
    * @param key The key for the identifier.
-   * @return The identifier string, without comments.
+   * @return The identifier string.
    * @throws RuntimeException If the key is not found.
    */
   private String getLocalProp(String key) {
     String value = localProps.getProperty(key);
-    if (value == null) {
+    if (value == null || value.trim().isEmpty()) {
       LOG.error("Missing identifier in OutcomesSectionBuilder local properties file for key: {}", key);
       throw new RuntimeException("Missing identifier in OutcomesSectionBuilder local properties file for key: " + key);
-    }
-
-    int commentIndex = value.indexOf('#');
-    if (commentIndex != -1) {
-      value = value.substring(0, commentIndex);
-    }
-    value = value.trim();
-
-    if (value.isEmpty()) {
-      LOG.error("Identifier value is empty after processing in OutcomesSectionBuilder for key: {}", key);
-      throw new RuntimeException("Identifier value is empty after processing in OutcomesSectionBuilder for key: " + key);
     }
     return value;
   }
@@ -130,20 +129,19 @@ public class OutcomesSectionBuilder {
 
     Label header = createHeaderLabel("key.outcomesHeader");
     HBox outcomeSelectionRow = createOutcomeSelectionRow();
+    Node dynamicVariableRow = createDynamicVariableSelectionRow();
     setupOutcomesListView();
     Node parametersSection = buildParametersSection();
 
     sectionPane.getChildren().addAll(
         header,
         outcomeSelectionRow,
+        dynamicVariableRow,
         outcomesListView,
         parametersSection
     );
     VBox.setVgrow(outcomesListView, Priority.SOMETIMES);
-    if (parametersSection.getParent() instanceof ScrollPane) {
-      VBox.setVgrow(parametersSection.getParent(), Priority.SOMETIMES);
-    }
-
+    VBox.setVgrow(parametersSection.getParent(), Priority.SOMETIMES);
 
     LOG.debug("Outcomes section UI built.");
     return sectionPane;
@@ -183,6 +181,30 @@ public class OutcomesSectionBuilder {
     outcomeTypeComboBox.setId(getLocalProp("id.outcomeTypeComboBox"));
     outcomeTypeComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectOutcome")));
     outcomeTypeComboBox.setMaxWidth(Double.MAX_VALUE);
+  }
+
+  /**
+   * Creates the HBox row containing controls for selecting dynamic variables and creating new ones.
+   *
+   * @return Node representing the dynamic variable selection row.
+   */
+  private Node createDynamicVariableSelectionRow() {
+    HBox paramBox = new HBox();
+    paramBox.setId(getLocalProp("id.dynamicVariableRow"));
+    paramBox.setAlignment(Pos.CENTER_LEFT);
+
+    Label label = new Label(uiBundle.getString(getLocalProp("key.parameterLabel")) + ":");
+    dynamicVariableComboBox = new ComboBox<>();
+    dynamicVariableComboBox.setId(getLocalProp("id.dynamicVariableComboBox"));
+    dynamicVariableComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectParameter")));
+    dynamicVariableComboBox.setMaxWidth(Double.MAX_VALUE);
+
+    Button createButton = createButton("key.createParamButton", e -> createParameterHandler.run());
+    createButton.setId(getLocalProp("id.addVariableButton"));
+
+    paramBox.getChildren().addAll(label, dynamicVariableComboBox, createButton);
+    HBox.setHgrow(dynamicVariableComboBox, Priority.ALWAYS);
+    return paramBox;
   }
 
   /**
@@ -268,17 +290,12 @@ public class OutcomesSectionBuilder {
     String paramCountKey = executorName + getLocalProp("param.baseKey") + getLocalProp("param.countSuffix");
     String paramCountStr = localProps.getProperty(paramCountKey);
 
-    if (paramCountStr != null) {
-      int commentIdx = paramCountStr.indexOf('#');
-      if (commentIdx != -1) {
-        paramCountStr = paramCountStr.substring(0, commentIdx).trim();
-      }
-    }
-
-
-    if (paramCountStr == null || paramCountStr.trim().isEmpty()) {
-      LOG.warn("Parameter count definition missing or empty for executor '{}' using key '{}'. Parameter pane will be empty.",
-          executorName, paramCountKey);
+    if (paramCountStr == null) {
+      LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
+          executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
+      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
+      Label errorLabel = new Label(errorMsg);
+      parametersPane.getChildren().add(errorLabel);
       return;
     }
 
@@ -286,20 +303,15 @@ public class OutcomesSectionBuilder {
       int paramCount = Integer.parseInt(paramCountStr);
 
       for (int i = 1; i <= paramCount; i++) {
-        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + i;
-        String name = getLocalProp(paramBaseKeyStr + getLocalProp("param.nameSuffix"));
-        String type = getLocalProp(paramBaseKeyStr + getLocalProp("param.typeSuffix"));
-        String rawDescription = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.descSuffix"), "");
-        String rawDefaultValue = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.defaultSuffix"), "");
-
-        String description = cleanPropertyValue(rawDescription);
-        String defaultValue = cleanPropertyValue(rawDefaultValue);
-
+        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + "." + i;
+        String name = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.nameSuffix"));
+        String type = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.typeSuffix"));
+        String description = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.descSuffix"), "");
+        String defaultValue = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.defaultSuffix"), "");
 
         if (name == null || type == null) {
           LOG.error("Missing name or type definition for parameter index {} of executor {}", i, executorName);
-          String errorMsgKey = getLocalProp("key.errorParameterDefinition");
-          String errorMsg = String.format(uiBundle.getString(errorMsgKey), i, executorName);
+          String errorMsg = String.format(uiBundle.getString(getLocalProp("key.errorParameterDefinition")), i, executorName);
           Label errorLabel = new Label(errorMsg);
           grid.add(errorLabel, 0, i-1, 2, 1);
           continue;
@@ -311,34 +323,19 @@ public class OutcomesSectionBuilder {
 
     } catch (NumberFormatException e) {
       LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCountStr, e);
-      String errorMsgKey = getLocalProp("key.warnInvalidNumber");
-      String errorMsg = String.format(uiBundle.getString(errorMsgKey), executorName);
+      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnInvalidNumber")), executorName);
       Label errorLabel = new Label(errorMsg);
       parametersPane.getChildren().add(errorLabel);
     } catch (MissingResourceException e) {
       LOG.error("Missing UI text resource for parameter UI construction.", e);
-      Label errorLabel = new Label("UI Text Error: " + e.getKey());
+      Label errorLabel = new Label("UI Text Error");
       parametersPane.getChildren().add(errorLabel);
     } catch (Exception e) {
       LOG.error("Unexpected error building parameters UI for executor '{}'", executorName, e);
-      String errorMsgKey = getLocalProp("key.errorParameterLoad");
-      String errorMsg = String.format(uiBundle.getString(errorMsgKey), executorName);
+      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.errorParameterLoad")), executorName);
       Label errorLabel = new Label(errorMsg);
       parametersPane.getChildren().add(errorLabel);
     }
-  }
-
-
-  /**
-   * Helper to clean property values by removing comments and trimming.
-   */
-  private String cleanPropertyValue(String rawValue) {
-    if (rawValue == null) return "";
-    int commentIndex = rawValue.indexOf('#');
-    if (commentIndex != -1) {
-      rawValue = rawValue.substring(0, commentIndex);
-    }
-    return rawValue.trim();
   }
 
   /**
@@ -364,88 +361,88 @@ public class OutcomesSectionBuilder {
    * @param defaultValue Default value string from properties.
    * @param item         The OutcomeDisplayItem being edited.
    */
-  private void addParameterRow(GridPane grid, int rowIndex, String paramName, String paramType, String description, String defaultValue, OutcomeDisplayItem item) {
+  private void addParameterRow(GridPane grid,
+      int rowIndex,
+      String paramName,
+      String paramType,
+      String description,
+      String defaultValue,
+      OutcomeDisplayItem item) {
+    // 1) Get the “current” value (existing or default)
+    String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
+
+    // 2) Figure out which control & which bundle key to use
     String typeDisplayKey;
     Control inputControl;
-    String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
-    String typeIdBoolean = getLocalProp("param.typeIdBoolean");
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-    String typeIdDropdownPrefix = getLocalProp("param.typeIdDropdownPrefix");
+    String boolId     = getLocalProp("param.typeIdBoolean");
+    String intId      = getLocalProp("param.typeIdInteger");
+    String dblId      = getLocalProp("param.typeIdDouble");
+    String ddPrefix   = getLocalProp("param.typeIdDropdownPrefix");
 
     try {
-      if (paramType.equalsIgnoreCase(typeIdBoolean)) {
+      if (paramType.equalsIgnoreCase(boolId)) {
         typeDisplayKey = getLocalProp("key.paramTypeBoolean");
-        CheckBox checkBox = new CheckBox();
-        try {
-          checkBox.setSelected(Boolean.parseBoolean(currentValue));
-        } catch (Exception e) {
-          LOG.warn("Could not parse boolean value '{}' for param '{}'. Defaulting to false.", currentValue, paramName);
-          checkBox.setSelected(false);
-        }
-        checkBox.setOnAction(e -> handleBooleanParamUpdate(item, paramName, checkBox.isSelected()));
-        inputControl = checkBox;
-      } else if (paramType.equalsIgnoreCase(typeIdInteger) || paramType.equalsIgnoreCase(typeIdDouble)) {
-        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInteger) ? getLocalProp("key.paramTypeInteger") : getLocalProp("key.paramTypeDouble");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, textField));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) handleNumericParamUpdate(item, paramName, paramType, textField);
-        });
-        inputControl = textField;
-      } else if (paramType.toUpperCase().startsWith(typeIdDropdownPrefix.toUpperCase())) {
-        typeDisplayKey = getLocalProp("key.paramTypeDropdown");
-        String optionsString = paramType.substring(typeIdDropdownPrefix.length());
-        String[] options = optionsString.split(",");
-        ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(options));
-        if (List.of(options).contains(currentValue)) {
-          comboBox.setValue(currentValue);
-        } else if (!currentValue.isEmpty()){
-          LOG.warn("Current value '{}' for dropdown param '{}' is not in options [{}]. Setting empty.", currentValue, paramName, optionsString);
-          comboBox.setValue(null);
-        } else {
-          comboBox.setValue(null);
-        }
+        CheckBox cb = new CheckBox();
+        cb.setSelected(Boolean.parseBoolean(currentValue));
+        cb.setOnAction(e -> handleBooleanParamUpdate(item, paramName, cb.isSelected()));
+        inputControl = cb;
 
-        comboBox.setOnAction(e -> handleStringParamUpdate(item, paramName, comboBox.getValue()));
-        inputControl = comboBox;
-      } else {
-        typeDisplayKey = getLocalProp("key.paramTypeString");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleStringParamUpdate(item, paramName, textField.getText()));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) handleStringParamUpdate(item, paramName, textField.getText());
+      } else if (paramType.equalsIgnoreCase(intId) || paramType.equalsIgnoreCase(dblId)) {
+        typeDisplayKey = paramType.equalsIgnoreCase(intId)
+            ? getLocalProp("key.paramTypeInteger")
+            : getLocalProp("key.paramTypeDouble");
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, tf));
+        tf.focusedProperty().addListener((o, oldV, newV) -> {
+          if (!newV) handleNumericParamUpdate(item, paramName, paramType, tf);
         });
-        inputControl = textField;
+        inputControl = tf;
+
+      } else if (paramType.toUpperCase().startsWith(ddPrefix.toUpperCase())) {
+        typeDisplayKey = getLocalProp("key.paramTypeDropdown");
+        String[] opts = paramType.substring(ddPrefix.length()).split(",");
+        ComboBox<String> combo = new ComboBox<>(FXCollections.observableArrayList(opts));
+        combo.setValue(currentValue);
+        combo.setOnAction(e -> handleStringParamUpdate(item, paramName, combo.getValue()));
+        inputControl = combo;
+
+      } else {
+        // default to string
+        typeDisplayKey = getLocalProp("key.paramTypeString");
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleStringParamUpdate(item, paramName, tf.getText()));
+        tf.focusedProperty().addListener((o, oldV, newV) -> {
+          if (!newV) handleStringParamUpdate(item, paramName, tf.getText());
+        });
+        inputControl = tf;
       }
-    } catch (MissingResourceException e) {
-      LOG.error("Missing resource key for parameter type display: {}", e.getKey(), e);
-      typeDisplayKey = "key.paramTypeError";
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip("Missing UI text: " + e.getKey()));
-    } catch (IllegalArgumentException e) {
-      LOG.error("Error parsing current value for parameter '{}' of type '{}': {}", paramName, paramType, currentValue, e);
-      String errorMsgKey = getLocalProp("key.errorParameterParse");
-      String errorMsg = String.format(uiBundle.getString(errorMsgKey), paramName, paramType, currentValue);
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip(errorMsg));
-      typeDisplayKey = getLocalProp("key.paramTypeError");
+
     } catch (Exception e) {
-      LOG.error("Unexpected error creating input control for param '{}', type '{}'", paramName, paramType, e);
-      typeDisplayKey = getLocalProp("key.paramTypeError");
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip("Error creating control: " + e.getMessage()));
+      // parsing or missing prop: show a label so row still exists
+      LOG.error("Param “{}” parse error: {}", paramName, e.getMessage());
+      inputControl = new Label(currentValue);
+      typeDisplayKey = "key.paramTypeError";
     }
 
-    Label nameLabel = new Label(String.format("%s %s:", paramName, uiBundle.getString(typeDisplayKey)));
+    // 3) Safely resolve the human‐readable type
+    String humanType;
+    try {
+      humanType = uiBundle.getString(typeDisplayKey);
+    } catch (MissingResourceException ex) {
+      humanType = paramType;  // fallback
+    }
+
+    // 4) Build the label + tooltip
+    Label nameLabel = new Label(String.format("%s %s:", paramName, humanType));
     if (description != null && !description.isEmpty()) {
       Tooltip tip = new Tooltip(description);
       nameLabel.setTooltip(tip);
-      if (inputControl != null) inputControl.setTooltip(tip);
+      inputControl.setTooltip(tip);
     }
 
-    grid.add(nameLabel, 0, rowIndex);
-    grid.add(inputControl, 1, rowIndex);
+    // 5) Add to the grid
+    grid.add(nameLabel,     0, rowIndex);
+    grid.add(inputControl,  1, rowIndex);
     GridPane.setHgrow(inputControl, Priority.ALWAYS);
   }
 
@@ -458,26 +455,17 @@ public class OutcomesSectionBuilder {
     Map<String, Double> doubleParams = data.getDoubleParams();
     String typeIdDouble = getLocalProp("param.typeIdDouble");
     String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdBoolean = getLocalProp("param.typeIdBoolean");
 
 
     if (stringParams != null && stringParams.containsKey(paramName)) {
-      if (paramType.equalsIgnoreCase(typeIdBoolean)) {
-        return String.valueOf(Boolean.parseBoolean(stringParams.get(paramName)));
-      }
       return stringParams.get(paramName);
     }
     if ((paramType.equalsIgnoreCase(typeIdDouble) || paramType.equalsIgnoreCase(typeIdInteger)) && doubleParams != null && doubleParams.containsKey(paramName)) {
       Double val = doubleParams.get(paramName);
-      if (val != null) {
-        if (paramType.equalsIgnoreCase(typeIdInteger) && val == Math.floor(val) && !val.isInfinite()) {
-          return String.valueOf(val.intValue());
-        }
-        return String.valueOf(val);
+      if (paramType.equalsIgnoreCase(typeIdInteger) && val != null && val == Math.floor(val) && !val.isInfinite()) {
+        return String.valueOf(val.intValue());
       }
-    }
-    if (paramType.equalsIgnoreCase(typeIdBoolean)) {
-      return String.valueOf(Boolean.parseBoolean(defaultValue));
+      return String.valueOf(val);
     }
     return defaultValue;
   }
@@ -486,13 +474,12 @@ public class OutcomesSectionBuilder {
    * Handles the update for a String parameter (or Dropdown).
    */
   private void handleStringParamUpdate(OutcomeDisplayItem item, String key, String newValue) {
-    if (newValue == null) newValue = "";
     editOutcomeParamHandler.handle(item.getIndex(), key, newValue);
     LOG.trace("String parameter '{}' updated to: {}", key, newValue);
   }
 
   /**
-   * Handles the update for a Boolean parameter. Stores as String "true"/"false".
+   * Handles the update for a Boolean parameter.
    */
   private void handleBooleanParamUpdate(OutcomeDisplayItem item, String key, boolean newValue) {
     editOutcomeParamHandler.handle(item.getIndex(), key, String.valueOf(newValue));
@@ -505,36 +492,25 @@ public class OutcomesSectionBuilder {
   private void handleNumericParamUpdate(OutcomeDisplayItem item, String key, String paramType, TextField textField) {
     String newValueText = textField.getText();
     String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-
     try {
       if (paramType.equalsIgnoreCase(typeIdInteger)) {
         Integer intVal = Integer.parseInt(newValueText);
         editOutcomeParamHandler.handle(item.getIndex(), key, intVal.doubleValue());
         LOG.trace("Integer parameter '{}' updated to: {}", key, intVal);
-      } else if (paramType.equalsIgnoreCase(typeIdDouble)) {
+      } else {
         Double doubleVal = Double.parseDouble(newValueText);
         editOutcomeParamHandler.handle(item.getIndex(), key, doubleVal);
         LOG.trace("Double parameter '{}' updated to: {}", key, doubleVal);
-      } else {
-        LOG.error("handleNumericParamUpdate called with non-numeric type: {}", paramType);
-        return;
       }
       textField.setStyle("");
       textField.setTooltip(null);
     } catch (NumberFormatException e) {
       LOG.warn("Invalid {} format for param '{}': {}", paramType, key, newValueText);
       textField.setStyle("-fx-text-fill: red; -fx-border-color: red;");
-      String errorMsgKey = getLocalProp("key.warnInvalidNumericInput");
-      String errorTooltip = String.format(uiBundle.getString(errorMsgKey), paramType, newValueText);
+      String errorTooltip = String.format(uiBundle.getString(getLocalProp("key.warnInvalidNumericInput")), paramType, newValueText);
       textField.setTooltip(new Tooltip(errorTooltip));
-    } catch (Exception e) {
-      LOG.error("Error handling numeric parameter update for '{}': {}", key, e.getMessage(), e);
-      textField.setStyle("-fx-text-fill: red; -fx-border-color: red;");
-      textField.setTooltip(new Tooltip("Error processing value: " + e.getMessage()));
     }
   }
-
 
   /**
    * Updates the list view of outcomes shown in the UI with a new list of {@code ExecutorData}.
@@ -554,7 +530,31 @@ public class OutcomesSectionBuilder {
       }
     }
     outcomesListView.setItems(displayItems);
+    updateParametersPane(null);
     LOG.trace("Outcomes list view updated with {} items.", displayItems.size());
+  }
+
+  /**
+   * Updates the ComboBox containing available dynamic variable names.
+   */
+  public void updateDynamicVariableComboBox() {
+    List<DynamicVariable> variables = dynamicVariableSupplier.get();
+    dynamicVariableComboBox.getItems().clear();
+
+    if (variables != null && !variables.isEmpty()) {
+      List<String> varNames = variables.stream()
+          .map(DynamicVariable::getName)
+          .filter(Objects::nonNull)
+          .distinct()
+          .sorted()
+          .collect(Collectors.toList());
+      dynamicVariableComboBox.getItems().addAll(varNames);
+      LOG.debug("Updated dynamic variable combo box with {} variables.", varNames.size());
+    } else {
+      LOG.debug("Dynamic variable combo box updated with empty list or null variables.");
+    }
+    dynamicVariableComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectParameter")));
+    dynamicVariableComboBox.getSelectionModel().clearSelection();
   }
 
   /**
@@ -583,16 +583,21 @@ public class OutcomesSectionBuilder {
     String buttonText;
     String actualUiKey = getLocalProp(localPropKey);
 
-    buttonText = uiBundle.getString(actualUiKey);
-
+    if (actualUiKey.equals(getLocalProp("key.createParamButton"))) {
+      buttonText = getLocalProp("text.createParamButton");
+    } else {
+      buttonText = uiBundle.getString(actualUiKey);
+    }
 
     Button button = new Button(buttonText);
     button.setOnAction(handler);
     button.getStyleClass().add(getLocalProp("style.actionButton"));
 
-    if (actualUiKey.equals(getLocalProp("key.removeOutcomeButton"))) {
-      button.getStyleClass().add(getLocalProp("style.removeButton"));
+    if (actualUiKey.equals(getLocalProp("key.createParamButton"))) {
+      button.getStyleClass().add(getLocalProp("style.smallButton"));
       button.setMaxWidth(Region.USE_PREF_SIZE);
+    } else if (actualUiKey.equals(getLocalProp("key.removeOutcomeButton"))) {
+      button.getStyleClass().add(getLocalProp("style.removeButton"));
     } else {
       button.setMaxWidth(Double.MAX_VALUE);
       HBox.setHgrow(button, Priority.ALWAYS);

@@ -347,22 +347,24 @@ public class ConditionsSectionBuilder {
 
     GridPane grid = createParametersGrid();
     String paramCountKey = executorName + getLocalProp("param.baseKey") + getLocalProp("param.countSuffix");
-    String paramCountStr = localProps.getProperty(paramCountKey);
+    int paramCount = Integer.parseInt(localProps.getProperty(paramCountKey));
 
-    if (paramCountStr == null) {
-      LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
-          executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
-      Label errorLabel = new Label(errorMsg);
-      parametersPane.getChildren().add(errorLabel);
-      return;
-    }
+    /**
+     * if (paramCountStr == null) {
+     *       LOG.warn("Parameter count definition missing for executor '{}' using key '{}' in {}",
+     *           executorName, paramCountKey, IDENTIFIERS_PROPERTIES_PATH);
+     *       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnMissingParameter")), executorName);
+     *       Label errorLabel = new Label(errorMsg);
+     *       parametersPane.getChildren().add(errorLabel);
+     *       return;
+     *     }
+     */
+
 
     try {
-      int paramCount = Integer.parseInt(paramCountStr);
 
       for (int i = 1; i <= paramCount; i++) {
-        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + i;
+        String paramBaseKeyStr = executorName + getLocalProp("param.baseKey") + "." + i;
         String name = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.nameSuffix"));
         String type = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.typeSuffix"));
         String description = localProps.getProperty(paramBaseKeyStr + getLocalProp("param.descSuffix"), "");
@@ -375,13 +377,14 @@ public class ConditionsSectionBuilder {
           grid.add(errorLabel, 0, i-1, 2, 1);
           continue;
         }
+
         addParameterRow(grid, i - 1, name, type, description, defaultValue, selectedItem);
       }
       parametersPane.getChildren().add(grid);
       LOG.trace("Parameters pane updated for condition: {}", executorName);
 
     } catch (NumberFormatException e) {
-      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCountStr, e);
+      LOG.error("Invalid number format for parameter count for key '{}' in {}: {}", paramCountKey, IDENTIFIERS_PROPERTIES_PATH, paramCount, e);
       String errorMsg = String.format(uiBundle.getString(getLocalProp("key.warnInvalidNumber")), executorName);
       Label errorLabel = new Label(errorMsg);
       parametersPane.getChildren().add(errorLabel);
@@ -420,71 +423,102 @@ public class ConditionsSectionBuilder {
    * @param defaultValue Default value string from properties.
    * @param item         The ConditionDisplayItem being edited.
    */
-  private void addParameterRow(GridPane grid, int rowIndex, String paramName, String paramType, String description, String defaultValue, ConditionDisplayItem item) {
+  private void addParameterRow(GridPane grid,
+      int rowIndex,
+      String paramName,
+      String paramType,
+      String description,
+      String defaultValue,
+      ConditionDisplayItem item) {
+    LOG.debug("addParameterRow: row={}, name='{}', type='{}', default='{}'",
+        rowIndex, paramName, paramType, defaultValue);
+
+    // 1) figure out the "human‐readable" type key
     String typeDisplayKey;
     Control inputControl;
     String currentValue = getCurrentValueAsString(item.getData(), paramName, paramType, defaultValue);
-    String typeIdBoolean = getLocalProp("param.typeIdBoolean");
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-    String typeIdDropdownPrefix = getLocalProp("param.typeIdDropdownPrefix");
-    String typeIdString = getLocalProp("param.typeIdString");
+    LOG.debug("  currentValue = '{}'", currentValue);
 
+    String typeIdBool     = getLocalProp("param.typeIdBoolean");
+    String typeIdInt      = getLocalProp("param.typeIdInteger");
+    String typeIdDouble   = getLocalProp("param.typeIdDouble");
+    String typeIdDropdown = getLocalProp("param.typeIdDropdownPrefix");
+    String typeIdString   = getLocalProp("param.typeIdString");
 
     try {
-      if (paramType.equalsIgnoreCase(typeIdBoolean)) {
+      if (paramType.equalsIgnoreCase(typeIdBool)) {
         typeDisplayKey = getLocalProp("key.paramTypeBoolean");
-        CheckBox checkBox = new CheckBox();
-        checkBox.setSelected(Boolean.parseBoolean(currentValue));
-        checkBox.setOnAction(e -> handleBooleanParamUpdate(item, paramName, checkBox.isSelected()));
-        inputControl = checkBox;
-      } else if (paramType.equalsIgnoreCase(typeIdInteger) || paramType.equalsIgnoreCase(typeIdDouble)) {
-        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInteger) ? getLocalProp("key.paramTypeInteger") : getLocalProp("key.paramTypeDouble");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, textField));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) {
-            handleNumericParamUpdate(item, paramName, paramType, textField);
-          }
+        LOG.debug("  branch=Boolean, key={}", typeDisplayKey);
+        CheckBox cb = new CheckBox();
+        cb.setSelected(Boolean.parseBoolean(currentValue));
+        cb.setOnAction(e -> handleBooleanParamUpdate(item, paramName, cb.isSelected()));
+        inputControl = cb;
+
+      } else if (paramType.equalsIgnoreCase(typeIdInt)
+          || paramType.equalsIgnoreCase(typeIdDouble)) {
+        typeDisplayKey = paramType.equalsIgnoreCase(typeIdInt)
+            ? getLocalProp("key.paramTypeInteger")
+            : getLocalProp("key.paramTypeDouble");
+        LOG.debug("  branch=Numeric, key={}", typeDisplayKey);
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleNumericParamUpdate(item, paramName, paramType, tf));
+        tf.focusedProperty().addListener((obs, ov, nv) -> {
+          if (!nv) handleNumericParamUpdate(item, paramName, paramType, tf);
         });
-        inputControl = textField;
-      } else if (paramType.toUpperCase().startsWith(typeIdDropdownPrefix.toUpperCase())) {
+        inputControl = tf;
+
+      } else if (paramType.toUpperCase().startsWith(typeIdDropdown.toUpperCase())) {
         typeDisplayKey = getLocalProp("key.paramTypeDropdown");
-        String[] options = paramType.substring(typeIdDropdownPrefix.length()).split(",");
-        ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(options));
-        comboBox.setValue(currentValue);
-        comboBox.setOnAction(e -> handleStringParamUpdate(item, paramName, comboBox.getValue()));
-        inputControl = comboBox;
+        LOG.debug("  branch=Dropdown, key={}", typeDisplayKey);
+        String[] opts = paramType.substring(typeIdDropdown.length()).split(",");
+        ComboBox<String> cb = new ComboBox<>(FXCollections.observableArrayList(opts));
+        cb.setValue(currentValue);
+        cb.setOnAction(e -> handleStringParamUpdate(item, paramName, cb.getValue()));
+        inputControl = cb;
+
       } else {
         typeDisplayKey = getLocalProp("key.paramTypeString");
-        TextField textField = new TextField(currentValue);
-        textField.setOnAction(e -> handleStringParamUpdate(item, paramName, textField.getText()));
-        textField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-          if (!newVal) {
-            handleStringParamUpdate(item, paramName, textField.getText());
-          }
+        LOG.debug("  branch=String, key={}", typeDisplayKey);
+        TextField tf = new TextField(currentValue);
+        tf.setOnAction(e -> handleStringParamUpdate(item, paramName, tf.getText()));
+        tf.focusedProperty().addListener((obs, ov, nv) -> {
+          if (!nv) handleStringParamUpdate(item, paramName, tf.getText());
         });
-        inputControl = textField;
+        inputControl = tf;
       }
-    } catch (IllegalArgumentException e) {
-      LOG.error("Error parsing current value for parameter '{}' of type '{}': {}", paramName, paramType, currentValue, e);
-      String errorMsg = String.format(uiBundle.getString(getLocalProp("key.errorParameterParse")), paramName, paramType, currentValue);
-      inputControl = new Label(uiBundle.getString(getLocalProp("key.labelError")));
-      inputControl.setTooltip(new Tooltip(errorMsg));
-      typeDisplayKey = getLocalProp("key.paramTypeError");
+
+    } catch (Exception e) {
+      LOG.error("Error choosing control for param '{}': {}", paramName, e.getMessage());
+      // fallback to a simple label so the row still appears
+      typeDisplayKey = "key.paramTypeError";
+      inputControl  = new Label(currentValue);
     }
 
-    Label nameLabel = new Label(String.format("%s %s:", paramName, uiBundle.getString(typeDisplayKey)));
+    // 2) resolve the human‐readable type from uiBundle, but safely
+    String humanType;
+    try {
+      humanType = uiBundle.getString(typeDisplayKey);
+    } catch (MissingResourceException mre) {
+      LOG.warn("No UI text for key '{}', falling back to raw paramType", typeDisplayKey);
+      humanType = paramType;
+    }
+
+    // 3) build the label + tooltip
+    Label nameLabel = new Label(String.format("%s (%s):", paramName, humanType));
     if (description != null && !description.isEmpty()) {
       Tooltip tip = new Tooltip(description);
       nameLabel.setTooltip(tip);
-      if (inputControl != null) inputControl.setTooltip(tip);
+      inputControl.setTooltip(tip);
     }
 
+    // 4) put it on the grid
     grid.add(nameLabel, 0, rowIndex);
     grid.add(inputControl, 1, rowIndex);
     GridPane.setHgrow(inputControl, Priority.ALWAYS);
+
+    LOG.debug("  added row {}, label='{}', control={}", rowIndex, nameLabel.getText(), inputControl.getClass().getSimpleName());
   }
+
 
   /**
    * Retrieves the current value of a parameter from ExecutorData, falling back to defaultValue.
