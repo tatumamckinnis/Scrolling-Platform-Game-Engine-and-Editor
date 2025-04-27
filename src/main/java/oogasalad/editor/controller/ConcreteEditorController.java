@@ -444,6 +444,10 @@ public class ConcreteEditorController implements EditorController {
   public void loadLevelData(String fileName)
       throws LayerParseException, LevelDataParseException, PropertyParsingException, SpriteParseException, EventParseException, HitBoxParseException, BlueprintParseException, GameObjectParseException {
     editorDataAPI.loadLevelData(fileName);
+    for (UUID object : editorDataAPI.getObjectDataMap().keySet()) {
+      LOG.info("sprite data base frame: " + getEditorObject(object).getSpriteData().getBaseFrameName());
+      LOG.info(String.format("Loaded object '%s' from data map", object));
+    }
     editorDataAPI.getObjectDataMap().forEach((key, value) -> {
       listenerNotifier.notifyObjectAdded(key);
     });

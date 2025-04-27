@@ -358,10 +358,10 @@ public class SplashScreen extends Display {
 
   private void setEditorButtonAction(Button startEditor) {
     ButtonActionFactory factory = new ButtonActionFactory(viewState);
-    String game = gameTypeBox.getValue();
-    String level = levelBox.getValue();
     startEditor.setOnAction(event -> {
-      factory.startEditor("dinosaurgame", "DinoLevel1.xml").run();
+      String game = gameTypeBox.getValue();
+      String level = levelBox.getValue();
+      factory.startEditor(game, level).run();
     });
   }
 
