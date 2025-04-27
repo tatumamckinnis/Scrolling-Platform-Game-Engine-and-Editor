@@ -1,10 +1,18 @@
 package oogasalad.editor.controller.level;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import oogasalad.editor.controller.asset.SpriteSheetDataManager;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.controller.object.CollisionDataManager;
@@ -14,15 +22,15 @@ import oogasalad.editor.controller.object.IdentityDataManager;
 import oogasalad.editor.controller.object.InputDataManager;
 import oogasalad.editor.controller.object.PhysicsDataManager;
 import oogasalad.editor.controller.object.SpriteDataManager;
+import oogasalad.editor.model.EditorFileConverter;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import oogasalad.editor.model.loader.LevelDataConverter;
-import oogasalad.editor.model.EditorFileConverter;
 import oogasalad.editor.model.saver.api.EditorFileConverterAPI;
 import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
@@ -30,8 +38,6 @@ import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Provides a comprehensive API to manage editor data, acting as a facade for various underlying
@@ -484,5 +490,99 @@ public class EditorDataAPI {
     getObjectDataMap().forEach((key, value) -> {
       listenerNotifier.notifyObjectAdded(key);
     });
+  }
+
+  /**
+   * Gets a list of available game names by examining directories.
+   * 
+   * @return a List of game names found in the game directories
+   */
+  public List<String> getGames() {
+    Set<String> gameNames = new HashSet<>();
+    
+    // Check in levels directory
+    String levelDirPath = System.getProperty("user.dir") + "/data/gameData/levels";
+    File levelDir = new File(levelDirPath);
+    if (levelDir.exists() && levelDir.isDirectory()) {
+      File[] gameDirs = levelDir.listFiles(File::isDirectory);
+      if (gameDirs != null) {
+        for (File gameDir : gameDirs) {
+          gameNames.add(gameDir.getName());
+        }
+      }
+    }
+    
+    // Check in graphics directory
+    String graphicsDirPath = System.getProperty("user.dir") + "/data/graphicsData";
+    File graphicsDir = new File(graphicsDirPath);
+    if (graphicsDir.exists() && graphicsDir.isDirectory()) {
+      File[] gameDirs = graphicsDir.listFiles(File::isDirectory);
+      if (gameDirs != null) {
+        for (File gameDir : gameDirs) {
+          // Skip default/problematic directories
+          if (!gameDir.getName().equals("unknown_game") && !gameDir.getName().equals("dinosaurgame")) {
+            gameNames.add(gameDir.getName());
+          }
+        }
+      }
+    }
+    
+    LOG.info("Found {} game names across all directories", gameNames.size());
+    List<String> result = new ArrayList<>(gameNames);
+    Collections.sort(result);
+    return result;
+  }
+
+  /**
+   * Gets the layer priority of an editor object by its UUID.
+   * Delegates to the corresponding method in {@link EditorLevelData}.
+   *
+   * @param id the UUID of the editor object
+   * @return the priority of the layer the object belongs to, or 0 if the object or its layer is not found
+   */
+  public int getObjectLayerPriority(UUID id) {
+    LOG.debug("Getting layer priority for object with ID: {}", id);
+    return level.getObjectLayerPriority(id);
+  }
+
+  /**
+   * Returns all editor objects sorted by layer priority, from lowest to highest (back to front).
+   * This is useful for rendering objects in the correct Z-order in the frontend.
+   *
+   * @return a list of editor objects sorted by layer priority (ascending)
+   */
+  public List<EditorObject> getObjectsSortedByLayerPriority() {
+    return level.getObjectsSortedByLayerPriority();
+  }
+
+  /**
+   * Returns all objects on a specific layer.
+   * This is useful for operations that need to manipulate or select objects from a particular layer.
+   *
+   * @param layerName the name of the layer to get objects from
+   * @return a list of editor objects on the specified layer, or an empty list if the layer doesn't exist
+   */
+  public List<EditorObject> getObjectsByLayer(String layerName) {
+    return level.getObjectsByLayer(layerName);
+  }
+
+  /**
+   * Determines if one object is rendered on top of another based on layer priority.
+   * Objects with higher layer priority are rendered on top.
+   *
+   * @param topObjectId UUID of the object to check if it's on top
+   * @param bottomObjectId UUID of the object to check if it's on the bottom
+   * @return true if topObjectId has higher or equal layer priority than bottomObjectId, false otherwise
+   */
+  public boolean isObjectOnTopOf(UUID topObjectId, UUID bottomObjectId) {
+    if (topObjectId == null || bottomObjectId == null) {
+      return false;
+    }
+    
+    int topPriority = getObjectLayerPriority(topObjectId);
+    int bottomPriority = getObjectLayerPriority(bottomObjectId);
+    
+    // Higher priority means the object is rendered later (on top)
+    return topPriority >= bottomPriority;
   }
 }

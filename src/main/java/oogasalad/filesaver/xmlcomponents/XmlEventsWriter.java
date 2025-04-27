@@ -62,7 +62,7 @@ public class XmlEventsWriter implements XmlComponentWriter{
       writer.write(INDENT4 + "<conditionSet>\n");
       for (ConditionData condition : conditionSet) {
         writer.write(String.format(INDENT5 + "<condition name=\"%s\">\n", condition.name()));
-        new XmlPropertiesWriter(writer, 6, condition.stringProperties(), condition.doubleProperties(), "parameter").write();
+        new XmlPropertiesWriter(writer, 6, condition.stringProperties(), condition.doubleProperties(),"Parameters" ,"parameter").write();
         writer.write(INDENT5 + "</condition>\n");
       }
       writer.write(INDENT4 + "</conditionSet>\n");
@@ -74,7 +74,7 @@ public class XmlEventsWriter implements XmlComponentWriter{
     writer.write(INDENT3 + "<outcomes>\n");
     for (OutcomeData outcome : outcomes) {
       writer.write(String.format(INDENT4 + "<outcome name=\"%s\">\n", outcome.name()));
-      new XmlPropertiesWriter(writer, 5, outcome.stringProperties(), outcome.doubleProperties(), "parameter").write();
+      new XmlPropertiesWriter(writer, 5, outcome.stringProperties(), outcome.doubleProperties(),"Parameters", "parameter").write();
       writer.write(INDENT4 + "</outcome>\n");
     }
     writer.write(INDENT3 + "</outcomes>\n");

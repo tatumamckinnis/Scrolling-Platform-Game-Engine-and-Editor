@@ -16,6 +16,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -251,13 +252,14 @@ public class SpriteTemplateComponent extends Stage {
     FileChooser chooser = new FileChooser();
     chooser.getExtensionFilters().add(
         new FileChooser.ExtensionFilter("Sprite Atlas XML", "*.xml"));
+
     File xml = chooser.showOpenDialog(getOwner());
     if (xml == null) {
-      return;
+      return;            // user cancelled
     }
 
-    String fname = xml.getName();
-    String atlasId = fname.substring(0, fname.lastIndexOf('.'));
+    String fileName = xml.getName();
+    String atlasId = fileName.substring(0, fileName.lastIndexOf('.'));
 
     SpriteSheetAtlas atlas = library.getAtlas(atlasId);
     if (atlas == null) {
@@ -267,14 +269,17 @@ public class SpriteTemplateComponent extends Stage {
             .loadSpriteSheet(xml.getAbsolutePath());
         library.addAtlas(atlas.atlasName(), atlas);
       } catch (SpriteSheetLoadException ex) {
-        LOG.error("Load failed: {}", ex.getMessage());
+        LOG.error("Could not load sprite sheet: {}", ex.getMessage());
         new Alert(Alert.AlertType.ERROR, "Cannot load sheet").showAndWait();
         return;
       }
     }
     currentAtlas = atlas.atlasName();
 
-    pathField.setText(atlas.imagePath());
-    framesPane.setFrames(atlas.frames());
+    Image img = new Image(atlas.getImageFile().toURI().toString());
+    framesPane.setSpriteSheetImage(img);
+
+    pathField.setText(atlas.imagePath());       // keep the *relative* path
+    framesPane.setFrames(atlas.frames());       // populate list
   }
 }

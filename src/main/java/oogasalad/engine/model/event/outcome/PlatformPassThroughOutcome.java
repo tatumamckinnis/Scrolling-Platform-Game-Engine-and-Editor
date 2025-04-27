@@ -14,7 +14,6 @@ import oogasalad.engine.model.object.GameObject;
 public class PlatformPassThroughOutcome implements Outcome {
 
   private final CollisionHandler collisionHandler;
-  private GameObject player;
 
   /**
    * requires a collision handler
@@ -29,21 +28,19 @@ public class PlatformPassThroughOutcome implements Outcome {
   public void execute(GameObject player,
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
-    this.player = player;
-    //player.setGrounded(false); // Assume ungrounded until proven otherwise
 
+    String type = stringParameters.getOrDefault("type", "platform");
     List<GameObject> collisions = collisionHandler.getCollisions(player);
     for (GameObject platform : collisions) {
-      if (platform.getType().equals("platforms")) {
-        if (trySnapToPlatform(platform)) {
+      if (platform.getType().equals(type)) {
+        if (trySnapToPlatform(player, platform)) {
           player.setGrounded(true); // Re-ground if standing on valid platform
-          //break;
         }
       }
     }
   }
 
-  private boolean trySnapToPlatform(GameObject platform) {
+  private boolean trySnapToPlatform(GameObject player, GameObject platform) {
     int playerBottom = player.getYPosition() + player.getHitBoxHeight();
     int playerTop = player.getYPosition();
     int platformTop = platform.getYPosition();

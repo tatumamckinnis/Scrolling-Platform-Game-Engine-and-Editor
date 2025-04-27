@@ -4,11 +4,13 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Manages identity-related data and custom parameters for EditorObjects, including name, group,
@@ -16,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  * simplified API to interact with these aspects of EditorObjects stored in the underlying
  * {@link EditorLevelData}.
  *
- * @author Jacob You, Tatum McKinnis
+ * @author Jacob You, Tatum McKinnis, Billy McCune
  */
 public class IdentityDataManager {
 
@@ -54,7 +56,7 @@ public class IdentityDataManager {
    */
   public String getGroup(UUID id) {
     EditorObject obj = safeGetObject(id);
-    return (obj != null && obj.getIdentityData() != null) ? obj.getIdentityData().getType() : "";
+    return (obj != null && obj.getIdentityData() != null) ? obj.getIdentityData().getGroup() : "";
   }
 
   /**
@@ -81,7 +83,7 @@ public class IdentityDataManager {
   public void setGroup(UUID id, String group) {
     EditorObject obj = safeGetObject(id);
     if (obj != null && obj.getIdentityData() != null) {
-      obj.getIdentityData().setType(group);
+      obj.getIdentityData().setGroup(group);
     } else {
       LOG.error("Could not set group for non-existent object or object with null identity: {}", id);
     }
@@ -115,6 +117,38 @@ public class IdentityDataManager {
       obj.getIdentityData().setType(type);
     } else {
       LOG.error("Could not set type for non-existent object or object with null identity: {}", id);
+    }
+  }
+
+  /**
+   * Gets the type of the EditorObject.
+   * @param id the UUID of the object.
+   * @return the type of the EditorObject.
+   */
+  public String getType(UUID id) {
+    EditorObject obj = safeGetObject(id);
+    return (obj != null && obj.getIdentityData() != null) ? obj.getIdentityData().getType() : "";
+  }
+
+  public String getObjectGame(UUID id) {
+    EditorObject obj = safeGetObject(id);
+    return (obj != null && obj.getIdentityData() != null) ? obj.getIdentityData().getGame() : "";
+  }
+
+  /**
+   * Sets the game name for the EditorObject associated with the given UUID.
+   * Logs an error if the object is not found.
+   *
+   * @param id   the UUID of the EditorObject.
+   * @param game the name of the game to set for this object.
+   */
+  public void setGame(UUID id, String game) {
+    EditorObject obj = safeGetObject(id);
+    if (obj != null && obj.getIdentityData() != null) {
+      obj.getIdentityData().setGame(game);
+      LOG.debug("Set game name to '{}' for object {}", game, id);
+    } else {
+      LOG.error("Could not set game name for non-existent object or object with null identity: {}", id);
     }
   }
 

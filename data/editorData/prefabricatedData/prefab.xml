@@ -15,13 +15,13 @@
         <properties><stringProperties><property key="initial_animation" value="fly"/></stringProperties><doubleProperties/></properties>
       </object>
     </objectGroup>
-    <objectGroup name="blocks"> <object id="14" type="Track" gameName="dinosaurgame" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="track-0" spriteFile="track.xml" hitBoxWidth="480" hitBoxHeight="28" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    <objectGroup name="blocks"> <object id="14" type="Track" gameName="dinosaurgame" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="track-0" spriteFile="track-0.xml" hitBoxWidth="480" hitBoxHeight="28" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
     </objectGroup>
   </game>
 
   <game name="doodlejump">
     <objectGroup name="entities">
-      <object id="15" type="Player" gameName="doodlejump" group="entities" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="DoodlePlayer" spriteFile="entities/player/doodlejump-player.xml" hitBoxWidth="62" hitBoxHeight="60" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""> <properties><stringProperties/><doubleProperties><property key="jump_force" value="18.0"/><property key="gravity" value="0.6"/></doubleProperties></properties>
+      <object id="15" type="Player" gameName="doodlejump" group="entities" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="DoodlePlayer" spriteFile="doodlejump-player.xml" hitBoxWidth="62" hitBoxHeight="60" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""> <properties><stringProperties/><doubleProperties><property key="jump_force" value="18.0"/><property key="gravity" value="0.6"/></doubleProperties></properties>
       </object>
     </objectGroup>
     <objectGroup name="platforms">
@@ -31,28 +31,28 @@
       <object id="19" type="White Platform" gameName="doodlejump" group="platforms" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="platform-white" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
     </objectGroup>
     <objectGroup name="items">
-      <object id="21" type="Propeller Hat" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-propeller-0.png" spriteFile="items/doodlejump-propeller.xml" hitBoxWidth="32" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
-      <object id="22" type="Rocket" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-rocket-0.png" spriteFile="items/doodlejump-rocket.xml" hitBoxWidth="32" hitBoxHeight="64" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="21" type="Propeller Hat" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-propeller-0.png" spriteFile="doodlejump-propeller.xml" hitBoxWidth="32" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="22" type="Rocket" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="doodlejump-rocket-0.png" spriteFile="doodlejump-rocket.xml" hitBoxWidth="32" hitBoxHeight="64" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
     </objectGroup>
   </game>
 
   <game name="supermario">
     <objectGroup name="entities">
-      <object id="23" type="Mario" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="big-mario" spriteFile="entities/player/supermario_mario.xml" hitBoxWidth="16" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+      <object id="23" type="Mario" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="big-mario" spriteFile="supermario_mario.xml" hitBoxWidth="16" hitBoxHeight="32" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
         <properties><stringProperties><property key="initial_animation" value="walk-right"/></stringProperties><doubleProperties><property key="jump_force" value="12.0"/><property key="gravity" value="0.9"/></doubleProperties></properties>
       </object>
     </objectGroup>
     <objectGroup name="blocks">
-      <object id="26" type="Brick Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="blocks/supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
-      <object id="27" type="Brick Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="blocks/supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object> <object id="28" type="Question Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="flash-1" spriteFile="blocks/supermario-block-random.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
+      <object id="26" type="Brick Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="28" type="Question Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="flash-1" spriteFile="flash-1.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="">
       <properties><stringProperties/><doubleProperties/></properties>
     </object>
-      <object id="35" type="Ground Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="blocks/supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="35" type="Ground Block" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="overworld-brick" spriteFile="supermario-blocks.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
     </objectGroup>
     <objectGroup name="items">
-      <object id="31" type="Red Mushroom" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="mushroom-red.png" spriteFile="items/supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
-      <object id="34" type="Green Mushroom" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="mushroom-green.png" spriteFile="items/supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
-      <object id="36" type="Coin" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="items-objects-3.png" spriteFile="items/supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="31" type="Red Mushroom" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="mushroom-red.png" spriteFile="supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="34" type="Green Mushroom" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="mushroom-green.png" spriteFile="supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="36" type="Coin" velocityX="0.00" velocityY="0.00" rotation="0.00" spriteName="items-objects-3.png" spriteFile="supermario-items.xml" hitBoxWidth="16" hitBoxHeight="16" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
     </objectGroup>
   </game>
 

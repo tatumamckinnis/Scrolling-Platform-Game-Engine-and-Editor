@@ -2,10 +2,12 @@ package oogasalad.editor.model.saver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
@@ -38,8 +40,11 @@ public class BlueprintBuilder {
    * @return a {@link BlueprintData} record representing the object's state.
    */
   public static BlueprintData fromEditorObject(EditorObject obj) {
-    String gameName = obj.getGameName();
-    String group = obj.getIdentityData().getType();
+    // Get game name from the object's identity data
+    String gameName = obj.getIdentityData().getGame();
+    // Get group from the object's identity data 
+    String group = obj.getIdentityData().getGroup();
+    // Type already comes from identity data
     String type = obj.getIdentityData().getType();
     double rotation = obj.getSpriteData().getRotation();
     boolean isFlipped = obj.getSpriteData().getIsFlipped();
@@ -56,7 +61,15 @@ public class BlueprintBuilder {
     doubleProps.putIfAbsent("gravity", obj.getPhysicsData().getGravity());
     doubleProps.putIfAbsent("jump_force", obj.getPhysicsData().getJumpForce());
 
-    List<String> displayList = List.of(); // TODO: Determine if this needs to be populated from somewhere
+    // Handle displayed properties list
+    List<String> displayList = new ArrayList<>();
+    String displayedPropsStr = stringProps.get("displayedProperties");
+    if (displayedPropsStr != null && !displayedPropsStr.isEmpty()) {
+      String[] props = displayedPropsStr.split(",");
+      displayList.addAll(Arrays.asList(props));
+      // Remove the temporary string parameter since we now store it in the proper field
+      stringProps.remove("displayedProperties");
+    }
 
     return new BlueprintData(
         BLUEPRINT_PLACEHOLDER_ID,

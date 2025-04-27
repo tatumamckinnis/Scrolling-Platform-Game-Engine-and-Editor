@@ -88,6 +88,7 @@ public class SpriteSheetDataManager {
     SpriteSheetAtlas atlas = new SpriteSheetAtlas(
         atlasName,
         pngFile,
+        extractGameName(sheetURL),
         sheetWidth,
         sheetHeight,
         frames
@@ -113,5 +114,10 @@ public class SpriteSheetDataManager {
     levelData.getSpriteLibrary().addAtlas(atlas.atlasName(), atlas);
     LOG.info("Loaded sprite sheet {}", sheetFile);
     return atlas;
+  }
+
+  private static String extractGameName(String anyPath) {
+    File f = new File(anyPath).getAbsoluteFile();
+    return f.getParentFile().getName();
   }
 }

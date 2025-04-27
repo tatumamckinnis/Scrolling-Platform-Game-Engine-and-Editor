@@ -41,7 +41,8 @@ public record EventOutcome(EventOutcome.OutcomeType outcomeType,
     DASH,
     RESET_VELOCITY,
     WIN_GAME,
-    RELATIVE_TELEPORT
+    RELATIVE_TELEPORT,
+    WALL_COLLIDE
   }
 
   /**
