@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Handles editing of events, conditions, and outcomes associated with editor objects.
  * Provides methods for adding, removing, modifying, and retrieving event-related data.
+ *
+ * @author Tatum McKinnis, Jacob You
  */
 public class EditorEventHandler {
 
@@ -35,6 +38,7 @@ public class EditorEventHandler {
 
   /**
    * Adds a new event definition to the specified object.
+   * Also adds the event ID to the object's main EventData list for saving order.
    *
    * @param objectId UUID of the target object. Must not be null.
    * @param eventId  String identifier for the new event. Must not be null or empty.
@@ -46,13 +50,25 @@ public class EditorEventHandler {
       return;
     }
     handleEventOperation(objectId,
-        () -> editorDataAPI.getInputDataAPI().addEvent(objectId, eventId),
+        () -> {
+          editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
+          EditorObject obj = editorDataAPI.getEditorObject(objectId);
+          if (obj != null && obj.getEventData() != null) {
+            if (!obj.getEventData().getEvents().contains(eventId)) {
+              obj.getEventData().addEvent(eventId);
+              LOG.debug("Added event ID '{}' to object's EventData list.", eventId);
+            }
+          } else {
+            LOG.error("Failed to add event ID '{}' to EventData list: Object or EventData was null.", eventId);
+          }
+        },
         String.format("add event '%s' to object %s", eventId, objectId)
     );
   }
 
   /**
    * Removes an event definition from the specified object.
+   * Also removes the event ID from the object's main EventData list.
    *
    * @param objectId UUID of the target object. Must not be null.
    * @param eventId  String identifier of the event to remove. Must not be null.
@@ -60,13 +76,27 @@ public class EditorEventHandler {
   public void removeEvent(UUID objectId, String eventId) {
     if (!validateEventInput(objectId, eventId, "removeEvent")) return;
     handleEventOperation(objectId,
-        () -> editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId),
+        () -> {
+          boolean removedFromMap = editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
+          EditorObject obj = editorDataAPI.getEditorObject(objectId);
+          boolean removedFromList = false;
+          if (obj != null && obj.getEventData() != null) {
+            removedFromList = obj.getEventData().getEvents().remove(eventId);
+            if (removedFromList) {
+              LOG.debug("Removed event ID '{}' from object's EventData list.", eventId);
+            }
+          }
+          if (!removedFromMap && !removedFromList) {
+            LOG.warn("Event '{}' not found in InputData map or EventData list for removal.", eventId);
+          }
+        },
         String.format("remove event '%s' from object %s", eventId, objectId)
     );
   }
 
   /**
    * Gets all events associated with the specified object ID.
+   * Assumes events are primarily managed within InputData for the UI.
    *
    * @param objectId UUID of the target object.
    * @return A Map where keys are event IDs (String) and values are EditorEvent objects. Returns an empty map on failure or if objectId is null.
@@ -74,6 +104,7 @@ public class EditorEventHandler {
   public Map<String, EditorEvent> getEventsForObject(UUID objectId) {
     if (objectId == null) return Collections.emptyMap();
     try {
+      // Logic primarily interacts with InputData events via the UI
       Map<String, EditorEvent> events = editorDataAPI.getInputDataAPI().getEvents(objectId);
       return (events != null) ? events : Collections.emptyMap();
     } catch (Exception e) {
