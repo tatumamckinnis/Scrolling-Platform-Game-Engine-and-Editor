@@ -35,7 +35,7 @@ public class XmlCameraDataWriter implements XmlComponentWriter{
     }
 
     writer.write(String.format(INDENT + "<cameraData type=\"%s\">\n", camera.type()));
-    new XmlPropertiesWriter(writer, 2, camera.stringProperties(), camera.doubleProperties(), "property").write();
+    new XmlPropertiesWriter(writer, 2, camera.stringProperties(), camera.doubleProperties(),"Properties" ,"property").write();
     writer.write(INDENT + "</cameraData>\n");
   }
 }
