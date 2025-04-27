@@ -43,6 +43,12 @@ public class SpriteAssetPane extends BorderPane {
   private final SpriteTemplateMap spriteTemplateMap;
   private final TilePane gallery = new TilePane();
 
+  /**
+   * constructs a new Sprite Asset Pane
+   *
+   * @param editorController editor controller
+   * @param ownerWindow      window that contains the sprite asset pane
+   */
   public SpriteAssetPane(EditorController editorController, Window ownerWindow) {
     this.editorController = editorController;
     this.spriteTemplateMap = editorController.getEditorDataAPI().getSpriteTemplateMap();
@@ -103,7 +109,7 @@ public class SpriteAssetPane extends BorderPane {
   private Node createThumbnail(SpriteTemplate template) {
     String fileName = template.getSpriteFile();
     String gameName = editorController.getEditorDataAPI().getGameName();
-    Path imageFile = Paths.get("data","graphicsData", gameName, fileName);
+    Path imageFile = Paths.get("data", "graphicsData", gameName, fileName);
 
     Image sheet = new Image(imageFile.toUri().toString());
 

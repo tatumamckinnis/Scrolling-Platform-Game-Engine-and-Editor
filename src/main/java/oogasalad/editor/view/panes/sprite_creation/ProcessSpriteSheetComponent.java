@@ -13,6 +13,12 @@ import oogasalad.editor.controller.EditorController;
  */
 public class ProcessSpriteSheetComponent extends Stage {
 
+  /**
+   * constructor for creating a new sprite sheet component
+   *
+   * @param editorController editor controller
+   * @param owner            window that contains the sprite sheet component
+   */
   public ProcessSpriteSheetComponent(EditorController editorController, Window owner) {
     initOwner(owner);
     initModality(Modality.APPLICATION_MODAL);

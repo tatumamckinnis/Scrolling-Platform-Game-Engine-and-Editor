@@ -469,6 +469,16 @@ public class EditorDataAPI {
     return cameraAPI;
   }
 
+  /**
+   * Loads level data from the specified file and updates the editor's object map.
+   *
+   * <p>This method parses the level file using the {@code levelDataConverter},
+   * repopulates the level with game objects, and notifies listeners of each newly added
+   * object.</p>
+   *
+   * @param fileName the path to the level file to load
+   * @throws EditorLoadException if an error occurs during file loading or parsing
+   */
   public void loadLevelData(String fileName) throws EditorLoadException {
     levelDataConverter.loadLevelData(level, fileConverterAPI, fileName);
     getObjectDataMap().forEach((key, value) -> {
