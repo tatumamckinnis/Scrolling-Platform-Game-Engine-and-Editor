@@ -25,12 +25,11 @@ public class EditorEventConverter {
   /**
    * converts EventData record into Editor Event object
    *
-   * @param gameObjectData GameObjectData to convert
    * @param editorObject   the Editor Object being creating
    * @param blueprintData  the blueprint data for the editor object
    * @return a new CustomEventData object
    */
-  public static CustomEventData convertEventData(GameObjectData gameObjectData,
+  public static CustomEventData convertEventData(
       EditorObject editorObject, BlueprintData blueprintData) {
     List<EventData> eventDataList = blueprintData.eventDataList();
     CustomEventData customEventData = new CustomEventData();
