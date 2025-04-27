@@ -130,7 +130,7 @@ public class PrefabPlacementTool implements ObjectInteractionTool {
    * game directory isn't set.
    */
   private String getCurrentGameSpriteDirectory() {
-    String gameDir = editorController.getEditorDataAPI().getCurrentGameDirectoryPath();
+    String gameDir = editorController.getEditorDataAPI().getGamePath();
     if (gameDir == null || gameDir.isEmpty()) {
       LOG.error(
           "Cannot resolve sprite path: Current game directory path is not set in EditorDataAPI.");

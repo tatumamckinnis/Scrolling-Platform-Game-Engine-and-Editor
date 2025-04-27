@@ -111,7 +111,7 @@ public class EditorPrefabManager {
    * @return The absolute path string, or null if the game directory is not set.
    */
   private String getPrefabFilePath() {
-    String currentGameDirectory = editorDataAPI.getCurrentGameDirectoryPath();
+    String currentGameDirectory = editorDataAPI.getGamePath();
     if (currentGameDirectory == null || currentGameDirectory.isEmpty()) {
       LOG.error("Cannot access prefabs: Current game directory path is not set.");
       notifier.notifyErrorOccurred("Cannot access prefabs: Game path unknown.");
