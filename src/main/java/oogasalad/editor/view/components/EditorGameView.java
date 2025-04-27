@@ -634,10 +634,26 @@ public class EditorGameView extends Pane implements EditorViewListener {
     objectGraphicsContext.scale(zoomScale, zoomScale);
 
     LOG.trace("Object canvas cleared for redraw. Drawing {} objects.", displayedObjectIds.size());
+    
+    // Sort objects by layer priority before drawing
     List<UUID> idsToDraw = new ArrayList<>(displayedObjectIds);
-
+    idsToDraw.sort((id1, id2) -> {
+      int priority1 = editorController.getEditorDataAPI().getObjectLayerPriority(id1);
+      int priority2 = editorController.getEditorDataAPI().getObjectLayerPriority(id2);
+      // Sort in descending order of priority (higher values drawn first)
+      // JavaFX layer ordering is reversed: lower values = front, higher values = back
+      return Integer.compare(priority2, priority1);
+    });
+    
+    LOG.debug("Objects sorted by layer priority for drawing (higher numbers drawn first to account for JavaFX reversed z-order)");
+    
+    // Draw objects in order of layer priority (higher numbers drawn first)
     for (UUID id : idsToDraw) {
       try {
+        // Log the layer priority of each object for debugging
+        int layerPriority = editorController.getEditorDataAPI().getObjectLayerPriority(id);
+        LOG.debug("Drawing object {} with layer priority {} (lower values appear in front due to JavaFX z-ordering)", id, layerPriority);
+        
         redrawSprites(id);
         if (drawHitboxes) {
           redrawHitboxes(id);
@@ -914,6 +930,12 @@ public class EditorGameView extends Pane implements EditorViewListener {
       return;
     }
 
+    // Get layer priority information for debugging
+    int layerPriority = editorController.getEditorDataAPI().getObjectLayerPriority(id);
+    String layerName = object.getIdentityData().getLayer().getName();
+    LOG.debug("[redrawSprites] Object ID {} on layer '{}' with priority {}", 
+        id, layerName, layerPriority);
+    
     SpriteData spriteData = object.getSpriteData();
     double dx = spriteData.getX();
     double dy = spriteData.getY();
@@ -951,6 +973,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
         double sy = displayFrame.y();
         double sw = displayFrame.width();
         double sh = displayFrame.height();
+        System.out.println("Drawing object " + id + " with layer priority " + layerPriority + " on layer '" + layerName + "' (lower values appear in front in JavaFX)");
 
         double dw = sw;
         double dh = sh;
