@@ -15,7 +15,12 @@ import oogasalad.editor.model.data.object.EditorObject;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manages image loading, caching, and resolution for the EditorGameView.
+ * Manages the loading, caching, and resolution of image paths for game objects displayed
+ * within the {@link EditorGameView}. It interacts with the {@link EditorController} to
+ * retrieve object data (like sprite sheet paths) and handles asynchronous image loading
+ * using JavaFX {@link Image}. Maintains an internal cache to avoid redundant loading.
+ *
+ * @author Tatum McKinnis
  */
 class EditorGameViewImageManager {
 
@@ -24,12 +29,26 @@ class EditorGameViewImageManager {
   private final EditorController controller;
   private final Logger log;
 
+  /**
+   * Constructs an EditorGameViewImageManager.
+   *
+   * @param view The parent EditorGameView.
+   * @param controller The application's editor controller.
+   * @param log The logger instance for logging.
+   */
   EditorGameViewImageManager(EditorGameView view, EditorController controller, Logger log) {
     this.view = view;
     this.controller = controller;
     this.log = log;
   }
 
+  /**
+   * Initiates the loading and caching process for the image associated with a specific object ID.
+   * It retrieves the sprite path, resolves it to a loadable URL, and then loads the image
+   * if it's not already cached or if the cached version is invalid.
+   *
+   * @param id The UUID of the game object whose image should be preloaded.
+   */
   void preloadObjectImage(UUID id) {
     try {
       String imagePath = getObjectSpritePath(id);
@@ -43,7 +62,7 @@ class EditorGameViewImageManager {
       if (resolvedPathOrUrl == null) {
         log.error("Could not resolve image path/URL for: {}", imagePath);
         objectImages.remove(id);
-
+        view.refreshDisplay();
         return;
       }
 
@@ -52,10 +71,18 @@ class EditorGameViewImageManager {
     } catch (Exception e) {
       log.error("Failed during image preload process for object ID {}: {}", id, e.getMessage(), e);
       objectImages.remove(id);
-
+      view.refreshDisplay();
     }
   }
 
+  /**
+   * Retrieves the absolute file path of the sprite sheet image associated with a given object ID.
+   * Fetches the object data and its corresponding atlas from the controller.
+   *
+   * @param id The UUID of the game object.
+   * @return The absolute path string to the image file, or null if the object, sprite data,
+   * atlas, or image file information is not found.
+   */
   private String getObjectSpritePath(UUID id) {
     EditorObject object = controller.getEditorObject(id);
     if (object == null || object.getSpriteData() == null) {
@@ -71,6 +98,14 @@ class EditorGameViewImageManager {
   }
 
 
+  /**
+   * Checks if an image needs to be loaded for the given ID and path/URL.
+   * Converts the path to a URL string and compares it with the cached image's URL.
+   * Initiates loading if the image is not cached, the URL has changed, or the cached image is in an error state.
+   *
+   * @param id The UUID of the object.
+   * @param path The resolved path or URL string of the image.
+   */
   private void loadImageIfNotCached(UUID id, String path) {
     Image cachedImage = objectImages.get(id);
     String urlString = convertPathToUrlString(path);
@@ -91,6 +126,13 @@ class EditorGameViewImageManager {
     }
   }
 
+  /**
+   * Converts a file path string into a URL string suitable for loading with JavaFX Image.
+   * Handles absolute paths and attempts to resolve relative paths as classpath resources.
+   *
+   * @param path The file path string (can be absolute or relative).
+   * @return A URL string (e.g., "file:/...", "jar:file:/..."), or null if conversion fails or the path is invalid.
+   */
   private String convertPathToUrlString(String path) {
     try {
       File file = new File(path);
@@ -98,7 +140,6 @@ class EditorGameViewImageManager {
         log.trace("Converted absolute path '{}' to URL '{}'", path, file.toURI().toString());
         return file.toURI().toString();
       } else {
-
         String resolved = resolveImagePath(path);
         if (resolved != null) {
           log.trace("Resolved relative path '{}' to URL '{}'", path, resolved);
@@ -115,12 +156,28 @@ class EditorGameViewImageManager {
   }
 
 
+  /**
+   * Determines if a new image load is required based on the cached image and the target URL.
+   *
+   * @param cachedImage The currently cached Image object (can be null).
+   * @param urlString The target URL string for the image.
+   * @return true if the image should be loaded (not cached, URL mismatch, or cache error), false otherwise.
+   */
   private boolean shouldLoadImage(Image cachedImage, String urlString) {
     return cachedImage == null
         || !Objects.equals(cachedImage.getUrl(), urlString)
         || cachedImage.isError();
   }
 
+  /**
+   * Loads an image from the given URL string asynchronously.
+   * Creates a new JavaFX {@link Image}, sets up listeners for load completion and errors,
+   * and adds the new image to the cache. If loading fails immediately (e.g., invalid URL),
+   * removes the entry and refreshes the view.
+   *
+   * @param id The UUID of the object associated with this image.
+   * @param urlString The URL string from which to load the image.
+   */
   private void loadImage(UUID id, String urlString) {
     log.debug("Loading image for object ID {} from resolved URL string: {}", id, urlString);
     try {
@@ -141,6 +198,13 @@ class EditorGameViewImageManager {
     }
   }
 
+  /**
+   * Sets up listeners on an Image object to handle asynchronous loading events (errors and progress).
+   *
+   * @param image The Image object to attach listeners to.
+   * @param id The UUID of the associated object.
+   * @param url The URL from which the image is being loaded (for logging).
+   */
   private void setupImageListeners(Image image, UUID id, String url) {
     image.errorProperty().addListener((obs, oldErr, newErr) -> {
       if (newErr) {
@@ -154,6 +218,15 @@ class EditorGameViewImageManager {
     });
   }
 
+  /**
+   * Handles the case where image loading fails asynchronously.
+   * Logs the error, removes the failed image entry from the cache, and triggers a view refresh
+   * so a placeholder might be drawn.
+   *
+   * @param image The Image object that failed to load.
+   * @param id The UUID of the associated object.
+   * @param url The URL that failed to load (for logging).
+   */
   private void handleImageError(Image image, UUID id, String url) {
     String errorMessage = (image.getException() != null) ? image.getException().getMessage()
         : "Unknown image loading error";
@@ -163,6 +236,15 @@ class EditorGameViewImageManager {
     view.refreshDisplay();
   }
 
+  /**
+   * Handles the case where image loading completes asynchronously (progress reaches 1.0).
+   * Double-checks if an error occurred despite the completion signal, logs success,
+   * and triggers a view refresh to display the newly loaded image.
+   *
+   * @param image The Image object that finished loading.
+   * @param id The UUID of the associated object.
+   * @param url The URL that was loaded (for logging).
+   */
   private void handleImageLoadComplete(Image image, UUID id, String url) {
     if (image.isError()) {
       log.warn("Error flag set after image load completion signal for ID {}, URL: {}", id, url);
@@ -174,11 +256,15 @@ class EditorGameViewImageManager {
   }
 
   /**
-   * Resolves a given path string into a loadable URL string. Tries absolute path, then classpath,
-   * then relative asset path.
+   * Resolves a given path string into a loadable URL string using multiple strategies.
+   * It prioritizes:
+   * 1. Absolute file paths.
+   * 2. Classpath resources.
+   * 3. Paths relative to the current game's graphics data directory.
    *
-   * @param path The path string to resolve.
-   * @return A URL string if resolvable, otherwise null.
+   * @param path The path string to resolve (can be absolute, classpath-relative, or game-asset-relative).
+   * @return A loadable URL string (e.g., "file:/...", "jar:file:/...") if the path can be
+   * resolved using one of the strategies, otherwise null.
    */
   String resolveImagePath(String path) {
     if (path == null || path.trim().isEmpty()) {
@@ -211,10 +297,11 @@ class EditorGameViewImageManager {
   }
 
   /**
-   * Checks if the path represents an existing absolute file path and returns its URL string.
+   * Checks if the given path string represents an existing absolute file path.
    *
-   * @param path The path string.
-   * @return File URL string if absolute and exists, null otherwise.
+   * @param path The path string to check.
+   * @return The file URL string (e.g., "file:/...") if the path is absolute, exists,
+   * and is a file; otherwise, returns null.
    */
   private String checkAbsolutePath(String path) {
     try {
@@ -229,10 +316,12 @@ class EditorGameViewImageManager {
   }
 
   /**
-   * Attempts to find the path as a resource within the application's classpath.
+   * Attempts to find the given path as a resource within the application's classpath.
+   * Prepends a '/' if the path doesn't start with one.
    *
-   * @param path The relative path string (e.g., "images/player.png").
-   * @return The full URL string if the resource is found, or null otherwise.
+   * @param path The relative path string within the classpath (e.g., "images/player.png").
+   * @return The full URL string (e.g., "jar:file:/...") if the resource is found,
+   * or null otherwise.
    */
   private String findClasspathResource(String path) {
     try {
@@ -248,10 +337,11 @@ class EditorGameViewImageManager {
   }
 
   /**
-   * Attempts to find the path relative to the game's graphics data directory.
+   * Attempts to find the given path relative to the current game's specific graphics data directory
+   * (e.g., "data/graphicsData/MyGameName/player.png"). Requires the game name to be set in the model.
    *
-   * @param path The relative path string (e.g., "player.png").
-   * @return The file URL string if found, or null otherwise.
+   * @param path The relative path string within the game's graphics directory (e.g., "player.png").
+   * @return The file URL string (e.g., "file:/...") if the file is found, or null otherwise.
    */
   private String findRelativeAssetPath(String path) {
     try {
@@ -272,14 +362,29 @@ class EditorGameViewImageManager {
   }
 
 
+  /**
+   * Retrieves the cached Image object associated with the given object ID.
+   *
+   * @param id The UUID of the object.
+   * @return The cached {@link Image} object, or null if no image is cached for this ID
+   * or if the cached image failed to load.
+   */
   Image getImage(UUID id) {
     return objectImages.get(id);
   }
 
+  /**
+   * Removes the image associated with the given object ID from the cache.
+   *
+   * @param id The UUID of the object whose image should be removed.
+   */
   void removeImage(UUID id) {
     objectImages.remove(id);
   }
 
+  /**
+   * Clears the entire image cache, removing all stored images.
+   */
   void clearCache() {
     objectImages.clear();
   }
