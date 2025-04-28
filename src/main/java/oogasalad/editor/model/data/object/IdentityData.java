@@ -24,9 +24,8 @@ public class IdentityData {
    *
    * @param id    the unique identifier for the editor object
    * @param name  the name of the editor object
-   * @param type the type to which the editor object belongs
+   * @param type  the type to which the editor object belongs
    * @param layer the layer associated with the editor object
-   *
    * @author Jacob You
    */
   public IdentityData(UUID id, String name, String game, String group, String type, Layer layer) {
@@ -39,6 +38,7 @@ public class IdentityData {
     this.layer = layer;
 
   }
+
   /**
    * Returns the unique identifier (UUID) of the editor object.
    *
@@ -47,6 +47,7 @@ public class IdentityData {
   public UUID getId() {
     return id;
   }
+
   /**
    * Returns the name of the editor object.
    *
@@ -74,10 +75,20 @@ public class IdentityData {
     return layer;
   }
 
+  /**
+   * Returns the name of the current game context.
+   *
+   * @return the current game name
+   */
   public String getGame() {
     return game;
   }
 
+  /**
+   * Returns the name of the current group context.
+   *
+   * @return the current group name
+   */
   public String getGroup() {
     return group;
   }
@@ -118,12 +129,23 @@ public class IdentityData {
     this.layer = layer;
   }
 
+  /**
+   * Sets the name of the current game context.
+   *
+   * @param game the name of the game
+   */
   public void setGame(String game) {
     this.game = game;
   }
 
+  /**
+   * Sets the name of the current group context (e.g., layer group, entity group).
+   *
+   * @param group the name of the group
+   */
   public void setGroup(String group) {
     this.group = group;
   }
+
 }
 
