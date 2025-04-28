@@ -1,6 +1,7 @@
 package oogasalad.editor.view.components;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -172,32 +173,87 @@ class EditorGameViewImageManager {
     view.refreshDisplay();
   }
 
-
+  /**
+   * Resolves a given path string into a loadable URL string. Tries absolute path, then classpath,
+   * then relative asset path.
+   *
+   * @param path The path string to resolve.
+   * @return A URL string if resolvable, otherwise null.
+   */
   String resolveImagePath(String path) {
     if (path == null || path.trim().isEmpty()) {
+      log.warn("Attempted to resolve null or empty image path.");
       return null;
     }
-    File f = new File(path);
-    if (f.isAbsolute()) {
-      log.trace("Path '{}' identified as absolute.", path);
 
-      return f.exists() ? convertPathToUrlString(path) : null;
+    log.trace("Attempting to resolve image path: {}", path);
+
+    String absoluteUrl = checkAbsolutePath(path);
+    if (absoluteUrl != null) {
+      log.trace("Resolved '{}' as absolute path URL: {}", path, absoluteUrl);
+      return absoluteUrl;
     }
 
-    log.trace("Path '{}' not absolute, attempting classpath/relative resolution.", path);
+    String classpathUrl = findClasspathResource(path);
+    if (classpathUrl != null) {
+      log.trace("Resolved '{}' as classpath resource URL: {}", path, classpathUrl);
+      return classpathUrl;
+    }
 
+    String relativeAssetUrl = findRelativeAssetPath(path);
+    if (relativeAssetUrl != null) {
+      log.trace("Resolved '{}' as relative asset URL: {}", path, relativeAssetUrl);
+      return relativeAssetUrl;
+    }
 
-    String resourcePath = path.startsWith("/") ? path : "/" + path;
+    log.warn("Could not resolve image path: {}", path);
+    return null;
+  }
+
+  /**
+   * Checks if the path represents an existing absolute file path and returns its URL string.
+   *
+   * @param path The path string.
+   * @return File URL string if absolute and exists, null otherwise.
+   */
+  private String checkAbsolutePath(String path) {
     try {
-      java.net.URL resourceUrl = getClass().getResource(resourcePath);
+      File f = new File(path);
+      if (f.isAbsolute() && f.exists() && f.isFile()) {
+        return f.toURI().toString();
+      }
+    } catch (Exception e) {
+      log.debug("Error checking absolute path '{}': {}", path, e.getMessage());
+    }
+    return null;
+  }
+
+  /**
+   * Attempts to find the path as a resource within the application's classpath.
+   *
+   * @param path The relative path string (e.g., "images/player.png").
+   * @return The full URL string if the resource is found, or null otherwise.
+   */
+  private String findClasspathResource(String path) {
+    try {
+      String resourcePath = path.startsWith("/") ? path : "/" + path;
+      URL resourceUrl = getClass().getResource(resourcePath);
       if (resourceUrl != null) {
         return resourceUrl.toExternalForm();
       }
     } catch (Exception e) {
-      log.warn("Error checking classpath resource '{}': {}", resourcePath, e.getMessage());
+      log.debug("Error checking classpath resource '{}': {}", path, e.getMessage());
     }
+    return null;
+  }
 
-
+  /**
+   * Attempts to find the path relative to the game's graphics data directory.
+   *
+   * @param path The relative path string (e.g., "player.png").
+   * @return The file URL string if found, or null otherwise.
+   */
+  private String findRelativeAssetPath(String path) {
     try {
       String gameName = controller.getEditorDataAPI().getGameName();
       if (gameName != null && !gameName.isBlank()) {
@@ -206,14 +262,15 @@ class EditorGameViewImageManager {
         if (assetFile.exists() && assetFile.isFile()) {
           return assetFile.toURI().toString();
         }
+      } else {
+        log.debug("Cannot check relative asset path for '{}': game name is blank.", path);
       }
     } catch (Exception e) {
-      log.warn("Error checking relative asset path '{}': {}", path, e.getMessage());
+      log.debug("Error checking relative asset path '{}': {}", path, e.getMessage());
     }
-
-    log.warn("Could not resolve relative path: {}", path);
     return null;
   }
+
 
   Image getImage(UUID id) {
     return objectImages.get(id);

@@ -114,13 +114,11 @@ public class EditorGameView extends Pane implements EditorViewListener {
     this.gridGraphicsContext = gridCanvas.getGraphicsContext2D();
     this.objectGraphicsContext = objectCanvas.getGraphicsContext2D();
 
-    // *** Instantiate helper classes BEFORE loadConfigurableValues ***
     this.imageManager = new EditorGameViewImageManager(this, editorController, LOG);
     this.drawer = new EditorGameViewDrawer(this, editorController, imageManager, LOG);
     this.eventHandler = new EditorGameViewEventHandler(this, editorController, prefabPalettePane,
         drawer, LOG);
 
-    // *** Now load config values, drawer will be initialized ***
     loadConfigurableValues();
 
     this.setId(getId("id.view"));
@@ -168,7 +166,6 @@ public class EditorGameView extends Pane implements EditorViewListener {
       panSpeed = Double.parseDouble(getId("pan.speed"));
       gridMinBound = Integer.parseInt(getId("grid.min.bound"));
       gridMaxBound = Integer.parseInt(getId("grid.max.bound"));
-      // Delegate drawing config load to drawer (now guaranteed to be non-null)
       drawer.loadConfigurableValues(identifierProps);
     } catch (Exception e) {
       LOG.fatal(
