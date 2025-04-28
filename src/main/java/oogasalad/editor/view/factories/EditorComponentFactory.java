@@ -152,7 +152,7 @@ public class EditorComponentFactory {
    * @return The identifier string.
    * @throws RuntimeException If the key is not found.
    */
-  private String getId(String key) {
+  public String getId(String key) {
     String value = identifierProps.getProperty(key);
     if (value == null || value.trim().isEmpty()) {
       LOG.error("Missing identifier in properties file for key: {}", key);
@@ -665,7 +665,7 @@ public class EditorComponentFactory {
    * @return The integer value from identifier properties.
    * @throws RuntimeException if the identifier key is not found or parsing fails.
    */
-  int getDefaultInt(String idKey) {
+  public int getDefaultInt(String idKey) {
     String value = getId(idKey);
     try {
       return Integer.parseInt(value.trim());
@@ -706,7 +706,7 @@ public class EditorComponentFactory {
    * @return The double value from identifier properties.
    * @throws RuntimeException if the identifier key is not found or parsing fails.
    */
-  double getDefaultDouble(String idKey) {
+  public double getDefaultDouble(String idKey) {
     String value = getId(idKey);
     try {
       return Double.parseDouble(value.trim());

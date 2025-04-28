@@ -130,7 +130,7 @@ public class XmlBlueprintsWriter implements XmlComponentWriter {
         writer,
         5,
         blueprint.stringProperties(),
-        blueprint.doubleProperties(),
+        blueprint.doubleProperties(), "Properties",
         "property"
     ).write();
     writer.write(INDENT4 + "</properties>\n");

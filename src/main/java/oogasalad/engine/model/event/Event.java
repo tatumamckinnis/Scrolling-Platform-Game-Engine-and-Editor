@@ -30,7 +30,8 @@ public class Event {
     INPUT,
     PHYSICS,
     COLLISION,
-    END
+    END,
+    CUSTOM
   }
 
   /**
