@@ -35,6 +35,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -69,6 +71,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   public static final DataFormat PREFAB_BLUEPRINT_ID = new DataFormat(
       "oogasalad/prefab-blueprint-id");
   public static final String SELECTED_PREFAB_ITEM = "selected-prefab-item";
+  public static final String NO_PREFAB_SELECTED = "No prefab selected";
 
 
   private final EditorController controller;
@@ -80,6 +83,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   private Node selectedNode = null;
   private final FlowPane gameFilterPane;
   private final ToggleGroup gameToggleGroup;
+  private final Label currentPrefabLabel = new Label(NO_PREFAB_SELECTED);
   private String currentGameFilter = ALL_GAMES_FILTER;
 
   /**
@@ -96,6 +100,11 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
     Label titleLabel = new Label(uiResources.getString("PrefabPaletteTitle"));
     titleLabel.getStyleClass().add("header-label");
+
+    currentPrefabLabel.getStyleClass().add("prefab-info-label");
+    currentPrefabLabel.setAlignment(Pos.CENTER_RIGHT);
+    currentPrefabLabel.setMaxWidth(Double.MAX_VALUE);
+    VBox.setMargin(currentPrefabLabel, new Insets(0, 5, 0, 0));
 
     gameFilterPane = new FlowPane();
     gameFilterPane.setHgap(5);
@@ -117,7 +126,11 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
     scrollPane.setStyle(
         "-fx-background-color: transparent; -fx-background-insets: 0; -fx-padding: 0;");
 
-    getChildren().addAll(titleLabel, gameFilterPane, scrollPane);
+    HBox header = new HBox(titleLabel, currentPrefabLabel);
+    header.setAlignment(Pos.CENTER_LEFT);
+    HBox.setHgrow(currentPrefabLabel, Priority.ALWAYS);
+
+    getChildren().addAll(header, gameFilterPane, scrollPane);
 
     loadAvailablePrefabs();
 
@@ -243,6 +256,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
         addPrefabToGrid(prefab);
       }
     }
+    currentPrefabLabel.setText(NO_PREFAB_SELECTED);
     LOG.info("Displayed {} prefabs for filter '{}'", filteredPrefabs.size(), currentGameFilter);
   }
 
@@ -351,6 +365,8 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       selectedNode.getStyleClass().add(SELECTED_PREFAB_ITEM);
       LOG.debug("Prefab selected: {}", prefab.type());
       selectedPrefab.set(prefab);
+      currentPrefabLabel.setText(
+          "Selected: " + prefab.type() + " (" + prefab.group() + ')');
       controller.setActiveTool("placePrefabTool");
     });
 

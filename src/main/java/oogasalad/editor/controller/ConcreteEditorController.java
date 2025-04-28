@@ -46,7 +46,7 @@ public class ConcreteEditorController implements EditorController {
   private final EditorEventHandler eventHandler;
   private final EditorObjectQueryHandler objectQueryHandler;
 
-  private int cellSize = 32;
+  private int cellSize = 16;
   private boolean snapToGrid = true;
   private int editorWidth = 1200;
   private int editorHeight = 800;

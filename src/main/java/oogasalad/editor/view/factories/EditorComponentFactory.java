@@ -367,74 +367,13 @@ public class EditorComponentFactory {
         uiBundle.getString(getId("key.clear.all.tool")), clearAllTool);
 
     Button saveButton = createSaveButton();
-    
-    // Create and add the selected prefab display label
-    Label selectedPrefabLabel = createSelectedPrefabLabel();
 
     toolbar.getChildren()
-        .addAll(entityButton, dragPrefabButton, selectButton, deleteButton, clearAllObjectsButton, saveButton, selectedPrefabLabel);
+        .addAll(entityButton, dragPrefabButton, selectButton, deleteButton, clearAllObjectsButton, saveButton);
     gameView.updateCurrentTool(null);
     LOG.debug("Toolbar created with configured placement tools.");
-    
-    // Create a horizontal scrollpane for the toolbar
-    ScrollPane scrollPane = new ScrollPane(toolbar);
-    scrollPane.setFitToHeight(true);  // Fit the content height
-    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);  // Show horizontal scrollbar as needed
-    scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);  // Never show vertical scrollbar
-    scrollPane.setPannable(true);  // Allow the scrollpane to be panned by mouse dragging
-    
-    // Block vertical scrolling completely
-    scrollPane.setOnScroll(event -> {
-      if (event.getDeltaY() != 0) {
-        // Only allow horizontal scrolling
-        double newHvalue = scrollPane.getHvalue() - event.getDeltaY() / scrollPane.getContent().getBoundsInLocal().getWidth();
-        scrollPane.setHvalue(Math.max(0, Math.min(1, newHvalue)));
-        event.consume();
-      }
-    });
-    
-    // Disable vertical movement when panning
-    scrollPane.setOnMousePressed(event -> {
-      scrollPane.setPannable(true);
-    });
-    
-    scrollPane.setOnMouseDragged(event -> {
-      // Store original vertical position
-      double vvalue = scrollPane.getVvalue();
-      // After JavaFX does its panning, reset vertical position
-      scrollPane.setVvalue(vvalue);
-    });
-    
-    return scrollPane;
-  }
 
-  /**
-   * Creates a label that displays information about the currently selected prefab.
-   * The label updates whenever the selected prefab changes.
-   *
-   * @return A label displaying the currently selected prefab information
-   */
-  private Label createSelectedPrefabLabel() {
-    Label prefabLabel = new Label("No prefab selected");
-    prefabLabel.setId("selected-prefab-label");
-    prefabLabel.getStyleClass().add("prefab-info-label");
-    
-    // Update the label text when the selected prefab changes
-    prefabPalettePane.selectedPrefabProperty().addListener((obs, oldPrefab, newPrefab) -> {
-      if (newPrefab != null) {
-        prefabLabel.setText("Selected: " + newPrefab.type() + " (" + newPrefab.group() + ")");
-      } else {
-        prefabLabel.setText("No prefab selected");
-      }
-    });
-    
-    // Initialize with current selection if any
-    if (prefabPalettePane.getSelectedPrefab() != null) {
-      BlueprintData currentPrefab = prefabPalettePane.getSelectedPrefab();
-      prefabLabel.setText("Selected: " + currentPrefab.type() + " (" + currentPrefab.group() + ")");
-    }
-    
-    return prefabLabel;
+    return toolbar;
   }
 
   /**
@@ -444,6 +383,7 @@ public class EditorComponentFactory {
    */
   private Button createSaveButton() {
     Button save = new Button("Save");
+    save.getStyleClass().add("save-button-label");
     save.setOnAction(evt -> {
       FileChooser chooser = new FileChooser();
       chooser.setTitle("Save Level As…");
