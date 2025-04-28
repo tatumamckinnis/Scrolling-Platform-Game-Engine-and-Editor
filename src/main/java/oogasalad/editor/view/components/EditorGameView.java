@@ -90,6 +90,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   private String placeholderFontName;
   private String placeholderText;
   private double zoomSpeed;
+  private double maxZoom;
   private double minZoom;
   private double panSpeed;
   private int gridMinBound;
@@ -179,6 +180,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
 
       zoomSpeed = Double.parseDouble(getId("zoom.speed"));
       minZoom = Double.parseDouble(getId("zoom.min"));
+      maxZoom = Double.parseDouble(getId("zoom.max"));
       panSpeed = Double.parseDouble(getId("pan.speed"));
 
       gridMinBound = Integer.parseInt(getId("grid.min.bound"));
@@ -402,10 +404,11 @@ public class EditorGameView extends Pane implements EditorViewListener {
     double zoomFactor = Math.pow(1 + zoomSpeed, -deltaY);
     double newZoomScale = currentZoomScale * zoomFactor;
 
-    newZoomScale = Math.max(minZoom, newZoomScale);
+    newZoomScale = Math.max(minZoom, Math.min(maxZoom, newZoomScale));
 
-    LOG.trace("Zoom updated: delta={}, factor={}, oldScale={}, newScale={}", deltaY, zoomFactor,
-        currentZoomScale, newZoomScale);
+    LOG.trace("Zoom updated: delta={}, factor={}, oldScale={}, newScale={}",
+        deltaY, zoomFactor, currentZoomScale, newZoomScale);
+
     return newZoomScale;
   }
 
