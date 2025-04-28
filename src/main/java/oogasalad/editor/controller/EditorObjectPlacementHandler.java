@@ -32,7 +32,7 @@ public class EditorObjectPlacementHandler {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null");
     this.notifier = Objects.requireNonNull(notifier, "Notifier cannot be null");
 
-    this.objectPopulator = new EditorObjectPopulator(editorDataAPI.getLevel());
+    this.objectPopulator = new EditorObjectPopulator(editorDataAPI);
     LOG.info("EditorObjectPlacementHandler initialized.");
   }
 

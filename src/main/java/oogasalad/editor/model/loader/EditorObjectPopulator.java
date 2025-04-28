@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.controller.level.EditorDataAPI;
+import oogasalad.editor.model.data.SpriteSheetLibrary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,16 +42,17 @@ public class EditorObjectPopulator {
 
   private static final Logger LOG = LogManager.getLogger(EditorObjectPopulator.class);
   private final EditorLevelData levelData;
+  private final EditorDataAPI dataAPI;
 
 
   /**
    * Constructs an EditorObjectPopulator associated with a specific level.
    *
-   * @param levelData the {@link EditorLevelData} instance this populator will interact with. Must
-   *                  not be null.
+   * @param dataAPI the {@link EditorDataAPI} instance this populator will interact with.
    */
-  public EditorObjectPopulator(EditorLevelData levelData) {
-    this.levelData = Objects.requireNonNull(levelData, "levelData cannot be null");
+  public EditorObjectPopulator(EditorDataAPI dataAPI) {
+    this.dataAPI = dataAPI;
+    this.levelData = Objects.requireNonNull(dataAPI.getLevel(), "levelData cannot be null");
     LOG.info("EditorObjectPopulator initialized.");
   }
 

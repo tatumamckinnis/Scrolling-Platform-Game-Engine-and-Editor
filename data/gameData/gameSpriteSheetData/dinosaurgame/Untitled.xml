@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-144" minY="-32" maxX="1" maxY="1">
+  <cameraData type="Tracker">
+    <stringProperties>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0"/>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_0" width="145" height="33" z="0">
+      <data>
+        <object name = "Entity_-144_-32" id="1" coordinates="(-144,-32)" uid="dac0643f-e5fd-47b3-bed6-57600b3eeb50" />
+      </data>
+    </layer>
+  </layers>
+  <game name="dinosaurgame">
+    <objectGroup name="ENTITY">
+      <object
+  spriteName="Bird1"
+  type="ENTITY"
+  id="1"
+  spriteFile="bird1.xml"
+  hitBoxWidth="16"
+  hitBoxHeight="16"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+  </events>
+</map>
