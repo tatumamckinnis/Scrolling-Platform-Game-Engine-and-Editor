@@ -24,12 +24,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
+import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject; // Import EditorObject
 import oogasalad.editor.view.EditorViewListener;
 import org.apache.logging.log4j.LogManager;
@@ -51,11 +54,13 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   private static final String NO_GROUP_OPTION = "<None>";
   private static final String PARAM_DISPLAY_REGEX = "^(.*?) \\((String|Double)\\) = .*$";
   private static final Pattern PARAM_KEY_PATTERN = Pattern.compile(PARAM_DISPLAY_REGEX);
+  private static final String CREATE_NEW_LAYER_OPTION = "Create New Layer...";
 
   private final EditorController editorController;
 
   private TextField uuidField;
   private TextField nameField;
+  private ComboBox<String> layerComboBox;
   private ComboBox<String> gameNameComboBox;
   private ComboBox<String> typeComboBox;
   private TextField customTypeField;
@@ -114,7 +119,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     VBox displayedStatsSection = buildDisplayedStatsSection();
     TitledPane parametersSection = buildParametersSection();
 
-    contentBox.getChildren().addAll(identitySection, hitboxSection, displayedStatsSection, parametersSection);
+    contentBox.getChildren()
+        .addAll(identitySection, hitboxSection, displayedStatsSection, parametersSection);
 
     ScrollPane scrollPane = new ScrollPane(contentBox);
     scrollPane.setFitToWidth(true);
@@ -143,17 +149,21 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     nameField = createIdentityTextField("Name",
         (id, value) -> editorController.getEditorDataAPI().getIdentityDataAPI().setName(id, value));
 
+    //create the layer field
+    createLayerComboBox();
+
     // Create the game name dropdown
     gameNameComboBox = new ComboBox<>();
     gameNameComboBox.setPromptText("Select Game");
     gameNameComboBox.setMaxWidth(Double.MAX_VALUE);
     gameNameComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
       if (currentObjectId != null && newVal != null && !Objects.equals(oldVal, newVal)) {
-        LOG.debug("Game Name ComboBox value changed to: '{}' for object {}", newVal, currentObjectId);
+        LOG.debug("Game Name ComboBox value changed to: '{}' for object {}", newVal,
+            currentObjectId);
         editorController.getEditorDataAPI().getIdentityDataAPI().setGame(currentObjectId, newVal);
       }
     });
-    
+
     // Create the type ComboBox with fixed options
     typeComboBox = new ComboBox<>();
     typeComboBox.getItems().addAll("player", "custom");
@@ -169,7 +179,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           if (!customTypeField.getText().isEmpty()) {
             editorController.getEditorDataAPI().getIdentityDataAPI()
                 .setType(currentObjectId, customTypeField.getText());
-            LOG.debug("Set type to custom value '{}' for object {}", 
+            LOG.debug("Set type to custom value '{}' for object {}",
                 customTypeField.getText(), currentObjectId);
           }
 
@@ -195,7 +205,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         }
       }
     });
-    
+
     // Create the custom type field
     customTypeField = new TextField();
     customTypeField.setPromptText("Enter custom type...");
@@ -207,7 +217,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
         if (customType != null && !customType.trim().isEmpty()) {
           editorController.getEditorDataAPI().getIdentityDataAPI()
               .setType(currentObjectId, customType);
-          LOG.debug("Custom type field focus lost. Updated object {} type to: {}", 
+          LOG.debug("Custom type field focus lost. Updated object {} type to: {}",
               currentObjectId, customType);
         }
       }
@@ -217,7 +227,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     VBox typeVBox = new VBox(5);
     typeVBox.getChildren().addAll(typeComboBox, customTypeField);
     HBox.setHgrow(typeVBox, Priority.ALWAYS);
-    
+
     // Create an HBox to hold the type VBox and the player checkbox horizontally
     HBox typeContainer = new HBox(10);
     typeContainer.getChildren().addAll(typeVBox);
@@ -245,10 +255,83 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
             new Label("Name"), nameField,
             new Label("Game Name"), gameNameComboBox,
             new Label("Type"), typeContainer,
-            new Label("Group"), groupComboBox);
+            new Label("Group"), groupComboBox,
+            new Label("Layer"), layerComboBox);
 
     return box;
   }
+
+  private void createLayerComboBox() {
+    layerComboBox = new ComboBox<>();
+    refreshLayerOptions();
+
+    layerComboBox.setOnAction(e -> {
+      String selected = layerComboBox.getValue();
+      if (CREATE_NEW_LAYER_OPTION.equals(selected)) {
+        promptNewLayer();
+      } else {
+        if (currentObjectId != null && selected != null) {
+          editorController.getEditorDataAPI()
+              .getIdentityDataAPI()
+              .setLayer(currentObjectId, selected);
+          LOG.info("Set object to layer: " + selected);
+          requestObjectUpdate();
+        }
+      }
+    });
+  }
+
+  private void refreshLayerOptions() {
+    List<String> layerNames = editorController.getEditorDataAPI().getLayers().stream()
+        .map(Layer::getName)
+        .toList();
+
+    List<String> options = new ArrayList<>(layerNames);
+    options.add(CREATE_NEW_LAYER_OPTION);
+
+    layerComboBox.setItems(FXCollections.observableArrayList(options));
+  }
+
+  private void promptNewLayer() {
+    TextInputDialog dialog = new TextInputDialog();
+    dialog.setTitle("Create New Layer");
+    dialog.setHeaderText("Enter new layer name:");
+    dialog.setContentText("Layer name:");
+
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(name -> {
+      if (name.isBlank()) {
+        LOG.warn("New layer name was blank.");
+        return;
+      }
+
+      boolean exists = editorController.getEditorDataAPI().getLayers().stream()
+          .anyMatch(layer -> layer.getName().equals(name));
+
+      if (exists) {
+        LOG.info("Layer already exists: " + name);
+        layerComboBox.setValue(name); // Just select the existing one
+      } else {
+        editorController.getEditorDataAPI().addLayer(name);
+        LOG.info("Created new layer: " + name);
+        refreshLayerOptions();
+        layerComboBox.setValue(name);
+      }
+
+      if (currentObjectId != null) {
+        editorController.getEditorDataAPI()
+            .getIdentityDataAPI()
+            .setLayer(currentObjectId, name);
+        //requestObjectUpdate();
+      }
+    });
+
+    // Reset combo box if user cancels
+    if (layerComboBox.getValue() != null && layerComboBox.getValue().equals(CREATE_NEW_LAYER_OPTION)) {
+      layerComboBox.getSelectionModel().clearSelection();
+    }
+  }
+
 
 
   /**
@@ -727,7 +810,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     List<String> availableGames = editorController.getEditorDataAPI().getGames();
     gameNameComboBox.getItems().clear();
     gameNameComboBox.getItems().addAll(availableGames);
-    
+
     if (currentGame != null && !currentGame.isEmpty() && availableGames.contains(currentGame)) {
       gameNameComboBox.setValue(currentGame);
     } else if (!availableGames.isEmpty()) {
@@ -736,8 +819,9 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     }
 
     // Set type field
-    String currentType = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
-    
+    String currentType = editorController.getEditorDataAPI().getIdentityDataAPI()
+        .getType(currentObjectId);
+
     // Check if current type is "player" or something custom
     if (currentType == null || currentType.isEmpty()) {
       typeComboBox.setValue(null);
@@ -782,6 +866,11 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       groupComboBox.setValue(NO_GROUP_OPTION);
     }
     isUpdatingGroupComboBox = false;
+
+    String layerName = editorController.getEditorObject(currentObjectId).getIdentityData().getLayer().getName();
+    if (layerName != null && !layerName.isEmpty()) {
+      layerComboBox.setValue(layerName);
+    }
 
     LOG.trace("Populated identity fields: Name='{}', Group='{}', Options={}", currentName,
         groupComboBox.getValue(), groupOptions);
@@ -838,7 +927,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
           parameterItems.size());
 
       // If this is a player object, update the available stats dropdown
-      String type = editorController.getEditorDataAPI().getIdentityDataAPI().getType(currentObjectId);
+      String type = editorController.getEditorDataAPI().getIdentityDataAPI()
+          .getType(currentObjectId);
       if ("player".equals(type) && displayedStatsSection.isVisible()) {
         // Update available parameters in stats dropdown
         updateAvailableStatsComboBox();
@@ -869,6 +959,7 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
     nameField.clear();
     gameNameComboBox.getItems().clear();
     typeComboBox.setValue(null);
+    layerComboBox.getSelectionModel().clearSelection();
     customTypeField.clear();
     customTypeField.setVisible(false);
     customTypeField.setManaged(false);
@@ -934,8 +1025,8 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
   }
 
   /**
-   * Helper method to request an update for the currently selected object.
-   * Avoids issues if no object is currently selected.
+   * Helper method to request an update for the currently selected object. Avoids issues if no
+   * object is currently selected.
    */
   private void requestObjectUpdate() {
     if (currentObjectId != null) {
@@ -943,15 +1034,16 @@ public class PropertiesTabComponentFactory implements EditorViewListener {
       if (currentObject != null) {
         editorController.requestObjectUpdate(currentObject);
       } else {
-        LOG.warn("Attempted to request update for object ID {} but it was not found.", currentObjectId);
+        LOG.warn("Attempted to request update for object ID {} but it was not found.",
+            currentObjectId);
       }
     }
   }
 
   /**
-   * Builds a VBox containing the displayed stats section for player objects.
-   * This section allows selecting which parameters should be displayed as stats in the game.
-   * Only appears when the object type is "player".
+   * Builds a VBox containing the displayed stats section for player objects. This section allows
+   * selecting which parameters should be displayed as stats in the game. Only appears when the
+   * object type is "player".
    *
    * @return A {@link VBox} containing the displayed stats controls.
    */
