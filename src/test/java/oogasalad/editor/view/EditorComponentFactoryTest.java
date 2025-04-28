@@ -1,428 +1,387 @@
-// oogasalad_team03/src/test/java/oogasalad/editor/view/EditorComponentFactoryTest.java
 package oogasalad.editor.view;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import javafx.application.Platform;
-import javafx.geometry.Orientation;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.components.EditorGameView;
+import oogasalad.editor.view.components.PrefabPalettePane;
 import oogasalad.editor.view.factories.EditorComponentFactory;
 import oogasalad.editor.view.factories.InputTabComponentFactory;
+import oogasalad.editor.view.panes.chat.ChatBotPane;
 import oogasalad.editor.view.panes.properties.PropertiesTabComponentFactory;
+import oogasalad.editor.view.panes.sprite_properties.SpriteTabComponentFactory;
 import oogasalad.editor.view.resources.EditorResourceLoader;
-import oogasalad.editor.view.tools.ObjectInteractionTool;
+import org.apache.logging.log4j.LogManager;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.testfx.framework.junit5.ApplicationExtension;
+import org.testfx.framework.junit5.Start;
 
 
+/**
+ * Tests for EditorComponentFactory. Uses Mockito for dependencies and TestFX for JavaFX
+ * initialization. Attempts to use mockConstruction to intercept internal dependency creation.
+ */
 @ExtendWith(ApplicationExtension.class)
 class EditorComponentFactoryTest {
 
-  // --- Constants (same as before) ---
-  private static final String EDITOR_UI_BUNDLE_NAME = "EditorUI";
-  private static final String INPUT_TAB_UI_BUNDLE_NAME = "InputTabUI";
-  private static final String EDITOR_PROPERTIES_PATH = "/oogasalad/screens/editorScene.properties";
-  private static final String CSS_PATH = "/oogasalad/css/editor/editor.css";
-  private static final String KEY_MAP_TITLE = "mapTitle";
-  private static final String KEY_ADD_ENTITY_TOOL = "addEntityTool";
-  private static final String GO_TO_EDITOR_PROPERTIES = "goToEditorProperties";
-  private static final String KEY_SELECT_TOOL = "selectTool";
-  private static final String KEY_PROPERTIES_TITLE = "propertiesTitle";
-  private static final String KEY_PROPERTIES_TAB = "propertiesTab";
-  private static final String KEY_INPUT_TAB = "inputTab";
-  private static final String PROP_EDITOR_WIDTH = "editor.width";
-  private static final String PROP_EDITOR_HEIGHT = "editor.height";
-  private static final String PROP_MAP_WIDTH = "editor.map.width";
-  private static final String PROP_COMPONENT_WIDTH = "editor.component.width";
-  private static final String PROP_CELL_SIZE = "editor.map.cellSize";
-  private static final String PROP_ZOOM_SCALE = "editor.map.zoomScale";
-  private static final String PROP_ZOOM_STEP = "editor.map.zoomStep";
-  private static final String PROP_ENTITY_TYPE = "editor.tool.entity.type";
-  private static final String PROP_ENTITY_PREFIX = "editor.tool.entity.prefix";
+  private static final String TEST_IDENTIFIERS_PATH = "/oogasalad/config/editor/resources/editor_component_factory_identifiers.properties";
+  private static final String TEST_EDITOR_PROPS_PATH = "/oogasalad/config/engine/view/editorScene.properties";
+  private static final String TEST_UI_BUNDLE_NAME = "EditorUI";
+  private static final String TEST_CSS_PATH = "/oogasalad/css/editor/editor.css";
+
+  @Mock
+  private EditorController mockEditorController;
+
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private InputTabComponentFactory mockInputTabFactory;
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private PropertiesTabComponentFactory mockPropertiesTabFactory;
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private SpriteTabComponentFactory mockSpriteTabFactory;
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private PrefabPalettePane mockPrefabPalettePane;
+
+  @Mock
+  private Pane mockInputPane;
+  @Mock
+  private ScrollPane mockPropertiesPane;
+  @Mock
+  private ScrollPane mockSpritePane;
+
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private EditorGameView mockGameView;
+  @Mock
+  private ChatBotPane mockChatBotPane;
 
 
-  // --- Mocks (same as before) ---
-  @Mock private EditorController mockEditorController;
-  @Mock private InputTabComponentFactory mockInputTabFactory; // Mock instance to be injected
-  @Mock private PropertiesTabComponentFactory mockPropertiesTabFactory; // Mock instance to be injected
-  @Mock private EditorGameView mockGameView;
-  @Mock private ResourceBundle mockUiBundle;
-  @Mock private Properties mockEditorProperties;
+  @Captor
+  private ArgumentCaptor<EditorViewListener> listenerCaptor;
 
-  // --- Captors (same as before) ---
-  @Captor private ArgumentCaptor<EditorViewListener> listenerCaptor;
-  @Captor private ArgumentCaptor<ObjectInteractionTool> toolCaptor;
+  private Properties testIdentifierProps;
+  private Properties testEditorProps;
+  private ResourceBundle testUiBundle;
 
-  // --- Test Setup ---
+  private EditorComponentFactory factory;
+  private static MockedStatic<EditorResourceLoader> mockedLoader;
+  private static MockedStatic<LogManager> mockedLogManager;
+  private static MockedStatic<Platform> mockedPlatform;
+
+  private AutoCloseable closeablemocks;
+
+  @BeforeAll
+  static void setupBeforeAll() {
+    org.apache.logging.log4j.Logger mockLogger = mock(org.apache.logging.log4j.Logger.class);
+    mockedLogManager = mockStatic(org.apache.logging.log4j.LogManager.class);
+    mockedLogManager.when(() -> org.apache.logging.log4j.LogManager.getLogger(any(Class.class)))
+        .thenReturn(mockLogger);
+    mockedLogManager.when(() -> org.apache.logging.log4j.LogManager.getLogger(anyString()))
+        .thenReturn(mockLogger);
+
+    mockedLoader = mockStatic(EditorResourceLoader.class);
+  }
+
+  @AfterAll
+  static void tearDownAfterAll() {
+    if (mockedLoader != null) mockedLoader.close();
+    if (mockedLogManager != null) mockedLogManager.close();
+    if (mockedPlatform != null) mockedPlatform.close();
+  }
+
+  @Start
+  private void start(Stage stage) {
+
+  }
+
   @BeforeEach
-  void setUp() {
-    MockitoAnnotations.openMocks(this);
-    lenient().doNothing().when(mockEditorController).registerViewListener(any(EditorViewListener.class));
-    // Stub the methods of the mock factories that will be called by the SUT
-    lenient().when(mockInputTabFactory.createInputTabPanel()).thenReturn(new Pane());
-    lenient().when(mockPropertiesTabFactory.createPropertiesPane()).thenReturn(new ScrollPane(new VBox()));
-    lenient().doNothing().when(mockGameView).updateCurrentTool(any());
-    lenient().when(mockUiBundle.getString(anyString())).thenReturn("Mock UI String");
-    lenient().when(mockEditorProperties.getProperty(anyString())).thenReturn(null);
-    lenient().when(mockEditorProperties.getProperty(anyString(), anyString())).thenAnswer(invocation -> invocation.getArgument(1));
+  void setUp() throws IOException {
+    closeablemocks = MockitoAnnotations.openMocks(this);
+
+
+    testIdentifierProps = new Properties();
+    try (InputStream input = EditorComponentFactory.class.getResourceAsStream(TEST_IDENTIFIERS_PATH)) {
+      assertNotNull(input, "Test setup failed: Could not find identifier properties file: " + TEST_IDENTIFIERS_PATH);
+      testIdentifierProps.load(input);
+    } catch (IOException e) {
+      fail("Test setup failed: Error loading identifier properties file", e);
+    }
+
+
+    testEditorProps = new Properties();
+    testEditorProps.setProperty("editor.width", "1300");
+    testEditorProps.setProperty("editor.height", "900");
+
+    testEditorProps.setProperty("editor.map.cellSize", "16");
+    testEditorProps.setProperty("editor.map.zoomScale", "1.0");
+    testEditorProps.setProperty("layout.left.split.divider", "0.7");
+    testEditorProps.setProperty("layout.asset.pane.height", "200");
+    testEditorProps.setProperty("layout.chat.pane.height", "200");
+    testEditorProps.setProperty("editor.tool.entity.type", "ENTITY");
+    testEditorProps.setProperty("editor.tool.entity.prefix", "Entity_");
+
+    testUiBundle = new java.util.ListResourceBundle() {
+      protected Object[][] getContents() {
+        return new Object[][]{
+            {"mapTitle", "Test Map"}, {"propertiesTitle", "Test Properties"},
+            {"addEntityTool", "Add Entity"}, {"selectTool", "Select"}, {"deleteTool", "Delete"},
+            {"clearAllTool", "Clear"}, {"propertiesTab", "Props"}, {"inputTab", "Input"},
+            {"spritePropertyTab", "Sprites"}, {"prefabsTabTitle", "Prefabs"},
+            {"spritesTabTitle", "Sprite Assets"}, {"errorGameViewNeeded", "GameView Missing"},
+            {"logToolSelected", "Tool sel: %s"}, {"logToolDeselected", "Tool desel: %s"},
+            {"ChatBotTabTitle", "ChatBot"}
+
+        };
+      }
+    };
+
+
+    mockedLoader.when(() -> EditorResourceLoader.loadProperties(eq(testIdentifierProps.getProperty("editor.properties.path"))))
+        .thenReturn(testEditorProps);
+    mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(eq(testIdentifierProps.getProperty("ui.bundle.name"))))
+        .thenReturn(testUiBundle);
+
+
+    lenient().when(mockInputTabFactory.createInputTabPanel()).thenReturn(mockInputPane);
+    lenient().when(mockPropertiesTabFactory.createPropertiesPane()).thenReturn(mockPropertiesPane);
+    lenient().when(mockSpriteTabFactory.createSpritePane()).thenReturn(mockSpritePane);
+
+
+    lenient().when(mockPrefabPalettePane.selectedPrefabProperty()).thenReturn(new SimpleObjectProperty<>());
+
+
+
+
+    try (
+        MockedConstruction<InputTabComponentFactory> mockedInputFactory = mockConstruction(
+            InputTabComponentFactory.class,
+            (mock, context) -> {
+
+              when(mock.createInputTabPanel()).thenReturn(mockInputPane);
+
+
+
+
+              System.out.println("Intercepted InputTabComponentFactory creation");
+            });
+        MockedConstruction<PropertiesTabComponentFactory> mockedPropsFactory = mockConstruction(
+            PropertiesTabComponentFactory.class,
+            (mock, context) -> {
+              when(mock.createPropertiesPane()).thenReturn(mockPropertiesPane);
+              System.out.println("Intercepted PropertiesTabComponentFactory creation");
+            });
+        MockedConstruction<SpriteTabComponentFactory> mockedSpriteFactory = mockConstruction(
+            SpriteTabComponentFactory.class,
+            (mock, context) -> {
+              when(mock.createSpritePane()).thenReturn(mockSpritePane);
+              System.out.println("Intercepted SpriteTabComponentFactory creation");
+            });
+        MockedConstruction<PrefabPalettePane> mockedPalette = mockConstruction(
+            PrefabPalettePane.class,
+            (mock, context) -> {
+              when(mock.selectedPrefabProperty()).thenReturn(new SimpleObjectProperty<>());
+              System.out.println("Intercepted PrefabPalettePane creation");
+            });
+
+
+        MockedConstruction<EditorGameView> mockedGameViewCons = mockConstruction(
+            EditorGameView.class,
+            (mock, context) -> {
+              System.out.println("Intercepted EditorGameView creation");
+
+            });
+
+        MockedConstruction<ChatBotPane> mockedChatPane = mockConstruction(
+            ChatBotPane.class,
+            (mock, context) -> {
+              System.out.println("Intercepted ChatBotPane creation");
+            });
+
+    ) {
+
+
+      factory = new EditorComponentFactory(mockEditorController);
+
+
+
+
+
+      verify(mockEditorController, atLeast(4)).registerViewListener(listenerCaptor.capture());
+      List<EditorViewListener> capturedListeners = listenerCaptor.getAllValues();
+      assertTrue(capturedListeners.stream().anyMatch(l -> l instanceof InputTabComponentFactory));
+      assertTrue(capturedListeners.stream().anyMatch(l -> l instanceof PropertiesTabComponentFactory));
+      assertTrue(capturedListeners.stream().anyMatch(l -> l instanceof SpriteTabComponentFactory));
+      assertTrue(capturedListeners.stream().anyMatch(l -> l instanceof PrefabPalettePane));
+
+
+
+    } catch (Exception e) {
+
+      fail("Exception during mock construction or factory instantiation: " + e.getMessage(), e);
+    }
+
+    assertNotNull(factory, "Factory should be created");
   }
 
-  /** Sets up detailed stubbing for ResourceBundle and Properties mocks. */
-  private void setupMockResourceDetails() {
-    when(mockUiBundle.getString(KEY_MAP_TITLE)).thenReturn("Map");
-    when(mockUiBundle.getString(KEY_ADD_ENTITY_TOOL)).thenReturn("Add Entity");
-    when(mockUiBundle.getString(KEY_SELECT_TOOL)).thenReturn("Select");
-    when(mockUiBundle.getString(KEY_PROPERTIES_TITLE)).thenReturn("Components");
-    when(mockUiBundle.getString(KEY_PROPERTIES_TAB)).thenReturn("Properties");
-    when(mockUiBundle.getString(KEY_INPUT_TAB)).thenReturn("Input");
-
-    when(mockEditorProperties.getProperty(PROP_EDITOR_WIDTH, "1200")).thenReturn("1200");
-    when(mockEditorProperties.getProperty(PROP_EDITOR_WIDTH)).thenReturn("1200");
-    when(mockEditorProperties.getProperty(PROP_EDITOR_HEIGHT, "800")).thenReturn("800");
-    when(mockEditorProperties.getProperty(PROP_EDITOR_HEIGHT)).thenReturn("800");
-    when(mockEditorProperties.getProperty(PROP_MAP_WIDTH, "800")).thenReturn("800");
-    when(mockEditorProperties.getProperty(PROP_MAP_WIDTH)).thenReturn("800");
-    when(mockEditorProperties.getProperty(PROP_COMPONENT_WIDTH, "400")).thenReturn("400");
-    when(mockEditorProperties.getProperty(PROP_COMPONENT_WIDTH)).thenReturn("400");
-    when(mockEditorProperties.getProperty(PROP_CELL_SIZE, "32")).thenReturn("32");
-    when(mockEditorProperties.getProperty(PROP_CELL_SIZE)).thenReturn("32");
-    when(mockEditorProperties.getProperty(PROP_ZOOM_SCALE, "1.0")).thenReturn("1.0");
-    when(mockEditorProperties.getProperty(PROP_ZOOM_SCALE)).thenReturn("1.0");
-    when(mockEditorProperties.getProperty(PROP_ZOOM_STEP, "0.05")).thenReturn("0.05");
-    when(mockEditorProperties.getProperty(PROP_ZOOM_STEP)).thenReturn("0.05");
-    when(mockEditorProperties.getProperty(eq(PROP_ENTITY_TYPE), anyString())).thenReturn("MOCK_ENTITY");
-    when(mockEditorProperties.getProperty(PROP_ENTITY_TYPE)).thenReturn("MOCK_ENTITY");
-    when(mockEditorProperties.getProperty(eq(PROP_ENTITY_PREFIX), anyString())).thenReturn("MOCK_PREFIX_");
-    when(mockEditorProperties.getProperty(PROP_ENTITY_PREFIX)).thenReturn("MOCK_PREFIX_");
-  }
-
-  /** Helper to run setup and assertions on the FX thread within the static mock scope. */
-  private Scene runTestOnFxThread(Consumer<Scene> sceneAssertions) throws Exception {
-    AtomicReference<Scene> sceneRef = new AtomicReference<>();
-    AtomicReference<Throwable> exceptionRef = new AtomicReference<>();
-
-    // Use try-with-resources for static mocks
-    try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      mockedLoader.when(() -> EditorResourceLoader.loadProperties(EDITOR_PROPERTIES_PATH)).thenReturn(mockEditorProperties);
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(EDITOR_UI_BUNDLE_NAME)).thenReturn(mockUiBundle);
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(INPUT_TAB_UI_BUNDLE_NAME)).thenReturn(mockUiBundle);
-      setupMockResourceDetails();
-
-      // Create factory instance (using anonymous class only for GameView injection now)
-      EditorComponentFactory factory = new EditorComponentFactory(mockEditorController) {
-        Field gameViewField; // Cache field
-        {
-          try {
-            gameViewField = EditorComponentFactory.class.getDeclaredField("gameView");
-            gameViewField.setAccessible(true);
-          } catch (NoSuchFieldException e) { throw new RuntimeException(e); }
-        }
-        // createGameView is called during createMapPane -> createEditorScene
-        void createGameView() {
-          try { gameViewField.set(this, mockGameView); } catch (IllegalAccessException e) { throw new RuntimeException(e); }
-        }
-        // REMOVED useless overrides for createInputTabFactory/createPropertiesTabFactory
-      };
-
-      // **Inject Mock Factories via Reflection AFTER constructor**
-      try {
-        Field inputFactoryField = EditorComponentFactory.class.getDeclaredField("inputTabFactory");
-        inputFactoryField.setAccessible(true);
-        inputFactoryField.set(factory, mockInputTabFactory); // Replace real with mock
-
-        Field propsFactoryField = EditorComponentFactory.class.getDeclaredField("propertiesTabFactory");
-        propsFactoryField.setAccessible(true);
-        propsFactoryField.set(factory, mockPropertiesTabFactory); // Replace real with mock
-      } catch (NoSuchFieldException | IllegalAccessException e) {
-        throw new RuntimeException("Failed to inject mock factories via reflection", e);
-      }
-
-      // Use Platform.runLater and wait
-      CountDownLatch latch = new CountDownLatch(1);
-      Platform.runLater(() -> {
-        try {
-          Scene scene = factory.createEditorScene(); // Now uses injected mock factories
-          sceneRef.set(scene);
-          if (sceneAssertions != null) {
-            sceneAssertions.accept(scene);
-          }
-        } catch (Throwable e) {
-          exceptionRef.set(e);
-        } finally {
-          latch.countDown();
-        }
-      });
-
-      if (!latch.await(10, TimeUnit.SECONDS)) {
-        fail("FX thread scene creation/assertion timed out.");
-      }
-      if (exceptionRef.get() != null) {
-        if (exceptionRef.get() instanceof Error) throw (Error) exceptionRef.get();
-        throw new RuntimeException("Exception on FX thread", exceptionRef.get());
-      }
-      assertNotNull(sceneRef.get(), "Scene was not created on FX thread.");
-      return sceneRef.get();
-
-    } // Static mocks closed here
-  }
-
-
-  // --- Tests ---
-
-  @Test
-  void testConstructorSuccess() throws Exception {
-    try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString())).thenReturn(mockEditorProperties);
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString())).thenReturn(mockUiBundle);
-      MockitoAnnotations.openMocks(this);
-      // No anonymous class needed here as we only test constructor
-      EditorComponentFactory factory = new EditorComponentFactory(mockEditorController);
-      assertNotNull(factory);
-      // Constructor still registers REAL factories, so cannot verify mock registration here
+  @AfterEach
+  void tearDown() throws Exception {
+    if (closeablemocks != null) {
+      closeablemocks.close();
     }
   }
 
-  @Test
-  void testConstructorNullController() {
-    assertThrows(NullPointerException.class, () -> new EditorComponentFactory(null));
-  }
 
-  @Test
-  void testConstructorResourceLoadFailure() {
-    try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString()))
-          .thenThrow(new RuntimeException("Failed to load properties"));
-      MockitoAnnotations.openMocks(this);
-      assertThrows(RuntimeException.class, () -> new EditorComponentFactory(mockEditorController));
-    }
-  }
-
-  @Test
-  void testCreateEditorSceneStructure() throws Exception {
-    runTestOnFxThread(scene -> {
-      assertNotNull(scene, "Scene should not be null");
-      assertTrue(scene.getRoot() instanceof SplitPane, "Root should be SplitPane");
-      assertEquals("editor-root", scene.getRoot().getId());
-      SplitPane root = (SplitPane) scene.getRoot();
-      assertEquals(2, root.getItems().size());
-      assertTrue(root.getItems().get(0) instanceof SplitPane);
-      SplitPane leftSplit = (SplitPane) root.getItems().get(0);
-      assertEquals(Orientation.VERTICAL, leftSplit.getOrientation());
-      assertEquals(2, leftSplit.getItems().size());
-      assertEquals("map-pane", leftSplit.getItems().get(0).getId());
-      assertEquals("prefab-pane", leftSplit.getItems().get(1).getId());
-      assertEquals("component-pane", root.getItems().get(1).getId());
-    });
-  }
-
-  @Test
-  void testCreateEditorSceneTabs() throws Exception {
-    runTestOnFxThread(scene -> {
-      // Use the improved finder
-      TabPane tabPane = findNodeRecursively(scene.getRoot(), "#component-tab-pane", TabPane.class)
-          .orElseThrow(() -> new AssertionError("TabPane '#component-tab-pane' not found"));
-      assertEquals(2, tabPane.getTabs().size());
-
-      Tab propertiesTab = tabPane.getTabs().get(0);
-      assertEquals("Properties", propertiesTab.getText()); // From mockUiBundle
-      assertEquals("properties-tab", propertiesTab.getId());
-      assertTrue(propertiesTab.getContent() instanceof ScrollPane); // Content from mockPropertiesTabFactory stub
-      assertFalse(propertiesTab.isClosable());
-      // Verify the *mock* factory's method was called because it was injected
-      verify(mockPropertiesTabFactory, atLeastOnce()).createPropertiesPane();
-
-      Tab inputTab = tabPane.getTabs().get(1);
-      assertEquals("Input", inputTab.getText()); // From mockUiBundle
-      assertEquals("input-tab", inputTab.getId());
-      assertTrue(inputTab.getContent() instanceof Pane); // Content from mockInputTabFactory stub
-      assertFalse(inputTab.isClosable());
-      // Verify the *mock* factory's method was called because it was injected
-      verify(mockInputTabFactory, atLeastOnce()).createInputTabPanel();
-    });
-  }
 
 
   @Test
-  void testGetIntProperty() {
-    try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      MockitoAnnotations.openMocks(this);
-      mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString())).thenReturn(mockEditorProperties);
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString())).thenReturn(mockUiBundle);
-      when(mockUiBundle.getString(anyString())).thenReturn("");
+  void constructor_Success() {
 
-      EditorComponentFactory factory = new EditorComponentFactory(mockEditorController) {
-        // Anonymous class only needed if testing methods that use injected factories/views
-      };
+    assertNotNull(factory);
+    mockedLoader.verify(() -> EditorResourceLoader.loadProperties(anyString()), atLeastOnce());
+    mockedLoader.verify(() -> EditorResourceLoader.loadResourceBundle(anyString()), atLeastOnce());
 
-      // Test VALID: Stub *then* assert
-      String validKey = "validIntKey";
-      when(mockEditorProperties.getProperty(validKey)).thenReturn("123");
-      assertEquals(123, factory.getIntProperty(validKey, 0));
-
-      // Test MISSING:
-      String missingKey = "missingIntKey";
-      when(mockEditorProperties.getProperty(missingKey)).thenReturn(null);
-      assertEquals(99, factory.getIntProperty(missingKey, 99));
-
-      // Test INVALID:
-      String invalidKey = "invalidIntKey";
-      when(mockEditorProperties.getProperty(invalidKey)).thenReturn("abc");
-      assertEquals(50, factory.getIntProperty(invalidKey, 50));
-
-      // Test EMPTY:
-      String emptyKey = "emptyIntKey";
-      when(mockEditorProperties.getProperty(emptyKey)).thenReturn("");
-      assertEquals(25, factory.getIntProperty(emptyKey, 25));
-    }
   }
 
   @Test
-  void testGetDoubleProperty() {
-    try (MockedStatic<EditorResourceLoader> mockedLoader = mockStatic(EditorResourceLoader.class)) {
-      MockitoAnnotations.openMocks(this);
-      mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString())).thenReturn(mockEditorProperties);
-      mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString())).thenReturn(mockUiBundle);
-      when(mockUiBundle.getString(anyString())).thenReturn("");
+  void constructor_NullController_ThrowsException() {
 
-      EditorComponentFactory factory = new EditorComponentFactory(mockEditorController);
+    mockedLoader.reset();
+    mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString())).thenReturn(testEditorProps);
+    mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString())).thenReturn(testUiBundle);
 
-      // Test VALID: Stub then assert
-      String validKey = "validDoubleKey";
-      when(mockEditorProperties.getProperty(validKey)).thenReturn("123.45");
-      assertEquals(123.45, factory.getDoubleProperty(validKey, 0.0));
 
-      // Test MISSING:
-      String missingKey = "missingDoubleKey";
-      when(mockEditorProperties.getProperty(missingKey)).thenReturn(null);
-      assertEquals(99.9, factory.getDoubleProperty(missingKey, 99.9));
-
-      // Test INVALID:
-      String invalidKey = "invalidDoubleKey";
-      when(mockEditorProperties.getProperty(invalidKey)).thenReturn("xyz");
-      assertEquals(50.5, factory.getDoubleProperty(invalidKey, 50.5));
-
-      // Test EMPTY:
-      String emptyKey = "emptyDoubleKey";
-      when(mockEditorProperties.getProperty(emptyKey)).thenReturn("");
-      assertEquals(25.2, factory.getDoubleProperty(emptyKey, 25.2));
-    }
+    assertThrows(NullPointerException.class, () -> new EditorComponentFactory(null),
+        "Constructor should throw NullPointerException for null controller.");
   }
 
-  // --- Helper methods for manual node finding (IMPROVED) ---
-  private <T extends Node> Optional<T> findNodeRecursively(Node parent, String selector, Class<T> type) {
-    if (parent == null) return Optional.empty();
-    boolean idMatch = selector.startsWith("#") && Objects.equals(parent.getId(), selector.substring(1));
-    if (idMatch && type.isInstance(parent)) return Optional.of(type.cast(parent));
-    if (!selector.startsWith("#") && type.isInstance(parent)) return Optional.of(type.cast(parent));
+  @Test
+  void constructor_ResourceLoadFailure_Properties_ThrowsException() {
+    mockedLoader.reset();
+    mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString()))
+        .thenThrow(new RuntimeException("Test: Failed to load props"));
+    mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString()))
+        .thenReturn(testUiBundle);
 
-    List<Node> childrenToExplore = new ArrayList<>();
-    if (parent instanceof Parent) {
-      List<Node> children = ((Parent) parent).getChildrenUnmodifiable();
-      if (children != null) childrenToExplore.addAll(children);
-    }
-    if (parent instanceof ScrollPane) {
-      Node content = ((ScrollPane) parent).getContent();
-      if (content != null) childrenToExplore.add(content);
-    } else if (parent instanceof BorderPane) {
-      BorderPane bp = (BorderPane) parent;
-      if (bp.getCenter() != null) childrenToExplore.add(bp.getCenter());
-      if (bp.getTop() != null) childrenToExplore.add(bp.getTop());
-      if (bp.getBottom() != null) childrenToExplore.add(bp.getBottom());
-      if (bp.getLeft() != null) childrenToExplore.add(bp.getLeft());
-      if (bp.getRight() != null) childrenToExplore.add(bp.getRight());
-    } else if (parent instanceof SplitPane) {
-      SplitPane sp = (SplitPane) parent;
-      if (sp.getItems() != null) childrenToExplore.addAll(sp.getItems());
-    } else if (parent instanceof TabPane) { // Check content of selected tab? Or all tabs?
-      TabPane tp = (TabPane) parent;
-      // Explore content of all tabs
-      for (Tab tab : tp.getTabs()) {
-        if (tab != null && tab.getContent() != null) {
-          childrenToExplore.add(tab.getContent());
-        }
-      }
-    }
+    RuntimeException exception = assertThrows(RuntimeException.class,
+        () -> new EditorComponentFactory(mockEditorController));
 
-    for (Node child : childrenToExplore) {
-      Optional<T> found = findNodeRecursively(child, selector, type);
-      if (found.isPresent()) return found;
-    }
-    return Optional.empty();
+    assertTrue(exception.getMessage().contains("Fatal: Failed to load essential editor resources."),
+        "Exception message mismatch: " + exception.getMessage());
+
+  }
+
+  @Test
+  void constructor_ResourceLoadFailure_Bundle_ThrowsException() {
+    mockedLoader.reset();
+    mockedLoader.when(() -> EditorResourceLoader.loadProperties(anyString())).thenReturn(testEditorProps);
+    mockedLoader.when(() -> EditorResourceLoader.loadResourceBundle(anyString()))
+        .thenThrow(new MissingResourceException("Test: Bundle missing", "class", "key"));
+
+    RuntimeException exception = assertThrows(RuntimeException.class,
+        () -> new EditorComponentFactory(mockEditorController));
+    assertTrue(exception.getMessage().contains("Fatal: Failed to load essential editor resources."),
+        "Exception message mismatch: " + exception.getMessage());
+  }
+
+  @Test
+  void getId_ValidKey_ReturnsValue() {
+    assertNotNull(factory, "Factory not initialized for getId test");
+    assertEquals(testIdentifierProps.getProperty("editor.properties.path"), factory.getId("editor.properties.path"));
+    assertEquals(testIdentifierProps.getProperty("id.editor.root"), factory.getId("id.editor.root"));
+  }
+
+  @Test
+  void getId_MissingKey_ThrowsException() {
+    assertNotNull(factory, "Factory not initialized for getId test");
+    RuntimeException exception = assertThrows(RuntimeException.class, () -> factory.getId("non.existent.key"));
+    assertTrue(exception.getMessage().contains("Missing identifier in properties file for key: non.existent.key"));
+  }
+
+  @Test
+  void getIntProperty_Valid() {
+    assertNotNull(factory, "Factory not initialized for getIntProperty test");
+
+    assertEquals(1300, factory.getIntProperty(factory.getId("prop.editor.width"), 999));
+  }
+
+  @Test
+  void getIntProperty_InvalidFormat_ReturnsDefault() {
+    assertNotNull(factory, "Factory not initialized for getIntProperty test");
+
+
+    testEditorProps.setProperty(factory.getId("prop.editor.height"), "not-an-int");
+
+    assertEquals(500, factory.getIntProperty("some.other.key.int", 500));
+
+  }
+
+  @Test
+  void getIntProperty_MissingKey_ReturnsDefault() {
+    assertNotNull(factory, "Factory not initialized for getIntProperty test");
+    assertEquals(42, factory.getIntProperty("missing.key.int", 42));
+  }
+
+  @Test
+  void getDefaultInt_Valid() {
+    assertNotNull(factory, "Factory not initialized for getDefaultInt test");
+    assertEquals(1200, factory.getDefaultInt("default.editor.width"));
+  }
+
+  @Test
+  void getDoubleProperty_Valid() {
+    assertNotNull(factory, "Factory not initialized for getDoubleProperty test");
+    assertEquals(1.0, factory.getDoubleProperty(factory.getId("prop.zoom.scale"), 9.9));
+  }
+
+  @Test
+  void getDoubleProperty_InvalidFormat_ReturnsDefault() {
+    assertNotNull(factory, "Factory not initialized for getDoubleProperty test");
+    testEditorProps.setProperty(factory.getId("prop.zoom.scale"), "not-a-double");
+    assertEquals(5.5, factory.getDoubleProperty("some.other.key.double", 5.5));
+  }
+
+  @Test
+  void getDoubleProperty_MissingKey_ReturnsDefault() {
+    assertNotNull(factory, "Factory not initialized for getDoubleProperty test");
+    assertEquals(3.14, factory.getDoubleProperty("missing.key.double", 3.14));
+  }
+
+  @Test
+  void getDefaultDouble_Valid() {
+    assertNotNull(factory, "Factory not initialized for getDefaultDouble test");
+    assertEquals(0.7, factory.getDefaultDouble("layout.left.split.divider"));
   }
 
 
-  private Optional<ToggleButton> findButtonByText(Parent container, String text) {
-    if (container == null) return Optional.empty();
-    for (Node node : getChildren(container)) { // Use helper to get children robustly
-      if (node instanceof ToggleButton && Objects.equals(((ToggleButton) node).getText(), text)) {
-        return Optional.of((ToggleButton) node);
-      }
-      if (node instanceof Parent) {
-        Optional<ToggleButton> found = findButtonByText((Parent) node, text);
-        if (found.isPresent()) return found;
-      }
-    }
-    return Optional.empty();
+
+
+
+  private <T extends Node> T findNodeById(Node parent, String id, Class<T> nodeClass) {
+    assertNotNull(parent, "Parent node for lookup cannot be null");
+    Node found = parent.lookup("#" + id);
+    assertNotNull(found, "Node with ID '" + id + "' not found in parent: " + parent);
+    assertTrue(nodeClass.isInstance(found), "Node with ID '" + id + "' is type " + found.getClass().getSimpleName() + ", expected " + nodeClass.getSimpleName());
+    return nodeClass.cast(found);
   }
 
-  // Helper to get children from various parent types, handling nulls
-  private List<Node> getChildren(Parent parent) {
-    List<Node> children = new ArrayList<>();
-    if (parent == null) return children;
-
-    try { // Standard Parent
-      if (parent.getChildrenUnmodifiable() != null) {
-        children.addAll(parent.getChildrenUnmodifiable());
-      }
-    } catch (Exception e) { /* ignore, might not be standard Parent */ }
-
-    // Specific Layouts
-    if (parent instanceof ScrollPane && ((ScrollPane) parent).getContent() != null) {
-      children.add(((ScrollPane) parent).getContent());
-    } else if (parent instanceof BorderPane) {
-      BorderPane bp = (BorderPane) parent;
-      if (bp.getCenter() != null) children.add(bp.getCenter());
-      if (bp.getTop() != null) children.add(bp.getTop());
-      if (bp.getBottom() != null) children.add(bp.getBottom());
-      if (bp.getLeft() != null) children.add(bp.getLeft());
-      if (bp.getRight() != null) children.add(bp.getRight());
-    } else if (parent instanceof SplitPane) {
-      SplitPane sp = (SplitPane) parent;
-      if (sp.getItems() != null) children.addAll(sp.getItems());
-    } else if (parent instanceof TabPane) {
-      TabPane tp = (TabPane) parent;
-      for (Tab tab : tp.getTabs()) {
-        if (tab != null && tab.getContent() != null) children.add(tab.getContent());
-      }
-    }
-    return children;
-  }
 }

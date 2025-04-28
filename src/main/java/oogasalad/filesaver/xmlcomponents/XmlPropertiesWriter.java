@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * This class writes the String and Double tag of the XML file.
  *
- * @author Aksel Bell
+ * @author Aksel Bell, Billy McCune
  */
 public class XmlPropertiesWriter implements XmlComponentWriter{
   private static final String INDENT = "  ";

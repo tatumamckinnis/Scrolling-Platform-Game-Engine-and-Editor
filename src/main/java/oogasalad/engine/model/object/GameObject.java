@@ -72,10 +72,13 @@ public abstract class GameObject implements ImmutableGameObject{
     setYPosition((int) (getYPosition() + yVelocity));
 
     //hardcoded floor, should be refactored later
-    if (getYPosition() >= 500 - getHitBoxHeight()) {
-      isGrounded = true;
-      setYPosition(500 - getHitBoxHeight());
-    }
+    /**
+     * if (getYPosition() >= 500 - getHitBoxHeight()) {
+     *       isGrounded = true;
+     *       setYPosition(500 - getHitBoxHeight());
+     *     }
+     */
+
 
   }
 
