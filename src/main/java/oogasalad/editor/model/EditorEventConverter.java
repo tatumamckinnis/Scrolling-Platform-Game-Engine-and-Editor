@@ -12,7 +12,6 @@ import oogasalad.engine.model.event.outcome.EventOutcome;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.ConditionData;
 import oogasalad.fileparser.records.EventData;
-import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.OutcomeData;
 
 /**
