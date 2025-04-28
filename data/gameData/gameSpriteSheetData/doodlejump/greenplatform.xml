@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spritesheet imagePath="doodlejump-tiles.png">
+  <sprite name="greenPlatform" x="196" y="0" width="57" height="15">
+    <frames>
+      <frame name="platform_green" x="196" y="0" width="57" height="15"/>
+    </frames>
+    <animations>
+      <animation name="idle" frameLen="1.0" frames="platform_green"/>
+    </animations>
+  </sprite>
+</spritesheet>
