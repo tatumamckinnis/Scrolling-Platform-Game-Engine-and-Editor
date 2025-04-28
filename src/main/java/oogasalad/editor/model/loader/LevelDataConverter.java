@@ -62,6 +62,7 @@ public class LevelDataConverter {
     try {
       LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
       Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
+
       List<GameObjectData> gameObjectData = levelData.gameObjects();
       
       // Print detailed information about game objects and their layers

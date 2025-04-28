@@ -270,7 +270,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onObjectAdded(UUID objectId) {
     Platform.runLater(() -> {
-      LOG.debug("EditorGameView received: onObjectAdded {}", objectId);
+      LOG.trace("EditorGameView received: onObjectAdded {}", objectId);
       if (!displayedObjectIds.contains(objectId)) {
         displayedObjectIds.add(objectId);
       }
@@ -290,7 +290,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onObjectRemoved(UUID objectId) {
     Platform.runLater(() -> {
-      LOG.debug("EditorGameView received: onObjectRemoved {}", objectId);
+      LOG.trace("EditorGameView received: onObjectRemoved {}", objectId);
       if (displayedObjectIds.remove(objectId)) {
         imageManager.removeImage(objectId);
       }
@@ -313,7 +313,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onObjectUpdated(UUID objectId) {
     Platform.runLater(() -> {
-      LOG.debug("EditorGameView received: onObjectUpdated {}", objectId);
+      LOG.trace("EditorGameView received: onObjectUpdated {}", objectId);
       if (displayedObjectIds.contains(objectId)) {
 
         imageManager.preloadObjectImage(objectId);
@@ -332,7 +332,7 @@ public class EditorGameView extends Pane implements EditorViewListener {
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
     Platform.runLater(() -> {
-      LOG.debug("EditorGameView received: onSelectionChanged {}", selectedObjectId);
+      LOG.trace("EditorGameView received: onSelectionChanged {}", selectedObjectId);
       if (!Objects.equals(this.selectedObjectId, selectedObjectId)) {
         this.selectedObjectId = selectedObjectId;
         drawer.redrawObjects();

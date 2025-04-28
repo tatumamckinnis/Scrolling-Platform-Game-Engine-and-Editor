@@ -3,6 +3,8 @@ package oogasalad.editor.controller.object;
 import java.util.UUID;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.model.data.EditorLevelData;
+import oogasalad.editor.model.data.object.HitboxData;
+import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 
@@ -193,6 +195,11 @@ public class SpriteDataManager {
     spriteData.setBaseFrameName(template.getBaseFrame().name());
     spriteData.setTemplateName(template.getName());
     spriteData.setSpritePath(template.getSpriteFile());
+    HitboxData hitboxData = level.getEditorObject(currentObjectId).getHitboxData();
+    FrameData base = template.getBaseFrame();
+    hitboxData.setWidth(base.width());
+    hitboxData.setHeight(base.height());
+
 
     listenerNotifier.notifyObjectUpdated(currentObjectId);
   }

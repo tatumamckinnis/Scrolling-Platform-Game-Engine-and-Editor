@@ -86,4 +86,23 @@ public class ExecutorData {
     }
     doubleParams.put(paramName, paramValue);
   }
+
+  /**
+   * Returns a string representation of an executorEvent.
+   * @return a string representation of an executorEvent
+   */
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(executor);
+
+    if (!stringParams.isEmpty()) {
+      sb.append("  {str→ ").append(stringParams).append('}');
+    }
+    if (!doubleParams.isEmpty()) {
+      sb.append("  {dbl→ ").append(doubleParams).append('}');
+    }
+    return sb.toString();
+  }
+
 }

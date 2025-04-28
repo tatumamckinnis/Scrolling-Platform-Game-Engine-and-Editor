@@ -242,4 +242,31 @@ public class EditorEvent {
   public void addConditionGroup(List<ExecutorData> group) {
     conditions.add(group);
   }
+
+  /**
+   * Returns a string representation of an editorEvent.
+   *
+   * @return a string representation of an editorEvent
+   */
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("  ▸ CONDITIONS:\n");
+
+    for (int g = 0; g < conditions.size(); g++) {
+      sb.append("    Group ").append(g).append(":\n");
+      List<ExecutorData> group = conditions.get(g);
+      for (int i = 0; i < group.size(); i++) {
+        sb.append("      [").append(i).append("] ")
+            .append(group.get(i)).append('\n');
+      }
+    }
+
+    sb.append("  ▸ OUTCOMES:\n");
+    for (int i = 0; i < outcomes.size(); i++) {
+      sb.append("    [").append(i).append("] ")
+          .append(outcomes.get(i)).append('\n');
+    }
+    return sb.toString();
+  }
 }

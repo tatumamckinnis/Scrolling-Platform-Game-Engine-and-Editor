@@ -57,7 +57,7 @@ public class SpriteDataParserTest {
       writer.write("path.to.graphics.data=oogasalad_team03/data/graphicsData\n");
       // The following keys can be present but are not used by SpriteDataParser:
       writer.write("path.to.level.data=/src/data/gameData/levels\n");
-      writer.write("path.to.event.registry=/Users/billym./oogasalad/oogasalad_team03/data/gameData/gameObjects/dinosaurgame/blocks/tracks/dinosaurgame-track.xml\n");
+      writer.write("path.to.event.registry=/Users/billym./oogasalad/oogasalad_team03/data/gameData/gameObjects/dinosaurgame/blocks/tracks/dinosaurgame-dinosaurgame-track.xml\n");
     }
     // (Optional) Make sure our tempDir is on the classpath.
     System.setProperty("java.class.path", tempDir.toAbsolutePath().toString());

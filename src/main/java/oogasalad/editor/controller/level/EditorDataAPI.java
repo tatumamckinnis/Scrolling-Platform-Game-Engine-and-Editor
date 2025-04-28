@@ -541,7 +541,7 @@ public class EditorDataAPI {
    * @return the priority of the layer the object belongs to, or 0 if the object or its layer is not found
    */
   public int getObjectLayerPriority(UUID id) {
-    LOG.debug("Getting layer priority for object with ID: {}", id);
+    LOG.trace("Getting layer priority for object with ID: {}", id);
     return level.getObjectLayerPriority(id);
   }
 

@@ -197,7 +197,7 @@ class EditorGameViewDrawer {
 
 
     List<UUID> sortedIds = getSortedObjectIds();
-    log.debug("Objects sorted by layer priority for drawing.");
+    log.trace("Objects sorted by layer priority for drawing.");
 
 
     for (UUID id : sortedIds) {
@@ -238,7 +238,7 @@ class EditorGameViewDrawer {
   private void drawSingleObject(GraphicsContext gc, UUID id) {
     try {
       int layerPriority = controller.getEditorDataAPI().getObjectLayerPriority(id);
-      log.debug("Drawing object {} with layer priority {}", id, layerPriority);
+      log.trace("Drawing object {} with layer priority {}", id, layerPriority);
 
 
       redrawSprites(gc, id);
@@ -359,7 +359,7 @@ class EditorGameViewDrawer {
     String baseFrameName = spriteData.getBaseFrameName();
     Map<String, FrameData> frameMap = spriteData.getFrames();
 
-    log.debug("[redrawSprites ID: {}] Trying to display frame. Base='{}', Map size={}",
+    log.trace("[redrawSprites ID: {}] Trying to display frame. Base='{}', Map size={}",
         id, baseFrameName, frameMap != null ? frameMap.size() : "null");
 
 
@@ -369,7 +369,7 @@ class EditorGameViewDrawer {
     } else if (frameMap != null && !frameMap.isEmpty()) {
 
       FrameData fallback = frameMap.values().iterator().next();
-      log.warn(
+      log.trace(
           "[redrawSprites ID: {}] Base frame '{}' not found in map (Keys: {}). Falling back to first frame: {}",
           id, baseFrameName, frameMap.keySet(), fallback.name());
       return fallback;

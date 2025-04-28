@@ -54,12 +54,28 @@ public abstract class AbstractEventMapData {
   }
 
   /**
-   * Sets the event associated with the given identifier, replacing any existing event with that ID.
+   * Sets the event associated with the given identifier, replacing any existing event with that
+   * ID.
    *
    * @param eventId the identifier of the event to set
    * @param event   the {@link EditorEvent} to set
    */
   public void setEvent(String eventId, EditorEvent event) {
     events.put(eventId, event);
+  }
+
+  /**
+   * Returns out the event map in a readable format.
+   *
+   * @return the event map in a readable format
+   */
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("EVENT-MAP:\n");
+    events.forEach((id, ev) -> {
+      sb.append("• ").append(id).append('\n')
+          .append(ev).append('\n');
+    });
+    return sb.toString();
   }
 }

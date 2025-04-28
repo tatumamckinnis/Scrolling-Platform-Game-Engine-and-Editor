@@ -52,7 +52,6 @@ class EditorGameViewImageManager {
   void preloadObjectImage(UUID id) {
     try {
       String imagePath = getObjectSpritePath(id);
-      System.out.println(imagePath);
       if (imagePath == null) {
         objectImages.remove(id);
         log.trace("No valid sprite path found for ID {}. Removing image cache.", id);
@@ -188,7 +187,7 @@ class EditorGameViewImageManager {
    * @param urlString The URL string from which to load the image.
    */
   private void loadImage(UUID id, String urlString) {
-    log.debug("Loading image for object ID {} from resolved URL string: {}", id, urlString);
+    log.trace("Loading image for object ID {} from resolved URL string: {}", id, urlString);
     try {
       Image newImage = new Image(urlString, true);
       setupImageListeners(newImage, id, urlString);

@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
+import oogasalad.editor.model.data.object.event.InputData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -467,10 +469,16 @@ public class EditorObjectPopulator {
     }
   }
 
+  /**
+   * Currently hardcoded to input data due to that being the only source of events at the moment.
+   *
+   * @param object The editor object to input event data for
+   * @param blueprintData the blueprint to read the events from
+   */
   private void setEventData(EditorObject object,
       BlueprintData blueprintData) {
-    CustomEventData customEventData  = EditorEventConverter.convertEventData(object, blueprintData);
-    object.setCustomEventData(customEventData);
+    AbstractEventMapData eventData = EditorEventConverter.convertEventData(object, blueprintData);
+    object.setInputData((InputData) eventData);
   }
 
   private void setPhysicsData(EditorObject object, BlueprintData blueprint) {
