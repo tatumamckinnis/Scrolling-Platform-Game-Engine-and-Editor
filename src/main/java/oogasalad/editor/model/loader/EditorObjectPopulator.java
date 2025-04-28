@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import oogasalad.editor.controller.EditorController;
@@ -89,75 +91,106 @@ public class EditorObjectPopulator {
    */
   public EditorObject populateFromBlueprint(BlueprintData blueprint, double x, double y) {
     Objects.requireNonNull(blueprint, "Blueprint cannot be null");
-    LOG.debug("Populating EditorObject from blueprint ID: {}, Type: {}", blueprint.blueprintId(),
-        blueprint.type());
-    EditorObject object = new EditorObject(levelData);
+    LOG.debug("Populating EditorObject from blueprint ID: {}, Type: {}",
+        blueprint.blueprintId(), blueprint.type());
 
-    Layer targetLayer = levelData.getFirstLayer();
-
-    IdentityData identity = new IdentityData(object.getId(), blueprint.type(), blueprint.gameName(), blueprint.group(), blueprint.type(),
-        targetLayer);
-    object.setIdentityData(identity);
-
-    if (blueprint.group() != null && !blueprint.group().trim().isEmpty()) {
-      levelData.addGroup(blueprint.group());
-      LOG.debug("Ensured group '{}' exists in level data.", blueprint.group());
-    }
-
-    String resolvedImagePath = "";
-    SpriteData recordSprite = blueprint.spriteData();
-    if (recordSprite != null && recordSprite.spriteFile() != null && !recordSprite.spriteFile()
-        .getPath().isEmpty()) {
-      resolvedImagePath = recordSprite.spriteFile().getPath();
-      LOG.debug("Using image path from blueprint record: {}", resolvedImagePath);
-      if (!new File(resolvedImagePath).isAbsolute() || !new File(resolvedImagePath).exists()) {
-        LOG.warn(
-            "Image path from blueprint record is relative or does not exist: {}. Sprite might not load.",
-            resolvedImagePath);
-        resolvedImagePath = "";
-      }
-    } else {
-      LOG.warn("Blueprint {} spriteData or spriteFile is null/empty.", blueprint.blueprintId());
-    }
-    oogasalad.editor.model.data.object.sprite.SpriteData modelSpriteData = convertSpriteData(
-        recordSprite, resolvedImagePath, x, y, blueprint.rotation(), blueprint.isFlipped());
-    object.setSpriteData(modelSpriteData);
-
-    if (blueprint.hitBoxData() != null) {
-      HitBoxData bpHD = blueprint.hitBoxData();
-      int hitboxX = (int) (x + bpHD.spriteDx());
-      int hitboxY = (int) (y + bpHD.spriteDy());
-      HitboxData modelHitbox = new HitboxData(
-          hitboxX, hitboxY, bpHD.hitBoxWidth(), bpHD.hitBoxHeight(), bpHD.shape());
-      object.setHitboxData(modelHitbox);
-    } else {
-      HitboxData defaultHitbox = object.getHitboxData();
-      defaultHitbox.setX((int) x);
-      defaultHitbox.setY((int) y);
-      LOG.warn("Blueprint {} has no HitBoxData, using default hitbox positioned at ({}, {}).",
-          blueprint.blueprintId(), (int) x, (int) y);
-    }
-
+    EditorObject object = createEditorObject();
+    object.setIdentityData(buildIdentity(blueprint, object));
+    ensureGroupExists(blueprint);
+    object.setSpriteData(convertSpriteData(
+        blueprint.spriteData(),
+        resolveImagePath(blueprint),
+        x, y,
+        blueprint.rotation(),
+        blueprint.isFlipped()));
+    configureHitbox(object, blueprint, x, y);
     setPhysicsData(object, blueprint);
+    setObjectParameters(object, blueprint);
+    registerObjectInLevel(object);
 
-    object.setStringParameters(
-        blueprint.stringProperties() != null ? blueprint.stringProperties() : new HashMap<>());
-    object.setDoubleParameters(
-        blueprint.doubleProperties() != null ? blueprint.doubleProperties() : new HashMap<>());
-    LOG.debug("Populated {} string parameters and {} double parameters from blueprint.",
-        object.getStringParameters().size(), object.getDoubleParameters().size());
-
-    levelData.getObjectDataMap().put(object.getId(), object);
-    levelData.getObjectLayerDataMap().values()
-        .forEach(list -> list.removeIf(obj -> obj.getId().equals(object.getId())));
-    levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>())
-        .add(object);
-
-    LOG.info("Populated EditorObject {} from blueprint {}", object.getId(),
-        blueprint.blueprintId());
+    LOG.info("Populated EditorObject {} from blueprint {}",
+        object.getId(), blueprint.blueprintId());
     return object;
   }
 
+  private EditorObject createEditorObject() {
+    return new EditorObject(levelData);
+  }
+
+  private IdentityData buildIdentity(BlueprintData blueprint, EditorObject object) {
+    Layer layer = levelData.getFirstLayer();
+    return new IdentityData(
+        object.getId(),
+        blueprint.type(),
+        blueprint.gameName(),
+        blueprint.group(),
+        blueprint.type(),
+        layer
+    );
+  }
+
+  private void ensureGroupExists(BlueprintData blueprint) {
+    String group = blueprint.group();
+    if (group != null && !group.trim().isEmpty()) {
+      levelData.addGroup(group);
+      LOG.debug("Ensured group '{}' exists in level data.", group);
+    }
+  }
+
+  private String resolveImagePath(BlueprintData blueprint) {
+    SpriteData sd = blueprint.spriteData();
+    if (sd != null && sd.spriteFile() != null) {
+      String path = sd.spriteFile().getPath();
+      File file = new File(path);
+      if (!path.isEmpty() && file.isAbsolute() && file.exists()) {
+        LOG.debug("Using image path from blueprint record: {}", path);
+        return path;
+      }
+      LOG.warn("Image path invalid or non-existent: {}", path);
+    }
+    LOG.warn("Blueprint {} spriteData or spriteFile is null/empty.", blueprint.blueprintId());
+    return "";
+  }
+
+  private void configureHitbox(EditorObject object, BlueprintData blueprint, double x, double y) {
+    HitBoxData bp = blueprint.hitBoxData();
+    if (bp != null) {
+      object.setHitboxData(new HitboxData(
+          (int)(x + bp.spriteDx()),
+          (int)(y + bp.spriteDy()),
+          bp.hitBoxWidth(),
+          bp.hitBoxHeight(),
+          bp.shape()
+      ));
+    } else {
+      HitboxData hb = object.getHitboxData();
+      hb.setX((int)x);
+      hb.setY((int)y);
+      LOG.warn("Blueprint {} has no HitBoxData, using default at ({}, {}).",
+          blueprint.blueprintId(), (int)x, (int)y);
+    }
+  }
+
+  private void setObjectParameters(EditorObject object, BlueprintData blueprint) {
+    object.setStringParameters(
+        Optional.ofNullable(blueprint.stringProperties()).orElseGet(HashMap::new)
+    );
+    object.setDoubleParameters(
+        Optional.ofNullable(blueprint.doubleProperties()).orElseGet(HashMap::new)
+    );
+    LOG.debug("Populated {} string params and {} double params.",
+        object.getStringParameters().size(),
+        object.getDoubleParameters().size());
+  }
+
+  private void registerObjectInLevel(EditorObject object) {
+    levelData.getObjectDataMap().put(object.getId(), object);
+    levelData.getObjectLayerDataMap().values()
+        .forEach(list -> list.removeIf(o -> o.getId().equals(object.getId())));
+    levelData.getObjectLayerDataMap()
+        .computeIfAbsent(object.getIdentityData().getLayer(), k -> new ArrayList<>())
+        .add(object);
+  }
 
   /**
    * Helper method to safely set a physics property (like gravity or jump force) on a
@@ -359,67 +392,57 @@ public class EditorObjectPopulator {
     return object;
   }
 
-  private void setIdentityData(GameObjectData gameObjectData, EditorObject object,
-      BlueprintData blueprint) {
-    // Get the layer based on the z-value first
-    int zValue = gameObjectData.layer();
-    String layerName = "Layer_" + zValue;
+  public void setIdentityData(GameObjectData data, EditorObject object, BlueprintData blueprint) {
     Layer defaultLayer = levelData.getFirstLayer();
-    
-    LOG.debug("Looking for layer with z-value {}, name '{}' for object {}", 
-        zValue, layerName, gameObjectData.uniqueId());
-    
-    // Try to find the layer that corresponds to this z-value
-    Layer targetLayer = null;
-    for (Layer layer : levelData.getLayers()) {
-      if (layer.getPriority() == zValue) {
-        targetLayer = layer;
-        LOG.debug("Found layer '{}' with matching priority {} for object {}", 
-            layer.getName(), zValue, gameObjectData.uniqueId());
-        break;
-      }
-    }
-    
-    // If no layer with matching priority found, fall back to name-based search
-    if (targetLayer == null) {
-      LOG.warn("No layer found with priority {} for object {}, falling back to name search", 
-          zValue, gameObjectData.uniqueId());
-      targetLayer = findLayerByName(layerName, defaultLayer);
-    }
+    Layer targetLayer = findTargetLayerByPriority(data.layer(), data.uniqueId(), defaultLayer);
+    String group = getOrDefault(blueprint.group());
+    String type  = getOrDefault(blueprint.type());
+    String game  = getOrDefault(blueprint.gameName());
 
-    String group;
-    if (blueprint.group() != null && !blueprint.group().trim().isEmpty()) {
-      group = blueprint.group();
-    } else {
-      group = "default"; // TODO: Make a constant/property
-    }
-
-    String type;
-    if (blueprint.type() != null && !blueprint.type().trim().isEmpty()) {
-      type = blueprint.type();
-    } else {
-      type = "default"; // TODO: Make a constant/property
-    }
-
-    String game;
-    if (blueprint.gameName() != null && !blueprint.gameName().trim().isEmpty()) {
-      game = blueprint.gameName();
-    } else {
-      game = "default"; // TODO: Make a constant/property
-    }
-
-    IdentityData identity = new IdentityData(gameObjectData.uniqueId(), gameObjectData.name(),
-        game, group, type, targetLayer);
+    IdentityData identity = new IdentityData(
+        data.uniqueId(),
+        data.name(),
+        game,
+        group,
+        type,
+        targetLayer
+    );
     object.setIdentityData(identity);
-    
-    LOG.info("Assigned object {} to layer '{}' with priority {}", 
-        gameObjectData.uniqueId(), targetLayer.getName(), targetLayer.getPriority());
+
+    LOG.info("Assigned object {} to layer '{}' with priority {}",
+        data.uniqueId(), targetLayer.getName(), targetLayer.getPriority());
 
     levelData.addGroup(group);
-    levelData.getObjectDataMap().put(object.getId(), object);
+    registerObjectInLayer(object, targetLayer);
+  }
+
+  private Layer findTargetLayerByPriority(int priority, UUID id, Layer defaultLayer) {
+    for (Layer layer : levelData.getLayers()) {
+      if (layer.getPriority() == priority) {
+        LOG.debug("Found layer '{}' with matching priority {} for object {}",
+            layer.getName(), priority, id);
+        return layer;
+      }
+    }
+    String fallbackName = "Layer_" + priority;
+    LOG.warn("No layer with priority {} for object {}, falling back to name '{}'",
+        priority, id, fallbackName);
+    return findLayerByName(fallbackName, defaultLayer);
+  }
+
+  private String getOrDefault(String value) {
+    return value != null && !value.trim().isEmpty()
+        ? value
+        : "default";
+  }
+
+  private void registerObjectInLayer(EditorObject object, Layer layer) {
+    UUID id = object.getId();
+    levelData.getObjectDataMap().put(id, object);
     levelData.getObjectLayerDataMap().values()
-        .forEach(list -> list.removeIf(obj -> obj.getId().equals(object.getId())));
-    levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>())
+        .forEach(list -> list.removeIf(o -> o.getId().equals(id)));
+    levelData.getObjectLayerDataMap()
+        .computeIfAbsent(layer, k -> new ArrayList<>())
         .add(object);
   }
 
@@ -502,42 +525,60 @@ public class EditorObjectPopulator {
    * @return the found {@link Layer} or the defaultLayer.
    */
   private Layer findLayerByName(String name, Layer defaultLayer) {
-    Objects.requireNonNull(defaultLayer, "Default layer cannot be null in findLayerByName");
-
-    if (name == null || name.trim().isEmpty()) {
+    Objects.requireNonNull(defaultLayer, "Default layer cannot be null");
+    if (isBlank(name)) {
       LOG.warn("Layer name is null or empty, using default layer '{}'", defaultLayer.getName());
       return defaultLayer;
     }
-    
-    // If the name is in the format "Layer_X", try to match by z-value
     if (name.startsWith("Layer_")) {
-      try {
-        int zValue = Integer.parseInt(name.substring("Layer_".length()));
-        
-        // Try to find a layer with the matching priority (z-value)
-        for (Layer layer : levelData.getLayers()) {
-          if (layer.getPriority() == zValue) {
-            LOG.debug("Found layer '{}' by z-value {}", layer.getName(), zValue);
-            return layer;
-          }
+      Integer z = parseZValue(name);
+      if (z != null) {
+        Layer byZ = findLayerByPriority(z);
+        if (byZ != null) {
+          LOG.debug("Found layer '{}' by z-value {}", byZ.getName(), z);
+          return byZ;
         }
-        LOG.debug("No layer found with z-value {}, continuing with name search", zValue);
-      } catch (NumberFormatException e) {
-        LOG.debug("Could not parse z-value from layer name '{}', using name search", name);
+        LOG.debug("No layer with z-value {}, continuing name search", z);
       }
     }
-    
-    // Try to find by exact name match
+    Layer byName = findLayerByExactName(name);
+    if (byName != null) {
+      LOG.debug("Found layer '{}' by exact name match", name);
+      return byName;
+    }
+    LOG.warn("Layer '{}' not found, using default layer '{}'", name, defaultLayer.getName());
+    return defaultLayer;
+  }
+
+  private Integer parseZValue(String name) {
+    try {
+      return Integer.parseInt(name.substring("Layer_".length()));
+    } catch (NumberFormatException e) {
+      LOG.debug("Could not parse z-value from '{}'", name);
+      return null;
+    }
+  }
+
+  private Layer findLayerByPriority(int priority) {
     for (Layer layer : levelData.getLayers()) {
-      if (layer.getName() != null && layer.getName().equals(name)) {
-        LOG.debug("Found layer '{}' by exact name match", name);
+      if (layer.getPriority() == priority) {
         return layer;
       }
     }
-    
-    LOG.warn("Layer with name '{}' not found in EditorLevelData, using default layer '{}'", name,
-        defaultLayer.getName());
-    return defaultLayer;
+    return null;
+  }
+
+  private Layer findLayerByExactName(String name) {
+    for (Layer layer : levelData.getLayers()) {
+      if (name.equals(layer.getName())) {
+        return layer;
+      }
+    }
+    return null;
+  }
+
+  private boolean isBlank(String s) {
+    return s == null || s.trim().isEmpty();
   }
 
   private EditorObject createNullBlueprintObject(GameObjectData gameObjectData,

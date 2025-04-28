@@ -44,26 +44,33 @@ public class EditorEventHandler {
    * @param eventId  String identifier for the new event. Must not be null or empty.
    */
   public void addEvent(UUID objectId, String eventId) {
-    if (!validateEventInput(objectId, eventId, "addEvent")) return;
-    if (eventId.trim().isEmpty()) {
+    if (!validateEventInput(objectId, eventId, "addEvent")) {
+      return;
+    }
+    String trimmedId = eventId.trim();
+    if (trimmedId.isEmpty()) {
       notifier.notifyErrorOccurred("Event ID cannot be empty.");
       return;
     }
-    handleEventOperation(objectId,
-        () -> {
-          editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
-          EditorObject obj = editorDataAPI.getEditorObject(objectId);
-          if (obj != null && obj.getEventData() != null) {
-            if (!obj.getEventData().getEvents().contains(eventId)) {
-              obj.getEventData().addEvent(eventId);
-              LOG.debug("Added event ID '{}' to object's EventData list.", eventId);
-            }
-          } else {
-            LOG.error("Failed to add event ID '{}' to EventData list: Object or EventData was null.", eventId);
-          }
-        },
-        String.format("add event '%s' to object %s", eventId, objectId)
+    handleEventOperation(
+        objectId,
+        () -> processAddEvent(objectId, trimmedId),
+        String.format("add event '%s' to object %s", trimmedId, objectId)
     );
+  }
+
+  private void processAddEvent(UUID objectId, String eventId) {
+    editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
+    EditorObject obj = editorDataAPI.getEditorObject(objectId);
+    if (obj == null || obj.getEventData() == null) {
+      LOG.error("Failed to add event ID '{}' to EventData list: Object or EventData was null.", eventId);
+      return;
+    }
+    List<String> events = obj.getEventData().getEvents();
+    if (!events.contains(eventId)) {
+      events.add(eventId);
+      LOG.debug("Added event ID '{}' to object's EventData list.", eventId);
+    }
   }
 
   /**
@@ -74,24 +81,28 @@ public class EditorEventHandler {
    * @param eventId  String identifier of the event to remove. Must not be null.
    */
   public void removeEvent(UUID objectId, String eventId) {
-    if (!validateEventInput(objectId, eventId, "removeEvent")) return;
-    handleEventOperation(objectId,
-        () -> {
-          boolean removedFromMap = editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
-          EditorObject obj = editorDataAPI.getEditorObject(objectId);
-          boolean removedFromList = false;
-          if (obj != null && obj.getEventData() != null) {
-            removedFromList = obj.getEventData().getEvents().remove(eventId);
-            if (removedFromList) {
-              LOG.debug("Removed event ID '{}' from object's EventData list.", eventId);
-            }
-          }
-          if (!removedFromMap && !removedFromList) {
-            LOG.warn("Event '{}' not found in InputData map or EventData list for removal.", eventId);
-          }
-        },
+    if (!validateEventInput(objectId, eventId, "removeEvent")) {
+      return;
+    }
+    handleEventOperation(
+        objectId,
+        () -> processRemoveEvent(objectId, eventId),
         String.format("remove event '%s' from object %s", eventId, objectId)
     );
+  }
+
+  private void processRemoveEvent(UUID objectId, String eventId) {
+    boolean removedFromMap = editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
+    EditorObject obj = editorDataAPI.getEditorObject(objectId);
+    boolean removedFromList = obj != null
+        && obj.getEventData() != null
+        && obj.getEventData().getEvents().remove(eventId);
+    if (removedFromList) {
+      LOG.debug("Removed event ID '{}' from object's EventData list.", eventId);
+    }
+    if (!removedFromMap && !removedFromList) {
+      LOG.warn("Event '{}' not found in InputData map or EventData list for removal.", eventId);
+    }
   }
 
   /**
