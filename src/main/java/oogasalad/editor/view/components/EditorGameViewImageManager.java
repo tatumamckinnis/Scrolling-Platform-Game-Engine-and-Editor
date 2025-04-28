@@ -52,6 +52,7 @@ class EditorGameViewImageManager {
   void preloadObjectImage(UUID id) {
     try {
       String imagePath = getObjectSpritePath(id);
+      System.out.println(imagePath);
       if (imagePath == null) {
         objectImages.remove(id);
         log.trace("No valid sprite path found for ID {}. Removing image cache.", id);
@@ -84,17 +85,25 @@ class EditorGameViewImageManager {
    * atlas, or image file information is not found.
    */
   private String getObjectSpritePath(UUID id) {
-    EditorObject object = controller.getEditorObject(id);
-    if (object == null || object.getSpriteData() == null) {
-      return null;
+    EditorObject obj = controller.getEditorObject(id);
+    if (obj == null || obj.getSpriteData() == null) return null;
+
+    // 1) preferred: atlas registered for this object
+    SpriteSheetAtlas atlas =
+        controller.getEditorDataAPI().getLevel().getAtlas(obj.getId());
+    if (atlas != null && atlas.getImageFile() != null) {
+      return atlas.getImageFile().getPath();
     }
 
-    SpriteSheetAtlas atlas = controller.getEditorDataAPI().getLevel().getAtlas(object.getId());
-    if (atlas == null || atlas.getImageFile() == null) {
-      log.warn("Atlas or image file not found for object {}", id);
-      return null;
+    // 2) fallback: whatever was stored in the sprite record itself
+    String spriteFile = obj.getSpriteData().getSpritePath();
+    if (spriteFile != null && !spriteFile.isEmpty()) {
+      log.debug("Using direct sprite file for {} because no atlas is available", id);
+      return spriteFile;
     }
-    return atlas.getImageFile().getAbsolutePath();
+
+    log.warn("No atlas *and* no sprite file for object {}", id);
+    return null;
   }
 
 
@@ -307,7 +316,7 @@ class EditorGameViewImageManager {
     try {
       File f = new File(path);
       if (f.isAbsolute() && f.exists() && f.isFile()) {
-        return f.toURI().toString();
+        return f.getAbsolutePath();
       }
     } catch (Exception e) {
       log.debug("Error checking absolute path '{}': {}", path, e.getMessage());

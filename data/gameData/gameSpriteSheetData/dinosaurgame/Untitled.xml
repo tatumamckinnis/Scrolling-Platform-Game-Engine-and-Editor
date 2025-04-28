@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map minX="-64" minY="-32" maxX="1" maxY="1">
+<map minX="-144" minY="-32" maxX="1" maxY="1">
   <cameraData type="Tracker">
     <stringProperties>
     </stringProperties>
@@ -8,13 +8,13 @@
     </doubleProperties>
   </cameraData>
   <layers>
-    <layer name="layer_0" width="65" height="33" z="0">
+    <layer name="layer_0" width="145" height="33" z="0">
       <data>
-        <object name = "Entity_-64_-32" id="1" coordinates="(-64,-32)" uid="c1f8c609-e8df-4700-983c-59d2f08d1802" />
+        <object name = "Entity_-144_-32" id="1" coordinates="(-144,-32)" uid="dac0643f-e5fd-47b3-bed6-57600b3eeb50" />
       </data>
     </layer>
   </layers>
-  <game name="untitled_game">
+  <game name="dinosaurgame">
     <objectGroup name="ENTITY">
       <object
   spriteName="Bird1"
