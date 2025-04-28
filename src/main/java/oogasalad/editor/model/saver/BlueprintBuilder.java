@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
@@ -224,23 +227,23 @@ public class BlueprintBuilder {
    * @return a list of lists of {@link ConditionData} records.
    */
   private static List<List<ConditionData>> getConditionLists(EditorEvent ev) {
-    List<List<ConditionData>> condGroups = new ArrayList<>();
-    if (ev.getConditions() == null) return condGroups; // Handle null conditions list
-
-    for (List<ExecutorData> edGroup : ev.getConditions()) {
-      if (edGroup == null) continue; // Skip null condition groups
-      List<ConditionData> group = new ArrayList<>();
-      for (ExecutorData ex : edGroup) {
-        if (ex == null) continue; // Skip null executors within a group
-        group.add(new ConditionData(
-            ex.getExecutorName(),
-            ex.getStringParams() != null ? new HashMap<>(ex.getStringParams()) : new HashMap<>(),
-            ex.getDoubleParams() != null ? new HashMap<>(ex.getDoubleParams()) : new HashMap<>()
-        ));
-      }
-      condGroups.add(group);
-    }
-    return condGroups;
+    return Optional.ofNullable(ev.getConditions())
+        .orElseGet(Collections::emptyList)
+        .stream()
+        .filter(Objects::nonNull)
+        .map(group -> group.stream()
+            .filter(Objects::nonNull)
+            .map(ex -> new ConditionData(
+                ex.getExecutorName(),
+                Optional.ofNullable(ex.getStringParams())
+                    .map(HashMap::new)
+                    .orElseGet(HashMap::new),
+                Optional.ofNullable(ex.getDoubleParams())
+                    .map(HashMap::new)
+                    .orElseGet(HashMap::new)
+            ))
+            .collect(Collectors.toList()))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -251,17 +254,19 @@ public class BlueprintBuilder {
    * @return a list of {@link OutcomeData} records.
    */
   private static List<OutcomeData> getOutcomesLists(EditorEvent ev) {
-    List<OutcomeData> outList = new ArrayList<>();
-    if (ev.getOutcomes() == null) return outList; // Handle null outcomes list
-
-    for (ExecutorData ex : ev.getOutcomes()) {
-      if (ex == null) continue; // Skip null executors
-      outList.add(new OutcomeData(
-          ex.getExecutorName(),
-          ex.getStringParams() != null ? new HashMap<>(ex.getStringParams()) : new HashMap<>(),
-          ex.getDoubleParams() != null ? new HashMap<>(ex.getDoubleParams()) : new HashMap<>()
-      ));
-    }
-    return outList;
+    return Optional.ofNullable(ev.getOutcomes())
+        .orElseGet(Collections::emptyList)
+        .stream()
+        .filter(Objects::nonNull)
+        .map(ex -> new OutcomeData(
+            ex.getExecutorName(),
+            Optional.ofNullable(ex.getStringParams())
+                .map(HashMap::new)
+                .orElseGet(HashMap::new),
+            Optional.ofNullable(ex.getDoubleParams())
+                .map(HashMap::new)
+                .orElseGet(HashMap::new)
+        ))
+        .collect(Collectors.toList());
   }
 }
