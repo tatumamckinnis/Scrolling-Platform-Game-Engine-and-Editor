@@ -68,6 +68,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
   public static final DataFormat PREFAB_BLUEPRINT_ID = new DataFormat(
       "oogasalad/prefab-blueprint-id");
+  public static final String SELECTED_PREFAB_ITEM = "selected-prefab-item";
 
 
   private final EditorController controller;
@@ -221,7 +222,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
   private void displayFilteredPrefabs() {
     prefabGrid.getChildren().clear();
     if (selectedNode != null) {
-      selectedNode.getStyleClass().remove("selected-prefab-item");
+      selectedNode.getStyleClass().remove(SELECTED_PREFAB_ITEM);
       selectedNode = null;
     }
     selectedPrefab.set(null);
@@ -344,10 +345,10 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
     prefabContainer.setOnMouseClicked(event -> {
       if (selectedNode != null) {
-        selectedNode.getStyleClass().remove("selected-prefab-item");
+        selectedNode.getStyleClass().remove(SELECTED_PREFAB_ITEM);
       }
       selectedNode = prefabContainer;
-      selectedNode.getStyleClass().add("selected-prefab-item");
+      selectedNode.getStyleClass().add(SELECTED_PREFAB_ITEM);
       LOG.debug("Prefab selected: {}", prefab.type());
       selectedPrefab.set(prefab);
       controller.setActiveTool("placePrefabTool");
@@ -366,7 +367,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       LOG.debug("Drag detected on prefab: {}", prefab.type());
       Dragboard db = node.startDragAndDrop(TransferMode.COPY);
 
-      ClipboardContent content = new ClipboardContent();
+      HashMap<DataFormat, Object> content = new ClipboardContent();
 
       content.put(PREFAB_BLUEPRINT_ID, String.valueOf(prefab.blueprintId()));
       db.setContent(content);
@@ -616,42 +617,41 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
 
   @Override
   public void setSnapToGrid(boolean doSnap) {
-
+    // Unused notification calls
   }
 
   @Override
   public void setCellSize(int cellSize) {
-
+    // Unused notification calls
   }
 
   @Override
   public void onObjectRemoved(UUID objectId) {
-
+    // Unused notification calls
   }
 
   @Override
   public void onObjectUpdated(UUID objectId) {
-
+    // Unused notification calls
   }
 
   @Override
   public void onSelectionChanged(UUID selectedObjectId) {
-
+    // Unused notification calls
   }
 
   @Override
   public void onObjectAdded(UUID objectId) {
-
+    // Unused notification calls
   }
 
   @Override
   public void onDynamicVariablesChanged() {
-
+    // Unused notification calls
   }
 
   @Override
   public void onErrorOccurred(String errorMessage) {
     LOG.warn("PrefabPalettePane notified: An error occurred: {}", errorMessage);
-
   }
 }

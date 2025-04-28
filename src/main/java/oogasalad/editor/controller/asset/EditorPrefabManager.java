@@ -48,6 +48,7 @@ public class EditorPrefabManager {
   private static final String STRING_PROPS_ELEMENT = "stringProperties";
   private static final String DOUBLE_PROPS_ELEMENT = "doubleProperties";
   private static final String PROPERTY_ELEMENT = "property";
+  private static final String STRING_FORMATTING = "%.2f";
 
 
   private final EditorDataAPI editorDataAPI;
@@ -227,9 +228,9 @@ public class EditorPrefabManager {
   private void setBasicObjectAttributes(Element element, BlueprintData bp) {
     element.setAttribute("id", String.valueOf(bp.blueprintId()));
     element.setAttribute("type", bp.type());
-    element.setAttribute("velocityX", String.format("%.2f", bp.velocityX()));
-    element.setAttribute("velocityY", String.format("%.2f", bp.velocityY()));
-    element.setAttribute("rotation", String.format("%.2f", bp.rotation()));
+    element.setAttribute("velocityX", String.format(STRING_FORMATTING, bp.velocityX()));
+    element.setAttribute("velocityY", String.format(STRING_FORMATTING, bp.velocityY()));
+    element.setAttribute("rotation", String.format(STRING_FORMATTING, bp.rotation()));
   }
 
   private void setSpriteAttributes(Element element, SpriteData sprite) {
@@ -281,7 +282,7 @@ public class EditorPrefabManager {
       properties.forEach((key, value) -> {
         Element prop = doc.createElement(PROPERTY_ELEMENT);
         prop.setAttribute("key", key);
-        String valueString = (value instanceof Double) ? String.format("%.2f", value) : Objects.toString(value, "");
+        String valueString = (value instanceof Double) ? String.format(STRING_FORMATTING, value) : Objects.toString(value, "");
         prop.setAttribute("value", valueString);
         subElement.appendChild(prop);
       });

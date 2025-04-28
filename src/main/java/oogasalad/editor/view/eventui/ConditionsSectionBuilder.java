@@ -48,6 +48,11 @@ public class ConditionsSectionBuilder {
   private static final Logger LOG = LogManager.getLogger(ConditionsSectionBuilder.class);
 
   private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/conditions_identifiers.properties";
+  public static final String KEY_PROMPT_SELECT_GROUP = "key.promptSelectGroup";
+  public static final String PARAM_TYPE_ID_INTEGER = "param.typeIdInteger";
+  public static final String PARAM_TYPE_ID_DOUBLE = "param.typeIdDouble";
+  public static final String PARAM_TYPE_ID_DROPDOWN_PREFIX = "param.typeIdDropdownPrefix";
+  public static final String PARAM_TYPE_ID_BOOLEAN = "param.typeIdBoolean";
 
   private final ResourceBundle uiBundle;
   private final Properties localProps;
@@ -224,7 +229,7 @@ public class ConditionsSectionBuilder {
   private void setupConditionGroupComboBox() {
     conditionGroupComboBox = new ComboBox<>();
     conditionGroupComboBox.setId(getLocalProp("id.conditionGroupComboBox"));
-    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp(KEY_PROMPT_SELECT_GROUP)));
     conditionGroupComboBox.setMinWidth(Region.USE_PREF_SIZE);
   }
 
@@ -319,7 +324,7 @@ public class ConditionsSectionBuilder {
     conditionTypeComboBox.getSelectionModel().clearSelection();
     conditionTypeComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectCondition")));
     conditionGroupComboBox.getSelectionModel().clearSelection(); // Optionally clear group selection too
-    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp(KEY_PROMPT_SELECT_GROUP)));
   }
 
   /**
@@ -444,10 +449,10 @@ public class ConditionsSectionBuilder {
       String param,
       String typeId,
       String current) {
-    String boolId     = getLocalProp("param.typeIdBoolean");
-    String intId      = getLocalProp("param.typeIdInteger");
-    String dblId      = getLocalProp("param.typeIdDouble");
-    String ddPrefix   = getLocalProp("param.typeIdDropdownPrefix");
+    String boolId     = getLocalProp(PARAM_TYPE_ID_BOOLEAN);
+    String intId      = getLocalProp(PARAM_TYPE_ID_INTEGER);
+    String dblId      = getLocalProp(PARAM_TYPE_ID_DOUBLE);
+    String ddPrefix   = getLocalProp(PARAM_TYPE_ID_DROPDOWN_PREFIX);
     try {
       if (typeId.equalsIgnoreCase(boolId)) {
         CheckBox cb = new CheckBox();
@@ -484,10 +489,10 @@ public class ConditionsSectionBuilder {
 
   private String resolveHumanType(String typeId) {
     String key;
-    String boolKey   = getLocalProp("param.typeIdBoolean");
-    String intKey    = getLocalProp("param.typeIdInteger");
-    String dblKey    = getLocalProp("param.typeIdDouble");
-    String ddPrefix  = getLocalProp("param.typeIdDropdownPrefix");
+    String boolKey   = getLocalProp(PARAM_TYPE_ID_BOOLEAN);
+    String intKey    = getLocalProp(PARAM_TYPE_ID_INTEGER);
+    String dblKey    = getLocalProp(PARAM_TYPE_ID_DOUBLE);
+    String ddPrefix  = getLocalProp(PARAM_TYPE_ID_DROPDOWN_PREFIX);
     if (typeId.equalsIgnoreCase(boolKey)) {
       key = "key.paramTypeBoolean";
     } else if (typeId.equalsIgnoreCase(intKey)) {
@@ -525,8 +530,8 @@ public class ConditionsSectionBuilder {
     if (sp != null && sp.containsKey(name)) {
       return sp.get(name);
     }
-    String intKey = getLocalProp("param.typeIdInteger");
-    String dblKey = getLocalProp("param.typeIdDouble");
+    String intKey = getLocalProp(PARAM_TYPE_ID_INTEGER);
+    String dblKey = getLocalProp(PARAM_TYPE_ID_DOUBLE);
     if ((typeId.equalsIgnoreCase(intKey) || typeId.equalsIgnoreCase(dblKey))
         && dp != null && dp.containsKey(name)) {
       Double v = dp.get(name);
@@ -574,7 +579,7 @@ public class ConditionsSectionBuilder {
    */
   private void handleNumericParamUpdate(ConditionDisplayItem item, String key, String paramType, TextField textField) {
     String newValueText = textField.getText();
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
+    String typeIdInteger = getLocalProp(PARAM_TYPE_ID_INTEGER);
     try {
       if (paramType.equalsIgnoreCase(typeIdInteger)) {
         Integer intVal = Integer.parseInt(newValueText);
@@ -639,7 +644,7 @@ public class ConditionsSectionBuilder {
     }
 
     conditionGroupComboBox.setDisable(numGroups == 0); // Disable if there are no groups
-    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectGroup")));
+    conditionGroupComboBox.setPromptText(uiBundle.getString(getLocalProp(KEY_PROMPT_SELECT_GROUP)));
   }
 
 

@@ -47,6 +47,8 @@ public class InputTabComponentFactory implements EditorViewListener {
 
  private static final Logger LOG = LogManager.getLogger(InputTabComponentFactory.class);
  private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/input_tab_component_factory_identifiers.properties";
+ public static final String KEY_ERROR_API_FAILURE = "key.error.api.failure";
+ public static final String KEY_ERROR_ACTION_FAILED = "key.error.action.failed";
 
 
  private final EditorController editorController;
@@ -147,13 +149,12 @@ public class InputTabComponentFactory implements EditorViewListener {
 
  @Override
  public void setSnapToGrid(boolean doSnap) {
-
-
+  // Unused notification calls
  }
 
  @Override
  public void setCellSize(int cellSize) {
-
+  // Unused notification calls
  }
 
  /**
@@ -257,7 +258,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshEventsList();
   } catch (Exception e) {
    LOG.error("Error delegating add event: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.add.event"), e.getMessage());
   }
  }
@@ -283,7 +284,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshEventsList();
   } catch (Exception e) {
    LOG.error("Error delegating remove event: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.remove.event"), e.getMessage());
   }
  }
@@ -302,7 +303,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating add condition group: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.add.condition.group"), e.getMessage());
   }
  }
@@ -324,7 +325,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating remove condition group: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.remove.condition.group"), e.getMessage());
   }
  }
@@ -347,7 +348,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating add condition: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.add.condition"), e.getMessage());
   }
  }
@@ -371,7 +372,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating remove condition: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.remove.condition"), e.getMessage());
   }
  }
@@ -415,7 +416,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating add outcome: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.add.outcome"), e.getMessage());
   }
  }
@@ -436,7 +437,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating remove outcome: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.remove.outcome"), e.getMessage());
   }
  }
@@ -498,7 +499,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    refreshConditionsAndOutcomesForEvent();
   } catch (Exception e) {
    LOG.error("Error delegating {}: {}", contextDescription, e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                contextDescription, e.getMessage());
    refreshConditionsAndOutcomesForEvent();
   }
@@ -534,7 +535,7 @@ public class InputTabComponentFactory implements EditorViewListener {
    LOG.info("Delegated add dynamic variable: {}", dynamicVar.getName());
   } catch (Exception e) {
    LOG.error("Error delegating add dynamic variable: {}", e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.add.variable"), e.getMessage());
   }
  }
@@ -658,7 +659,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   } catch (Exception e) {
    LOG.error("Controller failed to get events for object {}: {}", currentObjectId,
                e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.fetch.events"), e.getMessage());
    return null;
   }
@@ -717,7 +718,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   } catch (Exception e) {
    LOG.error("Controller failed to get conditions for event {}: {}", currentEventId,
                e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.fetch.conditions"), e.getMessage());
    return Collections.emptyList();
   }
@@ -740,7 +741,7 @@ public class InputTabComponentFactory implements EditorViewListener {
   } catch (Exception e) {
    LOG.error("Controller failed to get outcomes for event {}: {}", currentEventId,
                e.getMessage(), e);
-   showFormattedErrorAlert(getId("key.error.api.failure"), getId("key.error.action.failed"),
+   showFormattedErrorAlert(getId(KEY_ERROR_API_FAILURE), getId(KEY_ERROR_ACTION_FAILED),
                getId("action.fetch.outcomes"), e.getMessage());
    return Collections.emptyList();
   }
@@ -952,6 +953,6 @@ public class InputTabComponentFactory implements EditorViewListener {
      @Override
  public void onErrorOccurred(String errorMessage) {
   LOG.warn("InputTab received: onErrorOccurred: {}", errorMessage);
-  showErrorAlert(getId("key.error.api.failure"), errorMessage);
+  showErrorAlert(getId(KEY_ERROR_API_FAILURE), errorMessage);
  }
 }

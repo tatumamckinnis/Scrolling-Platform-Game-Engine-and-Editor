@@ -39,7 +39,11 @@ import org.apache.logging.log4j.Logger;
  */
 public class EditorObjectPopulator {
 
+  public static final String LAYER_STRING = "Layer_";
   private static final Logger LOG = LogManager.getLogger(EditorObjectPopulator.class);
+  public static final String GRAVITY = "gravity";
+  public static final String JUMP_FORCE = "jump_force";
+  public static final String ERROR_STRING = "ERROR";
   private final EditorLevelData levelData;
   private final EditorDataAPI dataAPI;
 
@@ -151,18 +155,18 @@ public class EditorObjectPopulator {
     HitBoxData bp = blueprint.hitBoxData();
     if (bp != null) {
       object.setHitboxData(new HitboxData(
-          (int)(x + bp.spriteDx()),
-          (int)(y + bp.spriteDy()),
+          (int) (x + bp.spriteDx()),
+          (int) (y + bp.spriteDy()),
           bp.hitBoxWidth(),
           bp.hitBoxHeight(),
           bp.shape()
       ));
     } else {
       HitboxData hb = object.getHitboxData();
-      hb.setX((int)x);
-      hb.setY((int)y);
+      hb.setX((int) x);
+      hb.setY((int) y);
       LOG.warn("Blueprint {} has no HitBoxData, using default at ({}, {}).",
-          blueprint.blueprintId(), (int)x, (int)y);
+          blueprint.blueprintId(), (int) x, (int) y);
     }
   }
 
@@ -202,10 +206,10 @@ public class EditorObjectPopulator {
     }
     try {
       switch (propertyName) {
-        case "gravity":
+        case GRAVITY:
           physics.setGravity(value);
           break;
-        case "jump_force":
+        case JUMP_FORCE:
           physics.setJumpForce(value);
           break;
         default:
@@ -387,12 +391,19 @@ public class EditorObjectPopulator {
     return object;
   }
 
+  /**
+   * Sets the identity data of a specific object based off of gameObjectData and blueprint data.
+   *
+   * @param data      the gameObjectData to assign to the object
+   * @param object    the object to assign the data to
+   * @param blueprint the blueprint to take data from to assign to the object.
+   */
   public void setIdentityData(GameObjectData data, EditorObject object, BlueprintData blueprint) {
     Layer defaultLayer = levelData.getFirstLayer();
     Layer targetLayer = findTargetLayerByPriority(data.layer(), data.uniqueId(), defaultLayer);
     String group = getOrDefault(blueprint.group());
-    String type  = getOrDefault(blueprint.type());
-    String game  = getOrDefault(blueprint.gameName());
+    String type = getOrDefault(blueprint.type());
+    String game = getOrDefault(blueprint.gameName());
 
     IdentityData identity = new IdentityData(
         data.uniqueId(),
@@ -419,7 +430,7 @@ public class EditorObjectPopulator {
         return layer;
       }
     }
-    String fallbackName = "Layer_" + priority;
+    String fallbackName = LAYER_STRING + priority;
     LOG.warn("No layer with priority {} for object {}, falling back to name '{}'",
         priority, id, fallbackName);
     return findLayerByName(fallbackName, defaultLayer);
@@ -490,7 +501,7 @@ public class EditorObjectPopulator {
   /**
    * Currently hardcoded to input data due to that being the only source of events at the moment.
    *
-   * @param object The editor object to input event data for
+   * @param object        The editor object to input event data for
    * @param blueprintData the blueprint to read the events from
    */
   private void setEventData(EditorObject object,
@@ -505,8 +516,8 @@ public class EditorObjectPopulator {
     physics.setVelocityX(blueprint.velocityX());
     physics.setVelocityY(blueprint.velocityY());
     if (doubleProps != null) {
-      trySetPhysicsProperty(physics, "gravity", doubleProps.get("gravity"));
-      trySetPhysicsProperty(physics, "jump_force", doubleProps.get("jump_force"));
+      trySetPhysicsProperty(physics, GRAVITY, doubleProps.get(GRAVITY));
+      trySetPhysicsProperty(physics, JUMP_FORCE, doubleProps.get(JUMP_FORCE));
     }
   }
 
@@ -525,7 +536,7 @@ public class EditorObjectPopulator {
       LOG.warn("Layer name is null or empty, using default layer '{}'", defaultLayer.getName());
       return defaultLayer;
     }
-    if (name.startsWith("Layer_")) {
+    if (name.startsWith(LAYER_STRING)) {
       Integer z = parseZValue(name);
       if (z != null) {
         Layer byZ = findLayerByPriority(z);
@@ -547,7 +558,7 @@ public class EditorObjectPopulator {
 
   private Integer parseZValue(String name) {
     try {
-      return Integer.parseInt(name.substring("Layer_".length()));
+      return Integer.parseInt(name.substring(LAYER_STRING.length()));
     } catch (NumberFormatException e) {
       LOG.debug("Could not parse z-value from '{}'", name);
       return null;
@@ -581,45 +592,45 @@ public class EditorObjectPopulator {
     LOG.error(
         "BlueprintData not found for blueprintId {} (GameObjectData {}). Creating minimal error object.",
         gameObjectData.blueprintId(), gameObjectData.uniqueId());
-        
+
     // Try to find the layer by z-value first
     int zValue = gameObjectData.layer();
     Layer targetLayer = null;
-    
+
     // Look for a layer with matching priority first
     for (Layer layer : levelData.getLayers()) {
       if (layer.getPriority() == zValue) {
         targetLayer = layer;
-        LOG.debug("Found layer '{}' with matching priority {} for error object", 
+        LOG.debug("Found layer '{}' with matching priority {} for error object",
             layer.getName(), zValue);
         break;
       }
     }
-    
+
     // If no matching layer found, use the first layer
     if (targetLayer == null) {
       targetLayer = levelData.getFirstLayer();
       LOG.warn("No layer found with priority {} for error object, using default layer", zValue);
     }
-    
+
     IdentityData errorIdentity = new IdentityData(gameObjectData.uniqueId(),
-        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4), 
-        "ERROR", "ERROR", "ERROR",
+        "ERROR_NoBlueprint_" + gameObjectData.uniqueId().toString().substring(0, 4),
+        ERROR_STRING, ERROR_STRING, ERROR_STRING,
         targetLayer);
-        
+
     object.setIdentityData(errorIdentity);
     object.setSpriteData(createDefaultSpriteData(gameObjectData.x(), gameObjectData.y()));
     object.getHitboxData().setX(gameObjectData.x());
     object.getHitboxData().setY(gameObjectData.y());
-    levelData.addGroup("ERROR");
+    levelData.addGroup(ERROR_STRING);
 
     levelData.getObjectDataMap().put(object.getId(), object);
     levelData.getObjectLayerDataMap().computeIfAbsent(targetLayer, k -> new ArrayList<>())
         .add(object);
-        
-    LOG.info("Created error object and assigned to layer '{}' with priority {}", 
+
+    LOG.info("Created error object and assigned to layer '{}' with priority {}",
         targetLayer.getName(), targetLayer.getPriority());
-        
+
     return object;
   }
 }

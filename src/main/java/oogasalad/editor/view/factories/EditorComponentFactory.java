@@ -59,6 +59,7 @@ public class EditorComponentFactory {
   private static final Logger LOG = LogManager.getLogger(EditorComponentFactory.class);
 
   private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/editor_component_factory_identifiers.properties";
+  public static final String STYLE_HEADER_LABEL = "style.header.label";
 
   private final Properties editorProperties;
   private final Properties identifierProps;
@@ -219,7 +220,7 @@ public class EditorComponentFactory {
     mapPane.setId(getId("id.map.pane"));
 
     Label mapLabel = createStyledLabel(uiBundle.getString(getId("key.map.title")),
-        getId("style.header.label"));
+        getId(STYLE_HEADER_LABEL));
     mapLabel.setId(getId("id.map.label"));
 
     createGameView(uiBundle);
@@ -297,7 +298,7 @@ public class EditorComponentFactory {
     // Header label
     Label chatLabel = createStyledLabel(
         uiBundle.getString(getId("key.chatbot.tab.title")),
-        getId("style.header.label")
+        getId(STYLE_HEADER_LABEL)
     );
     chatLabel.setId(getId("id.chat.label"));
 
@@ -529,7 +530,7 @@ public class EditorComponentFactory {
     componentPane.setId(getId("id.component.pane"));
 
     Label componentsLabel = createStyledLabel(uiBundle.getString(getId("key.properties.title")),
-        getId("style.header.label"));
+        getId(STYLE_HEADER_LABEL));
     componentsLabel.setId(getId("id.components.label"));
 
     TabPane tabPane = new TabPane();
