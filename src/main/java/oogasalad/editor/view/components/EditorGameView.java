@@ -289,16 +289,14 @@ public class EditorGameView extends Pane implements EditorViewListener {
    */
   @Override
   public void onObjectRemoved(UUID objectId) {
+    if (displayedObjectIds.remove(objectId)) {
+      imageManager.removeImage(objectId);
+    }
+    if (Objects.equals(selectedObjectId, objectId)) {
+      selectedObjectId = null;
+    }
     Platform.runLater(() -> {
       LOG.trace("EditorGameView received: onObjectRemoved {}", objectId);
-      if (displayedObjectIds.remove(objectId)) {
-        imageManager.removeImage(objectId);
-      }
-
-      if (Objects.equals(selectedObjectId, objectId)) {
-        selectedObjectId = null;
-
-      }
       drawer.redrawObjects();
     });
   }

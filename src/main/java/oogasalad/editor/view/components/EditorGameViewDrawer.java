@@ -263,14 +263,17 @@ class EditorGameViewDrawer {
   private void drawSelectionIfPresent(GraphicsContext gc) {
     UUID selectedId = view.getSelectedObjectId();
 
-    if (selectedId != null && view.getDisplayedObjectIds().contains(selectedId)) {
-      EditorObject selectedObj = controller.getEditorObject(selectedId);
+    if (selectedId == null || !view.getDisplayedObjectIds().contains(selectedId)) return;
 
-      if (selectedObj != null && selectedObj.getSpriteData() != null) {
-        drawSelectionIndicator(gc, selectedObj.getSpriteData().getX(),
-            selectedObj.getSpriteData().getY());
-      }
-    }
+    EditorObject selectedObj = controller.getEditorObject(selectedId);
+    if (selectedObj == null) return;
+
+    int x = selectedObj.getHitboxData().getX();
+    int y = selectedObj.getHitboxData().getY();
+    int w = selectedObj.getHitboxData().getWidth();
+    int h = selectedObj.getHitboxData().getHeight();
+
+    drawSelectionIndicator(gc, x, y, w, h);
   }
 
   /**
@@ -478,25 +481,18 @@ class EditorGameViewDrawer {
    * @param x The x-coordinate of the selected object's top-left corner (world space).
    * @param y The y-coordinate of the selected object's top-left corner (world space).
    */
-  private void drawSelectionIndicator(GraphicsContext g, double x, double y) {
-    double currentZoom = view.getZoomScale();
-    int cellSize = view.getCellSize();
+  private void drawSelectionIndicator(GraphicsContext g, double x, double y, double width, double height) {
+    double zoom = view.getZoomScale();
+    double border = selectionBorderWidth / zoom;
 
     g.save();
     g.setStroke(selectionBorderColor);
+    g.setLineWidth(border);
 
-
-    double effectiveBorderWidth = selectionBorderWidth / currentZoom;
-    g.setLineWidth(effectiveBorderWidth);
-
-
-    double drawX = x - effectiveBorderWidth / 2.0;
-    double drawY = y - effectiveBorderWidth / 2.0;
-    double drawW = cellSize + effectiveBorderWidth;
-    double drawH = cellSize + effectiveBorderWidth;
-
-
-    g.strokeRect(drawX, drawY, drawW, drawH);
+    g.strokeRect(x - border / 2,
+        y - border / 2,
+        width + border,
+        height + border);
     g.restore();
   }
 }
