@@ -1,7 +1,7 @@
 package oogasalad.editor.view.eventui;
 
-import oogasalad.editor.model.data.object.event.ExecutorData;
 import java.util.Objects;
+import oogasalad.editor.model.data.object.event.ExecutorData;
 
 /**
  * Represents an item displayed in the outcomes ListView within {@link OutcomesSectionBuilder}.

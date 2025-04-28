@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.AbstractEventMapData;
-import oogasalad.editor.model.data.object.event.CustomEventData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
 import oogasalad.editor.model.data.object.event.InputData;

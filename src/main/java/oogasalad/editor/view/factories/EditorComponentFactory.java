@@ -6,10 +6,6 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -48,6 +44,8 @@ import oogasalad.editor.view.tools.ObjectInteractionTool;
 import oogasalad.editor.view.tools.OnClickTool;
 import oogasalad.editor.view.tools.SelectionTool;
 import oogasalad.fileparser.records.BlueprintData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Factory class responsible for creating the main UI components of the Editor scene. Uses external

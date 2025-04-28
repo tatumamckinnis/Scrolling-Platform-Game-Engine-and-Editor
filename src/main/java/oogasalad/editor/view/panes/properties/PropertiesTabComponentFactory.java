@@ -24,7 +24,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
@@ -33,7 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.Layer;
-import oogasalad.editor.model.data.object.EditorObject; // Import EditorObject
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.view.EditorViewListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -12,13 +12,11 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Represents the level data used by the editor, including groups, layers, and mappings between

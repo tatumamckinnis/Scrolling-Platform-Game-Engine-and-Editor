@@ -1,9 +1,5 @@
 package oogasalad.editor.view.panes.sprite_creation;
 
-import java.util.stream.Collectors;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -22,7 +18,6 @@ import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.model.data.SpriteSheetAtlas;
 import oogasalad.editor.model.data.SpriteSheetLibrary;
 import oogasalad.editor.model.data.SpriteTemplateMap;
-import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
 import oogasalad.editor.model.data.object.sprite.SpriteTemplate;
 import org.apache.logging.log4j.LogManager;

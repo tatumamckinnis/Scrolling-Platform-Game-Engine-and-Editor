@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.Player;
 import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;

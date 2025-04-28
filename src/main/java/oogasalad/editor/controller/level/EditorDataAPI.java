@@ -1,7 +1,6 @@
 package oogasalad.editor.controller.level;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,12 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import oogasalad.editor.controller.asset.SpriteSheetDataManager;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.controller.object.CollisionDataManager;
@@ -41,6 +36,8 @@ import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Provides a comprehensive API to manage editor data, acting as a facade for various underlying

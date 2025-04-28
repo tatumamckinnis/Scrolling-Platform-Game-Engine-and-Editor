@@ -2,10 +2,6 @@ package oogasalad.engine.view.screen;
 
 import java.io.File;
 import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,6 +25,8 @@ import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 import oogasalad.userData.UserDataApiDefault;
 import oogasalad.userData.records.UserData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Screen for editing user profile information.

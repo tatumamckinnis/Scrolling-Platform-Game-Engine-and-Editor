@@ -6,11 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import oogasalad.editor.controller.level.EditorDataAPI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
@@ -27,6 +23,8 @@ import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LevelData Converter converts data from level data to editor object Data

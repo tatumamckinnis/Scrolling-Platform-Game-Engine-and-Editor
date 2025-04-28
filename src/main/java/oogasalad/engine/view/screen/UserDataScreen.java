@@ -2,10 +2,6 @@ package oogasalad.engine.view.screen;
 
 import java.io.File;
 import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
@@ -28,6 +24,8 @@ import oogasalad.engine.view.factory.ButtonActionFactory;
 import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Displays a UserData Screen wher the user can change their information

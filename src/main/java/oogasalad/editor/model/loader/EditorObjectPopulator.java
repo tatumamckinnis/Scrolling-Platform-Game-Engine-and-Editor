@@ -9,22 +9,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.controller.level.EditorDataAPI;
-import oogasalad.editor.model.data.SpriteSheetLibrary;
-import oogasalad.editor.model.data.object.event.AbstractEventMapData;
-import oogasalad.editor.model.data.object.event.InputData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import oogasalad.editor.model.EditorEventConverter;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.HitboxData;
 import oogasalad.editor.model.data.object.IdentityData;
-import oogasalad.editor.model.data.object.event.CustomEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
+import oogasalad.editor.model.data.object.event.InputData;
 import oogasalad.editor.model.data.object.event.PhysicsData;
 import oogasalad.editor.model.data.object.sprite.AnimationData;
 import oogasalad.editor.model.data.object.sprite.FrameData;
@@ -32,6 +25,8 @@ import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.HitBoxData;
 import oogasalad.fileparser.records.SpriteData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Utility class responsible for populating an EditorObject with data from various sources like

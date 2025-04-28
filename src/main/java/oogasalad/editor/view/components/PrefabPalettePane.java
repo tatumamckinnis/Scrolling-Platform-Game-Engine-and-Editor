@@ -47,7 +47,6 @@ import oogasalad.editor.view.EditorViewListener;
 import oogasalad.editor.view.resources.EditorResourceLoader;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.FrameData;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;

@@ -6,18 +6,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import oogasalad.exceptions.UserDataWriteException;
 import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * UserDataWriter is responsible for serializing UserData objects

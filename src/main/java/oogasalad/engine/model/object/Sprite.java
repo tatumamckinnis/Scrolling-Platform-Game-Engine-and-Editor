@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
-import oogasalad.Main;
 import oogasalad.fileparser.records.AnimationData;
 import oogasalad.fileparser.records.FrameData;
 

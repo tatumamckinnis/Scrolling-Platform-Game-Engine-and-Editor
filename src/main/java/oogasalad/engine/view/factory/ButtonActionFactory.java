@@ -8,20 +8,13 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.zip.DataFormatException;
-
-import oogasalad.editor.controller.EditorController;
-import oogasalad.engine.view.screen.HelpScreen;
-import oogasalad.exceptions.EditorLoadException;
-import oogasalad.exceptions.EditorSaveException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
+import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.controller.EditorMaker;
 import oogasalad.engine.controller.DefaultGameManager;
 import oogasalad.engine.controller.api.GameManagerAPI;
@@ -29,10 +22,12 @@ import oogasalad.engine.model.object.ImmutablePlayer;
 import oogasalad.engine.view.DefaultView;
 import oogasalad.engine.view.GameDisplay;
 import oogasalad.engine.view.ViewState;
+import oogasalad.engine.view.screen.HelpScreen;
 import oogasalad.engine.view.screen.LoginScreen;
 import oogasalad.engine.view.screen.ProfileEditScreen;
 import oogasalad.engine.view.screen.UserDataScreen;
 import oogasalad.exceptions.BlueprintParseException;
+import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EventParseException;
 import oogasalad.exceptions.GameObjectParseException;
 import oogasalad.exceptions.HitBoxParseException;
@@ -48,6 +43,8 @@ import oogasalad.server.ServerMessage;
 import oogasalad.userData.SessionManager;
 import oogasalad.userData.UserDataApiDefault;
 import oogasalad.userData.records.UserData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class returns the desired function for a specific button.

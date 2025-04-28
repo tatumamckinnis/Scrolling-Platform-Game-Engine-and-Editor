@@ -1,14 +1,13 @@
 package oogasalad.server;
 
 import com.google.gson.Gson;
+import java.net.URI;
+import java.net.URISyntaxException;
 import oogasalad.engine.view.ViewState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * A client web socket that connects to the javascript server.

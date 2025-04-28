@@ -1,7 +1,8 @@
 package oogasalad.engine.view.screen;
 
-import java.io.FileNotFoundException;
 import static java.lang.Integer.parseInt;
+
+import java.io.FileNotFoundException;
 import javafx.scene.Scene;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;

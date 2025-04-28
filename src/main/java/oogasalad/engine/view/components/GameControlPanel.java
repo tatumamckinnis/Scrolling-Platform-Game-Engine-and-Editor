@@ -3,20 +3,18 @@ package oogasalad.engine.view.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import oogasalad.ResourceManager;
-import oogasalad.ResourceManagerAPI;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class holds a panel of buttons such as a home button and a play/pause button.

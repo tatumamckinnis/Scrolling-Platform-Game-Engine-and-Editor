@@ -1,10 +1,6 @@
 package oogasalad.editor.view.panes.editor_properties;
 
 import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -24,6 +20,8 @@ import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.model.data.EditorLevelData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Modal window that lets the designer tweak editor-wide settings like cell size and snap to grid.

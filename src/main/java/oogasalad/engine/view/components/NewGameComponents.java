@@ -1,7 +1,6 @@
 package oogasalad.engine.view.components;
 
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;

@@ -4,13 +4,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Manages identity-related data and custom parameters for EditorObjects, including name, group,

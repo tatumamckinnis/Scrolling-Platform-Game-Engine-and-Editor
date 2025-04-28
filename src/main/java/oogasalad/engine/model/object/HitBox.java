@@ -1,7 +1,6 @@
 package oogasalad.engine.model.object;
 
 import java.util.ResourceBundle;
-import oogasalad.Main;
 
 /**
  * Represents a rectangular hitbox used for collision detection and positioning in the game world.

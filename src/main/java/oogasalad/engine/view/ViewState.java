@@ -1,14 +1,12 @@
 package oogasalad.engine.view;
 
 import java.util.List;
-
-import oogasalad.server.ClientSocket;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import oogasalad.engine.controller.api.GameManagerAPI;
+import oogasalad.server.ClientSocket;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Holds the internal state needed to manage the current view of the application, such as stage,

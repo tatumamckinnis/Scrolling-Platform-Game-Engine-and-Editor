@@ -2,7 +2,6 @@ package oogasalad.fileparser;
 
 import java.util.ArrayList;
 import java.util.List;
-import oogasalad.exceptions.SpriteSheetLoadException;
 import oogasalad.fileparser.records.FrameData;
 import oogasalad.fileparser.records.SpriteSheetData;
 import org.w3c.dom.Element;

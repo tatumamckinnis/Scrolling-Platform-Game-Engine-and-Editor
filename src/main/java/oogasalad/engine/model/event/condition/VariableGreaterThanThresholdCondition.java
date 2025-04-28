@@ -1,9 +1,7 @@
 package oogasalad.engine.model.event.condition;
 
 import java.util.Map;
-import java.util.logging.Logger;
 import oogasalad.engine.model.object.GameObject;
-import oogasalad.engine.model.object.Player;
 
 /**
  * returns whether a dynamic amount is >= a specified threshold

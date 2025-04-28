@@ -1,7 +1,6 @@
 package oogasalad.filesaver.savestrategy;
 
 import java.io.File;
-import java.io.IOException;
 import oogasalad.exceptions.EditorSaveException;
 import oogasalad.exceptions.SpriteSheetSaveException;
 import oogasalad.fileparser.records.LevelData;
