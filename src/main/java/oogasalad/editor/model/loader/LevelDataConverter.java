@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import oogasalad.editor.controller.level.EditorDataAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,8 @@ public class LevelDataConverter {
    * {@link EditorObjectPopulator} to create {@link EditorObject}s. Each object is then added to the
    * editor's level data map for later use by the editor view or controller.</p>
    *
-   * @param fileName the path to the level file to load
+   * @param editorDataAPI
+   * @param fileName      the path to the level file to load
    * @throws LayerParseException      if there is an error parsing layer information
    * @throws LevelDataParseException  if there is an error parsing the overall level structure
    * @throws PropertyParsingException if object properties fail to parse
@@ -54,7 +56,7 @@ public class LevelDataConverter {
    * @throws BlueprintParseException  if blueprint data cannot be interpreted
    * @throws GameObjectParseException if an error occurs while creating game objects
    */
-  public void loadLevelData(EditorLevelData editorLevelData,
+  public void loadLevelData(EditorDataAPI editorDataAPI, EditorLevelData editorLevelData,
       EditorFileConverterAPI fileConverterAPI,
       String fileName) throws EditorLoadException {
     try {
@@ -82,7 +84,7 @@ public class LevelDataConverter {
       setupLayersByZValue(editorLevelData, gameObjectData);
       
       // Create objects and populate the level
-      EditorObjectPopulator populator = new EditorObjectPopulator(editorLevelData);
+      EditorObjectPopulator populator = new EditorObjectPopulator(editorDataAPI);
       for (GameObjectData gameObject : gameObjectData) {
         EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
         editorLevelData.updateObjectInDataMap(object.getId(), object);

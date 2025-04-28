@@ -79,4 +79,14 @@ public class SpriteTemplateMap {
   public void removeSpriteData(String name) {
     spriteMap.remove(name);
   }
+
+  /**
+   * Checks if the sprite template exists in the map of templates.
+   *
+   * @param templateName the template to check if it exists
+   * @return {@code true} if the template exists, {@code false} otherwise
+   */
+  public boolean containsTemplate(String templateName) {
+    return spriteMap.containsKey(templateName);
+  }
 }

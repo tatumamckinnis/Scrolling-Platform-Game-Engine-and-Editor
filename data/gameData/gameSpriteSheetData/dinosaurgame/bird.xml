@@ -7,7 +7,7 @@ width  => sprite width
 height  => sprite height
 
 -->
-<spriteFile imagePath="dinosaurgame-sprites.png" width="1770" height="101">
+<spriteFile imagePath="dinosaurgame-sprites.png">
 <sprite name="Bird1" x="0" y="0" width="97" height="68">
   <frames>
     <frame name="Bird1" x="0" y="0" width="97" height="68"/>

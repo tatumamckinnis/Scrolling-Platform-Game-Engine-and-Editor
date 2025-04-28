@@ -6,7 +6,7 @@ y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
 -->
-<spriteFile imagePath="finished-0.png" width="1632" height="160">
+<spriteFile imagePath="supermario-entities.png" width="1632" height="160">
     <sprite name="big-mario-swim-still-left" x="0" y="0" width="16" height="29"/>
     <sprite name="big-mario-swim-1-left" x="32" y="0" width="16" height="29"/>
     <sprite name="big-mario-swim-2-left" x="64" y="0" width="14" height="30"/>

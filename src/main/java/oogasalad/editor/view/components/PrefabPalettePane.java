@@ -358,7 +358,7 @@ public class PrefabPalettePane extends VBox implements EditorViewListener {
       Image imageToShow =
           (dragViewImage != null && !dragViewImage.isError()) ? dragViewImage : placeholderImage;
       if (imageToShow != null) {
-        db.setDragView(imageToShow, -(imageToShow.getWidth() / 2), -(imageToShow.getHeight() / 2));
+        db.setDragView(imageToShow, 0, 0);
       }
       event.consume();
     });

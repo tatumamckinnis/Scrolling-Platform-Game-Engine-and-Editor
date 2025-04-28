@@ -486,7 +486,7 @@ public class EditorDataAPI {
    * @throws EditorLoadException if an error occurs during file loading or parsing
    */
   public void loadLevelData(String fileName) throws EditorLoadException {
-    levelDataConverter.loadLevelData(level, fileConverterAPI, fileName);
+    levelDataConverter.loadLevelData(this, level, fileConverterAPI, fileName);
     getObjectDataMap().forEach((key, value) -> {
       listenerNotifier.notifyObjectAdded(key);
     });
