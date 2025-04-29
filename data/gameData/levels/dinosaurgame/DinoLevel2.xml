@@ -58,15 +58,15 @@
     </objectGroup>
 
     <objectGroup name="blocks">
-      <object type="tracks" id="1" spriteFile="track.xml" spriteName="track-0" hitBoxWidth="480"
+      <object type="tracks" id="1" spriteFile="dinosaurgame-track.xml" spriteName="track-0" hitBoxWidth="480"
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
-      <object type="tracks" id="2" spriteFile="track.xml" spriteName="track-1" hitBoxWidth="480"
+      <object type="tracks" id="2" spriteFile="dinosaurgame-track.xml" spriteName="track-1" hitBoxWidth="480"
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
-      <object type="tracks" id="3" spriteFile="track.xml" spriteName="track-2" hitBoxWidth="480"
+      <object type="tracks" id="3" spriteFile="dinosaurgame-track.xml" spriteName="track-2" hitBoxWidth="480"
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
-      <object type="tracks" id="4" spriteFile="track.xml" spriteName="track-3" hitBoxWidth="480"
+      <object type="tracks" id="4" spriteFile="dinosaurgame-track.xml" spriteName="track-3" hitBoxWidth="480"
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
-      <object type="tracks" id="5" spriteFile="track.xml" spriteName="track-4" hitBoxWidth="480"
+      <object type="tracks" id="5" spriteFile="dinosaurgame-track.xml" spriteName="track-4" hitBoxWidth="480"
         hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0"/>
     </objectGroup>
     <objectGroup name="backgrounds"/>

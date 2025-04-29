@@ -15,7 +15,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -34,8 +42,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class OutcomesSectionBuilder {
 
+  public static final String PARAM_TYPE_ID_DOUBLE = "param.typeIdDouble";
   private static final Logger LOG = LogManager.getLogger(OutcomesSectionBuilder.class);
   private static final String IDENTIFIERS_PROPERTIES_PATH = "/oogasalad/config/editor/resources/outcomes_section_builder_identifiers.properties";
+  public static final String KEY_CREATE_PARAM_BUTTON = "key.createParamButton";
+  public static final String PARAM_TYPE_ID_BOOLEAN = "param.typeIdBoolean";
+  public static final String PARAM_TYPE_ID_INTEGER = "param.typeIdInteger";
+  public static final String PARAM_TYPE_ID_DROPDOWN_PREFIX = "param.typeIdDropdownPrefix";
 
   private final ResourceBundle uiBundle;
   private final Properties localProps;
@@ -199,7 +212,7 @@ public class OutcomesSectionBuilder {
     dynamicVariableComboBox.setPromptText(uiBundle.getString(getLocalProp("key.promptSelectParameter")));
     dynamicVariableComboBox.setMaxWidth(Double.MAX_VALUE);
 
-    Button createButton = createButton("key.createParamButton", e -> createParameterHandler.run());
+    Button createButton = createButton(KEY_CREATE_PARAM_BUTTON, e -> createParameterHandler.run());
     createButton.setId(getLocalProp("id.addVariableButton"));
 
     paramBox.getChildren().addAll(label, dynamicVariableComboBox, createButton);
@@ -374,10 +387,10 @@ public class OutcomesSectionBuilder {
     // 2) Figure out which control & which bundle key to use
     String typeDisplayKey;
     Control inputControl;
-    String boolId     = getLocalProp("param.typeIdBoolean");
-    String intId      = getLocalProp("param.typeIdInteger");
-    String dblId      = getLocalProp("param.typeIdDouble");
-    String ddPrefix   = getLocalProp("param.typeIdDropdownPrefix");
+    String boolId     = getLocalProp(PARAM_TYPE_ID_BOOLEAN);
+    String intId      = getLocalProp(PARAM_TYPE_ID_INTEGER);
+    String dblId      = getLocalProp(PARAM_TYPE_ID_DOUBLE);
+    String ddPrefix   = getLocalProp(PARAM_TYPE_ID_DROPDOWN_PREFIX);
 
     try {
       if (paramType.equalsIgnoreCase(boolId)) {
@@ -453,8 +466,8 @@ public class OutcomesSectionBuilder {
   private String getCurrentValueAsString(ExecutorData data, String paramName, String paramType, String defaultValue) {
     Map<String, String> stringParams = data.getStringParams();
     Map<String, Double> doubleParams = data.getDoubleParams();
-    String typeIdDouble = getLocalProp("param.typeIdDouble");
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
+    String typeIdDouble = getLocalProp(PARAM_TYPE_ID_DOUBLE);
+    String typeIdInteger = getLocalProp(PARAM_TYPE_ID_INTEGER);
 
 
     if (stringParams != null && stringParams.containsKey(paramName)) {
@@ -491,7 +504,7 @@ public class OutcomesSectionBuilder {
    */
   private void handleNumericParamUpdate(OutcomeDisplayItem item, String key, String paramType, TextField textField) {
     String newValueText = textField.getText();
-    String typeIdInteger = getLocalProp("param.typeIdInteger");
+    String typeIdInteger = getLocalProp(PARAM_TYPE_ID_INTEGER);
     try {
       if (paramType.equalsIgnoreCase(typeIdInteger)) {
         Integer intVal = Integer.parseInt(newValueText);
@@ -583,7 +596,7 @@ public class OutcomesSectionBuilder {
     String buttonText;
     String actualUiKey = getLocalProp(localPropKey);
 
-    if (actualUiKey.equals(getLocalProp("key.createParamButton"))) {
+    if (actualUiKey.equals(getLocalProp(KEY_CREATE_PARAM_BUTTON))) {
       buttonText = getLocalProp("text.createParamButton");
     } else {
       buttonText = uiBundle.getString(actualUiKey);
@@ -593,7 +606,7 @@ public class OutcomesSectionBuilder {
     button.setOnAction(handler);
     button.getStyleClass().add(getLocalProp("style.actionButton"));
 
-    if (actualUiKey.equals(getLocalProp("key.createParamButton"))) {
+    if (actualUiKey.equals(getLocalProp(KEY_CREATE_PARAM_BUTTON))) {
       button.getStyleClass().add(getLocalProp("style.smallButton"));
       button.setMaxWidth(Region.USE_PREF_SIZE);
     } else if (actualUiKey.equals(getLocalProp("key.removeOutcomeButton"))) {

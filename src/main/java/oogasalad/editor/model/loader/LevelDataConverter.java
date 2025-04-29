@@ -6,10 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
@@ -26,6 +23,8 @@ import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import oogasalad.fileparser.records.GameObjectData;
 import oogasalad.fileparser.records.LevelData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LevelData Converter converts data from level data to editor object Data
@@ -44,7 +43,8 @@ public class LevelDataConverter {
    * {@link EditorObjectPopulator} to create {@link EditorObject}s. Each object is then added to the
    * editor's level data map for later use by the editor view or controller.</p>
    *
-   * @param fileName the path to the level file to load
+   * @param editorDataAPI
+   * @param fileName      the path to the level file to load
    * @throws LayerParseException      if there is an error parsing layer information
    * @throws LevelDataParseException  if there is an error parsing the overall level structure
    * @throws PropertyParsingException if object properties fail to parse
@@ -54,12 +54,13 @@ public class LevelDataConverter {
    * @throws BlueprintParseException  if blueprint data cannot be interpreted
    * @throws GameObjectParseException if an error occurs while creating game objects
    */
-  public void loadLevelData(EditorLevelData editorLevelData,
+  public void loadLevelData(EditorDataAPI editorDataAPI, EditorLevelData editorLevelData,
       EditorFileConverterAPI fileConverterAPI,
       String fileName) throws EditorLoadException {
     try {
       LevelData levelData = fileConverterAPI.loadFileToEditor(fileName);
       Map<Integer, BlueprintData> blueprintMap = levelData.gameBluePrintData();
+
       List<GameObjectData> gameObjectData = levelData.gameObjects();
       
       // Print detailed information about game objects and their layers
@@ -82,7 +83,7 @@ public class LevelDataConverter {
       setupLayersByZValue(editorLevelData, gameObjectData);
       
       // Create objects and populate the level
-      EditorObjectPopulator populator = new EditorObjectPopulator(editorLevelData);
+      EditorObjectPopulator populator = new EditorObjectPopulator(editorDataAPI);
       for (GameObjectData gameObject : gameObjectData) {
         EditorObject object = populator.populateFromGameObjectData(gameObject, blueprintMap);
         editorLevelData.updateObjectInDataMap(object.getId(), object);
@@ -108,78 +109,83 @@ public class LevelDataConverter {
    * from game objects. This ensures each distinct z-value becomes a layer with the
    * appropriate priority.
    * 
-   * @param editorLevelData the editor level data to configure
+   * @param data the editor level data to configure
    * @param gameObjects the list of game objects containing layer information
    */
-  private void setupLayersByZValue(EditorLevelData editorLevelData, List<GameObjectData> gameObjects) {
-    // Collect all unique z-values (layer values) from game objects
-    Set<Integer> uniqueZValues = new HashSet<>();
-    for (GameObjectData obj : gameObjects) {
-      uniqueZValues.add(obj.layer());
-    }
-    
-    // If we found z-values, create layers for them
-    if (!uniqueZValues.isEmpty()) {
-      // Get current layers - we'll reuse the first one instead of removing it
-      List<Layer> currentLayers = editorLevelData.getLayers();
-      
-      // Keep track of which layers we've processed
-      Set<Layer> processedLayers = new HashSet<>();
-      
-      // Update or create layers for each z-value
-      for (Integer z : uniqueZValues) {
-        String layerName = "Layer_" + z;
-        
-        // Check if we can reuse an existing layer
-        if (!currentLayers.isEmpty() && processedLayers.isEmpty()) {
-          // Reuse the first layer instead of removing it
-          Layer firstLayer = currentLayers.get(0);
-          firstLayer.setName(layerName);
-          firstLayer.setPriority(z);
-          processedLayers.add(firstLayer);
-          LOG.info("Updated existing layer to '{}' with priority {}", layerName, z);
-        } else {
-          // Create a new layer
-          Layer layer = new Layer(layerName, z);
-          editorLevelData.addLayer(layer);
-          processedLayers.add(layer);
-          LOG.info("Created new layer '{}' with priority {}", layerName, z);
-        }
-      }
-      
-      // Remove any extra layers (except the ones we've processed)
-      if (currentLayers.size() > 1) {
-        // Create a copy to avoid concurrent modification
-        List<Layer> layersToCheck = new ArrayList<>(currentLayers);
-        for (Layer layer : layersToCheck) {
-          if (!processedLayers.contains(layer)) {
-            try {
-              editorLevelData.removeLayer(layer.getName());
-              LOG.info("Removed unused layer '{}'", layer.getName());
-            } catch (Exception e) {
-              LOG.warn("Could not remove layer '{}': {}", layer.getName(), e.getMessage());
-            }
-          }
-        }
-      }
+  private void setupLayersByZValue(EditorLevelData data, List<GameObjectData> gameObjects) {
+    Set<Integer> uniqueZ = collectUniqueZValues(gameObjects);
+    if (uniqueZ.isEmpty()) {
+      ensureDefaultLayer(data);
     } else {
-      // No z-values found, keep or create a default layer
-      if (editorLevelData.getLayers().isEmpty()) {
-        Layer defaultLayer = new Layer("Default", 0);
-        editorLevelData.addLayer(defaultLayer);
-        LOG.info("Created default layer with priority 0");
+      Set<Layer> processed = initializeLayers(data, uniqueZ);
+      cleanupLayers(data, processed);
+    }
+    logLayerSummary(data);
+  }
+
+  private Set<Integer> collectUniqueZValues(List<GameObjectData> gameObjects) {
+    Set<Integer> unique = new HashSet<>();
+    for (GameObjectData obj : gameObjects) {
+      unique.add(obj.layer());
+    }
+    return unique;
+  }
+
+  private Set<Layer> initializeLayers(EditorLevelData data, Set<Integer> zValues) {
+    List<Layer> current = data.getLayers();
+    Set<Layer> processed = new HashSet<>();
+    boolean reusedFirst = false;
+    for (Integer z : zValues) {
+      String name = "Layer_" + z;
+      if (!reusedFirst && !current.isEmpty()) {
+        Layer first = current.get(0);
+        first.setName(name);
+        first.setPriority(z);
+        processed.add(first);
+        LOG.info("Updated existing layer to '{}' with priority {}", name, z);
+        reusedFirst = true;
       } else {
-        LOG.info("No layers found in game objects, keeping existing layers");
+        Layer layer = new Layer(name, z);
+        data.addLayer(layer);
+        processed.add(layer);
+        LOG.info("Created new layer '{}' with priority {}", name, z);
       }
     }
-    
-    // Log a summary of all layers
-    LOG.info("Final layer setup - {} layers:", editorLevelData.getLayers().size());
-    for (Layer layer : editorLevelData.getLayers()) {
+    return processed;
+  }
+
+  private void cleanupLayers(EditorLevelData data, Set<Layer> processed) {
+    List<Layer> layers = new ArrayList<>(data.getLayers());
+    for (Layer layer : layers) {
+      if (!processed.contains(layer)) {
+        try {
+          data.removeLayer(layer.getName());
+          LOG.info("Removed unused layer '{}'", layer.getName());
+        } catch (Exception e) {
+          LOG.warn("Could not remove layer '{}': {}", layer.getName(), e.getMessage());
+        }
+      }
+    }
+  }
+
+  private void ensureDefaultLayer(EditorLevelData data) {
+    if (data.getLayers().isEmpty()) {
+      Layer defaultLayer = new Layer("Default", 0);
+      data.addLayer(defaultLayer);
+      LOG.info("Created default layer with priority 0");
+    } else {
+      LOG.info("No layers found in game objects, keeping existing layers");
+    }
+  }
+
+  private void logLayerSummary(EditorLevelData data) {
+    LOG.info("Final layer setup - {} layers:", data.getLayers().size());
+    for (Layer layer : data.getLayers()) {
       LOG.info(" - Layer: '{}' with priority {}", layer.getName(), layer.getPriority());
     }
   }
-  
+
+
   /**
    * Verifies that objects are correctly assigned to layers.
    * 

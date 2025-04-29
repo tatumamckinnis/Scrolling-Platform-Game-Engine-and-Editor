@@ -1,7 +1,6 @@
 package oogasalad.filesaver;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import oogasalad.exceptions.EditorSaveException;
 import oogasalad.fileparser.records.LevelData;

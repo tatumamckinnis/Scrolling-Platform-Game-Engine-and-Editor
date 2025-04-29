@@ -1,7 +1,6 @@
 package oogasalad.engine.model.event.condition;
 
 import java.util.Map;
-import java.util.Objects;
 import oogasalad.engine.model.object.GameObject;
 
 /**

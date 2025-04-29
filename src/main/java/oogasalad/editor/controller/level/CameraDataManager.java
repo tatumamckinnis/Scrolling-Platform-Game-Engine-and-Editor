@@ -3,10 +3,10 @@ package oogasalad.editor.controller.level;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import oogasalad.editor.model.data.CameraData;
 import oogasalad.editor.model.data.CameraSpecLoader;
 import oogasalad.editor.model.data.CameraSpecLoader.Specifications;
 import oogasalad.editor.model.data.EditorLevelData;
-import oogasalad.editor.model.data.CameraData;
 
 /**
  * Thin wrapper that exposes safe, typed access to {@link CameraData} in a well defined file.

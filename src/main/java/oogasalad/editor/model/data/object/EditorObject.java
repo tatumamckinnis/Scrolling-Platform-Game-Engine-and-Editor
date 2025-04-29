@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.object.event.CollisionData;
 import oogasalad.editor.model.data.object.event.CustomEventData;

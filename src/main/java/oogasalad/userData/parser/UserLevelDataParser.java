@@ -1,10 +1,10 @@
 package oogasalad.userData.parser;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import oogasalad.userData.records.UserLevelData;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import java.util.Map;
-import java.util.LinkedHashMap;
 
 /**
  * Converts <level> XML elements into UserLevelData records.

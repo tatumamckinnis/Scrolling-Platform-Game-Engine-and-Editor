@@ -217,31 +217,51 @@ public class EditorBlueprintParser {
   }
 
   private SpriteData resolveSpriteData(BasicAttributes a) {
-    if (mySpriteDataParser == null
-        || gameName == null || gameName.isBlank()
-        || a.spriteName.isBlank()
-        || a.spriteFileAttr.isBlank()) {
+    if (needsDefaultSprite(a)) {
       LOG.warn("Skipping sprite parsing for blueprint {} (missing parser/info)", a.id);
       return createDefaultSpriteData(a.spriteName);
     }
+    SpriteRequest req = buildSpriteRequest(a);
+    return fetchOrDefault(req, a.spriteName);
+  }
 
-    SpriteRequest req = new SpriteRequest(
-        gameName, groupName, a.originalType, a.spriteName, a.spriteFileAttr);
+  private boolean needsDefaultSprite(BasicAttributes a) {
+    return mySpriteDataParser == null
+        || isBlank(gameName)
+        || isBlank(a.spriteName)
+        || isBlank(a.spriteFileAttr);
+  }
+
+  private SpriteRequest buildSpriteRequest(BasicAttributes a) {
+    return new SpriteRequest(
+        gameName,
+        groupName,
+        a.originalType,
+        a.spriteName,
+        a.spriteFileAttr
+    );
+  }
+
+  private SpriteData fetchOrDefault(SpriteRequest req, String spriteName) {
     try {
       SpriteData sd = mySpriteDataParser.getSpriteData(req);
       if (sd == null
           || sd.baseFrame() == null
           || sd.spriteFile() == null
-          || sd.spriteFile().getPath().isEmpty()) {
+          || isBlank(sd.spriteFile().getPath())
+      ) {
         LOG.error("Incomplete SpriteData for {} → using default", req);
-        return createDefaultSpriteData(a.spriteName);
+        return createDefaultSpriteData(spriteName);
       }
       return sd;
     } catch (Exception e) {
-      LOG.error("Error fetching sprite for {}: {} → using default",
-          req, e.getMessage());
-      return createDefaultSpriteData(a.spriteName);
+      LOG.error("Error fetching sprite for {}: {} → using default", req, e.getMessage());
+      return createDefaultSpriteData(spriteName);
     }
+  }
+
+  private boolean isBlank(String s) {
+    return s == null || s.isBlank();
   }
 
   /**
@@ -258,19 +278,27 @@ public class EditorBlueprintParser {
    */
   private List<EventData> getAssociatedEventData(Element gameObjectNode) {
     String eventIds = gameObjectNode.getAttribute("eventIDs");
+    if (isBlank(eventIds)) {
+      return Collections.emptyList();
+    }
+    return parseEventDataList(eventIds);
+  }
+
+  private List<EventData> parseEventDataList(String eventIds) {
     List<EventData> eventDataList = new ArrayList<>();
-    if (eventIds != null && !eventIds.trim().isEmpty()) {
-      String[] eventIdArray = eventIds.split(",");
-      for (String eventId : eventIdArray) {
-        String trimmedId = eventId.trim();
-        if (!trimmedId.isEmpty()) {
-          EventData event = findEventById(trimmedId);
-          if (event != null) {
-            eventDataList.add(event);
-          } else {
-            LOG.warn("EventData not found for eventID: '{}' referenced in blueprint.", trimmedId);
-          }
-        }
+    for (String id : eventIds.split(",")) {
+      String trimmed = id.trim();
+      if (trimmed.isEmpty()) {
+        continue;
+      }
+      EventData event = findEventById(trimmed);
+      if (event != null) {
+        eventDataList.add(event);
+      } else {
+        LOG.warn(
+            "EventData not found for eventID: '{}' referenced in blueprint.",
+            trimmed
+        );
       }
     }
     return eventDataList;
@@ -296,15 +324,19 @@ public class EditorBlueprintParser {
    */
   private List<String> getDisplayedProperties(Element gameObjectNode) {
     NodeList nodes = gameObjectNode.getElementsByTagName(DISPLAYED_PROPERTIES_TAG);
-    if (nodes.getLength() > 0 && nodes.item(0) instanceof Element) {
-      Element displayedPropertiesElement = (Element) nodes.item(0);
-      if (displayedPropertiesElement.hasAttribute(PROPERTY_LIST_ATTR)) {
-        String list = displayedPropertiesElement.getAttribute(PROPERTY_LIST_ATTR);
-        if (list != null && !list.trim().isEmpty()) {
-          return List.of(list.split(","));
-        }
-      }
+    if (nodes.getLength() == 0) {
+      return Collections.emptyList();
     }
-    return Collections.emptyList();
+    Node first = nodes.item(0);
+    if (!(first instanceof Element)) {
+      return Collections.emptyList();
+    }
+    String attrs = ((Element) first)
+        .getAttribute(PROPERTY_LIST_ATTR)
+        .trim();
+    if (attrs.isEmpty()) {
+      return Collections.emptyList();
+    }
+    return List.of(attrs.split(","));
   }
 }

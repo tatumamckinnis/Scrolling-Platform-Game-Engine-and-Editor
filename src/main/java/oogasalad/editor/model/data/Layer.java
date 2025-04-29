@@ -1,8 +1,5 @@
 package oogasalad.editor.model.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Represents a rendering layer in the editor. Each layer has a name and a priority, where higher
  * priority layers are rendered on top of lower priority ones. Additionally, a layer maintains a

@@ -1,12 +1,11 @@
 package oogasalad.engine.view.screen;
 
+import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import oogasalad.ResourceManager;
 import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.Display;
-
-import javafx.scene.control.Button;
 import oogasalad.engine.view.ViewState;
 import oogasalad.engine.view.factory.ButtonActionFactory;
 

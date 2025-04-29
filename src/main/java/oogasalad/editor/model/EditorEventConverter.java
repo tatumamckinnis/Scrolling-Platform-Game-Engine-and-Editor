@@ -3,9 +3,10 @@ package oogasalad.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 import oogasalad.editor.model.data.object.EditorObject;
-import oogasalad.editor.model.data.object.event.CustomEventData;
+import oogasalad.editor.model.data.object.event.AbstractEventMapData;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
+import oogasalad.editor.model.data.object.event.InputData;
 import oogasalad.engine.model.event.Event;
 import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.outcome.EventOutcome;
@@ -28,19 +29,19 @@ public class EditorEventConverter {
    * @param blueprintData  the blueprint data for the editor object
    * @return a new CustomEventData object
    */
-  public static CustomEventData convertEventData(
+  public static AbstractEventMapData convertEventData(
       EditorObject editorObject, BlueprintData blueprintData) {
     List<EventData> eventDataList = blueprintData.eventDataList();
-    CustomEventData customEventData = new CustomEventData();
+    AbstractEventMapData eventMapData = new InputData();
 
     for (EventData event : eventDataList) {
       if (event == null) {
         continue;
       }
       EditorEvent e = makeEditorEventObject(event, editorObject);
-      customEventData.addEvent(event.eventId(), e);
+      eventMapData.addEvent(event.eventId(), e);
     }
-    return customEventData;
+    return eventMapData;
   }
 
   /**

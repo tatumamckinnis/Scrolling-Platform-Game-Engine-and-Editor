@@ -2,19 +2,17 @@ package oogasalad.engine.view.screen;
 
 
 import java.util.Objects;
-
-import oogasalad.ResourceManager;
-import oogasalad.ResourceManagerAPI;
-import oogasalad.engine.view.factory.ButtonActionFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import oogasalad.ResourceManager;
+import oogasalad.ResourceManagerAPI;
 import oogasalad.engine.model.object.ImmutableGameObject;
 import oogasalad.engine.view.ViewState;
+import oogasalad.engine.view.factory.ButtonActionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Win Screen is displayed when a user winds a given level

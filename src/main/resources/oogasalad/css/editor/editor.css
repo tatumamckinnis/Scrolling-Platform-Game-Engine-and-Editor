@@ -46,6 +46,37 @@
   -fx-background-color: #f8d65c; /* yellow hover */
 }
 
+.tool-button:selected {
+  -fx-background-color: #D88C1F;          /* deeper orange */
+  -fx-text-fill: white;
+}
+
+.tool-button:selected:hover {
+  -fx-background-color: #D88C1F;
+}
+
+.tool-button:focused {
+  -fx-border-color: #FFC107;              /* amber outline */
+  -fx-border-width: 2;
+  -fx-border-radius: 10;
+}
+
+.save-button-label {
+  -fx-background-color: #4CAF50;      /* Green */
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-background-radius: 10;
+  -fx-padding: 8 20;
+  -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.18), 4, 0, 0, 2);
+  -fx-cursor: hand;
+  -fx-border-color: transparent;
+  -fx-transition: all 0.3s ease;
+}
+
+.save-button-label:hover {
+  -fx-background-color: #66BB6A;      /* lighter green on hover */
+}
 
 /* --- Component Pane --- */
 #component-pane {
@@ -445,4 +476,14 @@
 }
 #chat-pane .button:hover {
   -fx-background-color: #f8d65c;
+}
+
+.prefab-item.selected-prefab-item {
+  -fx-background-color: #cce8ff;    /* light blue */
+  -fx-background-radius: 6;
+}
+
+.prefab-item.selected-prefab-item:hover {
+  /* keep the same colour while hovering */
+  -fx-background-color: #cce8ff;
 }

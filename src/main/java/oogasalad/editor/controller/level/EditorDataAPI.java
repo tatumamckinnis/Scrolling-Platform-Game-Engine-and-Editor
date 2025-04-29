@@ -1,7 +1,7 @@
 package oogasalad.editor.controller.level;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import oogasalad.editor.controller.asset.SpriteSheetDataManager;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.controller.object.CollisionDataManager;
@@ -38,6 +36,8 @@ import oogasalad.fileparser.DefaultFileParser;
 import oogasalad.fileparser.FileParserApi;
 import oogasalad.filesaver.savestrategy.SaverStrategy;
 import oogasalad.filesaver.savestrategy.XmlStrategy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Provides a comprehensive API to manage editor data, acting as a facade for various underlying
@@ -486,51 +486,45 @@ public class EditorDataAPI {
    * @throws EditorLoadException if an error occurs during file loading or parsing
    */
   public void loadLevelData(String fileName) throws EditorLoadException {
-    levelDataConverter.loadLevelData(level, fileConverterAPI, fileName);
+    levelDataConverter.loadLevelData(this, level, fileConverterAPI, fileName);
     getObjectDataMap().forEach((key, value) -> {
       listenerNotifier.notifyObjectAdded(key);
     });
   }
 
   /**
-   * Gets a list of available game names by examining directories.
-   * 
-   * @return a List of game names found in the game directories
+   * Retrieves the sorted list of unique game names from levels and graphics directories.
+   *
+   * @return sorted list of game names
    */
   public List<String> getGames() {
+    String baseDir = System.getProperty("user.dir") + "/data";
     Set<String> gameNames = new HashSet<>();
-    
-    // Check in levels directory
-    String levelDirPath = System.getProperty("user.dir") + "/data/gameData/levels";
-    File levelDir = new File(levelDirPath);
-    if (levelDir.exists() && levelDir.isDirectory()) {
-      File[] gameDirs = levelDir.listFiles(File::isDirectory);
-      if (gameDirs != null) {
-        for (File gameDir : gameDirs) {
-          gameNames.add(gameDir.getName());
-        }
-      }
-    }
-    
-    // Check in graphics directory
-    String graphicsDirPath = System.getProperty("user.dir") + "/data/graphicsData";
-    File graphicsDir = new File(graphicsDirPath);
-    if (graphicsDir.exists() && graphicsDir.isDirectory()) {
-      File[] gameDirs = graphicsDir.listFiles(File::isDirectory);
-      if (gameDirs != null) {
-        for (File gameDir : gameDirs) {
-          // Skip default/problematic directories
-          if (!gameDir.getName().equals("unknown_game") && !gameDir.getName().equals("dinosaurgame")) {
-            gameNames.add(gameDir.getName());
-          }
-        }
-      }
-    }
-    
+
+    gameNames.addAll(loadGameNames(baseDir + "/gameData/levels", name -> true));
+
+    Set<String> excluded = Set.of("unknown_game", "dinosaurgame");
+    gameNames.addAll(loadGameNames(baseDir + "/graphicsData", name -> !excluded.contains(name)));
+
     LOG.info("Found {} game names across all directories", gameNames.size());
-    List<String> result = new ArrayList<>(gameNames);
-    Collections.sort(result);
-    return result;
+    return gameNames.stream()
+        .sorted()
+        .collect(Collectors.toList());
+  }
+
+  private Set<String> loadGameNames(String directoryPath, Predicate<String> filter) {
+    File dir = new File(directoryPath);
+    if (!dir.isDirectory()) {
+      return Collections.emptySet();
+    }
+    File[] subdirs = dir.listFiles(File::isDirectory);
+    if (subdirs == null) {
+      return Collections.emptySet();
+    }
+    return Arrays.stream(subdirs)
+        .map(File::getName)
+        .filter(filter)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -541,7 +535,7 @@ public class EditorDataAPI {
    * @return the priority of the layer the object belongs to, or 0 if the object or its layer is not found
    */
   public int getObjectLayerPriority(UUID id) {
-    LOG.debug("Getting layer priority for object with ID: {}", id);
+    LOG.trace("Getting layer priority for object with ID: {}", id);
     return level.getObjectLayerPriority(id);
   }
 

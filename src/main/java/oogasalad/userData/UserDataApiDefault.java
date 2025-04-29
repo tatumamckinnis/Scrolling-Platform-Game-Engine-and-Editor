@@ -5,12 +5,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
-
-import org.xml.sax.SAXException;
-
 import oogasalad.exceptions.UserDataParseException;
 import oogasalad.exceptions.UserDataWriteException;
 import oogasalad.userData.parser.UserDataParser;
@@ -18,6 +14,7 @@ import oogasalad.userData.records.UserData;
 import oogasalad.userData.records.UserGameData;
 import oogasalad.userData.records.UserLevelData;
 import oogasalad.userData.writer.UserDataWriter;
+import org.xml.sax.SAXException;
 
 /**
  * Default implementation of UserApi using XML parsers and writers.

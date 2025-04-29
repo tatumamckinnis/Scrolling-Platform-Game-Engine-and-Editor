@@ -1,8 +1,8 @@
 package oogasalad.editor.controller;
 
-import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,23 +11,14 @@ import oogasalad.editor.controller.asset.EditorPrefabManager;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
 import oogasalad.editor.controller.object.EditorEventHandler;
-import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.DynamicVariable;
 import oogasalad.editor.model.data.object.DynamicVariableContainer;
+import oogasalad.editor.model.data.object.EditorObject;
 import oogasalad.editor.model.data.object.event.EditorEvent;
 import oogasalad.editor.model.data.object.event.ExecutorData;
-import oogasalad.editor.model.loader.LevelDataConverter;
 import oogasalad.editor.view.EditorViewListener;
-import oogasalad.exceptions.BlueprintParseException;
 import oogasalad.exceptions.EditorLoadException;
 import oogasalad.exceptions.EditorSaveException;
-import oogasalad.exceptions.EventParseException;
-import oogasalad.exceptions.GameObjectParseException;
-import oogasalad.exceptions.HitBoxParseException;
-import oogasalad.exceptions.LayerParseException;
-import oogasalad.exceptions.LevelDataParseException;
-import oogasalad.exceptions.PropertyParsingException;
-import oogasalad.exceptions.SpriteParseException;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +46,7 @@ public class ConcreteEditorController implements EditorController {
   private final EditorEventHandler eventHandler;
   private final EditorObjectQueryHandler objectQueryHandler;
 
-  private int cellSize = 32;
+  private int cellSize = 16;
   private boolean snapToGrid = true;
   private int editorWidth = 1200;
   private int editorHeight = 800;

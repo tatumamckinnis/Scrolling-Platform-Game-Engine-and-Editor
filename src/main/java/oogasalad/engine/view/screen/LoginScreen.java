@@ -3,10 +3,6 @@ package oogasalad.engine.view.screen;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -30,6 +26,8 @@ import oogasalad.exceptions.UserDataParseException;
 import oogasalad.userData.SessionManager;
 import oogasalad.userData.UserDataApiDefault;
 import oogasalad.userData.records.UserData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A JavaFX-based login and signup screen for the game editor application.

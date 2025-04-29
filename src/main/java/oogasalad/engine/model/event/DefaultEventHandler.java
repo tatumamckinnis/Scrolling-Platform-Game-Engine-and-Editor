@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.zip.DataFormatException;
 import oogasalad.engine.controller.api.GameExecutor;
 import oogasalad.engine.controller.api.InputProvider;
-import oogasalad.engine.model.animation.AnimationHandlerApi;
 import oogasalad.engine.model.animation.DefaultAnimationHandler;
 import oogasalad.engine.model.event.condition.EventCondition;
 import oogasalad.engine.model.event.outcome.EventOutcome;

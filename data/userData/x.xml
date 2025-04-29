@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user>
+  <username>x</username>
+  <displayName>dx</displayName>
+  <email>ex</email>
+  <password>pwx</password>
+  <language>lx</language>
+  <bio>bx</bio>
+  <userImage>imgx.png</userImage>
+  <userGameDataList>
+    <userGameData>
+      <gameName>G1</gameName>
+      <lastPlayed>tG</lastPlayed>
+      <playerHighestGameStatMap>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>L1</levelName>
+        <lastPlayed>t1</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+  </userGameDataList>
+</user>
+</users>

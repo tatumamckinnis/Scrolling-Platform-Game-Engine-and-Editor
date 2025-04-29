@@ -1,6 +1,6 @@
 package oogasalad.editor.model.loader;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,11 +8,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +36,7 @@ import org.xml.sax.SAXException;
 public class EditorSpriteParser {
 
   private static final Logger LOG = LogManager.getLogger(EditorSpriteParser.class);
+  public static final String USER_DIRECTORY = "user.dir";
   private final Properties fileStructureProperties;
   private final String pathToSpriteData;
   private final String pathToGraphicsData;
@@ -54,8 +51,8 @@ public class EditorSpriteParser {
     pathToSpriteData = trimSeparators(getRequiredProperty(fileStructureProperties, "path.to.game.data"));
     pathToGraphicsData = trimSeparators(getRequiredProperty(fileStructureProperties, "path.to.graphics.data"));
     LOG.debug("EditorSpriteParser initialized. SpriteData Path Root: '{}', Graphics Path Root: '{}'",
-        System.getProperty("user.dir") + File.separator + pathToSpriteData,
-        System.getProperty("user.dir") + File.separator + pathToGraphicsData);
+        System.getProperty(USER_DIRECTORY) + File.separator + pathToSpriteData,
+        System.getProperty(USER_DIRECTORY) + File.separator + pathToGraphicsData);
   }
 
   private String trimSeparators(String path) {
@@ -231,7 +228,7 @@ public class EditorSpriteParser {
    * Relies on spriteFile containing the correct relative path from the game's sprite dir.
    */
   private String buildFilePath(String gameName, String spriteFile) throws SpriteParseException {
-    String baseSpritePath = System.getProperty("user.dir") + File.separator + pathToSpriteData;
+    String baseSpritePath = System.getProperty(USER_DIRECTORY) + File.separator + pathToSpriteData;
     if (gameName == null || gameName.trim().isEmpty() || spriteFile == null || spriteFile.trim().isEmpty()) {
       throw new SpriteParseException("Cannot build file path: gameName or spriteFile is missing.");
     }
@@ -269,7 +266,7 @@ public class EditorSpriteParser {
   private File getSpriteSheetImageFile(Element rootElement, String gameName) throws SpriteParseException {
     String imagePathAttr = rootElement.getAttribute("imagePath");
     if (imagePathAttr.isEmpty()) { throw new SpriteParseException("Missing 'imagePath' attribute in root element."); }
-    String baseGraphicsPath = System.getProperty("user.dir") + File.separator + pathToGraphicsData + File.separator + gameName;
+    String baseGraphicsPath = System.getProperty(USER_DIRECTORY) + File.separator + pathToGraphicsData + File.separator + gameName;
     String fullImagePath = Paths.get(baseGraphicsPath, imagePathAttr).normalize().toString();
     LOG.trace("Resolving image file path: {}", fullImagePath);
     File imageFile = new File(fullImagePath);

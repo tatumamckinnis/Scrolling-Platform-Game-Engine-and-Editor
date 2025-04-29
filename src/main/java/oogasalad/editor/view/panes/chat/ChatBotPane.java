@@ -3,10 +3,6 @@ package oogasalad.editor.view.panes.chat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -19,6 +15,8 @@ import javafx.stage.Window;
 import oogasalad.editor.controller.EditorController;
 import oogasalad.editor.view.tools.ChatBotApi;
 import oogasalad.editor.view.tools.ConfigLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * ChatBotPane provides a simple UI for sending messages to ChatBotApi and displaying responses.

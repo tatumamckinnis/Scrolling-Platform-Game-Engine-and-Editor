@@ -4,8 +4,8 @@ import java.util.Objects;
 import java.util.UUID;
 import oogasalad.editor.controller.level.EditorDataAPI;
 import oogasalad.editor.controller.listeners.EditorListenerNotifier;
-import oogasalad.editor.model.loader.EditorObjectPopulator;
 import oogasalad.editor.model.data.object.EditorObject;
+import oogasalad.editor.model.loader.EditorObjectPopulator;
 import oogasalad.fileparser.records.BlueprintData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,7 @@ public class EditorObjectPlacementHandler {
     this.editorDataAPI = Objects.requireNonNull(editorDataAPI, "EditorDataAPI cannot be null");
     this.notifier = Objects.requireNonNull(notifier, "Notifier cannot be null");
 
-    this.objectPopulator = new EditorObjectPopulator(editorDataAPI.getLevel());
+    this.objectPopulator = new EditorObjectPopulator(editorDataAPI);
     LOG.info("EditorObjectPlacementHandler initialized.");
   }
 

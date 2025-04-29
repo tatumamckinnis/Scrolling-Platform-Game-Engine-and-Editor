@@ -21,7 +21,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class EditorEventHandler {
 
+  public static final String INVALID_INPUT_FOR_MESSAGE = "Invalid input for ";
   private static final Logger LOG = LogManager.getLogger(EditorEventHandler.class);
+  public static final String FAILED_TO_ERROR_MESSAGE = "Failed to {}: {}";
+  public static final String VALIDATION_FAILED_FOR_ERROR_MESSAGE = "Validation failed for {}: {}";
   private final EditorDataAPI editorDataAPI;
   private final EditorListenerNotifier notifier;
 
@@ -44,26 +47,33 @@ public class EditorEventHandler {
    * @param eventId  String identifier for the new event. Must not be null or empty.
    */
   public void addEvent(UUID objectId, String eventId) {
-    if (!validateEventInput(objectId, eventId, "addEvent")) return;
-    if (eventId.trim().isEmpty()) {
+    if (!validateEventInput(objectId, eventId, "addEvent")) {
+      return;
+    }
+    String trimmedId = eventId.trim();
+    if (trimmedId.isEmpty()) {
       notifier.notifyErrorOccurred("Event ID cannot be empty.");
       return;
     }
-    handleEventOperation(objectId,
-        () -> {
-          editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
-          EditorObject obj = editorDataAPI.getEditorObject(objectId);
-          if (obj != null && obj.getEventData() != null) {
-            if (!obj.getEventData().getEvents().contains(eventId)) {
-              obj.getEventData().addEvent(eventId);
-              LOG.debug("Added event ID '{}' to object's EventData list.", eventId);
-            }
-          } else {
-            LOG.error("Failed to add event ID '{}' to EventData list: Object or EventData was null.", eventId);
-          }
-        },
-        String.format("add event '%s' to object %s", eventId, objectId)
+    handleEventOperation(
+        objectId,
+        () -> processAddEvent(objectId, trimmedId),
+        String.format("add event '%s' to object %s", trimmedId, objectId)
     );
+  }
+
+  private void processAddEvent(UUID objectId, String eventId) {
+    editorDataAPI.getInputDataAPI().addEvent(objectId, eventId);
+    EditorObject obj = editorDataAPI.getEditorObject(objectId);
+    if (obj == null || obj.getEventData() == null) {
+      LOG.error("Failed to add event ID '{}' to EventData list: Object or EventData was null.", eventId);
+      return;
+    }
+    List<String> events = obj.getEventData().getEvents();
+    if (!events.contains(eventId)) {
+      events.add(eventId);
+      LOG.debug("Added event ID '{}' to object's EventData list.", eventId);
+    }
   }
 
   /**
@@ -74,24 +84,28 @@ public class EditorEventHandler {
    * @param eventId  String identifier of the event to remove. Must not be null.
    */
   public void removeEvent(UUID objectId, String eventId) {
-    if (!validateEventInput(objectId, eventId, "removeEvent")) return;
-    handleEventOperation(objectId,
-        () -> {
-          boolean removedFromMap = editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
-          EditorObject obj = editorDataAPI.getEditorObject(objectId);
-          boolean removedFromList = false;
-          if (obj != null && obj.getEventData() != null) {
-            removedFromList = obj.getEventData().getEvents().remove(eventId);
-            if (removedFromList) {
-              LOG.debug("Removed event ID '{}' from object's EventData list.", eventId);
-            }
-          }
-          if (!removedFromMap && !removedFromList) {
-            LOG.warn("Event '{}' not found in InputData map or EventData list for removal.", eventId);
-          }
-        },
+    if (!validateEventInput(objectId, eventId, "removeEvent")) {
+      return;
+    }
+    handleEventOperation(
+        objectId,
+        () -> processRemoveEvent(objectId, eventId),
         String.format("remove event '%s' from object %s", eventId, objectId)
     );
+  }
+
+  private void processRemoveEvent(UUID objectId, String eventId) {
+    boolean removedFromMap = editorDataAPI.getInputDataAPI().removeEvent(objectId, eventId);
+    EditorObject obj = editorDataAPI.getEditorObject(objectId);
+    boolean removedFromList = obj != null
+        && obj.getEventData() != null
+        && obj.getEventData().getEvents().remove(eventId);
+    if (removedFromList) {
+      LOG.debug("Removed event ID '{}' from object's EventData list.", eventId);
+    }
+    if (!removedFromMap && !removedFromList) {
+      LOG.warn("Event '{}' not found in InputData map or EventData list for removal.", eventId);
+    }
   }
 
   /**
@@ -388,7 +402,7 @@ public class EditorEventHandler {
       operation.run();
       notifier.notifyObjectUpdated(objectId);
     } catch (Exception e) {
-      LOG.error("Failed to {}: {}", logDescription, e.getMessage(), e);
+      LOG.error(FAILED_TO_ERROR_MESSAGE, logDescription, e.getMessage(), e);
       notifier.notifyErrorOccurred("Failed to " + logDescription.split(" ")[0] + ": " + e.getMessage());
     }
   }
@@ -399,13 +413,13 @@ public class EditorEventHandler {
       operation.run();
       notifier.notifyObjectUpdated(objectId);
     } catch (Exception e) {
-      LOG.error("Failed to {}: {}", logDescription, e.getMessage(), e);
+      LOG.error(FAILED_TO_ERROR_MESSAGE, logDescription, e.getMessage(), e);
       notifier.notifyErrorOccurred("Failed to set parameter: " + e.getMessage());
     }
   }
 
   private void handleRetrievalError(Exception e, String logDescription) {
-    LOG.error("Failed to {}: {}", logDescription, e.getMessage(), e);
+    LOG.error(FAILED_TO_ERROR_MESSAGE, logDescription, e.getMessage(), e);
     notifier.notifyErrorOccurred("Failed to get data (" + logDescription.split(" ")[1] + "): " + e.getMessage());
   }
 
@@ -415,8 +429,8 @@ public class EditorEventHandler {
       Objects.requireNonNull(eventId, String.format("Event ID cannot be null for %s", operationName));
       return true;
     } catch (NullPointerException e) {
-      LOG.warn("Validation failed for {}: {}", operationName, e.getMessage());
-      notifier.notifyErrorOccurred("Invalid input for " + operationName + ": " + e.getMessage());
+      LOG.warn(VALIDATION_FAILED_FOR_ERROR_MESSAGE, operationName, e.getMessage());
+      notifier.notifyErrorOccurred(INVALID_INPUT_FOR_MESSAGE + operationName + ": " + e.getMessage());
       return false;
     }
   }
@@ -428,8 +442,8 @@ public class EditorEventHandler {
       if (groupIndex < 0) throw new IllegalArgumentException("Group index cannot be negative");
       return true;
     } catch (NullPointerException | IllegalArgumentException e) {
-      LOG.warn("Validation failed for {}: {}", operationName, e.getMessage());
-      notifier.notifyErrorOccurred("Invalid input for " + operationName + ": " + e.getMessage());
+      LOG.warn(VALIDATION_FAILED_FOR_ERROR_MESSAGE, operationName, e.getMessage());
+      notifier.notifyErrorOccurred(INVALID_INPUT_FOR_MESSAGE + operationName + ": " + e.getMessage());
       return false;
     }
   }
@@ -440,8 +454,8 @@ public class EditorEventHandler {
       Objects.requireNonNull(outcomeType, String.format("Outcome type cannot be null for %s", operationName));
       return true;
     } catch (NullPointerException e) {
-      LOG.warn("Validation failed for {}: {}", operationName, e.getMessage());
-      notifier.notifyErrorOccurred("Invalid input for " + operationName + ": " + e.getMessage());
+      LOG.warn(VALIDATION_FAILED_FOR_ERROR_MESSAGE, operationName, e.getMessage());
+      notifier.notifyErrorOccurred(INVALID_INPUT_FOR_MESSAGE + operationName + ": " + e.getMessage());
       return false;
     }
   }
@@ -452,8 +466,8 @@ public class EditorEventHandler {
       Objects.requireNonNull(paramName, String.format("Parameter name cannot be null for %s", operationName));
       return true;
     } catch (NullPointerException e) {
-      LOG.warn("Validation failed for {}: {}", operationName, e.getMessage());
-      notifier.notifyErrorOccurred("Invalid input for " + operationName + ": " + e.getMessage());
+      LOG.warn(VALIDATION_FAILED_FOR_ERROR_MESSAGE, operationName, e.getMessage());
+      notifier.notifyErrorOccurred(INVALID_INPUT_FOR_MESSAGE + operationName + ": " + e.getMessage());
       return false;
     }
   }
