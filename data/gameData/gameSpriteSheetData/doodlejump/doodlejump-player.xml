@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spritesheet imagePath="doodlejump-player.png">
-    <sprite name="doodlePlayer" x="0" y="0" width="62" height="60">
+    <sprite name="DoodlePlayer" x="0" y="0" width="62" height="60">
         <frames>
             <frame name="doodle_left" x="0" y="0" width="62" height="60"/>
             <frame name="doodle_left_jump" x="62" y="0" width="62" height="60"/>
