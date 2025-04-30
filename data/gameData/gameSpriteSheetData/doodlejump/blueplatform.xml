@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<spritesheet imagePath="doodlejump-tiles.png">
-  <sprite name="bluePlatform" x="319" y="189" width="102" height="72">
-    <frames>
-      <frame name="platform_blue" x="319" y="189" width="102" height="72"/>
-    </frames>
-    <animations>
-      <animation name="idle" frameLen="1.0" frames="platform_blue"/>
-    </animations>
-  </sprite>
-</spritesheet>
+<spriteFile imagePath="doodlejump-tiles.png">
+<sprite name="platform-light-blue" x="253" y="0" width="57" height="15">
+  <frames>
+    <frame name="platform-light-blue" x="253" y="0" width="57" height="15"/>
+  </frames>
+  <animations>
+  </animations>
+</sprite>
+</spriteFile>
