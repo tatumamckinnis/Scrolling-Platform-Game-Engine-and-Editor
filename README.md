@@ -1,18 +1,17 @@
 # oogasalad
-## TEAM NAME
-## Billy McCune
+## It's Thyme to Eat: SALAD
+## Billy McCune, Alana Zinkin
 
 
 This project implements an authoring environment and player for multiple related games.
 
 ### Timeline
 
- * Start Date: 
+ * Start Date: 3/25/25
 
- * Finish Date: 
+ * Finish Date: 4/27/25
 
- * Hours Spent:
-
+ * Hours Spent: 25 hours/week across ~5 weeks
 
 
 ### Attributions
