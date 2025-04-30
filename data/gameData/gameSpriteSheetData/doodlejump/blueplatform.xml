@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriteFile imagePath="doodlejump-tiles.png">
+<sprite name="platform-light-blue" x="253" y="0" width="57" height="15">
+  <frames>
+    <frame name="platform-light-blue" x="253" y="0" width="57" height="15"/>
+  </frames>
+  <animations>
+  </animations>
+</sprite>
+</spriteFile>
