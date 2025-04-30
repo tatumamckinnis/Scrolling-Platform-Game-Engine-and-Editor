@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spriteFile imagePath="doodlejump-tiles.png">
+  <sprite name="blackhole" x="246" y="189" width="73" height="67">
+    <frames>
+      <frame name="blackhole" x="246" y="189" width="73" height="67"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

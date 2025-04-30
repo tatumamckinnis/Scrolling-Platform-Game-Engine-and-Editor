@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-500" minY="-1000" maxX="2000" maxY="1000">
+
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="00000000-0000-0000-0000-000000000001"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0" />
+      <property name="cameraOffsetX" value="300.0"/>
+      <property name="cameraOffsetY" value="500.0"/>
+    </doubleProperties>
+  </cameraData>
+
+  <layers>
+    <layer name="backGround" width="500" height="1000" z="10">
+      <data>
+        <object id="60" coordinates="(0,0), (2060, -324), (150,2500)" uid="b1111111-1111-1111-1111-111111111111, c1111111-1111-1111-1111-111111111111, d1111111-1111-1111-1111-111111111111"/>
+        <object id="60" coordinates="(-500,-700),(140,-700), (780,-700), (1420,-700), (2060,-700), (2700,-700), (3340,-700), (3980,-700), (4620,-700), (5260,-700)" uid="129acc3a-3dc4-49c9-861e-a86cfc67c605, 6fd71b4d-f513-4109-982d-63c229489ac7, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, f0410215-1c3b-4626-a24f-4d8fd707955e, 15fbb26d-974b-45c3-b1c6-376865be355a, 8757d18e-661e-4802-b8a4-c46b157d0bb6, cf209a9d-d4cc-4a23-9038-8a59f02a2990, f8ef7eb1-9485-4742-a20f-1fa8292a3804, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, dbd01b4f-393e-4de9-989b-11318d72247a" />
+        <object id="60" coordinates="(-500,324),(140,324), (780,324), (1420,324), (2060,324), (2700,324), (3340,324), (3980,324), (4620,324), (5260,324)" uid="66991927-aa5b-4787-ae13-4a0950d14090, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, d2134bc5-8682-4589-a2ef-8c750860b8b3, c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, ff01ac6b-8c52-444d-ae78-bc46e6432a90, a692f84b-b271-468c-8bae-7535604be673, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 646d4366-1aae-41b0-9c57-0c6840c2f049" />
+        <object id="60" coordinates="(-523,-5000)" uid="c1a11111-aaaa-bbbb-cccc-000000000001"/>
+        <object id="60" coordinates="(482,-4700)" uid="c1a11112-aaaa-bbbb-cccc-000000000002"/>
+        <object id="60" coordinates="(-376,-4400)" uid="c1a11113-aaaa-bbbb-cccc-000000000003"/>
+        <object id="60" coordinates="(927,-4100)" uid="c1a11114-aaaa-bbbb-cccc-000000000004"/>
+        <object id="60" coordinates="(-140,-3800)" uid="c1a11115-aaaa-bbbb-cccc-000000000005"/>
+        <object id="60" coordinates="(835,-3500)" uid="c1a11116-aaaa-bbbb-cccc-000000000006"/>
+        <object id="60" coordinates="(-624,-3200)" uid="c1a11117-aaaa-bbbb-cccc-000000000007"/>
+        <object id="60" coordinates="(75,-2900)" uid="c1a11118-aaaa-bbbb-cccc-000000000008"/>
+        <object id="60" coordinates="(600,-2600)" uid="c1a11119-aaaa-bbbb-cccc-000000000009"/>
+        <object id="60" coordinates="(-452,-2300)" uid="c1a1111a-aaaa-bbbb-cccc-000000000010"/>
+        <object id="60" coordinates="(720,-2000)" uid="c1a1111b-aaaa-bbbb-cccc-000000000011"/>
+        <object id="60" coordinates="(-350,-1700)" uid="c1a1111c-aaaa-bbbb-cccc-000000000012"/>
+        <object id="60" coordinates="(930,-1400)" uid="c1a1111d-aaaa-bbbb-cccc-000000000013"/>
+        <object id="60" coordinates="(-500,-1100)" uid="c1a1111e-aaaa-bbbb-cccc-000000000014"/>
+        <object id="60" coordinates="(450,-800)" uid="c1a1111f-aaaa-bbbb-cccc-000000000015"/>
+        <object id="60" coordinates="(125,-500)" uid="c1a11120-aaaa-bbbb-cccc-000000000016"/>
+        <object id="60" coordinates="(-300,-200)" uid="c1a11121-aaaa-bbbb-cccc-000000000017"/>
+        <object id="60" coordinates="(750,100)" uid="c1a11122-aaaa-bbbb-cccc-000000000018"/>
+        <object id="60" coordinates="(-650,400)" uid="c1a11123-aaaa-bbbb-cccc-000000000019"/>
+        <object id="60" coordinates="(300,700)" uid="c1a11124-aaaa-bbbb-cccc-000000000020"/>
+        <object id="60" coordinates="(910,1000)" uid="c1a11125-aaaa-bbbb-cccc-000000000021"/>
+        <object id="60" coordinates="(-400,1300)" uid="c1a11126-aaaa-bbbb-cccc-000000000022"/>
+        <object id="60" coordinates="(575,1600)" uid="c1a11127-aaaa-bbbb-cccc-000000000023"/>
+        <object id="60" coordinates="(-250,1900)" uid="c1a11128-aaaa-bbbb-cccc-000000000024"/>
+        <object id="60" coordinates="(100,2200)" uid="c1a11129-aaaa-bbbb-cccc-000000000025"/>
+        <object id="60" coordinates="(825,2500)" uid="c1a1112a-aaaa-bbbb-cccc-000000000026"/>
+        <object id="60" coordinates="(-500,2800)" uid="c1a1112b-aaaa-bbbb-cccc-000000000027"/>
+        <object id="60" coordinates="(600,3100)" uid="c1a1112c-aaaa-bbbb-cccc-000000000028"/>
+        <object id="60" coordinates="(-100,3400)" uid="c1a1112d-aaaa-bbbb-cccc-000000000029"/>
+        <object id="60" coordinates="(350,3700)" uid="c1a1112e-aaaa-bbbb-cccc-000000000030"/>
+        <object id="60" coordinates="(940,4000)" uid="c1a1112f-aaaa-bbbb-cccc-000000000031"/>
+        <object id="60" coordinates="(-420,4300)" uid="c1a11130-aaaa-bbbb-cccc-000000000032"/>
+        <object id="60" coordinates="(700,4600)" uid="c1a11131-aaaa-bbbb-cccc-000000000033"/>
+        <object id="60" coordinates="(-320,4900)" uid="c1a11132-aaaa-bbbb-cccc-000000000034"/>
+
+
+      </data>
+    </layer>
+    <layer name="entities" width="2000" height="1000" z="1">
+      <data>
+        <object id="200" coordinates="(250,500)" uid="00000000-0000-0000-0000-000000000001"/>
+        <object id="201" coordinates="(200,600)" uid="c1111111-aaaa-bbbb-cccc-111111111111"/>
+        <object id="201" coordinates="(400,750)" uid="c2222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(600,900)" uid="c3333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="201" coordinates="(800,1100)" uid="c4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(250,1000)" uid="e4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="202" coordinates="(250,600)" uid="c1111111-aaaa-bbbb-cccc-111111311111"/>
+        <object id="202" coordinates="(405,600)" uid="c2222222-aaaa-bbcb-cccc-222222222222"/>
+        <object id="202" coordinates="(500,900)" uid="c4333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="202" coordinates="(500,1100)" uid="c5444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(150,600)" uid="f1111111-aaaa-bbbb-cccc-111111111111"/>
+        <object id="202" coordinates="(300,700)" uid="f2222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(500,800)" uid="f3333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="202" coordinates="(200,900)" uid="f4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(400,1000)" uid="f5555555-aaaa-bbbb-cccc-555555555555"/>
+        <object id="202" coordinates="(100,1100)" uid="f6666666-aaaa-bbbb-cccc-666666666666"/>
+        <object id="201" coordinates="(600,1200)" uid="f7777777-aaaa-bbbb-cccc-777777777777"/>
+        <object id="202" coordinates="(350,1300)" uid="f8888888-aaaa-bbbb-cccc-888888888888"/>
+        <object id="201" coordinates="(250,1400)" uid="f9999999-aaaa-bbbb-cccc-999999999999"/>
+        <object id="202" coordinates="(450,1500)" uid="f1010101-aaaa-bbbb-cccc-101010101010"/>
+        <object id="201" coordinates="(200,1600)" uid="f1111112-aaaa-bbbb-cccc-111111111112"/>
+        <object id="202" coordinates="(500,1700)" uid="f2222223-aaaa-bbbb-cccc-222222222223"/>
+        <object id="201" coordinates="(150,1800)" uid="f3333334-aaaa-bbbb-cccc-333333333334"/>
+        <object id="202" coordinates="(350,1900)" uid="f4444445-aaaa-bbbb-cccc-444444444445"/>
+        <object id="201" coordinates="(550,2000)" uid="f5555556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="202" coordinates="(250,2100)" uid="f6666667-aaaa-bbbb-cccc-666666666667"/>
+        <object id="201" coordinates="(400,2200)" uid="f7777778-aaaa-bbbb-cccc-777777777778"/>
+        <object id="202" coordinates="(600,2300)" uid="f8888889-aaaa-bbbb-cccc-888888888889"/>
+        <object id="201" coordinates="(300,2400)" uid="f9999990-aaaa-bbbb-cccc-999999999990"/>
+        <object id="201" coordinates="(150,2500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,0)" uid="f1010102-aaaa-bbbb-cccc-101010101014"/>
+        <object id="201" coordinates="(300,0)" uid="f1010102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="202" coordinates="(400,0)" uid="f1010102-aaaa-bbbb-cccc-101010141014"/>
+        <object id="202" coordinates="(350,100)" uid="f1010102-aaaa-bbbb-cccc-101015101014"/>
+        <object id="202" coordinates="(150,-500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,-400)" uid="e1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(100,-200)" uid="f4010102-aaaa-bbbb-cccc-101010101012"/>
+
+      </data>
+    </layer>
+  </layers>
+
+  <game name="doodlejump">
+    <objectGroup name="entities">
+      <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml" hitBoxWidth="50"
+        hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
+        eventIDs="1,2,3,4,5,6,7" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives"/>
+        <properties>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="lives" value="3"/>
+            <property name="score" value="0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+
+      <object spriteName="greenPlatform" type="platform" id="201" spriteFile="greenplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+      <object spriteName="bluePlatform" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+    <objectGroup name="backgrounds">
+      <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
+        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+  </game>
+
+  <events>
+    <event type="input" id="1">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="JUMP">
+          <doubleParameters>
+            <parameter name="JumpAmount" value="80"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="2">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="3.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="3">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platform"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR"/>
+      </outcomes>
+    </event>
+
+    <event type="input" id="4">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="a"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_LEFT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="input" id="5">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="d"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="6">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME">
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="7">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_Y">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="y" value="5000"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="lives"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-1"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="TELEPORT_TO_POINT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x" value="250"/>
+            <parameter name="y" value="500"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+  </events>
+</map>
