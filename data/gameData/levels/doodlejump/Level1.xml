@@ -135,7 +135,7 @@
     <objectGroup name="players">
       <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml" hitBoxWidth="50"
         hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
-        eventIDs="2,3,4,5,6,7,8,10" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        eventIDs="1,2,3,4,5,6,7,8,10" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <displayedProperties propertyList="score,lives,distance"/>
         <properties>
           <stringProperties/>
