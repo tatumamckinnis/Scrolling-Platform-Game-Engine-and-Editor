@@ -463,15 +463,11 @@ public class EditorDataAPI {
   }
 
   /**
-   * Returns the {@link CameraDataManager} for interacting with the level's camera data. The
-   * {@code camType} parameter is currently ignored but kept for potential future use with multiple
-   * camera types.
+   * Returns the {@link CameraDataManager} for interacting with the level's camera data.
    *
-   * @param camType the camera type requested (currently ignored).
    * @return the {@link CameraDataManager} instance.
    */
-  public CameraDataManager getCameraAPI(String camType) {
-    // Currently ignores camType, always returns the single camera manager
+  public CameraDataManager getCameraAPI() {
     return cameraAPI;
   }
 
