@@ -17,8 +17,12 @@ This project implements an authoring environment and player for multiple related
 ### Attributions
 
  * Resources used for learning (including AI assistance)
- 
+   * [SOLID Design Principles](https://www.digitalocean.com/community/conceptual-articles/s-o-l-i-d-the-first-five-principles-of-object-oriented-design#single-responsibility-principle) used to understand design principles
+   * [Refactoring Guru](https://refactoring.guru/design-patterns/factory-method) used for understanding design patterns - specifically factory
+   * [Undoing Git commits](https://stackoverflow.com/questions/22682870/how-can-i-undo-pushed-commits-using-git) 
  * Resources used directly (including AI assistance)
+   * ChatGPT and Claude AI assisted in writing code
+   * 
 
 
 ### Running the Program

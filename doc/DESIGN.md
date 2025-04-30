@@ -7,8 +7,8 @@
 ## Team Roles and Responsibilities
 
 * Team Member #1: Alana Zinkin
-    * Product management: assigning of git issues, sprint planning, documentation, group
-      organization
+    * Product management: assigning of git issues, sprint planning, documentation (including writing
+      JavaDoc comments), group organization and coordination
     * Engine Controller: integrating the back-end and front-end endpoints (GameManager and
       GameController APIs)
     * Language Selecting and Resource Management Refactoring
@@ -18,6 +18,8 @@
     * Rendering game objects in the front-end
     * Adding Engine and Editor View features such as buttons and actions, help views, editor tools,
       image rendering
+    * Rendering Player Statistics
+    * Refactoring view and display inheritance
 
 * Team Member #2: Billy McCune
 
