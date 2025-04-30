@@ -56,4 +56,36 @@
     </objectGroup>
   </game>
 
+  <game name="celeste">
+    <objectGroup name="blocks">
+      <object id="1000"  type="Top Block 2"          gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="top_block2"          spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="2000"  type="Destructible Block 4" gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="destructible_block4" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="3000"  type="Destructible Block 3" gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="destructible_block3" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="4000"  type="Destructible Block 1" gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="destructible_block1" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="5000"  type="Center Block 1"       gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="center_block1"       spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="6000"  type="Left Block"           gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="left_block"          spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="7000" type="Top Block 1"          gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="top_block1"          spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="8000" type="Top Block 3"          gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="top_block3"          spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="9000" type="Right Block"          gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="right_block"         spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="10000" type="Bottom Block 1"       gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="bottom_block1"      spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="11000" type="Bottom Block 2"       gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="bottom_block2"      spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="12000" type="Bottom Block 3"       gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="bottom_block3"      spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="13000" type="Destructible Block 2" gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="destructible_block2" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+
+    <objectGroup name="entities">
+      <object id="14000"  type="Spike"   gameName="celeste" group="enemies" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="spike"  spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+
+    <objectGroup name="foreground">
+      <object id="15000"  type="Flower"  gameName="celeste" group="foreground" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="flower" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="16000" type="Grass 2" gameName="celeste" group="foreground" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="grass2" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+      <object id="17000" type="Grass 1" gameName="celeste" group="foreground" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="grass1" spriteFile="celeste-sprites.xml" hitBoxWidth="8" hitBoxHeight="8" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+
+    <objectGroup name = "player">
+      <object id="9999" type="Player" gameName="celeste" group="blocks" velocityX="0.00" velocityY="0.00" rotation="0.00" flipped="false" spriteName="madeline_stand" spriteFile="madeline_stand.xml" hitBoxWidth="7" hitBoxHeight="7" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs=""><properties><stringProperties/><doubleProperties/></properties></object>
+    </objectGroup>
+
+  </game>
 </prefabs>
