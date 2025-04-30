@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+-->
+<TextureAtlas imagePath="doodlejump-tiles.png" width="482" height="541">
+    <sprite n="platform-green" x="196" y="0" w="57" h="15"/>
+    <sprite n="alien-threeEyes-fly-2" x="188" y="269" w="63" h="89"/>
+    <sprite n="alien-mike-fly-1" x="107" y="89" w="78" h="45"/>
+    <sprite n="alien-mike-fly-2" x="185" y="89" w="79" h="45"/>
+    <sprite n="alien-mike-fly-3" x="264" y="89" w="79" h="45"/>
+    <sprite n="alien-mike-fly-4" x="343" y="89" w="79" h="45"/>
+    <sprite n="alien-flat" x="164" y="55" w="94" h="33"/>
+    <sprite n="platform-light-blue" x="253" y="0" w="57" h="15"/>
+    <sprite n="platform-medium-blue" x="310" y="0" w="57" h="15"/>
+    <sprite n="alien-mike-fly-5" x="0" y="134" w="78" h="45"/>
+    <sprite n="blackhole" x="246" y="189" w="73" h="67"/>
+    <sprite n="alien-flat-red" x="258" y="55" w="94" h="33"/>
+    <sprite n="platform-white" x="367" y="0" w="57" h="15"/>
+    <sprite n="grill-1" x="124" y="0" w="36" h="14"/>
+    <sprite n="platform-weak" x="0" y="15" w="60" h="15"/>
+    <sprite n="alien-big-blue" x="372" y="134" w="86" h="55"/>
+    <sprite n="alien-ship-beam" x="0" y="359" w="83" h="122"/>
+    <sprite n="platform-weak-break-1" x="305" y="30" w="62" h="22"/>
+    <sprite n="alien-threeEyes-fly-3" x="251" y="269" w="65" h="89"/>
+    <sprite n="grill-2" x="153" y="30" w="36" h="18"/>
+    <sprite n="grill-3" x="160" y="0" w="36" h="14"/>
+    <sprite n="spring-loaded" x="106" y="0" w="18" h="12"/>
+    <sprite n="platform-weak-break-2" x="106" y="55" w="58" h="30"/>
+    <sprite n="spring-pop" x="0" y="55" w="18" h="28"/>
+    <sprite n="platform-yellow" x="60" y="15" w="57" h="15"/>
+    <sprite n="platform-weak-break-3-left" x="81" y="55" w="25" h="29"/>
+    <sprite n="platform-weak-break-3-right" x="352" y="55" w="21" h="34"/>
+    <sprite n="platform-beige" x="117" y="15" w="57" h="15"/>
+    <sprite n="alien-sixArms" x="78" y="134" w="55" h="49"/>
+    <sprite n="platform-grey" x="174" y="15" w="57" h="15"/>
+    <sprite n="platform-dark-yellow" x="231" y="15" w="57" h="15"/>
+    <sprite n="alien-oneEye-right" x="133" y="134" w="38" h="50"/>
+    <sprite n="alien-oneEye-left" x="171" y="134" w="37" h="50"/>
+    <sprite n="platform-orange" x="288" y="15" w="57" h="15"/>
+    <sprite n="alien-big-green-bleed-4" x="0" y="189" w="82" h="59"/>
+    <sprite n="springBoots-sprung-left" x="367" y="30" w="28" h="22"/>
+    <sprite n="alien-ship" x="373" y="55" w="78" h="34"/>
+    <sprite n="springBoots-center" x="247" y="30" w="26" h="20"/>
+    <sprite n="platform-dark-orange" x="345" y="15" w="57" h="15"/>
+    <sprite n="platform-very-orange" x="402" y="15" w="57" h="15"/>
+    <sprite n="alien-big-green-bleed-1" x="208" y="134" w="82" h="53"/>
+    <sprite n="springBoot-right-1" x="459" y="15" w="13" h="15"/>
+    <sprite n="springBoot-right-2" x="0" y="30" w="13" h="15"/>
+    <sprite n="propeller" x="273" y="30" w="32" h="20"/>
+    <sprite n="springBoot-loaded" x="13" y="30" w="26" h="15"/>
+    <sprite n="platform-red" x="39" y="30" w="57" h="15"/>
+    <sprite n="alien-red" x="36" y="89" w="46" h="36"/>
+    <sprite n="rocket" x="82" y="89" w="25" h="37"/>
+    <sprite n="alien-cactus" x="421" y="189" w="45" h="80"/>
+    <sprite n="platform-lava" x="189" y="30" w="58" h="18"/>
+    <sprite n="platform-lava-break-1" x="421" y="30" w="61" h="25"/>
+    <sprite n="alien-big-green-bleed-2" x="82" y="189" w="82" h="59"/>
+    <sprite n="propeller-bone" x="395" y="30" w="26" h="22"/>
+    <sprite n="shield" x="0" y="89" w="36" h="35"/>
+    <sprite n="platform-lava-break-2" x="18" y="55" w="63" h="28"/>
+    <sprite n="platform-blue" x="319" y="189" w="102" h="72"/>
+    <sprite n="alien-strawberries" x="0" y="269" w="64" h="85"/>
+    <sprite n="finish" x="83" y="359" w="320" h="182"/>
+    <sprite n="alien-big-green" x="290" y="134" w="82" h="53"/>
+    <sprite n="alien-big-green-bleed-3" x="164" y="189" w="82" h="59"/>
+    <sprite n="alien-threeEyes-fly-1" x="128" y="269" w="60" h="87"/>
+    <sprite n="alien-threeEyes-fly-broken" x="316" y="269" w="132" h="90"/>
+    <sprite n="alien-strawberries-green" x="64" y="269" w="64" h="85"/>
+</TextureAtlas>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for mushroom-red.png (supermario)
+-->
+<spriteFile imagePath="dinosaurgame-itemblocks.png">
+  <sprite name="mushroom-red.png" x="0" y="0" width="16" height="16">
+    <frames>
+      <frame name="mushroom-red.png" x="0" y="0" width="16" height="16"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

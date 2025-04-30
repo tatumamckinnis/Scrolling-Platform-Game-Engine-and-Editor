@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<spriteFile imagePath="supermario/supermario-items.png" width="1648" height="32">
+<spriteFile imagePath="dinosaurgame-coins.png" width="1648" height="32">
     <sprite name="mushroom-red.png" x="0" y="0" width="16" height="16"/>
     <sprite name="mushroom-green.png" x="16" y="0" width="16" height="16"/>
     <sprite name="items-objects-2.png" x="32" y="0" width="16" height="16"/>

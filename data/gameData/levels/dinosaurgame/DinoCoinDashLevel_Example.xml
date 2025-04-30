@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-600" minY="-3000" maxX="600" maxY="500">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0" />
+      <property name="cameraOffsetX" value="0.0"/>
+      <property name="cameraOffsetY" value="-300.0"/>
+    </doubleProperties>
+  </cameraData>
+
+  <layers>
+    <layer name="backGround" width="1200" height="3500" z="10">
+      <data>
+        <object id="60" coordinates="(0, 0)" uid="bg-instance-uid-01"/>
+        <object id="60" coordinates="(0, -1000)" uid="bg-instance-uid-02"/>
+        <object id="60" coordinates="(0, -2000)" uid="bg-instance-uid-03"/>
+        <object id="60" coordinates="(0, -3000)" uid="bg-instance-uid-04"/>
+      </data>
+    </layer>
+
+    <layer name="entities" width="1200" height="3500" z="1">
+      <data>
+        <object id="111" coordinates="(0, 400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
+
+        <object id="201" coordinates="(0, 450)" uid="platform-start-uid"/>
+        <object id="201" coordinates="(100, 250)" uid="platform-uid-001"/>
+        <object id="201" coordinates="(-150, 100)" uid="platform-uid-002"/>
+        <object id="201" coordinates="(200, -200)" uid="platform-uid-004"/>
+        <object id="201" coordinates="(-200, -350)" uid="platform-uid-005"/>
+        <object id="201" coordinates="(0, -500)" uid="platform-uid-006"/>
+        <object id="201" coordinates="(150, -650)" uid="platform-uid-007"/>
+        <object id="201" coordinates="(50, -950)" uid="platform-uid-009"/>
+        <object id="201" coordinates="(-50, -1100)" uid="platform-uid-010"/>
+        <object id="201" coordinates="(200, -1250)" uid="platform-uid-011"/>
+        <object id="201" coordinates="(-150, -1400)" uid="platform-uid-012"/>
+        <object id="201" coordinates="(100, -1550)" uid="platform-uid-013"/>
+        <object id="201" coordinates="(0, -1850)" uid="platform-uid-014"/>
+        <object id="201" coordinates="(-200, -2150)" uid="platform-uid-015"/>
+        <object id="201" coordinates="(150, -2450)" uid="platform-uid-016"/>
+
+        <object id="202" coordinates="(50, -50)" uid="platform-uid-003"/>
+        <object id="202" coordinates="(-100, -800)" uid="platform-uid-008"/>
+        <object id="202" coordinates="(100, -2000)" uid="platform-uid-017"/>
+
+        <object id="203" coordinates="(-100, -1700)" uid="platform-uid-018"/>
+        <object id="203" coordinates="(50, -2300)" uid="platform-uid-019"/>
+
+        <object id="14" coordinates="(100, 200)" uid="cactus-uid-001"/>
+        <object id="14" coordinates="(0, -550)" uid="cactus-uid-002"/>
+        <object id="14" coordinates="(-150, -1450)" uid="cactus-uid-003"/>
+        <object id="14" coordinates="(150, -2500)" uid="cactus-uid-004"/>
+
+      </data>
+    </layer>
+    <layer name="events" width="500" height="500" z="1"><data/></layer>
+  </layers>
+
+  <game name="dinosaurgame">
+    <objectGroup name="entities">
+      <object spriteName="DinoStart" type="player" id="111" spriteFile="dinostart.xml" hitBoxWidth="88"
+        hitBoxHeight="94" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0" eventIDs="20,22,23,24,25,26,104,105,107,108,109,110,111"
+        velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives,height"/>
+        <properties>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="lives" value="3"/>
+            <property name="score" value="0"/>
+            <property name="height" value="0"/>
+            <property name="jump_force" value="18"/>
+            <property name="gravity" value="0.8"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object spriteName="LargeCactus1" type="enemy" id="14" spriteFile="cacti.xml" hitBoxWidth="48"
+        hitBoxHeight="95" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties><stringProperties/><doubleProperties/></properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks"/>
+    <objectGroup name="backgrounds"/>
+  </game>
+
+  <game name="doodlejump">
+    <objectGroup name="entities"/>
+    <objectGroup name="blocks">
+      <object spriteName="platform-green" type="doodle_platform" id="201" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" spriteDx="0" spriteDy="0" eventIDs="106" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+      <object spriteName="platform-medium-blue" type="doodle_platform_moving" id="202" spriteFile="doodlejump-tiles.xml" hitBoxWidth="57" hitBoxHeight="15" spriteDx="0" spriteDy="0" eventIDs="106, 202" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+      <object spriteName="platform-weak" type="doodle_platform_weak" id="203" spriteFile="doodlejump-tiles.xml" hitBoxWidth="60" hitBoxHeight="15" spriteDx="0" spriteDy="0" eventIDs="106, 9" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+    <objectGroup name="backgrounds">
+      <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+  </game>
+
+  <events>
+    <event type="input" id="20">
+      <conditions><conditionSet><condition name="KEY_PRESSED"><stringParameters><parameter name="key" value="w"/></stringParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="JUMP"><variableParameters><parameter name="JumpAmount" value="jump_force"/></variableParameters></outcome></outcomes>
+    </event>
+    <event type="input" id="104">
+      <conditions><conditionSet><condition name="KEY_HELD"><stringParameters><parameter name="key" value="a"/></stringParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="MOVE_LEFT"><doubleParameters><parameter name="amount" value="7"/></doubleParameters></outcome><outcome name="SET_FLIPPED"><booleanParameters><parameter name="flipped" value="true"/></booleanParameters></outcome></outcomes>
+    </event>
+    <event type="input" id="105">
+      <conditions><conditionSet><condition name="KEY_HELD"><stringParameters><parameter name="key" value="d"/></stringParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="MOVE_RIGHT"><doubleParameters><parameter name="amount" value="7"/></doubleParameters></outcome><outcome name="SET_FLIPPED"><booleanParameters><parameter name="flipped" value="false"/></booleanParameters></outcome></outcomes>
+    </event>
+    <event type="physics" id="22">
+      <conditions><conditionSet><condition name="TRUE"/></conditionSet></conditions>
+      <outcomes><outcome name="APPLY_GRAVITY"><variableParameters><parameter name="ApplyGravityAmount" value="gravity"/></variableParameters></outcome></outcomes>
+    </event>
+    <event type="physics" id="23">
+      <conditions>
+        <conditionSet><condition name="COLLIDED_WITH_GROUP"><stringParameters><parameter name="group" value="doodle_platform"/></stringParameters></condition><condition name="IS_FALLING"/></conditionSet>
+        <conditionSet><condition name="COLLIDED_WITH_GROUP"><stringParameters><parameter name="group" value="doodle_platform_moving"/></stringParameters></condition><condition name="IS_FALLING"/></conditionSet>
+        <conditionSet><condition name="COLLIDED_WITH_GROUP"><stringParameters><parameter name="group" value="doodle_platform_weak"/></stringParameters></condition><condition name="IS_FALLING"/></conditionSet>
+      </conditions>
+      <outcomes><outcome name="JUMP"><variableParameters><parameter name="JumpAmount" value="jump_force"/></variableParameters></outcome></outcomes>
+    </event>
+    <event type="physics" id="24">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="enemy"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="lives"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="input" id="25">
+      <conditions><conditionSet><condition name="KEY_PRESSED"><stringParameters><parameter name="key" value="s"/></stringParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="RESTART_LEVEL"/></outcomes>
+    </event>
+    <event type="input" id="26">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="1.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME"/>
+      </outcomes>
+    </event>
+    <event type="physics" id="110">
+      <conditions><conditionSet><condition name="AT_OR_BEYOND_Y"><doubleParameters><parameter name="y" value="600"/></doubleParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="LOSE_GAME"/></outcomes>
+    </event>
+    <event type="input" id="111">
+      <conditions><conditionSet><condition name="TRUE"/></conditionSet></conditions>
+      <outcomes><outcome name="RUN_OBJECT_ANIMATIONS"/></outcomes>
+    </event>
+    <event type="physics" id="108">
+      <conditions>
+        <conditionSet>
+          <condition name="IS_MOVING_UP"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR_TO_GREATER">
+          <stringParameters>
+            <parameter name="variable" value="maxDist"/>
+            <parameter name="otherVariable" value="distance"/>
+          </stringParameters>
+        </outcome>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="score"/>
+            <parameter name="otherVariable" value="maxDist"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="physics" id="106">
+      <conditions>
+        <conditionSet><condition name="COLLIDED_WITH_GROUP"><stringParameters><parameter name="group" value="player"/></stringParameters></condition></conditionSet>
+      </conditions>
+      <outcomes> <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR"/> </outcomes>
+    </event>
+    <event type="physics" id="202">
+      <conditions><conditionSet><condition name="TRUE"/></conditionSet></conditions>
+      <outcomes><outcome name="PATROL"><doubleParameters><parameter name="distance" value="150"/><parameter name="speed" value="1.5"/></doubleParameters></outcome></outcomes>
+    </event>
+    <event type="physics" id="9">
+      <conditions><conditionSet><condition name="COLLIDED_WITH_GROUP"><stringParameters><parameter name="group" value="player"/></stringParameters></condition></conditionSet></conditions>
+      <outcomes><outcome name="DESTROY_OBJECT"/></outcomes>
+    </event>
+  </events>
+</map>
