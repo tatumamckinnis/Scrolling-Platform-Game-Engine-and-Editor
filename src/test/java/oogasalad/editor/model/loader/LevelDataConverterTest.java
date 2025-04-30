@@ -63,7 +63,7 @@ public class LevelDataConverterTest {
 
     var cam = editorLevelData.getCameraData();
     assertEquals("AutoScroller", cam.getCameraType());
-    assertEquals(100.0, cam.getCameraX());
+    assertEquals(100.0, cam.getDoubleParams().get("cameraOffsetX"));
     assertEquals("objectID", cam.getStringParam("objectToTrack"));
   }
 
