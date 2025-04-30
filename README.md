@@ -27,9 +27,11 @@ This project implements an authoring environment and player for multiple related
 
 ### Running the Program
 
- * Main class:
+ * Main class: Main.java
 
  * Data files needed: 
+   * Level Data: selected level/game file
+   * Resource Properties files (config, css, gameIcons, i18n, server, and shared folders)
 
  * Interesting data files:
 
