@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map minX="-8" minY="0" maxX="16" maxY="24">
-  <cameraData type="Tracker">
+  <cameraData type="AutoScrolling">
     <stringProperties>
     </stringProperties>
     <doubleProperties>
-      <property name="zoom" value="1.0"/>
+      <property name="scrollSpeedX" value="-1.0"/>
+      <property name="scrollSpeedY" value="-1.0"/>
+      <property name="zoom" value="8.0"/>
+      <property name="cameraOffsetX" value="-40.0"/>
+      <property name="cameraOffsetY" value="-40.0"/>
     </doubleProperties>
   </cameraData>
   <layers>
