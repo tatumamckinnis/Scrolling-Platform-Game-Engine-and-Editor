@@ -39,6 +39,20 @@
     *  Refactoring Editor: During the last week, I spent time adding the editor settings windows. I also created the editors drag feature. 
   
 * Team Member #3: Jacob You
+    * Engine Design: Spent time designing the layout of the engine, the data files, parameters, and
+      events.
+    * Editor Data Storage System
+    * Editor Grid Zoom and Pan
+    * Grid Line Toggle
+    * Grid Snap To Grid
+    * Editor Properties input tab
+    * Editor Sprite Sheet Parsing, Loading, and Saving
+    * Editor Sprite Sheet Rendering and Assigment
+    * Creation of sprites, frames, and animations
+    * Saving Data from Editor Level to XML
+    * Level Property Editing
+    * Managers to communicate between front end and editor data storage
+    * Refactor Event Data Storage according to updated Event System
 
 * Team Member #4: Tatum McKinnis
 
@@ -182,13 +196,13 @@
   GameControllerAPI, it would be fairly simple to add a new type of File Parser, which implements
   the parser API
 
-* Feature #3: It should be relatively simple to add dynamic object generation due to the use of the
-  blueprint system. Blueprints allow objects to be dynamically spawned. If a developer wanted to add
-  random object generation, they would define a function for placing the objects, specifying an x
-  and y range for the objects (such as platforms) and treating it as an event within our event
-  system
+* Feature #3: Events are easy to add because they are separated into conditions and outcomes and
+  inherit from the same class - adding new events does not require adding both conditions and
+  outcomes because they serve as building blocks that can be paired together. 
 
-* Feature #4
+* Feature #4: It is simple to change the server that the clients can connect to by just changing the
+  link in the server properties file. This way once we host the server, it is easy to connect to the
+  hosted server.
 
 #### Features Not Yet Done
 
@@ -199,4 +213,6 @@
 * Feature #3: There is no splash screen between levels for a given game
 
 * Feature #4: We did not implement audio
+
+* Feature #5: We did not add extra tools to make editing easier
  

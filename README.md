@@ -87,10 +87,10 @@ For security reasons, options #1 and #2 are recommended for production use.
     * The editor is able to save a basic game file and render it
 
 * Features unimplemented:
-  * Did not fully implement File Saving for the Engine 
-  * Did not fully implement CSS styling switching 
-  * Did not add a splash screen between levels for a given game 
-  * We did not implement audio for the game
+    * Did not fully implement File Saving for the Engine
+    * Did not fully implement CSS styling switching
+    * Did not add a splash screen between levels for a given game
+    * We did not implement audio for the game
 
 * Noteworthy Features:
     * Networked players - players may play in multi-player mode
@@ -98,7 +98,8 @@ For security reasons, options #1 and #2 are recommended for production use.
     * AI ChatBot to assist with building the editor
     * Players have profiles that they can make and update where their high scores are saved for each
       game
-    * New sprite sheets may be parsed and generated within the editor to be used
+    * Explicit software for making new sprite sheets - allows them to be parsed and generated within
+      the editor to be used
 
 ### Assignment Impressions
 
