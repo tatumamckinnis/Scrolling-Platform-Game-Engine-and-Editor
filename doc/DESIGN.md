@@ -44,6 +44,17 @@
       factory.
 
 * Team Member #7: Luke Nam
+  * Front end developer:
+    * Designed the splash screen for the OOGASalad application, from the JavaFX layout to the button styling
+    * Drafted mock-up user interfaces throughout sprints to show new screens to add to the application, hosted on [Google Slides](https://docs.google.com/presentation/d/1nyUn-waZneKaREQaGtTVb95sLoyW5idqhHNOG3ka63g/edit?usp=sharing) for sharable editing
+    * Helped design the engine button layout and icons
+    * Refactored the win/pause/lose screens into an abstract class for reusability and adhering to DRY
+    * Externalized pane element widths, heights, spacing, fonts, etc. using properties files
+    * Similarly reduced reused code through CSS templates
+    * Designed the multiplayer lobby front but wasn't implemented in final tag due to camera bugs
+  * WebSocket support:
+    * Helped integrate JavaScript functionality for multiplayer support on repl.it
+    * Tested WebSocket functionality through System log experiments between two computers.
 
 ## Design Goals
 
