@@ -22,8 +22,37 @@
     * Refactoring view and display inheritance
 
 * Team Member #2: Billy McCune
-
+    *  FileParser: developed and designed the fileParser package and modified the parsing when
+  changes to the data system were made.
+    *  Data Designer: designed the sprite sheet data system and the level data xml
+  formating. I also was the main designer for the blueprint system and layer system. 
+    *  Rendering game objects in the front-end: Wrote the original code for handling front end object rendering and 
+  wrote the code for animation handling in the front end.
+    *  Event co-creator: Worked with Gage and by myself to create event outcomes and conditions and make the event system 
+  handle the condition set system to handle logical "or" and logical "and" conditions. 
+    *  File saving: Edited the file saving system for the object properties and event properties.
+    *  User Data System designer and Implementor: Designed the User Data system allowing for users to create and modify profiles. 
+  I also made the userData tracking system. The session manager also makes sure session data is constant across panes. I 
+  also made the UserData front in panes as well.
+    *  Chat Bot: Designed and Built the chatBot Api and the Chat Bot pane in the editor. 
+    *  Animation System Designer and Implementor: Designed the animationHandler, how animations are stored, the events for the animations, and the view handling of animations. 
+    *  Refactoring Editor: During the last week, I spent time adding the editor settings windows. I also created the editors drag feature. 
+  
 * Team Member #3: Jacob You
+    * Engine Design: Spent time designing the layout of the engine, the data files, parameters, and
+      events.
+    * Editor Data Storage System
+    * Editor Grid Zoom and Pan
+    * Grid Line Toggle
+    * Grid Snap To Grid
+    * Editor Properties input tab
+    * Editor Sprite Sheet Parsing, Loading, and Saving
+    * Editor Sprite Sheet Rendering and Assigment
+    * Creation of sprites, frames, and animations
+    * Saving Data from Editor Level to XML
+    * Level Property Editing
+    * Managers to communicate between front end and editor data storage
+    * Refactor Event Data Storage according to updated Event System
 
 * Team Member #4: Tatum McKinnis
 
@@ -97,14 +126,15 @@
 * Class #2: The FileParserAPI parses each level file and transmits the data to the
   EngineFileConverterAPI and the EditorFileConverterAPI
 
-* Class #3
+* Class #3: The EditorDataAPI is responsible for managing editor data and communicating updates in
+  the view to the model in the back-end and uses the EditorListenerNotifier API to transmit updates
+  to different components of the view
 
 * Class #4: Button action factory. This factory was core to any actions that were triggered from
   user mouse clicks. It abstracted how the button action was implemented, and allowed easier testing
   of the actions. Also, it used reflection so adding new buttons was simple (and didn't require
-  modifications but just additions) if you had the button id from the resource files. Aksel, Alana,
-  Billy, Luke all worked on this class. It demonstrates understanding of the factory design patter
-  as well.
+  modifications but just additions) if you had the button id from the resource files. It
+  demonstrates understanding of the factory design pattern as well.
 
 ## Assumptions or Simplifications
 
@@ -130,11 +160,26 @@
 
 ## Changes from the Original Plan
 
-* Change #1: Changed our data format significantly: ....
+* Change #1: We changed our original event system and game object abstraction hierarchy. We
+  originally planned to create a complex abstraction hierarchy for the game object, but soon
+  realized game objects differed slightly from one another, and primary differed in terms of
+  behavior, which could be encapsulated within EventData. We originally planned to have an event
+  registry system where game objects could access events through a lookup table of Events and Event
+  Chains (groups of events), but this was overly complicated for our design, so we simplified the
+  model to store Events directly within the game object to allow GameObjects to have separate event
+  instances. Separate event instances would allow game objects to update their respective events
+  without affecting other game objects.
 
-* Change #2:
+* Change #2: We decided to separate the camera from the generic game objects because it did not
+  require the properties we had originally thought it would need. Separating the camera and treating
+  it as its own distinct object changed some of our API calls for loading in the camera.
 
-* Change #3
+* Change #3: Created a resource management system rather than instantiating in the files directly in
+  the class that required them. This management system made language conversion straightforward and
+  efficient and the addition of future languages simple. Furthermore, the resource management system
+  meant that a developer could use any bundle they needed without ever instantiating the bundle in
+  the class itself. Because this design changed later in the course, it was not fully used by all
+  editor classes.
 
 * Change #4: Implemented an immutable game object class to keep the MVC architecture consistent.
   This was neglected from the original plan and as we were coding we realized the frontend had
@@ -162,17 +207,23 @@
   GameControllerAPI, it would be fairly simple to add a new type of File Parser, which implements
   the parser API
 
-* Feature #3
+* Feature #3: Events are easy to add because they are separated into conditions and outcomes and
+  inherit from the same class - adding new events does not require adding both conditions and
+  outcomes because they serve as building blocks that can be paired together. 
 
-* Feature #4
+* Feature #4: It is simple to change the server that the clients can connect to by just changing the
+  link in the server properties file. This way once we host the server, it is easy to connect to the
+  hosted server.
 
 #### Features Not Yet Done
 
-* Feature #1
+* Feature #1: We did not fully implement File Saving for the Engine
 
-* Feature #2
+* Feature #2: We did not fully implement CSS styling switching
 
-* Feature #3
+* Feature #3: There is no splash screen between levels for a given game
 
-* Feature #4
+* Feature #4: We did not implement audio
+
+* Feature #5: We did not add extra tools to make editing easier
  

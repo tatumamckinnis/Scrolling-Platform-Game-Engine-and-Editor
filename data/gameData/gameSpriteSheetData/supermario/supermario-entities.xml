@@ -260,9 +260,9 @@ h  => sprite height (may be trimmed)
     <sprite name="sprite-250.png" x="736" y="128" width="16" height="15"/>
     <sprite name="sprite-251.png" x="1184" y="128" width="16" height="15"/>
     <sprite name="sprite-252.png" x="1216" y="128" width="16" height="16"/>
-    <sprite name="sprite-253.png" x="1248" y="128" width="16" height="14"/>
+    <sprite name="bullet-left.png" x="1248" y="128" width="16" height="14"/>
     <sprite name="sprite-254.png" x="1280" y="128" width="16" height="32"/>
-    <sprite name="sprite-255.png" x="1312" y="128" width="16" height="14"/>
+    <sprite name="bullet-right" x="1312" y="128" width="16" height="14"/>
     <sprite name="sprite-256.png" x="1344" y="128" width="32" height="32"/>
     <sprite name="sprite-257.png" x="1376" y="128" width="32" height="32"/>
     <sprite name="sprite-258.png" x="1408" y="128" width="32" height="32"/>
