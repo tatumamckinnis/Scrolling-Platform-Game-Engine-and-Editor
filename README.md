@@ -75,12 +75,30 @@ For security reasons, options #1 and #2 are recommended for production use.
       progression by removing the need to store the next level within each file.
 
 * Known Bugs:
+    * Old game level images are only removed when the "start engine button" is selected rather than
+      just calling the selectGame method of the game manager - the UUID map and level scene must be
+      cleared
+    * When a file in the editor is saved with the incorrect "game name" matching the sprite data
+      selected, the file will save but will not render when it is run in the engine
+    * Events are not being properly saved within the Editor
 
 * Features implemented:
+    * Users can play a variety of scrolling platform games with a variety of different behaviors
+    * The editor is able to save a basic game file and render it
 
 * Features unimplemented:
+  * Did not fully implement File Saving for the Engine 
+  * Did not fully implement CSS styling switching 
+  * Did not add a splash screen between levels for a given game 
+  * We did not implement audio for the game
 
 * Noteworthy Features:
+    * Networked players - players may play in multi-player mode
+    * Animations
+    * AI ChatBot to assist with building the editor
+    * Players have profiles that they can make and update where their high scores are saved for each
+      game
+    * New sprite sheets may be parsed and generated within the editor to be used
 
 ### Assignment Impressions
 
