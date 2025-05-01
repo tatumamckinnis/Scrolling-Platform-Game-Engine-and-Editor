@@ -104,9 +104,11 @@
 
 * Decision #2: We originally assumed that Players would be separate from Entities as they contained
   different important data and created two separate types of objects to reduce the amount of unused
-  data, but the importance of this distinction grew less clear as the project continued
+  data, but the importance of this distinction grew less clear as the project continued.
 
-* Decision #3:
+* Decision #3: Assumed that each level was discrete and that users would play one level at a time
+  rather than progressing through a series of continuous levels. This simplified the process of
+  level progression by removing the need to store the next level within each file.
 
 * Decision #4: Assumed that for multiplayer networked games there would be no restrictions on which
   keys each user can press. For example, if one user presses a key that controls another user's
