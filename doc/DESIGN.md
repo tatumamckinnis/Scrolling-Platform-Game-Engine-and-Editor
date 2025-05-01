@@ -24,6 +24,20 @@
 * Team Member #2: Billy McCune
 
 * Team Member #3: Jacob You
+    * Engine Design: Spent time designing the layout of the engine, the data files, parameters, and
+      events.
+    * Editor Data Storage System
+    * Editor Grid Zoom and Pan
+    * Grid Line Toggle
+    * Grid Snap To Grid
+    * Editor Properties input tab
+    * Editor Sprite Sheet Parsing, Loading, and Saving
+    * Editor Sprite Sheet Rendering and Assigment
+    * Creation of sprites, frames, and animations
+    * Saving Data from Editor Level to XML
+    * Level Property Editing
+    * Managers to communicate between front end and editor data storage
+    * Refactor Event Data Storage according to updated Event System
 
 * Team Member #4: Tatum McKinnis
 
@@ -184,4 +198,6 @@
 * Feature #3: There is no splash screen between levels for a given game
 
 * Feature #4: We did not implement audio
+
+* Feature #5: We did not add extra tools to make editing easier
  
