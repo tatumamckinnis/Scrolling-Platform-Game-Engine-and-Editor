@@ -22,7 +22,22 @@
     * Refactoring view and display inheritance
 
 * Team Member #2: Billy McCune
-
+    *  FileParser: developed and designed the fileParser package and modified the parsing when
+  changes to the data system were made.
+    *  Data Designer: designed the sprite sheet data system and the level data xml
+  formating. I also was the main designer for the blueprint system and layer system. 
+    *  Rendering game objects in the front-end: Wrote the original code for handling front end object rendering and 
+  wrote the code for animation handling in the front end.
+    *  Event co-creator: Worked with Gage and by myself to create event outcomes and conditions and make the event system 
+  handle the condition set system to handle logical "or" and logical "and" conditions. 
+    *  File saving: Edited the file saving system for the object properties and event properties.
+    *  User Data System designer and Implementor: Designed the User Data system allowing for users to create and modify profiles. 
+  I also made the userData tracking system. The session manager also makes sure session data is constant across panes. I 
+  also made the UserData front in panes as well.
+    *  Chat Bot: Designed and Built the chatBot Api and the Chat Bot pane in the editor. 
+    *  Animation System Designer and Implementor: Designed the animationHandler, how animations are stored, the events for the animations, and the view handling of animations. 
+    *  Refactoring Editor: During the last week, I spent time adding the editor settings windows. I also created the editors drag feature. 
+  
 * Team Member #3: Jacob You
 
 * Team Member #4: Tatum McKinnis
