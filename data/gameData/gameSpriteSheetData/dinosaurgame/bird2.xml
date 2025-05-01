@@ -9,7 +9,6 @@
       <frame name="Bird1" x="0" y="0" width="97" height="68"/>
     </frames>
     <animations>
-      <animation name="fly" frameLen="0.15" frames="Bird1,Bird2"/>
     </animations>
   </sprite>
 </spriteFile>
