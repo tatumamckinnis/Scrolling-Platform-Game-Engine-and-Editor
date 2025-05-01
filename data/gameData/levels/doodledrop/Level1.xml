@@ -11,6 +11,7 @@
     </doubleProperties>
   </cameraData>
 
+
   <layers>
     <layer name="backGround" width="500" height="1000" z="10">
       <data>
@@ -80,6 +81,7 @@
         <object id="60" coordinates="(640,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000063"/>
         <object id="60" coordinates="(1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000064"/>
 
+
       </data>
     </layer>
     <layer name="entities" width="2000" height="1000" z="1">
@@ -96,6 +98,8 @@
         <object id="202" coordinates="(200,3050)" uid="c1223312-aaaa-bbbb-cccc-222222222222"/>
         <object id="202" coordinates="(200,2800)" uid="c1223212-aaaa-bbbb-cccc-222222222222"/>
         <object id="202" coordinates="(100,2400)" uid="c1213324-aaaa-bbbb-cccc-222222222222"/>
+
+
 
 
         <object id="201" coordinates="(232,-600)" uid="f1010102-aaaa-bbbb-cccc-101015101001"/>
@@ -123,6 +127,10 @@
         <object id="202" coordinates="(300,-2400)" uid="f1210102-aaaa-bbbb-cccc-101015101020"/>
         <object id="201" coordinates="(250,-2650)" uid="f1020102-aaaa-bbbb-cccc-101015101020"/>
         <object id="1" coordinates="(400,4500)" uid="f1450102-aaaa-bbbb-cccc-101015101020"/>
+
+
+
+
 
 
 
@@ -165,8 +173,12 @@
   </layers>
 
 
+
+
   <game name="doodlejump">
     <objectGroup name="entities">
+
+
 
 
       <object spriteName="platform-green" type="platform" id="201" spriteFile="greenplatform.xml" hitBoxWidth="70"
@@ -178,6 +190,8 @@
       </object>
 
 
+
+
       <object spriteName="platform-light-blue" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
         hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
@@ -185,6 +199,8 @@
           <doubleProperties/>
         </properties>
       </object>
+
+
 
 
       <object spriteName="platform-weak" type="platform" id="203" spriteFile="weakplatform.xml" hitBoxWidth="70"
@@ -197,6 +213,8 @@
     </objectGroup>
 
 
+
+
     <objectGroup name="checkpoints">
       <object spriteName="blackhole" type="checkpoint" id="1" spriteFile="blackhole.xml" hitBoxWidth="70"
         hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
@@ -206,6 +224,8 @@
         </properties>
       </object>
     </objectGroup>
+
+
 
 
     <objectGroup name="players">
@@ -228,11 +248,17 @@
 
 
 
+
+
+
+
     <objectGroup name="backgrounds">
       <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
         hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
     </objectGroup>
   </game>
+
+
 
 
   <events>
@@ -256,6 +282,8 @@
     </event>
 
 
+
+
     <event type="physics" id="2">
       <conditions>
         <conditionSet>
@@ -272,6 +300,8 @@
     </event>
 
 
+
+
     <event type="physics" id="3">
       <conditions>
         <conditionSet>
@@ -286,6 +316,8 @@
         <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR"/>
       </outcomes>
     </event>
+
+
 
 
     <event type="input" id="4">
@@ -313,6 +345,8 @@
     </event>
 
 
+
+
     <event type="input" id="5">
       <conditions>
         <conditionSet>
@@ -338,6 +372,8 @@
     </event>
 
 
+
+
     <event type="physics" id="6">
       <conditions>
         <conditionSet>
@@ -356,6 +392,8 @@
         </outcome>
       </outcomes>
     </event>
+
+
 
 
     <event type="physics" id="7">
@@ -391,6 +429,8 @@
     </event>
 
 
+
+
     <event type="physics" id="8">
       <conditions>
         <conditionSet>
@@ -416,6 +456,8 @@
     </event>
 
 
+
+
     <event type="physics" id="9">
       <conditions>
         <conditionSet>
@@ -439,6 +481,8 @@
     </event>
 
 
+
+
     <event type="input" id="10">
       <conditions>
         <conditionSet>
@@ -453,6 +497,8 @@
     </event>
 
 
+
+
     <event type="physics" id="11">
       <conditions>
         <conditionSet>
@@ -464,11 +510,13 @@
         </conditionSet>
       </conditions>
       <outcomes>
-        <outcome name="WIN_GAME">
+        <outcome name="SELECT_LEVEL">
+          <stringParameters>
+            <parameter name="levelPath" value="data/gameData/levels/doodlejump/Level1.xml"/>
+          </stringParameters>
         </outcome>
       </outcomes>
     </event>
-
 
   </events>
 </map>
