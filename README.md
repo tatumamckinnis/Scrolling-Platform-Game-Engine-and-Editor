@@ -24,7 +24,7 @@ This project implements an authoring environment and player for multiple related
     * [Undoing Git commits](https://stackoverflow.com/questions/22682870/how-can-i-undo-pushed-commits-using-git)
 * Resources used directly (including AI assistance)
     * ChatGPT and Claude AI assisted in writing code
-    *
+    * Reused old CS316 (Intro to Database Systems) CSS code for inspiration for the OOGASalad CSS styling
 
 ### Running the Program
 
@@ -35,6 +35,8 @@ This project implements an authoring environment and player for multiple related
     * Resource Properties files (config, css, gameIcons, i18n, server, and shared folders)
 
 * Interesting data files:
+  * [Server.properties](src/main/resources/oogasalad/server/Server.properties)
+    * Links the OOGASalad application to a WebSocket server address stored in this `properties` file for multiplayer support
 
 * Key/Mouse inputs:
     * Key and Mouse inputs are entirely decided by the user within the level file, allowing for
