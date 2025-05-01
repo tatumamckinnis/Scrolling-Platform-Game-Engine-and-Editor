@@ -65,8 +65,7 @@
 * Feature #1: Easy to add new Events because the Event System is separated into conditions and
   outcomes, condition sets, and outcome sets, such that conditions and outcomes function as
   lego-like building blocks that can be put together to create events. Adding a new event requires
-  extending
-  either the Condition or Outcome class
+  extending either the Condition or Outcome class
 
 * Feature #2: Easy to add new types of game objects because game objects have different string and
   double params maps for any other qualities needed and each game object has different Events,
@@ -80,9 +79,12 @@
 
 #### Core Classes and Abstractions, their Responsibilities and Collaborators
 
-* Class #1
+* Class #1: The GameManagerAPI is responsible for transmitting information between the Model Game
+  Controller which manages the engine model and the ViewAPI which handles the View of the Game
+  Engine
 
-* Class #2
+* Class #2: The FileParserAPI parses each level file and transmits the data to the
+  EngineFileConverterAPI and the EditorFileConverterAPI
 
 * Class #3
 
@@ -90,16 +92,23 @@
   user mouse clicks. It abstracted how the button action was implemented, and allowed easier testing
   of the actions. Also, it used reflection so adding new buttons was simple (and didn't require
   modifications but just additions) if you had the button id from the resource files. Aksel, Alana,
-  Billy, Luke all worked on this class. It demostrates understanding of the factory design patter as
-  well.
+  Billy, Luke all worked on this class. It demonstrates understanding of the factory design patter
+  as well.
 
 ## Assumptions or Simplifications
 
-* Decision #1
+* Decision #1: Assumed that Editor and Engine would only be connected through the level files
+  themselves rather than directly at runtime. This assumption led us to create two versions of Game
+  Object data, GameObject for the Engine and EditorObject for the Editor. This resulted in
+  duplicated code and unnecessary extra conversions and more work.
 
-* Decision #2
+* Decision #2: We originally assumed that Players would be separate from Entities as they contained
+  different important data and created two separate types of objects to reduce the amount of unused
+  data, but the importance of this distinction grew less clear as the project continued.
 
-* Decision #3
+* Decision #3: Assumed that each level was discrete and that users would play one level at a time
+  rather than progressing through a series of continuous levels. This simplified the process of
+  level progression by removing the need to store the next level within each file.
 
 * Decision #4: Assumed that for multiplayer networked games there would be no restrictions on which
   keys each user can press. For example, if one user presses a key that controls another user's
@@ -110,9 +119,9 @@
 
 ## Changes from the Original Plan
 
-* Change #1:
+* Change #1: Changed our data format significantly: ....
 
-* Change #2
+* Change #2:
 
 * Change #3
 
@@ -134,7 +143,13 @@
   websocket connection, the server would update the database and send a message to all other clients
   in the lobby saying that a new message was posted with the message body containing the chat.
 
-* Feature #2
+* Feature #2: It would be fairly easy to add a new type of data storage format like JSON as we
+  abstracted the file parser. The only class that knows the format is the FileParserAPI, which
+  can be changed according to the file format with a little refactoring. Because we knew we were
+  exclusively handling XML files for this project, we instantiated the default file parser
+  directly,but if we parameterize the File Converter within the setLevelData() method of the
+  GameControllerAPI, it would be fairly simple to add a new type of File Parser, which implements
+  the parser API
 
 * Feature #3
 
