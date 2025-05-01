@@ -1,0 +1,10 @@
+<spriteFile imagePath="supermario-items.png">
+  <sprite name="coin-sprite" x="32" y="16" width="16" height="16">
+    <frames>
+      <frame name="coin-sprite" x="32" y="16" width="16" height="16"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
+
