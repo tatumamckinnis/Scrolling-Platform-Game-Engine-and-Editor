@@ -167,13 +167,13 @@
   GameControllerAPI, it would be fairly simple to add a new type of File Parser, which implements
   the parser API
 
-* Feature #3: It should be relatively simple to add dynamic object generation due to the use of the
-  blueprint system. Blueprints allow objects to be dynamically spawned. If a developer wanted to add
-  random object generation, they would define a function for placing the objects, specifying an x
-  and y range for the objects (such as platforms) and treating it as an event within our event
-  system
+* Feature #3: Events are easy to add because they are separated into conditions and outcomes and
+  inherit from the same class - adding new events does not require adding both conditions and
+  outcomes because they serve as building blocks that can be paired together. 
 
-* Feature #4
+* Feature #4: It is simple to change the server that the clients can connect to by just changing the
+  link in the server properties file. This way once we host the server, it is easy to connect to the
+  hosted server.
 
 #### Features Not Yet Done
 
