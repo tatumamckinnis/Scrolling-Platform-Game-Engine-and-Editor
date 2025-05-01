@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for background (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-background.png">
+    <sprite name="base-background" x="0" y="0" width="740" height="740">
+        <frames>
+            <frame name="base-background" x="0" y="0" width="740" height="740"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>
