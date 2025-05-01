@@ -86,14 +86,15 @@
 * Class #2: The FileParserAPI parses each level file and transmits the data to the
   EngineFileConverterAPI and the EditorFileConverterAPI
 
-* Class #3
+* Class #3: The EditorDataAPI is responsible for managing editor data and communicating updates in
+  the view to the model in the back-end and uses the EditorListenerNotifier API to transmit updates
+  to different components of the view
 
 * Class #4: Button action factory. This factory was core to any actions that were triggered from
   user mouse clicks. It abstracted how the button action was implemented, and allowed easier testing
   of the actions. Also, it used reflection so adding new buttons was simple (and didn't require
-  modifications but just additions) if you had the button id from the resource files. Aksel, Alana,
-  Billy, Luke all worked on this class. It demonstrates understanding of the factory design patter
-  as well.
+  modifications but just additions) if you had the button id from the resource files. It
+  demonstrates understanding of the factory design pattern as well.
 
 ## Assumptions or Simplifications
 
@@ -119,11 +120,26 @@
 
 ## Changes from the Original Plan
 
-* Change #1: Changed our data format significantly: ....
+* Change #1: We changed our original event system and game object abstraction hierarchy. We
+  originally planned to create a complex abstraction hierarchy for the game object, but soon
+  realized game objects differed slightly from one another, and primary differed in terms of
+  behavior, which could be encapsulated within EventData. We originally planned to have an event
+  registry system where game objects could access events through a lookup table of Events and Event
+  Chains (groups of events), but this was overly complicated for our design, so we simplified the
+  model to store Events directly within the game object to allow GameObjects to have separate event
+  instances. Separate event instances would allow game objects to update their respective events
+  without affecting other game objects.
 
-* Change #2:
+* Change #2: We decided to separate the camera from the generic game objects because it did not
+  require the properties we had originally thought it would need. Separating the camera and treating
+  it as its own distinct object changed some of our API calls for loading in the camera.
 
-* Change #3
+* Change #3: Created a resource management system rather than instantiating in the files directly in
+  the class that required them. This management system made language conversion straightforward and
+  efficient and the addition of future languages simple. Furthermore, the resource management system
+  meant that a developer could use any bundle they needed without ever instantiating the bundle in
+  the class itself. Because this design changed later in the course, it was not fully used by all
+  editor classes.
 
 * Change #4: Implemented an immutable game object class to keep the MVC architecture consistent.
   This was neglected from the original plan and as we were coding we realized the frontend had
@@ -151,17 +167,21 @@
   GameControllerAPI, it would be fairly simple to add a new type of File Parser, which implements
   the parser API
 
-* Feature #3
+* Feature #3: It should be relatively simple to add dynamic object generation due to the use of the
+  blueprint system. Blueprints allow objects to be dynamically spawned. If a developer wanted to add
+  random object generation, they would define a function for placing the objects, specifying an x
+  and y range for the objects (such as platforms) and treating it as an event within our event
+  system
 
 * Feature #4
 
 #### Features Not Yet Done
 
-* Feature #1
+* Feature #1: We did not fully implement File Saving for the Engine
 
-* Feature #2
+* Feature #2: We did not fully implement CSS styling switching
 
-* Feature #3
+* Feature #3: There is no splash screen between levels for a given game
 
-* Feature #4
+* Feature #4: We did not implement audio
  
