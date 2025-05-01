@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for lightning-mcqueen (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-sprites.png">
+    <sprite name="lightning-mcqueen" x="199" y="0" width="78" height="90">
+        <frames>
+            <frame name="lightning-mcqueen" x="199" y="0" width="78" height="90"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>
