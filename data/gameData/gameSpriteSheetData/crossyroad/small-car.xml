@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for small-car (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-sprites.png">
+    <sprite name="small-car" x="290" y="0" width="77" height="90">
+        <frames>
+            <frame name="small-car" x="290" y="0" width="77" height="90"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>
