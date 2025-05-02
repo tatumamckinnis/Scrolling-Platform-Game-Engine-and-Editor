@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for boo (PhantomLeap)
+-->
+<spriteFile imagePath="boo.png">
+  <sprite name="boo" x="138" y="12" width="38" height="34">
+    <frames>
+      <frame name="boo" x="138" y="12" width="38" height="34"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
