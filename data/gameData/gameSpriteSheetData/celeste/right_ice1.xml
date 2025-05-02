@@ -1,2 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<spriteFile imagePath="celeste-sprites.png"><sprite name="right_ice1" x="28" y="64" width="8" height="8"><frames><frame name="right_ice1" x="28" y="64" width="8" height="8" /></frames><animations /></sprite></spriteFile>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for right_ice1 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="right_ice1" x="28" y="64" width="8" height="8">
+    <frames>
+      <frame name="right_ice1" x="28" y="64" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for celeste_logo (untitled_game)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="celeste_logo" x="49" y="156" width="56" height="30">
+    <frames>
+      <frame name="celeste_logo" x="49" y="156" width="56" height="30"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
