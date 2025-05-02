@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<spriteFile height="980" imagePath="PhantomBlackBackground.jpg" width="1754">
+    <sprite height="980" name="r0_c0" width="1746" x="0" y="0"/>
+    <sprite height="980" name="r0_c1" width="8" x="1746" y="0"/>
+</spriteFile>

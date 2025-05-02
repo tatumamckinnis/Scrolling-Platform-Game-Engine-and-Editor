@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for bullet-left.png (supermario)
+-->
+<spriteFile imagePath="supermario-entities.png">
+  <sprite name="bullet-left.png" x="1248" y="128" width="16" height="14">
+    <frames>
+      <frame name="bullet-left.png" x="1248" y="128" width="16" height="14"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
