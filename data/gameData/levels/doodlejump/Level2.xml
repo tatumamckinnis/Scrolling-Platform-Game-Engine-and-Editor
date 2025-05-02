@@ -489,7 +489,6 @@
 
 
 
-
     <event type="physics" id="9">
       <conditions>
         <conditionSet>
@@ -527,9 +526,6 @@
         </outcome>
       </outcomes>
     </event>
-
-
-
 
     <event type="physics" id="11">
       <conditions>

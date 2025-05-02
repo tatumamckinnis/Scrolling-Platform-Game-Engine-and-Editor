@@ -1,4 +1,5 @@
 # It's Thyme to Eat: SALAD Final Demo
+## Alana Zinkin, Aksel Bell, Billy McCune, Gage Garcia, Jacob You, Luke Nam, Tatum McKinnis  
 
 ---
 

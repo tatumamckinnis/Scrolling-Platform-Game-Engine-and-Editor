@@ -87,6 +87,8 @@
     <layer name="entities" width="2000" height="1000" z="1">
       <data>
         <object id="1" coordinates="(250,-4500)" uid="f1460102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="8" coordinates="(300,4600)" uid="f1480102-aaaa-bbbb-cccc-191015101020"/>
+
         <object id="2" coordinates="(350,4800)" uid="f1010100-aaaa-bbbb-cccc-101015101014"/>
         <object id="6" coordinates="(345,-20)" uid="f1078100-aaaa-bbbb-cccc-101015101014"/>
         <object id="5" coordinates="(-450,550), (-400,3600), (100,2200), (123,-900), (-250,0)"
@@ -307,6 +309,14 @@
         hitBoxWidth="50"
         hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0"
         rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+      <object type="player" id="8" spriteFile="supermario_mario.xml" spriteName="big-mario"
+        eventIDs="14,15,16,17" hitBoxWidth="16" hitBoxHeight="32" spriteDy="0" spriteDx="0" velocityX="0"
+        velocityY="0" rotation="0">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -692,5 +702,86 @@
       </outcomes>
     </event>
 
+    <event type="input" id="14">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="p"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="4.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="input" id="15">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="o"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_LEFT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="5.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="input" id="16">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="angle" value="-90.0"/>
+            <parameter name="amount" value="7.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="17">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="checkpoint"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME">
+          <stringParameters>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
   </events>
 </map>
