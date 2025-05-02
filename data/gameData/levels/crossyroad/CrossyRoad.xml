@@ -26,18 +26,19 @@ interact with each other -->
         </layer>
         <layer name="foreground" width="4000" height="500" z="1">
             <data>
-                <object id="1" coordinates="(0,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
-                <object id="2" coordinates="(480,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
-                <object id="3" coordinates="(960,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
-                <object id="4" coordinates="(1440,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
-                <object id="5" coordinates="(1920,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
+                <object id="1" coordinates="(0,500), (2400,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5, d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a6"/>
+                <object id="2" coordinates="(480,500), (2880,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397, 3f780051-ec51-4c02-bc98-82d450d12398"/>
+                <object id="3" coordinates="(960,500), (3360,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d, 65cc5909-e1ed-4698-b6eb-51310dd5c11e"/>
+                <object id="4" coordinates="(1440,500) , (3840,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73, e956d6f6-c520-4374-8128-17e284c05d74"/>
+                <object id="5" coordinates="(1920,500), (4320,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda, a17092b8-3839-44ac-b9bd-f9f15d620cdb"/>
             </data>
         </layer>
         <layer name="entities" width="4000" height="500" z="1">
             <data>
-                <object id="12" coordinates="(319,400), (558,400), (829,400), (1030,400), (1316,400), (1597,400), (1886,400), (2159,400), (2404,400), (2639,400)" uid="8764685f-8329-4a9e-9329-aa1aa0dbff30, 7952dada-1d3c-4af6-a668-11f2688e005a, b9f907db-1fa4-4144-bdc4-f8c6c25dfa1b, f9fbde62-4b21-4e7e-ba0d-ca52027d68e5, 9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd, 80f45a6d-f145-4d73-a81b-57f91af8ce88, 3337c661-e1a1-46e1-b48b-082a74046d4c" />
+                <object id="12" coordinates="(319,400), (829,400), (1597,400), (2159,400)" uid="9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd" />
                 <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
-                <object id="14" coordinates="(400,400), (616,400), (616,400), (891,400), (891,400), (1097,400), (1097,400), (1298,400), (1298,400), (1546,400)" uid="dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
+                <object id="14" coordinates="(616,400), (1097,400), (1298,400), (1546,400)" uid="0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
+                <object id="15" coordinates="(2639,400)" uid="80f45a6d-f145-4d73-a81b-57f91af8ce88"/>
             </data>
         </layer>
         <layer name="events" width="500" height="500" z="1">
@@ -72,7 +73,10 @@ interact with each other -->
                     </doubleProperties>
                 </properties>
             </object>
-            <object spriteName="lightning-mcqueen" type="enemy" id="14" spriteFile="lightning-mcqueen.xml" hitBoxWidth="78"
+            <object spriteName="lightning-mcqueen" type="enemy" id="14" spriteFile="lightning-mcqueen.xml" hitBoxWidth="25"
+                    hitBoxHeight="25" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
+            </object>
+            <object spriteName="truck" type="platform" id="15" spriteFile="truck.xml" hitBoxWidth="128"
                     hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
             </object>
         </objectGroup>
@@ -139,7 +143,7 @@ interact with each other -->
             <outcomes>
                 <outcome name="MOVE_RIGHT">
                     <doubleParameters>
-                        <parameter name="amount" value="5" />
+                        <parameter name="amount" value="10" />
                     </doubleParameters>
                 </outcome>
                 <outcome name="CHANGE_VAR">
@@ -167,7 +171,7 @@ interact with each other -->
             <outcomes>
                 <outcome name="APPLY_GRAVITY">
                     <doubleParameters>
-                        <parameter name="ApplyGravityAmount" value="10.0"/>
+                        <parameter name="ApplyGravityAmount" value="12.0"/>
                     </doubleParameters>
                 </outcome>
             </outcomes>
@@ -270,7 +274,7 @@ interact with each other -->
                 <conditionSet>
                     <condition name="AT_OR_BEYOND_X">
                         <doubleParameters>
-                            <parameter name="x" value="2000"/>
+                            <parameter name="x" value="3500"/>
                         </doubleParameters>
                     </condition>
                 </conditionSet>

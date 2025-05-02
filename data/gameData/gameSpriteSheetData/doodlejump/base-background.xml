@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for base-background (doodlejump)
+-->
+<spriteFile imagePath="doodlejump-map-default.png">
+  <sprite name="base-background" x="0" y="0" width="640" height="1024">
+    <frames>
+      <frame name="base-background" x="0" y="0" width="640" height="1024"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

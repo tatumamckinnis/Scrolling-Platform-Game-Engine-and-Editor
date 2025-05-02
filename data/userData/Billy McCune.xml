@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+<user>
+  <username>Billy McCune</username>
+  <displayName>The man</displayName>
+  <email>theguy@thatmadethis.com</email>
+  <password>bruh</password>
+  <language>en</language>
+  <bio>The guy who designed and made this userdata system.</bio>
+  <userImage>data/userData/Billy McCune-avatar.png</userImage>
+  <userGameDataList>
+    <userGameData>
+      <gameName>dinosaurgame</gameName>
+      <lastPlayed>Thu May 01 11:26:28 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="dash_duration">0</stat>
+        <stat name="score">712</stat>
+        <stat name="rocket_duration">4</stat>
+        <stat name="lives">10000</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>DinoLevel1</levelName>
+        <lastPlayed>Thu May 01 11:26:28 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="dash_duration">0</stat>
+            <stat name="score">712</stat>
+            <stat name="rocket_duration">4</stat>
+            <stat name="lives">10000</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+    <userGameData>
+      <gameName>doodledrop</gameName>
+      <lastPlayed>Thu May 01 13:04:18 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="score">110</stat>
+        <stat name="lives">1</stat>
+        <stat name="distance">0</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>Level1</levelName>
+        <lastPlayed>Thu May 01 13:04:18 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="score">110</stat>
+            <stat name="lives">1</stat>
+            <stat name="distance">0</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+    <userGameData>
+      <gameName>doodlejump</gameName>
+      <lastPlayed>Thu May 01 13:04:51 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="dash_duration">-135</stat>
+        <stat name="score">175</stat>
+        <stat name="rocket_duration">-135</stat>
+        <stat name="lives">10000</stat>
+        <stat name="distance">0</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>Untitled</levelName>
+        <lastPlayed>Sun Apr 27 23:37:53 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="dash_duration">-135</stat>
+            <stat name="score">175</stat>
+            <stat name="rocket_duration">-135</stat>
+            <stat name="lives">10000</stat>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>Example_File1</levelName>
+        <lastPlayed>Sun Apr 27 16:46:37 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>Level1</levelName>
+        <lastPlayed>Thu May 01 13:04:51 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="score">39</stat>
+            <stat name="lives">3</stat>
+            <stat name="distance">0</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+    <userGameData>
+      <gameName>coincollector</gameName>
+      <lastPlayed>Thu May 01 13:05:23 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="lives">0</stat>
+        <stat name="score">7</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>Level1</levelName>
+        <lastPlayed>Thu May 01 13:05:23 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="lives">0</stat>
+            <stat name="score">7</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+    <userGameData>
+      <gameName>PhantomLeap</gameName>
+      <lastPlayed>Fri May 02 11:23:40 EDT 2025</lastPlayed>
+      <playerHighestGameStatMap>
+        <stat name="cooldown">3</stat>
+        <stat name="score">0</stat>
+      </playerHighestGameStatMap>
+      <playerLevelStatMap>
+        <level>
+        <levelName>Untitled</levelName>
+        <lastPlayed>Thu May 01 18:08:53 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bruh</levelName>
+        <lastPlayed>Mon Apr 28 23:21:05 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bruh2</levelName>
+        <lastPlayed>Mon Apr 28 23:21:11 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bruh3</levelName>
+        <lastPlayed>Mon Apr 28 23:21:16 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bruhpt2</levelName>
+        <lastPlayed>Mon Apr 28 23:47:17 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bruhpt3</levelName>
+        <lastPlayed>Mon Apr 28 23:43:02 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>pruhpt4</levelName>
+        <lastPlayed>Mon Apr 28 23:47:32 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>pt4</levelName>
+        <lastPlayed>Tue Apr 29 14:56:24 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>pt5</levelName>
+        <lastPlayed>Tue Apr 29 19:35:55 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>pt6</levelName>
+        <lastPlayed>Wed Apr 30 20:13:10 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bt7</levelName>
+        <lastPlayed>Thu May 01 18:17:22 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="cooldown">3</stat>
+            <stat name="score">0</stat>
+          </levelHighestStatMap>
+        </level>
+        <level>
+        <levelName>bt8</levelName>
+        <lastPlayed>Fri May 02 11:23:40 EDT 2025</lastPlayed>
+          <levelHighestStatMap>
+            <stat name="cooldown">2</stat>
+            <stat name="score">0</stat>
+          </levelHighestStatMap>
+        </level>
+      </playerLevelStatMap>
+    </userGameData>
+  </userGameDataList>
+</user>
+</users>
