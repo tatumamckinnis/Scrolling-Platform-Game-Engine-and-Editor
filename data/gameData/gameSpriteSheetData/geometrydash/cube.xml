@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for cube (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-sprites.png">
+    <sprite name="cube" x="0" y="0" width="60" height="60">
+        <frames>
+            <frame name="cube" x="0" y="0" width="60" height="60"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>

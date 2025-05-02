@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for truck (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-sprites.png">
+    <sprite name="truck" x="63" y="0" width="128" height="90">
+        <frames>
+            <frame name="truck" x="63" y="0" width="128" height="90"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>
