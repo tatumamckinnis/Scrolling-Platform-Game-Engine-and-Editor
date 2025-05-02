@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-16" minY="-16" maxX="32" maxY="136">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value=""/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0"/>
+      <property name="cameraOffsetX" value="0.0"/>
+      <property name="cameraOffsetY" value="0.0"/>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="blocks" width="48" height="152" z="1">
+      <data>
+        <object name = "topBlock" id="1" coordinates="(-8,-8)" uid="c260a64a-b373-4e2a-8164-202370eb239f" />
+        <object name = "bottomRightDestructible" id="2" coordinates="(16,0)" uid="f9a9280e-74a3-4785-ba13-3ff0d6e3d3a1" />
+        <object name = "bottomLeftDestructible" id="4" coordinates="(8,0)" uid="83624b0b-c30e-4054-b13b-9c924f94638b" />
+        <object name = "topLeftDestructible" id="6" coordinates="(8,-8)" uid="cb7a07e2-94bd-4b0d-a993-2169984e39fa" />
+        <object name = "centerBlock" id="7" coordinates="(-8,0)" uid="7e3578e2-4c15-4e17-9d62-f8dca2404dc2" />
+        <object name = "leftBlock" id="8" coordinates="(-16,0)" uid="1f1db92b-eb65-47e3-8cd2-7f7ee45f870a" />
+        <object name = "spike" id="9" coordinates="(24,-16)" uid="03318a15-e602-4672-ac63-a396e0c71b09" />
+        <object name = "topLeftBlock" id="10" coordinates="(-16,-8)" uid="ccf73709-c65d-40b3-8734-17ce070851f2" />
+        <object name = "topRightBlock" id="11" coordinates="(0,-8)" uid="718a2f4a-c7a0-4074-9ab0-57bc3ce4c58d" />
+        <object name = "rightBlock" id="12" coordinates="(0,0)" uid="2536cf32-c7d8-4d12-a4a5-7f4375b52fee" />
+        <object name = "bottomLeftBlock" id="13" coordinates="(-16,8)" uid="f38d0077-09f0-42c2-a5a2-f1fefaf0d4f0" />
+        <object name = "bottomBlock" id="14" coordinates="(-8,8)" uid="f46b1677-1665-4159-b755-cb563478c043" />
+        <object name = "bottomRightBlock" id="15" coordinates="(0,8)" uid="2f447231-2541-4275-826d-d5209c9f4e69" />
+        <object name = "topRightDestructible" id="19" coordinates="(16,-8)" uid="00fbcc3d-2465-4ace-ac7b-f4c21927348c" />
+      </data>
+    </layer>
+    <layer name="foreground" width="48" height="152" z="2">
+      <data>
+        <object name = "flower" id="3" coordinates="(0,-16)" uid="d4d24ffb-7c46-4dff-a3f8-27ff172965bd" />
+        <object name = "grass2" id="16" coordinates="(-8,-16)" uid="e85e28c1-e1e4-4052-8879-8d00cd2293c8" />
+        <object name = "grass1" id="18" coordinates="(-16,-16)" uid="7d554c97-0c4a-4c5a-b5e4-773c4d1ec389" />
+      </data>
+    </layer>
+  </layers>
+  <game name="celeste">
+    <objectGroup name="ENTITY">
+      <object
+  spriteName="top_block2"
+  type="BLOCK"
+  id="1"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block4"
+  type="BLOCK"
+  id="2"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="flower"
+  type="ENTITY"
+  id="3"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block3"
+  type="BLOCK"
+  id="4"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block1"
+  type="BLOCK"
+  id="6"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="center_block1"
+  type="BLOCK"
+  id="7"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="left_block"
+  type="BLOCK"
+  id="8"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="spike"
+  type="ENEMY"
+  id="9"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block1"
+  type="BLOCK"
+  id="10"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block3"
+  type="BLOCK"
+  id="11"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="right_block"
+  type="BLOCK"
+  id="12"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="bottom_block1"
+  type="BLOCK"
+  id="13"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="bottom_block2"
+  type="BLOCK"
+  id="14"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="bottom_block3"
+  type="BLOCK"
+  id="15"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="grass2"
+  type="FOREGROUND"
+  id="16"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="grass1"
+  type="FOREGROUND"
+  id="18"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block2"
+  type="BLOCK"
+  id="19"
+  spriteFile="celeste-sprites.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+  </events>
+</map>

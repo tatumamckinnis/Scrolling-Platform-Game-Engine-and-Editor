@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import oogasalad.editor.controller.level.CameraDataManager;
 import oogasalad.editor.controller.level.EditorDataAPI;
+import oogasalad.editor.model.data.CameraData;
 import oogasalad.editor.model.data.EditorLevelData;
 import oogasalad.editor.model.data.Layer;
 import oogasalad.editor.model.data.object.EditorObject;
@@ -81,6 +83,11 @@ public class LevelDataConverter {
       
       // Create layers from the z-coordinates in the game objects
       setupLayersByZValue(editorLevelData, gameObjectData);
+
+      CameraData cameraData = editorLevelData.getCameraData();
+      cameraData.setCameraType(levelData.cameraData().type());
+      cameraData.setStringParams(levelData.cameraData().stringProperties());
+      cameraData.setDoubleParams(levelData.cameraData().doubleProperties());
       
       // Create objects and populate the level
       EditorObjectPopulator populator = new EditorObjectPopulator(editorDataAPI);

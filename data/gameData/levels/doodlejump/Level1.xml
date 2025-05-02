@@ -5,70 +5,167 @@
       <property name="objectToTrack" value="00000000-0000-0000-0000-000000000001"/>
     </stringProperties>
     <doubleProperties>
-      <property name="zoom" value="1.0" />
-      <property name="cameraOffsetX" value="300.0"/>
-      <property name="cameraOffsetY" value="500.0"/>
+      <property name="zoom" value="1.0"/>
+      <property name="cameraOffsetX" value="450.0"/>
+      <property name="cameraOffsetY" value="300.0"/>
     </doubleProperties>
   </cameraData>
+
 
   <layers>
     <layer name="backGround" width="500" height="1000" z="10">
       <data>
-        <object id="60" coordinates="(0,0), (2060, -324), (150,2500)" uid="b1111111-1111-1111-1111-111111111111, c1111111-1111-1111-1111-111111111111, d1111111-1111-1111-1111-111111111111"/>
-        <object id="60" coordinates="(-500,-700),(140,-700), (780,-700), (260,-1000), (400,-1200), (500,-700), (550,-1400), (3980,-700), (4620,-700), (5260,-700)" uid="129acc3a-3dc4-49c9-861e-a86cfc67c605, 6fd71b4d-f513-4109-982d-63c229489ac7, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, f0410215-1c3b-4626-a24f-4d8fd707955e, 15fbb26d-974b-45c3-b1c6-376865be355a, 8757d18e-661e-4802-b8a4-c46b157d0bb6, cf209a9d-d4cc-4a23-9038-8a59f02a2990, f8ef7eb1-9485-4742-a20f-1fa8292a3804, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, dbd01b4f-393e-4de9-989b-11318d72247a" />
-        <object id="60" coordinates="(-500,324),(140,324), (780,324), (1420,324), (2060,324), (2700,324), (3340,324), (3980,324), (4620,324), (5260,324)" uid="66991927-aa5b-4787-ae13-4a0950d14090, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, d2134bc5-8682-4589-a2ef-8c750860b8b3, c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, ff01ac6b-8c52-444d-ae78-bc46e6432a90, a692f84b-b271-468c-8bae-7535604be673, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 646d4366-1aae-41b0-9c57-0c6840c2f049" />
-        <object id="60" coordinates="(-523,-5000)" uid="c1a11111-aaaa-bbbb-cccc-000000000001"/>
-        <object id="60" coordinates="(482,-4700)" uid="c1a11112-aaaa-bbbb-cccc-000000000002"/>
-        <object id="60" coordinates="(-376,-4400)" uid="c1a11113-aaaa-bbbb-cccc-000000000003"/>
-        <object id="60" coordinates="(927,-4100)" uid="c1a11114-aaaa-bbbb-cccc-000000000004"/>
-        <object id="60" coordinates="(-140,-3800)" uid="c1a11115-aaaa-bbbb-cccc-000000000005"/>
-        <object id="60" coordinates="(835,-3500)" uid="c1a11116-aaaa-bbbb-cccc-000000000006"/>
-        <object id="60" coordinates="(-624,-3200)" uid="c1a11117-aaaa-bbbb-cccc-000000000007"/>
-        <object id="60" coordinates="(75,-2900)" uid="c1a11118-aaaa-bbbb-cccc-000000000008"/>
-        <object id="60" coordinates="(600,-2600)" uid="c1a11119-aaaa-bbbb-cccc-000000000009"/>
-        <object id="60" coordinates="(-452,-2300)" uid="c1a1111a-aaaa-bbbb-cccc-000000000010"/>
-        <object id="60" coordinates="(720,-2000)" uid="c1a1111b-aaaa-bbbb-cccc-000000000011"/>
-        <object id="60" coordinates="(-350,-1700)" uid="c1a1111c-aaaa-bbbb-cccc-000000000012"/>
-        <object id="60" coordinates="(930,-1400)" uid="c1a1111d-aaaa-bbbb-cccc-000000000013"/>
-        <object id="60" coordinates="(-500,-1100)" uid="c1a1111e-aaaa-bbbb-cccc-000000000014"/>
-        <object id="60" coordinates="(450,-800)" uid="c1a1111f-aaaa-bbbb-cccc-000000000015"/>
-        <object id="60" coordinates="(125,-500)" uid="c1a11120-aaaa-bbbb-cccc-000000000016"/>
-        <object id="60" coordinates="(-300,-200)" uid="c1a11121-aaaa-bbbb-cccc-000000000017"/>
-        <object id="60" coordinates="(750,100)" uid="c1a11122-aaaa-bbbb-cccc-000000000018"/>
-        <object id="60" coordinates="(-650,400)" uid="c1a11123-aaaa-bbbb-cccc-000000000019"/>
-        <object id="60" coordinates="(300,700)" uid="c1a11124-aaaa-bbbb-cccc-000000000020"/>
-        <object id="60" coordinates="(910,1000)" uid="c1a11125-aaaa-bbbb-cccc-000000000021"/>
-        <object id="60" coordinates="(-400,1300)" uid="c1a11126-aaaa-bbbb-cccc-000000000022"/>
-        <object id="60" coordinates="(575,1600)" uid="c1a11127-aaaa-bbbb-cccc-000000000023"/>
-        <object id="60" coordinates="(-250,1900)" uid="c1a11128-aaaa-bbbb-cccc-000000000024"/>
-        <object id="60" coordinates="(100,2200)" uid="c1a11129-aaaa-bbbb-cccc-000000000025"/>
-        <object id="60" coordinates="(825,2500)" uid="c1a1112a-aaaa-bbbb-cccc-000000000026"/>
-        <object id="60" coordinates="(-500,2800)" uid="c1a1112b-aaaa-bbbb-cccc-000000000027"/>
-        <object id="60" coordinates="(600,3100)" uid="c1a1112c-aaaa-bbbb-cccc-000000000028"/>
-        <object id="60" coordinates="(-100,3400)" uid="c1a1112d-aaaa-bbbb-cccc-000000000029"/>
-        <object id="60" coordinates="(350,3700)" uid="c1a1112e-aaaa-bbbb-cccc-000000000030"/>
-        <object id="60" coordinates="(940,4000)" uid="c1a1112f-aaaa-bbbb-cccc-000000000031"/>
-        <object id="60" coordinates="(-420,4300)" uid="c1a11130-aaaa-bbbb-cccc-000000000032"/>
-        <object id="60" coordinates="(700,4600)" uid="c1a11131-aaaa-bbbb-cccc-000000000033"/>
-        <object id="60" coordinates="(-320,4900)" uid="c1a11132-aaaa-bbbb-cccc-000000000034"/>
-
-
+        <object id="60" coordinates="(-1280,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000000"/>
+        <object id="60" coordinates="(-640,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000001"/>
+        <object id="60" coordinates="(0,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000002"/>
+        <object id="60" coordinates="(640,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000003"/>
+        <object id="60" coordinates="(1280,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000004"/>
+        <object id="60" coordinates="(-1280,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000005"/>
+        <object id="60" coordinates="(-640,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000006"/>
+        <object id="60" coordinates="(0,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000007"/>
+        <object id="60" coordinates="(640,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000008"/>
+        <object id="60" coordinates="(1280,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000009"/>
+        <object id="60" coordinates="(-1280,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000010"/>
+        <object id="60" coordinates="(-640,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000011"/>
+        <object id="60" coordinates="(0,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000012"/>
+        <object id="60" coordinates="(640,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000013"/>
+        <object id="60" coordinates="(1280,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000014"/>
+        <object id="60" coordinates="(-1280,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000015"/>
+        <object id="60" coordinates="(-640,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000016"/>
+        <object id="60" coordinates="(0,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000017"/>
+        <object id="60" coordinates="(640,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000018"/>
+        <object id="60" coordinates="(1280,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000019"/>
+        <object id="60" coordinates="(-1280,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000020"/>
+        <object id="60" coordinates="(-640,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000021"/>
+        <object id="60" coordinates="(0,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000022"/>
+        <object id="60" coordinates="(640,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000023"/>
+        <object id="60" coordinates="(1280,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000024"/>
+        <object id="60" coordinates="(-1280,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000025"/>
+        <object id="60" coordinates="(-640,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000026"/>
+        <object id="60" coordinates="(0,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000027"/>
+        <object id="60" coordinates="(640,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000028"/>
+        <object id="60" coordinates="(1280,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000029"/>
+        <object id="60" coordinates="(-1280,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000030"/>
+        <object id="60" coordinates="(-640,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000031"/>
+        <object id="60" coordinates="(0,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000032"/>
+        <object id="60" coordinates="(640,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000033"/>
+        <object id="60" coordinates="(1280,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000034"/>
+        <object id="60" coordinates="(-1280,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000035"/>
+        <object id="60" coordinates="(-640,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000036"/>
+        <object id="60" coordinates="(0,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000037"/>
+        <object id="60" coordinates="(640,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000038"/>
+        <object id="60" coordinates="(1280,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000039"/>
+        <object id="60" coordinates="(-1280,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000040"/>
+        <object id="60" coordinates="(-640,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000041"/>
+        <object id="60" coordinates="(0,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000042"/>
+        <object id="60" coordinates="(640,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000043"/>
+        <object id="60" coordinates="(1280,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000044"/>
+        <object id="60" coordinates="(-1280,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000045"/>
+        <object id="60" coordinates="(-640,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000046"/>
+        <object id="60" coordinates="(0,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000047"/>
+        <object id="60" coordinates="(640,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000048"/>
+        <object id="60" coordinates="(1280,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000049"/>
+        <object id="60" coordinates="(-1280,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000050"/>
+        <object id="60" coordinates="(-640,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000051"/>
+        <object id="60" coordinates="(0,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000052"/>
+        <object id="60" coordinates="(640,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000053"/>
+        <object id="60" coordinates="(1280,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000054"/>
+        <object id="60" coordinates="(-1280,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000055"/>
+        <object id="60" coordinates="(-640,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000056"/>
+        <object id="60" coordinates="(0,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000057"/>
+        <object id="60" coordinates="(640,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000058"/>
+        <object id="60" coordinates="(1280,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000059"/>
+        <object id="60" coordinates="(-1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000060"/>
+        <object id="60" coordinates="(-640,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000061"/>
+        <object id="60" coordinates="(0,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000062"/>
+        <object id="60" coordinates="(640,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000063"/>
+        <object id="60" coordinates="(1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000064"/>
 
 
       </data>
     </layer>
     <layer name="entities" width="2000" height="1000" z="1">
       <data>
-        <object id="200" coordinates="(250,1000)" uid="00000000-0000-0000-0000-000000000001"/>
+        <object id="1" coordinates="(250,-4500)" uid="f1460102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="2" coordinates="(350,4800)" uid="f1010100-aaaa-bbbb-cccc-101015101014"/>
+        <object id="6" coordinates="(345,-20)" uid="f1078100-aaaa-bbbb-cccc-101015101014"/>
+        <object id="5" coordinates="(-450,550), (-400,3600), (100,2200), (123,-900), (-250,0)"
+          uid="542f5880-6e08-46e7-9e0d-2be7619ac248, fffca796-ea41-4538-9c58-0622e260d5ac, b03666e6-fb07-4f31-9924-7c9b92c2332f, 51b61725-ba49-4a99-8dec-7fbbb773bb4b, a8fe4867-b4c3-43a9-aaf4-7dedc1b9d702"/>
+        <object id="7" coordinates="(250,-300)" uid="00000000-0000-0000-0000-000000500001"/>
+        <object id="7" coordinates="(100,0)" uid="00000000-0000-0000-0000-000000600001"/>
+        <object id="7" coordinates="(200,-3000)" uid="00200000-0000-0000-0000-000000600001"/>
+        <object id="7" coordinates="(300,-500)" uid="00000000-0000-0000-0090-000000600001"/>
+        ç
+        <object id="200" coordinates="(250,4700)" uid="00000000-0000-0000-0000-000000000001"/>
         <object id="203" coordinates="(200,600)" uid="c1111111-aaaa-bbbb-cccc-111111111111"/>
-        <object id="201" coordinates="(400,750)" uid="c2222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(250,4900)" uid="c1342222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(250,4400)" uid="c1222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(250,4600)" uid="c1122222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(350,4200)" uid="c1132222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(300,3900)" uid="c1223222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(250,3700)" uid="c1224222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(200,3400)" uid="c1223322-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(200,3050)" uid="c1223312-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(200,2800)" uid="c1223212-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(100,2400)" uid="c1213324-aaaa-bbbb-cccc-222222222222"/>
+
+
+        <object id="201" coordinates="(232,-600)" uid="f1010102-aaaa-bbbb-cccc-101015101001"/>
+        <object id="202" coordinates="(481,-670)" uid="f1010102-aaaa-bbbb-cccc-101015101002"/>
+        <object id="203" coordinates="(157,-740)" uid="f1010102-aaaa-bbbb-cccc-101015101003"/>
+        <object id="201" coordinates="(389,-810)" uid="f1010102-aaaa-bbbb-cccc-101015101004"/>
+        <object id="202" coordinates="(271,-880)" uid="f1010102-aaaa-bbbb-cccc-101015101005"/>
+        <object id="203" coordinates="(123,-950)" uid="f1010102-aaaa-bbbb-cccc-101015101006"/>
+        <object id="201" coordinates="(412,-1020)" uid="f1010102-aaaa-bbbb-cccc-101015101007"/>
+        <object id="202" coordinates="(346,-1090)" uid="f1010102-aaaa-bbbb-cccc-101015101008"/>
+        <object id="203" coordinates="(504,-1160)" uid="f1010102-aaaa-bbbb-cccc-101015101009"/>
+        <object id="201" coordinates="(217,-1230)" uid="f1010102-aaaa-bbbb-cccc-101015101010"/>
+        <object id="202" coordinates="(136,-1300)" uid="f1010102-aaaa-bbbb-cccc-101015101011"/>
+        <object id="203" coordinates="(558,-1370)" uid="f1010102-aaaa-bbbb-cccc-101015101012"/>
+        <object id="201" coordinates="(198,-1440)" uid="f1010102-aaaa-bbbb-cccc-101015101013"/>
+        <object id="202" coordinates="(337,-1510)" uid="f1010102-aaaa-bbbb-cccc-101015101014"/>
+        <object id="203" coordinates="(473,-1580)" uid="f1010102-aaaa-bbbb-cccc-101015101015"/>
+        <object id="201" coordinates="(290,-1650)" uid="f1010102-aaaa-bbbb-cccc-101015101016"/>
+        <object id="202" coordinates="(146,-1720)" uid="f1010102-aaaa-bbbb-cccc-101015101017"/>
+        <object id="203" coordinates="(399,-1790)" uid="f1010102-aaaa-bbbb-cccc-101015101018"/>
+        <object id="201" coordinates="(541,-1860)" uid="f1010102-aaaa-bbbb-cccc-101015101019"/>
+        <object id="202" coordinates="(188,-1930)" uid="f1010102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="203" coordinates="(188,-2000)" uid="f2010702-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(100,-2100)" uid="f2016102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(100,-2200)" uid="f2056102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="202" coordinates="(300,-2400)" uid="f1270102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="202" coordinates="(300,-2500)" uid="f1280109-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(250,-2650)" uid="f1020302-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(250,-2880)" uid="f1022302-aaaa-bbbb-cccc-101015101020"/>
+        <object id="202" coordinates="(300,-3000)" uid="f1270102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="202" coordinates="(210,-3200)" uid="f1270103-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(260,-3400)" uid="f1620102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(300,-3500)" uid="f1620108-aaaa-bbbb-cccc-101015101020"/>
+        <object id="202" coordinates="(400,-3700)" uid="f1250102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(300,-3900)" uid="f2270103-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(200,-4000)" uid="f1030102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(200,-4100)" uid="f3030108-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(100,-4200)" uid="f1030308-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(100,-4300)" uid="f1030108-aaaa-bbbb-cccc-101015101020"/>
+        <object id="201" coordinates="(300,-4000)" uid="f9999990-aaaa-bbbb-cccc-999999999990"/>
+
+
+        <object id="202" coordinates="(350,100)" uid="f1010102-aaaa-bbbb-cccc-101015101014"/>
+        <object id="202" coordinates="(150,-500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,-400)" uid="e1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(100,-200)" uid="f4010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,0)" uid="f1010102-aaaa-bbbb-cccc-101010101014"/>
+        <object id="201" coordinates="(300,0)" uid="f1010102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="202" coordinates="(400,0)" uid="f1010102-aaaa-bbbb-cccc-101010141014"/>
+        <object id="202" coordinates="(100,150)" uid="c1123322-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(200,400)" uid="c1323322-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(400,750)" uid="c1222222-aaaa-bbbb-cccc-222222222222"/>
         <object id="201" coordinates="(600,900)" uid="c3333333-aaaa-bbbb-cccc-333333333333"/>
         <object id="201" coordinates="(800,1100)" uid="c4444444-aaaa-bbbb-cccc-444444444444"/>
         <object id="201" coordinates="(250,1000)" uid="e4444444-aaaa-bbbb-cccc-444444444444"/>
         <object id="202" coordinates="(250,600)" uid="c1111111-aaaa-bbbb-cccc-111111311111"/>
         <object id="202" coordinates="(405,600)" uid="c2222222-aaaa-bbcb-cccc-222222222222"/>
         <object id="202" coordinates="(500,900)" uid="c4333333-aaaa-bbbb-cccc-333333333333"/>
-        <object id="202" coordinates="(500,1100)" uid="c5444444-aaaa-bbbb-cccc-444444444444"/>
         <object id="201" coordinates="(150,600)" uid="f1111111-aaaa-bbbb-cccc-111111111111"/>
         <object id="202" coordinates="(300,700)" uid="f2222222-aaaa-bbbb-cccc-222222222222"/>
         <object id="201" coordinates="(500,800)" uid="f3333333-aaaa-bbbb-cccc-333333333333"/>
@@ -86,15 +183,6 @@
         <object id="202" coordinates="(250,2100)" uid="f6666667-aaaa-bbbb-cccc-666666666667"/>
         <object id="201" coordinates="(400,2200)" uid="f7777778-aaaa-bbbb-cccc-777777777778"/>
         <object id="201" coordinates="(300,2400)" uid="f9999990-aaaa-bbbb-cccc-999999999990"/>
-        <object id="202" coordinates="(150,0)" uid="f1010102-aaaa-bbbb-cccc-101010101014"/>
-        <object id="201" coordinates="(300,0)" uid="f1010102-aaaa-bbbb-cccc-101010101019"/>
-        <object id="202" coordinates="(400,0)" uid="f1010102-aaaa-bbbb-cccc-101010141014"/>
-        <object id="202" coordinates="(350,100)" uid="f1010102-aaaa-bbbb-cccc-101015101014"/>
-        <object id="202" coordinates="(150,-500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
-        <object id="202" coordinates="(150,-400)" uid="e1010102-aaaa-bbbb-cccc-101010101012"/>
-        <object id="202" coordinates="(100,-200)" uid="f4010102-aaaa-bbbb-cccc-101010101012"/>
-
-
       </data>
     </layer>
   </layers>
@@ -104,8 +192,10 @@
     <objectGroup name="entities">
 
 
-      <object spriteName="platform-green" type="platform" id="201" spriteFile="greenplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="platform-green" type="platform" id="201" spriteFile="greenplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -113,8 +203,10 @@
       </object>
 
 
-      <object spriteName="platform-light-blue" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="platform-light-blue" type="platform" id="202"
+        spriteFile="blueplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -122,8 +214,58 @@
       </object>
 
 
-      <object spriteName="platform-weak" type="platform" id="203" spriteFile="weakplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="platform-weak" type="platform" id="203" spriteFile="weakplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+
+      <object spriteName="platform-weak" type="platform" id="7" spriteFile="weakplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9,13" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+      <object spriteName="spring-loaded" type="spring" id="6" spriteFile="spring.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="40" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+
+    <objectGroup name="checkpoints">
+      <object spriteName="blackhole" type="checkpoint" id="1" spriteFile="blackhole.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+
+    <objectGroup name="powerups">
+      <object spriteName="doodlejump-rocket-0.png" type="powerups" id="2"
+        spriteFile="doodlejump-rocket.xml"
+        hitBoxWidth="80" hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -133,28 +275,43 @@
 
 
     <objectGroup name="players">
-      <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml" hitBoxWidth="50"
+      <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml"
+        hitBoxWidth="50"
         hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
-        eventIDs="2,3,4,5,6,7,8,10" velocityX="0" velocityY="0" rotation="0" flipped="false">
-        <displayedProperties propertyList="score,lives,distance"/>
+        eventIDs="1,2,3,4,5,6,7,8,10,11,12,evt-trigger-rocket,evt-decrement-rocket,evt-apply-rocket,evt-reset-rocket"
+        velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives"/>
         <properties>
           <stringProperties/>
           <doubleProperties>
+            <property name="rocket_duration" value="0"/>
             <property name="lives" value="3"/>
             <property name="score" value="0"/>
-            <property name="distance" value="0"/>
-            <property name="maxDist" value="0"/>
           </doubleProperties>
         </properties>
       </object>
     </objectGroup>
 
 
-
-
     <objectGroup name="backgrounds">
       <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
-        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+  </game>
+
+
+  <game name="supermario">
+    <objectGroup name="collectable">
+      <object spriteName="coin-sprite" type="coin" id="5" spriteFile="coin-sprite.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
     </objectGroup>
   </game>
 
@@ -163,9 +320,8 @@
     <event type="input" id="1">
       <conditions>
         <conditionSet>
-          <condition name="KEY_PRESSED">
+          <condition name="TRUE">
             <stringParameters>
-              <parameter name="key" value="w"/>
             </stringParameters>
           </condition>
         </conditionSet>
@@ -173,7 +329,7 @@
       <outcomes>
         <outcome name="JUMP">
           <doubleParameters>
-            <parameter name="JumpAmount" value="60"/>
+            <parameter name="JumpAmount" value="40"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -318,11 +474,11 @@
     <event type="physics" id="8">
       <conditions>
         <conditionSet>
-          <condition name="AT_OR_BEYOND_Y">
+          <condition name="COLLIDED_WITH_GROUP">
             <stringParameters>
+              <parameter name="group" value="coin"/>
             </stringParameters>
             <doubleParameters>
-              <parameter name="y" value="500"/>
             </doubleParameters>
           </condition>
         </conditionSet>
@@ -333,7 +489,7 @@
             <parameter name="variable" value="score"/>
           </stringParameters>
           <doubleParameters>
-            <parameter name="delta" value=".1"/>
+            <parameter name="delta" value="10.0"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -372,6 +528,166 @@
       </conditions>
       <outcomes>
         <outcome name="RUN_OBJECT_ANIMATIONS">
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="11">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="checkpoint"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="WIN_GAME">
+          <stringParameters>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="evt-trigger-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="powerups"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="3"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 3️⃣ Event: every frame/tick, decrement rocket_duration by 0.2 -->
+    <event type="physics" id="evt-decrement-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>  <!-- always fires -->
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-0.2"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 4️⃣ Event: while rocket_duration > 0, apply the rocket boost -->
+    <event type="physics" id="evt-apply-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="GREATER_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="rocket_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="ROCKET">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 5️⃣ (Optional) Event: when rocket_duration falls below zero, reset any flags -->
+    <event type="physics" id="evt-reset-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="rocket_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <!-- e.g. turn off any visual effect or restore normal max jump -->
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="0"/>
+          </doubleParameters>
+        </outcome>
+        <!-- if you had a flag you could also turn it off here -->
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="12">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="spring"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RELATIVE_TELEPORT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x_offset" value="0"/>
+            <parameter name="y_offset" value="300"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="13">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PATROL">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="MovementAmount" value="4.0"/>
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>

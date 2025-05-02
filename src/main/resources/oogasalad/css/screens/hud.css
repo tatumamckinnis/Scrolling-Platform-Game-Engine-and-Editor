@@ -1,6 +1,14 @@
-.hud-stat-text {
+Text.hud-stat-text {
   -fx-font-family: "Montserrat", "Lato", serif;
   -fx-font-weight: bold;
   -fx-font-size: 16px;
-  -fx-background-color: blue;
+  -fx-fill: white;   /* ← this is the key change */
+  -fx-effect: dropshadow(
+      one-pass-box,
+      rgba(0,0,0,0.75),
+      4,    /* radius */
+      0.0,  /* spread */
+      0,    /* offsetX */
+      0     /* offsetY */
+  );
 }

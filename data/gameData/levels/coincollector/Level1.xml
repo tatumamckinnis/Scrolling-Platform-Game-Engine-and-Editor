@@ -100,11 +100,11 @@
     </layer>
   </layers>
 
-  <game name="doodlejump">
-    <objectGroup name="entities">
-      <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml" hitBoxWidth="50"
+  <game name="supermario">
+    <objectGroup name="players">
+      <object spriteName="big-mario-begin-run-left" type="player" id="200" spriteFile="big-mario-begin-run-left.xml" hitBoxWidth="50"
         hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
-        eventIDs="1,2,3,4,5,6,7" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        eventIDs="1,2,3,4,5,6,7,9" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <displayedProperties propertyList="score,lives"/>
         <properties>
           <stringProperties/>
@@ -114,16 +114,21 @@
           </doubleProperties>
         </properties>
       </object>
-
-      <object spriteName="greenPlatform" type="platform" id="201" spriteFile="greenplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="coin-sprite" type="coin" id="201" spriteFile="coin-sprite.xml" hitBoxWidth="50"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="8" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
         </properties>
       </object>
+    </objectGroup>
+  </game>
 
-      <object spriteName="bluePlatform" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
+
+  <game name="doodlejump">
+    <objectGroup name="entities">
+
+      <object spriteName="platform-light-blue" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
         hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties/>
@@ -142,8 +147,9 @@
     <event type="input" id="1">
       <conditions>
         <conditionSet>
-          <condition name="TRUE">
+          <condition name="KEY_PRESSED">
             <stringParameters>
+              <parameter name="key" value="SPACE"/>
             </stringParameters>
           </condition>
         </conditionSet>
@@ -271,6 +277,53 @@
           <doubleParameters>
             <parameter name="x" value="250"/>
             <parameter name="y" value="500"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="8">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="player"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DESTROY_OBJECT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="9">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="coin"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="score"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="1"/>
           </doubleParameters>
         </outcome>
       </outcomes>

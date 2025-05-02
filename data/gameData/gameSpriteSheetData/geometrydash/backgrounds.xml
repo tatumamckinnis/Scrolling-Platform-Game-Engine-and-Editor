@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for background (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-background.jpg">
+  <sprite name="base-background" x="0" y="0" width="950" height="700">
+    <frames>
+      <frame name="base-background" x="0" y="0" width="950" height="700"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

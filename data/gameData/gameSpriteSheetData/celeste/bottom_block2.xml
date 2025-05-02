@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for bottom_block2 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="bottom_block2" x="10" y="28" width="8" height="8">
+    <frames>
+      <frame name="bottom_block2" x="10" y="28" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

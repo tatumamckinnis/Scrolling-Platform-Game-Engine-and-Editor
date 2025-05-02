@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<spriteFile imagePath="celeste-sprites.png"><sprite name="celeste_logo" x="77" y="170" width="8" height="8"><frames><frame name="celeste_logo" x="77" y="170" width="8" height="8" /></frames><animations /></sprite></spriteFile>

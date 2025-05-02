@@ -172,7 +172,7 @@ public class XmlBlueprintsWriter implements XmlComponentWriter {
    * <object> tag.
    */
   private String saveSpriteIfNeeded(String gameName, SpriteData sprite) {
-    String key = gameName + "#" + sprite.name();
+    String key = gameName + "#" + sprite.baseFrame().name();
 
     if (!savedSprites.containsKey(key)) {
       try {
