@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for r0_c0 (PhantomLeap)
+-->
+<spriteFile imagePath="PhantomBlackBackground.jpg">
+  <sprite name="r0_c0" x="0" y="0" width="1746" height="980">
+    <frames>
+      <frame name="r0_c0" x="0" y="0" width="1746" height="980"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
