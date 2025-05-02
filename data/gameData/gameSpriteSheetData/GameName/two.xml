@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for two (GameName)
+-->
+<spriteFile imagePath="two.png">
+  <sprite name="two" x="0" y="0" width="1" height="1">
+    <frames>
+      <frame name="two" x="0" y="0" width="1" height="1"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
