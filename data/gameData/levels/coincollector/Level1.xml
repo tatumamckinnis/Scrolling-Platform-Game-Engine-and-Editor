@@ -6,7 +6,7 @@
       <property name="objectToTrack" value="00000000-0000-0000-0000-000000000001"/>
     </stringProperties>
     <doubleProperties>
-      <property name="zoom" value="1.0" />
+      <property name="zoom" value="1.0"/>
       <property name="cameraOffsetX" value="300.0"/>
       <property name="cameraOffsetY" value="500.0"/>
     </doubleProperties>
@@ -82,7 +82,6 @@
         <object id="60" coordinates="(1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000064"/>
 
 
-
       </data>
     </layer>
     <layer name="entities" width="2000" height="1000" z="1">
@@ -93,7 +92,9 @@
         <object id="202" coordinates="(200,400)" uid="c1323322-aaaa-bbbb-cccc-222222222222"/>
         <object id="201" coordinates="(200,600)" uid="c1111111-aaaa-bbbb-cccc-111111111111"/>
         <object id="201" coordinates="(400,750)" uid="c2222222-aaaa-bbbb-cccc-222222222222"/>
-        <object id="202" coordinates="(-400,-600), (-300,-500), (-200,-600), (-100,-800), (0,-400), (100,-400), (200,-200), (300,-350), (400,700), (500,0), (600,-1000), (700,-600), (800,-600), (900,-600), (1000,-600), (1100,-600), (1200,-600), (1300,-600), (1400,-600), (1500,-600), (1600,-600), (1700,-600), (1800,-600), (1900,-600), (2000,-600), (2100,-600), (2200,-600), (2300,-600), (2400,-600), (2500,-600)" uid="87dffe12-5987-44b6-b29c-fe2115fd0d33, 3954ac9a-474a-4769-8b35-808907ed6ea9, 56867857-e384-4a32-b480-5fb415be1b9c, bff94ee1-fca2-450f-996b-d3436d4c49d8, 8641c5c4-75ba-4b46-aa27-f2ea9f954c1b, c4437006-35c1-40cb-8bc8-9038e0bf2a27, 669b5884-b46d-415e-999a-d379db757fbf, 589d3d7f-13dc-4d90-8c88-756b5410f3f4, c4a426ff-5688-44b2-bfc6-b0b1db1ea61d, a412a580-f42a-41ff-90c6-d2d5d0ee213c, 7bb66324-f68e-4161-b3fe-7211ff6defd2, 13d20e45-a2b6-4c9d-9718-f3478dcd5e09, aba57fe5-7ef5-453d-a7ee-1f107f88043d, 22d3bac3-8006-43d9-b71e-32c3dd2c8a92, c54245dc-306f-445c-93bb-36352c817698, d951bcf2-9f40-4ca7-be54-9ec90043e939, 1be3e3d2-06fd-4614-9782-5f5d8b0ef56c, cd930313-db4d-4b5c-963d-f5e483ff4b88, ec96af1b-859d-4bb4-a3f4-c5d41dfe8095, ce209582-a042-4b11-a7e9-98ba2a3af2b1, a2db6b5e-a0a2-4fa7-a1cd-9065cebaaff3, 375c1694-51e8-41df-83c3-df5d4ed29d75, 558c1164-161d-4e5b-80d1-ed5462c7eb6c, 4afd1c30-c9e9-447c-abe4-c5acaf38c32c, fa3c6ba5-09f7-41ae-9100-5404580825f8, e5b217e9-9895-4437-807c-f8c084df8720, e556626f-ae7b-4fbe-9c24-1e2e77e8ad1a, 605b19df-b8a5-4f8d-9019-3b8cb668a0fd, d3f6e3e6-05ef-437c-ad96-6c8c15f8987c, 2a8c5cdd-6103-4c34-8b5f-908b2b3a2d63" />
+        <object id="202"
+          coordinates="(-400,-600), (-300,-500), (-200,-600), (-100,-800), (0,-400), (100,-400), (200,-200), (300,-350), (400,700), (500,0), (600,-1000), (700,-600), (800,-600), (900,-600), (1000,-600), (1100,-600), (1200,-600), (1300,-600), (1400,-600), (1500,-600), (1600,-600), (1700,-600), (1800,-600), (1900,-600), (2000,-600), (2100,-600), (2200,-600), (2300,-600), (2400,-600), (2500,-600)"
+          uid="87dffe12-5987-44b6-b29c-fe2115fd0d33, 3954ac9a-474a-4769-8b35-808907ed6ea9, 56867857-e384-4a32-b480-5fb415be1b9c, bff94ee1-fca2-450f-996b-d3436d4c49d8, 8641c5c4-75ba-4b46-aa27-f2ea9f954c1b, c4437006-35c1-40cb-8bc8-9038e0bf2a27, 669b5884-b46d-415e-999a-d379db757fbf, 589d3d7f-13dc-4d90-8c88-756b5410f3f4, c4a426ff-5688-44b2-bfc6-b0b1db1ea61d, a412a580-f42a-41ff-90c6-d2d5d0ee213c, 7bb66324-f68e-4161-b3fe-7211ff6defd2, 13d20e45-a2b6-4c9d-9718-f3478dcd5e09, aba57fe5-7ef5-453d-a7ee-1f107f88043d, 22d3bac3-8006-43d9-b71e-32c3dd2c8a92, c54245dc-306f-445c-93bb-36352c817698, d951bcf2-9f40-4ca7-be54-9ec90043e939, 1be3e3d2-06fd-4614-9782-5f5d8b0ef56c, cd930313-db4d-4b5c-963d-f5e483ff4b88, ec96af1b-859d-4bb4-a3f4-c5d41dfe8095, ce209582-a042-4b11-a7e9-98ba2a3af2b1, a2db6b5e-a0a2-4fa7-a1cd-9065cebaaff3, 375c1694-51e8-41df-83c3-df5d4ed29d75, 558c1164-161d-4e5b-80d1-ed5462c7eb6c, 4afd1c30-c9e9-447c-abe4-c5acaf38c32c, fa3c6ba5-09f7-41ae-9100-5404580825f8, e5b217e9-9895-4437-807c-f8c084df8720, e556626f-ae7b-4fbe-9c24-1e2e77e8ad1a, 605b19df-b8a5-4f8d-9019-3b8cb668a0fd, d3f6e3e6-05ef-437c-ad96-6c8c15f8987c, 2a8c5cdd-6103-4c34-8b5f-908b2b3a2d63"/>
         <object id="201" coordinates="(600,900)" uid="c3333333-aaaa-bbbb-cccc-333333333333"/>
         <object id="201" coordinates="(800,1100)" uid="c4444444-aaaa-bbbb-cccc-444444444444"/>
         <object id="201" coordinates="(250,1000)" uid="e4444444-aaaa-bbbb-cccc-444444444444"/>
@@ -156,7 +157,8 @@
 
   <game name="supermario">
     <objectGroup name="players">
-      <object spriteName="big-mario-begin-run-left" type="player" id="200" spriteFile="big-mario-begin-run-left.xml" hitBoxWidth="50"
+      <object spriteName="big-mario-begin-run-left" type="player" id="200"
+        spriteFile="big-mario-begin-run-left.xml" hitBoxWidth="50"
         hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
         eventIDs="1,2,3,4,5,6,7,9,10" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <displayedProperties propertyList="score,lives"/>
@@ -168,8 +170,10 @@
           </doubleProperties>
         </properties>
       </object>
-      <object spriteName="coin-sprite" type="coin" id="201" spriteFile="coin-sprite.xml" hitBoxWidth="50"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="8" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="coin-sprite" type="coin" id="201" spriteFile="coin-sprite.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="8" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -182,16 +186,20 @@
   <game name="doodlejump">
     <objectGroup name="entities">
 
-      <object spriteName="platform-light-blue" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="platform-light-blue" type="platform" id="202"
+        spriteFile="blueplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
         </properties>
       </object>
 
-      <object spriteName="platform-green" type="platform" id="203" spriteFile="greenplatform.xml" hitBoxWidth="70"
-        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="platform-green" type="platform" id="203" spriteFile="greenplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
         <properties>
           <stringProperties/>
           <doubleProperties/>
@@ -201,7 +209,8 @@
 
     <objectGroup name="backgrounds">
       <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
-        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0" rotation="0" flipped="false"/>
     </objectGroup>
   </game>
 
@@ -390,7 +399,6 @@
         </outcome>
       </outcomes>
     </event>
-
 
 
     <event type="input" id="10">

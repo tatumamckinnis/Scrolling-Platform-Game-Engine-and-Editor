@@ -1,6 +1,7 @@
 ---
 marp: true
 ---
+
 # It's Thyme to Eat: SALAD Final Demo
 
 ## Alana Zinkin, Aksel Bell, Billy McCune, Gage Garcia, Jacob You, Luke Nam, Tatum McKinnis
@@ -19,15 +20,12 @@ marp: true
 
 * Internal Resources
 
-  * [Language bundles](/doc/presentation_final/language_bundles_image.png)
-  * [Bundle Example](/src/main/resources/oogasalad/i18n/displayedText_en.properties)
-  * [Pre‑fabs](/data/editorData/prefabricatedData/prefab.xml)
+    * [Language bundles](/doc/presentation_final/language_bundles_image.png)
+    * [Bundle Example](/src/main/resources/oogasalad/i18n/displayedText_en.properties)
+    * [Pre‑fabs](/data/editorData/prefabricatedData/prefab.xml)
 * Sample Data File
 
-  * [Dinosaur Jump](/data/gameData/levels/dinosaurgame/DinoLevel1.xml)
-* How to: Power-ups
-
-  * Composed of multiple events that leverage the double params map to specify the event duration
+    * [Dinosaur Jump](/data/gameData/levels/dinosaurgame/DinoLevel1.xml)
 
 ---
 
@@ -40,13 +38,13 @@ marp: true
 * Original goal: allow user to create any type of game object, rules, and visuals - **ACHIEVED**
 * Making games is significantly more challenging than we had anticipated
 * Underestimated the design challenges associated with the editor
-  * Lacked the appropriate front-end abstractions for making games easy to build
+    * Lacked the appropriate front-end abstractions for making games easy to build
 * You can add any type of object, event, and goal
-  * Events have an Or & And system
-  * Objects have string + double properties sections
-  * Sprites can be imported
-  * Can add new file types
-  * Can add new languages
+    * Events have an Or & And system
+    * Objects have string + double properties sections
+    * Sprites can be imported
+    * Can add new file types
+    * Can add new languages
 
 ---
 
@@ -138,31 +136,31 @@ marp: true
 * Team discussed options and weighed pros/cons
 * Trade-offs:
 
-  * Old Event System
-    * Events and Event Chains connected through a registry and an ID lookup
-    * Physics, Input, Collision handlers handle each type of event
-  * New Event System:
-    * Events consist of conditions and outcomes, which are paired together and directly tied to
-      each game object
+    * Old Event System
+        * Events and Event Chains connected through a registry and an ID lookup
+        * Physics, Input, Collision handlers handle each type of event
+    * New Event System:
+        * Events consist of conditions and outcomes, which are paired together and directly tied to
+          each game object
 
 ---
 
 # SPRINT PLAN AND PRIORITIES
 
 * EXPECTATIONS:
-  * Intended to create the basic game structure and integrate the features during week 1 to get a
-    basic version of the game functioning
-  * The following weeks were dedicated to building features that expanded the game engine
-    functionality
-  * Originally believed the editor would be fully implemented in 3-weeks worth of sprints
+    * Intended to create the basic game structure and integrate the features during week 1 to get a
+      basic version of the game functioning
+    * The following weeks were dedicated to building features that expanded the game engine
+      functionality
+    * Originally believed the editor would be fully implemented in 3-weeks worth of sprints
 
 ---
 
 * REALITY:
-  * First 2 sprints were way slower than anticipated - we did extensive data reformatting and
-    refactoring this week
-  * The Editor took MUCH MORE TIME than anticipated - and we should have had more people working
-    on it originally
+    * First 2 sprints were way slower than anticipated - we did extensive data reformatting and
+      refactoring this week
+    * The Editor took MUCH MORE TIME than anticipated - and we should have had more people working
+      on it originally
 
 ---
 
@@ -200,14 +198,14 @@ marp: true
 # TEAM CONTRACT DOC
 
 * USEFUL PARTS
-  * Meeting in person rather than virtually
-  * Taking on a reasonable amount of issues and completing them before the sprint deadline
+    * Meeting in person rather than virtually
+    * Taking on a reasonable amount of issues and completing them before the sprint deadline
 * NEEDS TO BE ADDED/CHANGED
-  * Require more standups
-  * Add a note that if a teammate is unable to attend a meeting, they must send an update in the
-    group chat expressing why they could not attend and sharing what they worked on, what they are
-    planning to do, and anything blocking them - the same way a stand-up would go
-    [LINK TO DOC](../TEAM_CONTRACT.md)
+    * Require more standups
+    * Add a note that if a teammate is unable to attend a meeting, they must send an update in the
+      group chat expressing why they could not attend and sharing what they worked on, what they are
+      planning to do, and anything blocking them - the same way a stand-up would go
+      [LINK TO DOC](../TEAM_CONTRACT.md)
 
 ---
 
