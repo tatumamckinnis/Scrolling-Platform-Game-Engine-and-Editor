@@ -1,2 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<spriteFile imagePath="celeste-sprites.png"><sprite name="top_ice2" x="10" y="55" width="8" height="8"><frames><frame name="top_ice2" x="10" y="55" width="8" height="8" /></frames><animations /></sprite></spriteFile>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for top_ice2 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="top_ice2" x="10" y="55" width="8" height="8">
+    <frames>
+      <frame name="top_ice2" x="10" y="55" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

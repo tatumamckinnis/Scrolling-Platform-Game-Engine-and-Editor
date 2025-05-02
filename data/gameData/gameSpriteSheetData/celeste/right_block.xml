@@ -1,2 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<spriteFile imagePath="celeste-sprites.png"><sprite name="right_block" x="19" y="19" width="8" height="8"><frames><frame name="right_block" x="19" y="19" width="8" height="8" /></frames><animations /></sprite></spriteFile>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for right_block (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="right_block" x="19" y="19" width="8" height="8">
+    <frames>
+      <frame name="right_block" x="19" y="19" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

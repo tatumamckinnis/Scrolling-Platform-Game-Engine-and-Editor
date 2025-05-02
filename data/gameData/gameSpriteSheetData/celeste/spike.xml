@@ -1,2 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<spriteFile imagePath="celeste-sprites.png"><sprite name="spike" x="1" y="96" width="8" height="8"><frames><frame name="spike" x="1" y="96" width="8" height="8" /></frames><animations /></sprite></spriteFile>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for spike (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="spike" x="1" y="96" width="8" height="8">
+    <frames>
+      <frame name="spike" x="1" y="96" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

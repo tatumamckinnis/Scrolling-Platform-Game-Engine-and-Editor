@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for spring2 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="spring2" x="1" y="150" width="8" height="8">
+    <frames>
+      <frame name="spring2" x="1" y="150" width="8" height="8"/>
+      <frame name="spring1" x="10" y="150" width="8" height="8"/>
+    </frames>
+    <animations>
+      <animation name="activate_spring" frameLen="20.0" frames="spring1,spring2"/>
+    </animations>
+  </sprite>
+</spriteFile>

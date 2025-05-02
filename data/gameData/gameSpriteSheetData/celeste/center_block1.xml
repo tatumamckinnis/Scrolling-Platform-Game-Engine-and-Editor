@@ -1,2 +1,13 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<spriteFile imagePath="celeste-sprites.png"><sprite name="center_block1" x="10" y="19" width="8" height="8"><frames><frame name="center_block1" x="10" y="19" width="8" height="8" /></frames><animations /></sprite></spriteFile>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for center_block1 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="center_block1" x="10" y="19" width="8" height="8">
+    <frames>
+      <frame name="center_block1" x="10" y="19" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
