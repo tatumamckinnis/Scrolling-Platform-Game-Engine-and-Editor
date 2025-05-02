@@ -82,7 +82,7 @@ interact with each other -->
           </doubleProperties>
         </properties>
       </object>
-      <object spriteName="robot-portal" type="enemy" id="1002" spriteFile="robot-portal.xml" hitBoxWidth="45"
+      <object spriteName="cube-portal" type="enemy" id="1002" spriteFile="cube-portal.xml" hitBoxWidth="45"
         hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties>
@@ -289,17 +289,16 @@ interact with each other -->
         <conditionSet>
           <condition name="AT_OR_BEYOND_X">
             <doubleParameters>
-              <parameter name="x" value="3500"/>
+              <parameter name="x" value="2500"/>
             </doubleParameters>
           </condition>
         </conditionSet>
       </conditions>
       <outcomes>
-        <outcome name="TELEPORT_TO_POINT">
-          <doubleParameters>
-            <parameter name="x" value="100"/>
-          </doubleParameters>
-        </outcome>
+        <outcomes>
+          <outcome name="WIN_GAME">
+          </outcome>
+        </outcomes>
       </outcomes>
     </event>
     <event type="physics" id="30">
