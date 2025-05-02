@@ -4,6 +4,7 @@ marp: true
 # It's Thyme to Eat: SALAD Final Demo
 ## Alana Zinkin, Aksel Bell, Billy McCune, Gage Garcia, Jacob You, Luke Nam, Tatum McKinnis  
 
+![DinoSaurJump](/doc/presentation_final/image/dinosaurjumpimage.png)
 
 
 ---
@@ -95,11 +96,31 @@ marp: true
 
 # USE CASE #2: Saving Player Statistics
 
+
+* ![ButtonActionSaveProgress](/doc/presentation_final/UserDataUseCase/ButtonActionSaveProgress.png) 
+
+---
+
+* ![Pause Game](/doc/presentation_final/UserDataUseCase/PauseGame.png)
+
+---
+
+* ![Save Player Progress](/doc/presentation_final/UserDataUseCase/SavePlayerProgress.png)
+
+---
+
+* ![UserDataAPI](/doc/presentation_final/UserDataUseCase/WriteUserDataAPI.png)
+
+---
+
+* ![UserDataWriter](/doc/presentation_final/UserDataUseCase/UserDataWriter.png)
+
+
 ---
 
 # DESIGN 1 (STABLE): "Everything's A Node"
 
-![View Class Image](/doc/presentation_final/ViewClassimage.png)
+![View Class Image](/doc/presentation_final/image/ViewClassimage.png)
 
 ---
 
@@ -127,6 +148,8 @@ marp: true
     * The following weeks were dedicated to building features that expanded the game engine
       functionality
     * Originally believed the editor would be fully implemented in 3-weeks worth of sprints
+
+---
 * REALITY:
     * First 2 sprints were way slower than anticipated - we did extensive data reformatting and
       refactoring this week
@@ -176,11 +199,11 @@ marp: true
     * Add a note that if a teammate is unable to attend a meeting, they must send an update in the
       group chat expressing why they could not attend and sharing what they worked on, what they are
       planning to do, and anything blocking them - the same way a stand-up would go
-      [LINK TO DOC](doc/TEAM_CONTRACT.md)
+      [LINK TO DOC](../TEAM_CONTRACT.md)
 
 ---
 
-# COMMUNICATION AND SOLVING PROBLEMS COLLECTIVELY
+# WHAT WE LEARNED ABOUT COMMUNICATION AND SOLVING PROBLEMS COLLECTIVELY
 
 ---
 
