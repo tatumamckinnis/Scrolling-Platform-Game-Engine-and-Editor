@@ -187,4 +187,22 @@ public class CameraData {
   public double getDoubleParam(String key) {
     return doubleParams.getOrDefault(key, 0.0);
   }
+
+  /**
+   * Sets the String parameters of the camera to a specified map.
+   *
+   * @param params the map to set the camera string parameters to
+   */
+  public void setStringParams(Map<String, String> params) {
+    this.stringParams = params;
+  }
+
+  /**
+   * Sets the double parameters of the camera to a specified map.
+   *
+   * @param params the map to set the camera double parameters to
+   */
+  public void setDoubleParams(Map<String, Double> params) {
+    this.doubleParams = params;
+  }
 }

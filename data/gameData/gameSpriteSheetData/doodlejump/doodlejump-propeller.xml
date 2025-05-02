@@ -6,9 +6,9 @@ y  => sprite y pos in texture
 w  => sprite width (may be trimmed)
 h  => sprite height (may be trimmed)
 -->
-<sprite imagePath="doodlejump-propeller.png" width="128" height="32">
-    <frame name="doodlejump-propeller-0.png" x="0" y="0" width="32" height="32"/>
-    <frame name="doodlejump-propeller-1.png" x="32" y="0" width="32" height="32"/>
-    <frame name="doodlejump-propeller-2.png" x="64" y="0" width="32" height="32"/>
-    <frame name="doodlejump-propeller-3.png" x="96" y="0" width="32" height="32"/>
-</sprite>
+<spriteFile imagePath="doodlejump-propeller.png" width="128" height="32">
+    <sprite name="doodlejump-propeller-0.png" x="0" y="0" width="32" height="32"/>
+    <sprite name="doodlejump-propeller-1.png" x="32" y="0" width="32" height="32"/>
+    <sprite name="doodlejump-propeller-2.png" x="64" y="0" width="32" height="32"/>
+    <sprite name="doodlejump-propeller-3.png" x="96" y="0" width="32" height="32"/>
+</spriteFile>

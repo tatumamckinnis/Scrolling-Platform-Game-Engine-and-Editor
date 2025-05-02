@@ -294,7 +294,6 @@ interact with each other -->
       <outcomes>
         <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR">
           <doubleParameters>
-            <parameter name="placeholder" value="0.1"/>
           </doubleParameters>
         </outcome>
       </outcomes>

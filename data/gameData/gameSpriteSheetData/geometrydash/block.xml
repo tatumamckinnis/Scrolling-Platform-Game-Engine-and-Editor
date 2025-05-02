@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for block (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-sprites.png">
+  <sprite name="block" x="616" y="0" width="50" height="50">
+    <frames>
+      <frame name="block" x="616" y="0" width="50" height="50"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

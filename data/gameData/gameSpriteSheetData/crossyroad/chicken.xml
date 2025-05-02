@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for chicken (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-sprites.png">
+    <sprite name="chicken" x="0" y="0" width="57" height="90">
+        <frames>
+            <frame name="chicken" x="0" y="0" width="57" height="90"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>

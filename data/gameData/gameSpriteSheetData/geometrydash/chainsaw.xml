@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for chainsaw (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-sprites.png">
+  <sprite name="chainsaw" x="505" y="0" width="90" height="90">
+    <frames>
+      <frame name="chainsaw" x="505" y="0" width="90" height="90"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

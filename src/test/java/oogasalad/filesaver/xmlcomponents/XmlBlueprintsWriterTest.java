@@ -1,18 +1,29 @@
 package oogasalad.filesaver.xmlcomponents;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
-import oogasalad.fileparser.records.*;
+import oogasalad.fileparser.records.BlueprintData;
+import oogasalad.fileparser.records.CameraData;
+import oogasalad.fileparser.records.EventData;
+import oogasalad.fileparser.records.FrameData;
+import oogasalad.fileparser.records.HitBoxData;
+import oogasalad.fileparser.records.LevelData;
+import oogasalad.fileparser.records.SpriteData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class XmlBlueprintsWriterTest {
+
   private File tempFile;
 
   @BeforeEach
@@ -70,6 +81,30 @@ public class XmlBlueprintsWriterTest {
         Map.of(1, blueprint),
         List.of()
     );
+  }
+
+  @Test
+  public void saveSpriteIfNeeded_DifferentSpriteNames_ReturnsDifferentFileNames() throws Exception {
+    BufferedWriter bw = new BufferedWriter(new StringWriter());
+    LevelData levelData = new LevelData("lvl", 0, 0, 0, 0, new CameraData("", Map.of(), Map.of()),
+        Map.of(), List.of());
+    XmlBlueprintsWriter writer = new XmlBlueprintsWriter(bw, levelData);
+
+    Method saveMethod = XmlBlueprintsWriter.class
+        .getDeclaredMethod("saveSpriteIfNeeded", String.class, SpriteData.class);
+    saveMethod.setAccessible(true);
+
+    FrameData base1 = new FrameData("one", 0, 0, 1, 1);
+    SpriteData sprite1 = new SpriteData(
+        "", new File("one.png"), base1, List.of(base1), List.of());
+    FrameData base2 = new FrameData("two", 0, 0, 1, 1);
+    SpriteData sprite2 = new SpriteData(
+        "", new File("two.png"), base2, List.of(base2), List.of());
+
+    String file1 = (String) saveMethod.invoke(writer, "GameName", sprite1);
+    String file2 = (String) saveMethod.invoke(writer, "GameName", sprite2);
+
+    assertNotEquals(file1, file2);
   }
 }
 

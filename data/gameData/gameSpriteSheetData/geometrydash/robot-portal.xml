@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for robot (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-sprites.png">
+  <sprite name="robot-portal" x="73" y="0" width="45" height="90">
+    <frames>
+      <frame name="robot-portal" x="73" y="0" width="45" height="90"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

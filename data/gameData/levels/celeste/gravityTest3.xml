@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="0" minY="0" maxX="224" maxY="848">
+  <cameraData type="AutoScrolling">
+    <stringProperties>
+    </stringProperties>
+    <doubleProperties>
+      <property name="scrollSpeedX" value="0.0"/>
+      <property name="scrollSpeedY" value="0.0"/>
+      <property name="zoom" value="1.0"/>
+      <property name="cameraOffsetX" value="0.0"/>
+      <property name="cameraOffsetY" value="400.0"/>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_0" width="224" height="848" z="0">
+      <data>
+        <object name = "Player_0_0_03eb" id="7" coordinates="(200,800)" uid="30673134-a17c-4dbf-9f2e-7e0f7f74f62c" />
+      </data>
+    </layer>
+    <layer name="layer_1" width="224" height="848" z="1">
+      <data>
+        <object name = "platform_192_808_d80a" id="1" coordinates="(192,808), (208,808), (200,808)" uid="74f72887-34a7-443c-90bb-7e358b4c1669, 6a7513d4-bff6-4e76-80ab-2fa800ade16c, 2673b93e-def2-4f5d-9662-b42c01586540" />
+        <object name = "platform_216_808_0e42" id="2" coordinates="(216,808)" uid="e01594d5-db76-4ab6-870f-1b6c6f7c325e" />
+        <object name = "platform_200_832_9a31" id="3" coordinates="(200,832), (192,816), (192,824), (208,832), (200,816), (192,832), (208,840), (208,816), (208,824), (200,840), (200,824), (192,840)" uid="f5fa7a0e-f2d9-4ac3-bdf2-68340775ab59, 073689a1-782a-4f1f-866b-84c9ac0258d6, 9a287de6-34e1-47b3-a1e6-8e93504997b7, 0b7d117c-b3e1-41dd-9910-828dace4239a, 18b77e55-efae-4854-addf-8d9f16845fbc, e43db3ab-5457-4259-bc0c-885b05dda7f2, c89a6f9c-da7a-40fe-8b5e-3b3778b988e2, d420198f-3ff7-415c-adaa-d3dc6b7b4abd, 31892c90-3b94-4838-a0c6-58997eb2f22c, 2390ad16-157d-447d-9e64-545bffa95c28, b17c5a50-7f96-4dae-8b59-1a334581dac5, 5002671a-0705-4ebe-a54f-9d1dc4c2508f" />
+        <object name = "platform_184_832_7050" id="4" coordinates="(184,832), (184,816), (184,824), (184,840)" uid="3412c0e3-debe-42f1-ab9e-fe507ca04a80, 9d1867f7-1e04-479f-a945-25296b53c72d, a991df89-e05b-4944-9ba2-2f5996ef5d35, 2e6dd0a2-09f2-4f72-a2e8-cad54819bc46" />
+        <object name = "platform_216_832_2e32" id="6" coordinates="(216,832), (216,840), (216,824), (216,816)" uid="1f538c3b-fc29-419a-894f-463e5b999ce6, 0c677e32-0f17-4d85-a87d-ab7c4c46505e, 5749f7de-aba8-48fa-977a-8632e9bdce83, f7891d8c-601c-4005-80f6-46e9d6f0ff49" />
+        <object name = "platform_184_808_edfc" id="8" coordinates="(184,808)" uid="12062d57-5c01-403d-a67f-c08ec207e6ef" />
+      </data>
+    </layer>
+    <layer name="layer_1000" width="224" height="848" z="1000">
+      <data>
+        <object name = "background_200_800_9e84" id="5" coordinates="(0,0)" uid="8e810253-076b-4a54-8ada-6c13bd9bb3aa" />
+      </data>
+    </layer>
+  </layers>
+  <game name="celeste">
+    <objectGroup name="background">
+      <object
+  spriteName="background_space"
+  type="background"
+  id="5"
+  spriteFile="background_space.xml"
+  hitBoxWidth="1"
+  hitBoxHeight="1"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="gravity" value="0.0"/>
+            <property name="jump_force" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks">
+      <object
+  spriteName="top_block2"
+  type="platform"
+  id="1"
+  spriteFile="top_block2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block3"
+  type="platform"
+  id="2"
+  spriteFile="top_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="center_block1"
+  type="platform"
+  id="3"
+  spriteFile="center_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="left_block"
+  type="platform"
+  id="4"
+  spriteFile="left_block.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="right_block"
+  type="platform"
+  id="6"
+  spriteFile="right_block.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block1"
+  type="platform"
+  id="8"
+  spriteFile="top_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="player">
+      <object
+  spriteName="madeline_walk_back"
+  type="player"
+  id="7"
+  spriteFile="madeline_walk_back.xml"
+  hitBoxWidth="7"
+  hitBoxHeight="7"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="jump,gravity,collide"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+    <event type="Input" id="jump">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="z"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="JUMP">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="JumpAmount" value="1.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="gravity">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="0.7"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="collide">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platform"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR">
+          <stringParameters>
+            <parameter name="type" value="platform"/>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+  </events>
+</map>

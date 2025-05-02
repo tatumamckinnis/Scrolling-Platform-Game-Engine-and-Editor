@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-500" minY="-1000" maxX="2000" maxY="1000">
+
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="00000000-0000-0000-0000-000000000001"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0" />
+      <property name="cameraOffsetX" value="300.0"/>
+      <property name="cameraOffsetY" value="500.0"/>
+    </doubleProperties>
+  </cameraData>
+
+  <layers>
+    <layer name="backGround" width="500" height="1000" z="10">
+      <data>
+        <object id="60" coordinates="(-1280,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000000"/>
+        <object id="60" coordinates="(-640,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000001"/>
+        <object id="60" coordinates="(0,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000002"/>
+        <object id="60" coordinates="(640,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000003"/>
+        <object id="60" coordinates="(1280,-6400)" uid="c1a11111-aaaa-bbbb-cccc-000000000004"/>
+        <object id="60" coordinates="(-1280,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000005"/>
+        <object id="60" coordinates="(-640,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000006"/>
+        <object id="60" coordinates="(0,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000007"/>
+        <object id="60" coordinates="(640,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000008"/>
+        <object id="60" coordinates="(1280,-5376)" uid="c1a11111-aaaa-bbbb-cccc-000000000009"/>
+        <object id="60" coordinates="(-1280,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000010"/>
+        <object id="60" coordinates="(-640,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000011"/>
+        <object id="60" coordinates="(0,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000012"/>
+        <object id="60" coordinates="(640,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000013"/>
+        <object id="60" coordinates="(1280,-4352)" uid="c1a11111-aaaa-bbbb-cccc-000000000014"/>
+        <object id="60" coordinates="(-1280,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000015"/>
+        <object id="60" coordinates="(-640,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000016"/>
+        <object id="60" coordinates="(0,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000017"/>
+        <object id="60" coordinates="(640,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000018"/>
+        <object id="60" coordinates="(1280,-3328)" uid="c1a11111-aaaa-bbbb-cccc-000000000019"/>
+        <object id="60" coordinates="(-1280,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000020"/>
+        <object id="60" coordinates="(-640,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000021"/>
+        <object id="60" coordinates="(0,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000022"/>
+        <object id="60" coordinates="(640,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000023"/>
+        <object id="60" coordinates="(1280,-2304)" uid="c1a11111-aaaa-bbbb-cccc-000000000024"/>
+        <object id="60" coordinates="(-1280,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000025"/>
+        <object id="60" coordinates="(-640,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000026"/>
+        <object id="60" coordinates="(0,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000027"/>
+        <object id="60" coordinates="(640,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000028"/>
+        <object id="60" coordinates="(1280,-1280)" uid="c1a11111-aaaa-bbbb-cccc-000000000029"/>
+        <object id="60" coordinates="(-1280,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000030"/>
+        <object id="60" coordinates="(-640,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000031"/>
+        <object id="60" coordinates="(0,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000032"/>
+        <object id="60" coordinates="(640,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000033"/>
+        <object id="60" coordinates="(1280,-256)" uid="c1a11111-aaaa-bbbb-cccc-000000000034"/>
+        <object id="60" coordinates="(-1280,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000035"/>
+        <object id="60" coordinates="(-640,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000036"/>
+        <object id="60" coordinates="(0,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000037"/>
+        <object id="60" coordinates="(640,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000038"/>
+        <object id="60" coordinates="(1280,768)" uid="c1a11111-aaaa-bbbb-cccc-000000000039"/>
+        <object id="60" coordinates="(-1280,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000040"/>
+        <object id="60" coordinates="(-640,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000041"/>
+        <object id="60" coordinates="(0,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000042"/>
+        <object id="60" coordinates="(640,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000043"/>
+        <object id="60" coordinates="(1280,1792)" uid="c1a11111-aaaa-bbbb-cccc-000000000044"/>
+        <object id="60" coordinates="(-1280,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000045"/>
+        <object id="60" coordinates="(-640,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000046"/>
+        <object id="60" coordinates="(0,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000047"/>
+        <object id="60" coordinates="(640,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000048"/>
+        <object id="60" coordinates="(1280,2816)" uid="c1a11111-aaaa-bbbb-cccc-000000000049"/>
+        <object id="60" coordinates="(-1280,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000050"/>
+        <object id="60" coordinates="(-640,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000051"/>
+        <object id="60" coordinates="(0,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000052"/>
+        <object id="60" coordinates="(640,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000053"/>
+        <object id="60" coordinates="(1280,3840)" uid="c1a11111-aaaa-bbbb-cccc-000000000054"/>
+        <object id="60" coordinates="(-1280,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000055"/>
+        <object id="60" coordinates="(-640,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000056"/>
+        <object id="60" coordinates="(0,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000057"/>
+        <object id="60" coordinates="(640,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000058"/>
+        <object id="60" coordinates="(1280,4864)" uid="c1a11111-aaaa-bbbb-cccc-000000000059"/>
+        <object id="60" coordinates="(-1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000060"/>
+        <object id="60" coordinates="(-640,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000061"/>
+        <object id="60" coordinates="(0,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000062"/>
+        <object id="60" coordinates="(640,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000063"/>
+        <object id="60" coordinates="(1280,5888)" uid="c1a11111-aaaa-bbbb-cccc-000000000064"/>
+
+
+
+      </data>
+    </layer>
+    <layer name="entities" width="2000" height="1000" z="1">
+      <data>
+        <object id="200" coordinates="(250,500)" uid="00000000-0000-0000-0000-000000000001"/>
+        <object id="202" coordinates="(250,650)" uid="f1010902-aaaa-bbbb-cccc-101010141014"/>
+        <object id="202" coordinates="(100,150)" uid="c1123322-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(200,400)" uid="c1323322-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(200,600)" uid="c1111111-aaaa-bbbb-cccc-111111111111"/>
+        <object id="201" coordinates="(400,750)" uid="c2222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="202" coordinates="(-400,-600), (-300,-500), (-200,-600), (-100,-800), (0,-400), (100,-400), (200,-200), (300,-350), (400,700), (500,0), (600,-1000), (700,-600), (800,-600), (900,-600), (1000,-600), (1100,-600), (1200,-600), (1300,-600), (1400,-600), (1500,-600), (1600,-600), (1700,-600), (1800,-600), (1900,-600), (2000,-600), (2100,-600), (2200,-600), (2300,-600), (2400,-600), (2500,-600)" uid="87dffe12-5987-44b6-b29c-fe2115fd0d33, 3954ac9a-474a-4769-8b35-808907ed6ea9, 56867857-e384-4a32-b480-5fb415be1b9c, bff94ee1-fca2-450f-996b-d3436d4c49d8, 8641c5c4-75ba-4b46-aa27-f2ea9f954c1b, c4437006-35c1-40cb-8bc8-9038e0bf2a27, 669b5884-b46d-415e-999a-d379db757fbf, 589d3d7f-13dc-4d90-8c88-756b5410f3f4, c4a426ff-5688-44b2-bfc6-b0b1db1ea61d, a412a580-f42a-41ff-90c6-d2d5d0ee213c, 7bb66324-f68e-4161-b3fe-7211ff6defd2, 13d20e45-a2b6-4c9d-9718-f3478dcd5e09, aba57fe5-7ef5-453d-a7ee-1f107f88043d, 22d3bac3-8006-43d9-b71e-32c3dd2c8a92, c54245dc-306f-445c-93bb-36352c817698, d951bcf2-9f40-4ca7-be54-9ec90043e939, 1be3e3d2-06fd-4614-9782-5f5d8b0ef56c, cd930313-db4d-4b5c-963d-f5e483ff4b88, ec96af1b-859d-4bb4-a3f4-c5d41dfe8095, ce209582-a042-4b11-a7e9-98ba2a3af2b1, a2db6b5e-a0a2-4fa7-a1cd-9065cebaaff3, 375c1694-51e8-41df-83c3-df5d4ed29d75, 558c1164-161d-4e5b-80d1-ed5462c7eb6c, 4afd1c30-c9e9-447c-abe4-c5acaf38c32c, fa3c6ba5-09f7-41ae-9100-5404580825f8, e5b217e9-9895-4437-807c-f8c084df8720, e556626f-ae7b-4fbe-9c24-1e2e77e8ad1a, 605b19df-b8a5-4f8d-9019-3b8cb668a0fd, d3f6e3e6-05ef-437c-ad96-6c8c15f8987c, 2a8c5cdd-6103-4c34-8b5f-908b2b3a2d63" />
+        <object id="201" coordinates="(600,900)" uid="c3333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="201" coordinates="(800,1100)" uid="c4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(250,1000)" uid="e4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="202" coordinates="(250,600)" uid="c1111111-aaaa-bbbb-cccc-111111311111"/>
+        <object id="202" coordinates="(405,600)" uid="c2222222-aaaa-bbcb-cccc-222222222222"/>
+        <object id="202" coordinates="(500,900)" uid="c4333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="202" coordinates="(500,1100)" uid="c5444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(150,600)" uid="f1111111-aaaa-bbbb-cccc-111111111111"/>
+        <object id="202" coordinates="(300,700)" uid="f2222222-aaaa-bbbb-cccc-222222222222"/>
+        <object id="201" coordinates="(500,800)" uid="f3333333-aaaa-bbbb-cccc-333333333333"/>
+        <object id="202" coordinates="(200,900)" uid="f4444444-aaaa-bbbb-cccc-444444444444"/>
+        <object id="201" coordinates="(400,1000)" uid="f5555555-aaaa-bbbb-cccc-555555555555"/>
+        <object id="202" coordinates="(100,1100)" uid="f6666666-aaaa-bbbb-cccc-666666666666"/>
+        <object id="201" coordinates="(600,1200)" uid="f7777777-aaaa-bbbb-cccc-777777777777"/>
+        <object id="202" coordinates="(350,1300)" uid="f8888888-aaaa-bbbb-cccc-888888888888"/>
+        <object id="201" coordinates="(250,1400)" uid="f9999999-aaaa-bbbb-cccc-999999999999"/>
+        <object id="202" coordinates="(450,1500)" uid="f1010101-aaaa-bbbb-cccc-101010101010"/>
+        <object id="201" coordinates="(200,1600)" uid="f1111112-aaaa-bbbb-cccc-111111111112"/>
+        <object id="202" coordinates="(500,1700)" uid="f2222223-aaaa-bbbb-cccc-222222222223"/>
+        <object id="201" coordinates="(150,1800)" uid="f3333334-aaaa-bbbb-cccc-333333333334"/>
+        <object id="202" coordinates="(350,1900)" uid="f4444445-aaaa-bbbb-cccc-444444444445"/>
+        <object id="201" coordinates="(550,2000)" uid="f5555556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,1000)" uid="f5555756-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(300,240)" uid="f5559556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(100,500)" uid="f5554556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(350,1000)" uid="f5559556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,900)" uid="f5553556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,150)" uid="f5550556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,-800)" uid="f5589556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(200,-1000)" uid="f5558556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,-650)" uid="f5355556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(550,-3000)" uid="f5525556-aaaa-bbbb-cccc-555555555556"/>
+        <object id="201" coordinates="(450,-4500)" uid="f5555556-aaaa-bbbb-cccc-553555555556"/>
+        <object id="202" coordinates="(250,2100)" uid="f6666667-aaaa-bbbb-cccc-666666666667"/>
+        <object id="201" coordinates="(400,2200)" uid="f7777778-aaaa-bbbb-cccc-777777777778"/>
+        <object id="202" coordinates="(600,2300)" uid="f8888889-aaaa-bbbb-cccc-888888888889"/>
+        <object id="201" coordinates="(300,2400)" uid="f9999990-aaaa-bbbb-cccc-999999999990"/>
+        <object id="201" coordinates="(150,2500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,0)" uid="f1010102-aaaa-bbbb-cccc-101010101014"/>
+        <object id="203" coordinates="(300,0)" uid="f1010102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="203" coordinates="(250,-1000)" uid="f1018102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="203" coordinates="(350,-2500)" uid="f1710102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="203" coordinates="(300,-1500)" uid="f1019102-aaaa-bbbb-cccc-101010101019"/>
+        <object id="203" coordinates="(300,0)" uid="f1010102-aaaa-bbbb-cccc-101090101019"/>
+        <object id="203" coordinates="(200,100)" uid="f1010892-aaaa-bbbb-cccc-101010101019"/>
+        <object id="203" coordinates="(100,700)" uid="f1010102-aaaa-bbbb-cccc-101010801019"/>
+        <object id="202" coordinates="(400,0)" uid="f1010102-aaaa-bbbb-cccc-101013141014"/>
+        <object id="202" coordinates="(100,150)" uid="c1123322-aaaa-bbbb-cccc-222262222222"/>
+        <object id="202" coordinates="(200,400)" uid="c1323322-aaaa-bbbb-cccc-242222222222"/>
+        <object id="203" coordinates="(300,1000)" uid="f1010102-aaaa-bbbb-cccc-101010701019"/>
+        <object id="202" coordinates="(400,0)" uid="f1010102-aaaa-bbbb-cccc-101010141014"/>
+        <object id="202" coordinates="(350,100)" uid="f1010102-aaaa-bbbb-cccc-101015101014"/>
+        <object id="202" coordinates="(150,-500)" uid="f1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(150,-400)" uid="e1010102-aaaa-bbbb-cccc-101010101012"/>
+        <object id="202" coordinates="(100,-200)" uid="f4010102-aaaa-bbbb-cccc-101010101012"/>
+
+      </data>
+    </layer>
+  </layers>
+
+  <game name="supermario">
+    <objectGroup name="players">
+      <object spriteName="big-mario-begin-run-left" type="player" id="200" spriteFile="big-mario-begin-run-left.xml" hitBoxWidth="50"
+        hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
+        eventIDs="1,2,3,4,5,6,7,9,10" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives"/>
+        <properties>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="lives" value="3"/>
+            <property name="score" value="0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object spriteName="coin-sprite" type="coin" id="201" spriteFile="coin-sprite.xml" hitBoxWidth="50"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="8" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+
+
+  <game name="doodlejump">
+    <objectGroup name="entities">
+
+      <object spriteName="platform-light-blue" type="platform" id="202" spriteFile="blueplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+      <object spriteName="platform-green" type="platform" id="203" spriteFile="greenplatform.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+    <objectGroup name="backgrounds">
+      <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
+        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+  </game>
+
+  <events>
+    <event type="input" id="1">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="SPACE"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="JUMP">
+          <doubleParameters>
+            <parameter name="JumpAmount" value="80"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="2">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="3.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="3">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platform"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR"/>
+      </outcomes>
+    </event>
+
+    <event type="input" id="4">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="a"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_LEFT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="input" id="5">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="d"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="6">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME">
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="7">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_Y">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="y" value="5000"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="lives"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-1"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="TELEPORT_TO_POINT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x" value="250"/>
+            <parameter name="y" value="500"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="8">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="player"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DESTROY_OBJECT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="9">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="coin"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="score"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+
+    <event type="input" id="10">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="w"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="Sensitivity" value="0.5"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="JUMP">
+          <doubleParameters>
+            <parameter name="JumpAmount" value="100"/>
+          </doubleParameters>
+          <stringParameters>
+            <parameter name="jumpType" value="Floaty"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+  </events>
+</map>

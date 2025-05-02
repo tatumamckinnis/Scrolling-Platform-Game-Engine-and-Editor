@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for top_block1 (untitled_game)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="top_block1" x="1" y="10" width="8" height="8">
+    <frames>
+      <frame name="top_block1" x="1" y="10" width="8" height="8"/>
+      <frame name="grass2" x="19" y="1" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
