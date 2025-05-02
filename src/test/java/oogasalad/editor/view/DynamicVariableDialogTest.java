@@ -1,4 +1,3 @@
-// oogasalad_team03/src/test/java/oogasalad/editor/view/DynamicVariableDialogTest.java
 package oogasalad.editor.view;
 
 import javafx.application.Platform;
@@ -36,6 +35,7 @@ class DynamicVariableDialogTest {
   private DynamicVariableDialog dialog;
   private CompletableFuture<Optional<DynamicVariable>> dialogResultFuture;
 
+
   private static final String KEY_DIALOG_ADD_VAR_TITLE = "dialogAddVarTitle";
   private static final String KEY_DIALOG_ADD_BUTTON = "dialogAddButton";
   private static final String KEY_DIALOG_VAR_NAME = "dialogVarName";
@@ -44,10 +44,12 @@ class DynamicVariableDialogTest {
   private static final String KEY_DIALOG_VAR_DESC = "dialogVarDesc";
   private static final String KEY_ERROR_INVALID_INPUT_TITLE = "errorInvalidInputTitle";
 
+
   private static final String ADD_BUTTON_TEXT = "Add";
 
   @Start
   private void start(Stage stage) {
+
     mockUiBundle = Mockito.mock(ResourceBundle.class);
     when(mockUiBundle.getString(KEY_DIALOG_ADD_VAR_TITLE)).thenReturn("Test Add Variable");
     when(mockUiBundle.getString(KEY_DIALOG_ADD_BUTTON)).thenReturn(ADD_BUTTON_TEXT);
@@ -57,10 +59,15 @@ class DynamicVariableDialogTest {
     when(mockUiBundle.getString(KEY_DIALOG_VAR_DESC)).thenReturn("Description");
     when(mockUiBundle.getString(KEY_ERROR_INVALID_INPUT_TITLE)).thenReturn("Invalid Input");
 
+
+
+
     dialog = new DynamicVariableDialog(mockUiBundle);
+
 
     stage.setScene(new Scene(new StackPane(), 100, 100));
     stage.show();
+
 
     dialogResultFuture = new CompletableFuture<>();
     Platform.runLater(() -> {
@@ -73,31 +80,40 @@ class DynamicVariableDialogTest {
 
   @Test
   void testDialogElementsExistAndAddButtonInitiallyDisabled(FxRobot robot) {
+
     verifyThat("#varNameField", TextInputControlMatchers.hasText(""));
     verifyThat("#varTypeCombo", (ComboBox<String> c) -> c.getValue() != null);
     verifyThat("#varValueField", TextInputControlMatchers.hasText(""));
     verifyThat("#varDescField", TextInputControlMatchers.hasText(""));
+
     verifyThat(ADD_BUTTON_TEXT, isDisabled());
   }
 
   @Test
   void testAddButtonEnablesAfterFillingRequiredFields(FxRobot robot) {
+
     verifyThat(ADD_BUTTON_TEXT, isDisabled());
+
     robot.clickOn("#varNameField").write("myVar");
     robot.clickOn("#varTypeCombo").clickOn("string");
     robot.clickOn("#varValueField").write("initial");
+
     verifyThat(ADD_BUTTON_TEXT, isEnabled());
   }
 
   @Test
   void testCreateVariableSuccessfully(FxRobot robot) throws Exception {
+
     robot.clickOn("#varNameField").write("score");
     robot.clickOn("#varTypeCombo").clickOn("int");
     robot.clickOn("#varValueField").write("100");
     robot.clickOn("#varDescField").write("Player score");
+
     robot.clickOn(ADD_BUTTON_TEXT);
 
+
     Optional<DynamicVariable> result = waitForResult(dialogResultFuture);
+
 
     assertTrue(result.isPresent(), "Dialog should return a variable");
     DynamicVariable variable = result.get();
@@ -109,24 +125,32 @@ class DynamicVariableDialogTest {
 
   @Test
   void testCancelButtonReturnsEmptyOptional(FxRobot robot) throws Exception {
+
     robot.clickOn("Cancel");
+
     Optional<DynamicVariable> result = waitForResult(dialogResultFuture);
+
     assertTrue(result.isEmpty(), "Dialog should return empty optional on Cancel");
   }
 
   @Test
   void testAddButtonDisabledIfNameCleared(FxRobot robot) {
+
     robot.clickOn("#varNameField").write("myVar");
     robot.clickOn("#varTypeCombo").clickOn("string");
     robot.clickOn("#varValueField").write("initial");
     verifyThat(ADD_BUTTON_TEXT, isEnabled());
 
+
     robot.clickOn("#varNameField").eraseText(5);
+
     verifyThat(ADD_BUTTON_TEXT, isDisabled());
   }
 
+
   private <T> T waitForResult(CompletableFuture<T> future) throws Exception {
     try {
+
       return future.get(5, TimeUnit.SECONDS);
     } catch (TimeoutException e) {
       fail("Dialog did not return a result within the timeout period.");
