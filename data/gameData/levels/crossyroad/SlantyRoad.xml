@@ -20,24 +20,25 @@ interact with each other -->
   <layers>
     <layer name="backGround" width="740" height="740" z="10">
       <data>
-        <object id="60" coordinates="(-740,-740),(0,-740), (740,-740), (1480,-740), (2220,-740), (2960,-740), (3700,-740), (4440,-740), (5180,-740), (5920,-740)" uid="129acc3a-3dc4-49c9-861e-a86cfc67c605, 6fd71b4d-f513-4109-982d-63c229489ac7, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, f0410215-1c3b-4626-a24f-4d8fd707955e, 15fbb26d-974b-45c3-b1c6-376865be355a, 8757d18e-661e-4802-b8a4-c46b157d0bb6, cf209a9d-d4cc-4a23-9038-8a59f02a2990, f8ef7eb1-9485-4742-a20f-1fa8292a3804, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, dbd01b4f-393e-4de9-989b-11318d72247a" />
-        <object id="60" coordinates="(-740,0),(0,0), (740,0), (1480,0), (2220,0), (2960,0), (3700,0), (4440,0), (5180,0), (5920,0)" uid="66991927-aa5b-4787-ae13-4a0950d14090, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, d2134bc5-8682-4589-a2ef-8c750860b8b3, c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, ff01ac6b-8c52-444d-ae78-bc46e6432a90, a692f84b-b271-468c-8bae-7535604be673, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 646d4366-1aae-41b0-9c57-0c6840c2f049" />
+        <object id="60" coordinates="(-740,-740), (0,-740), (740,-740), (1480,-740), (2220,-740), (2960,-740), (3700,-740), (4440,-740), (5180,-740), (5920,-740)" uid="129acc3a-3dc4-49c9-861e-a86cfc67c605, 6fd71b4d-f513-4109-982d-63c229489ac7, 4c21d376-d63b-48b0-bc95-eaa004d0d48b, f0410215-1c3b-4626-a24f-4d8fd707955e, 15fbb26d-974b-45c3-b1c6-376865be355a, 8757d18e-661e-4802-b8a4-c46b157d0bb6, cf209a9d-d4cc-4a23-9038-8a59f02a2990, f8ef7eb1-9485-4742-a20f-1fa8292a3804, a6b6224b-1980-4f3e-93d9-57c1bd0f5bdb, dbd01b4f-393e-4de9-989b-11318d72247a" />
+        <object id="60" coordinates="(-740,0), (0,0), (740,0), (1480,0), (2220,0), (2960,0), (3700,0), (4440,0), (5180,0), (5920,0)" uid="66991927-aa5b-4787-ae13-4a0950d14090, 53cff639-8fa6-4f4c-84b7-108ce2a98d80, d2134bc5-8682-4589-a2ef-8c750860b8b3, c6292ba3-a0a1-4a23-9e80-f228ac94f1f4, 7e8412c4-2e92-4847-9ffa-2c4c5cfd0fc5, ff01ac6b-8c52-444d-ae78-bc46e6432a90, a692f84b-b271-468c-8bae-7535604be673, 8a6ed91b-6287-4d19-b392-cbcc1eedff1c, 1b380ffa-0f0b-435f-bfa4-0d321f7ef412, 646d4366-1aae-41b0-9c57-0c6840c2f049" />
       </data>
     </layer>
     <layer name="foreground" width="4000" height="500" z="1">
       <data>
-        <object id="1" coordinates="(0,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5"/>
-        <object id="2" coordinates="(480,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397"/>
-        <object id="3" coordinates="(960,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d"/>
-        <object id="4" coordinates="(1440,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73"/>
-        <object id="5" coordinates="(1920,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda"/>
+        <object id="1" coordinates="(0,500), (2400,500)" uid="d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a5, d3fa8312-f7db-4fa3-b0d9-0b4a016bc2a6"/>
+        <object id="2" coordinates="(480,500), (2880,500)" uid="3f780051-ec51-4c02-bc98-82d450d12397, 3f780051-ec51-4c02-bc98-82d450d12398"/>
+        <object id="3" coordinates="(960,500), (3360,500)" uid="65cc5909-e1ed-4698-b6eb-51310dd5c11d, 65cc5909-e1ed-4698-b6eb-51310dd5c11e"/>
+        <object id="4" coordinates="(1440,500), (3840,500)" uid="e956d6f6-c520-4374-8128-17e284c05d73, e956d6f6-c520-4374-8128-17e284c05d74"/>
+        <object id="5" coordinates="(1920,500), (4320,500)" uid="a17092b8-3839-44ac-b9bd-f9f15d620cda, a17092b8-3839-44ac-b9bd-f9f15d620cdb"/>
       </data>
     </layer>
     <layer name="entities" width="4000" height="500" z="1">
       <data>
-        <object id="12" coordinates="(319,400), (558,400), (829,400), (1030,400), (1316,400), (1597,400), (1886,400), (2159,400), (2404,400), (2639,400)" uid="8764685f-8329-4a9e-9329-aa1aa0dbff30, 7952dada-1d3c-4af6-a668-11f2688e005a, b9f907db-1fa4-4144-bdc4-f8c6c25dfa1b, f9fbde62-4b21-4e7e-ba0d-ca52027d68e5, 9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd, 80f45a6d-f145-4d73-a81b-57f91af8ce88, 3337c661-e1a1-46e1-b48b-082a74046d4c" />
+        <object id="12" coordinates="(319,400), (829,400), (1597,400), (2159,400)" uid="9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd" />
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
-        <object id="14" coordinates="(400,400), (616,400), (616,400), (891,400), (891,400), (1097,400), (1097,400), (1298,400), (1298,400), (1546,400)" uid="dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
+        <object id="14" coordinates="(616,400), (1097,400), (1298,400), (1546,400)" uid="0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
+        <object id="15" coordinates="(2639,400)" uid="80f45a6d-f145-4d73-a81b-57f91af8ce88"/>
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
@@ -50,8 +51,8 @@ interact with each other -->
       <!-- Objects have spriteName, type, gid, and the spriteFile the spriteName is used to read the spriteFile-->
       <!-- Objects should also have a defined hit box-->
       <object spriteName="chicken" type="player" id="111" spriteFile="chicken.xml" hitBoxWidth="57"
-        hitBoxHeight="90" hitBoxShape="SQUARE" spriteDx="10" spriteDy="3" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,69,87"
-        velocityX="0" velocityY="0" rotation="0" flipped="false">
+              hitBoxHeight="90" hitBoxShape="SQUARE" spriteDx="0" spriteDy="0" eventIDs="20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,69,87"
+              velocityX="15" velocityY="5" rotation="0" flipped="false">
         <!-- Properties are categorized by object handler: physics, collision, input, sprite, ai, and maybe event -->
         <displayedProperties propertyList="score,lives"/>
         <properties>
@@ -64,7 +65,7 @@ interact with each other -->
         </properties>
       </object>
       <object spriteName="small-car" type="platform" id="12" spriteFile="small-car.xml" hitBoxWidth="77"
-        hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
+              hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false">
         <properties>
           <stringProperties>
           </stringProperties>
@@ -72,21 +73,24 @@ interact with each other -->
           </doubleProperties>
         </properties>
       </object>
-      <object spriteName="lightning-mcqueen" type="enemy" id="14" spriteFile="lightning-mcqueen.xml" hitBoxWidth="78"
-        hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      <object spriteName="lightning-mcqueen" type="enemy" id="14" spriteFile="lightning-mcqueen.xml" hitBoxWidth="25"
+              hitBoxHeight="25" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
+      </object>
+      <object spriteName="truck" type="platform" id="15" spriteFile="truck.xml" hitBoxWidth="128"
+              hitBoxHeight="90" spriteDx="0" spriteDy="0" eventIDs="24" velocityX="0" velocityY="0" rotation="0" flipped="false">
       </object>
     </objectGroup>
     <objectGroup name="blocks">
       <object type="platform" id="1" spriteFile="track.xml" spriteName="track" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+              hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
       <object type="platform" id="2" spriteFile="track.xml" spriteName="track" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+              hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
       <object type="platform" id="3" spriteFile="track.xml" spriteName="track" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+              hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
       <object type="platform" id="4" spriteFile="track.xml" spriteName="track" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+              hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
       <object type="platform" id="5" spriteFile="track.xml" spriteName="track" hitBoxWidth="480"
-        hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
+              hitBoxHeight="10" spriteDx="0" spriteDy="-10" eventIDs="10" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
     </objectGroup>
     <objectGroup name="backgrounds">
       <object type="" id="60" spriteFile="backgrounds.xml" spriteName="base-background" hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0" rotation="0" flipped="false"/>
@@ -132,14 +136,17 @@ interact with each other -->
     <event type="physics" id="21">
       <conditions>
         <conditionSet>
-          <condition name="TRUE">
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="d"/>
+            </stringParameters>
           </condition>
         </conditionSet>
       </conditions>
       <outcomes>
         <outcome name="MOVE_RIGHT">
           <doubleParameters>
-            <parameter name="amount" value="5" />
+            <parameter name="amount" value="10" />
           </doubleParameters>
         </outcome>
         <outcome name="CHANGE_VAR">
@@ -167,7 +174,7 @@ interact with each other -->
       <outcomes>
         <outcome name="APPLY_GRAVITY">
           <doubleParameters>
-            <parameter name="ApplyGravityAmount" value="15.0"/>
+            <parameter name="ApplyGravityAmount" value="12.0"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -270,7 +277,7 @@ interact with each other -->
         <conditionSet>
           <condition name="AT_OR_BEYOND_X">
             <doubleParameters>
-              <parameter name="x" value="2000"/>
+              <parameter name="x" value="3500"/>
             </doubleParameters>
           </condition>
         </conditionSet>
