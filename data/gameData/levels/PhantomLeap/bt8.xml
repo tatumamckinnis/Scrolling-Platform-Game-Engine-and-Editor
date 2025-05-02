@@ -17,7 +17,7 @@
         <object name = "White Platform_720_464_dd2d" id="8" coordinates="(720,464), (944,464)" uid="23437893-2925-4fbe-adcf-195e98c660f6, 4f864b0d-c735-441c-a9a4-7def1dfe4ce6" />
         <object name = "Mario_64_64_dc5e" id="9" coordinates="(720,400)" uid="9c8c2f22-a7d8-42d8-9ed1-f3b78d2030f4" />
         <object name = "Player_1664_368_5727" id="5" coordinates="(1664,368), (1968,416), (1952,176)" uid="38361c7c-0a2e-4fff-a7fe-0c4079dce733, 5565585a-9561-42d6-a79d-16d205c56ecf, 45d6b22c-c08d-4acc-a433-d8df0f7f0320" />
-        <object name = "Question Block_1536_384_3a61" id="6" coordinates="(1536,384), (1440,240), (1856,320)" uid="3f7f73f3-f4f0-4300-9462-ea2cb946c8b8, 600ab5ce-2a90-4635-8f5c-93efac84ca19, 10b1a425-4914-4179-8b1f-c000356c41d0" />
+        <object name = "Question Block_1536_384_3a61" id="3" coordinates="(1536,384), (1440,240), (1856,320)" uid="3f7f73f3-f4f0-4300-9462-ea2cb946c8b8, 600ab5ce-2a90-4635-8f5c-93efac84ca19, 10b1a425-4914-4179-8b1f-c000356c41d0" />
         <object name = "White Platform_1968_336_acf4" id="7" coordinates="(1968,336), (1776,448), (1440,448)" uid="678441c5-ffb4-4ed6-b291-6e8447c8dd9b, 56120fae-bcb0-45b6-b8ec-07797788b566, 0970dd8a-7ba7-449f-9e18-471d1d1d8913" />
       </data>
     </layer>
@@ -63,8 +63,8 @@
   type="blocks"
   id="1"
   spriteFile="overworld-brick.xml"
-  hitBoxWidth="16"
-  hitBoxHeight="16"
+  hitBoxWidth="100"
+  hitBoxHeight="100"
   hitBoxShape="RECTANGLE"
   spriteDx="0"
   spriteDy="0"
@@ -271,7 +271,7 @@
   hitBoxShape="RECTANGLE"
   spriteDx="0"
   spriteDy="0"
-  eventIDs=""
+  eventIDs="220,1"
   velocityX="0.00"
   velocityY="0.00"
   rotation="0.00">
@@ -751,6 +751,22 @@
           </doubleParameters>
         </outcome>
 
+      </outcomes>
+    </event>
+    <event type="input" id="220">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="walk"/>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
       </outcomes>
     </event>
   </events>
