@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for spike (geometrydash)
+-->
+<spriteFile imagePath="geometrydash-sprites.png">
+  <sprite name="spike" x="290" y="0" width="45" height="52">
+    <frames>
+      <frame name="spike" x="290" y="0" width="45" height="52"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

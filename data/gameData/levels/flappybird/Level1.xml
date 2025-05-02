@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="-500" minY="-1000" maxX="2000" maxY="1000">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="00000000-0000-0000-0000-000000000001"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="1.0"/>
+      <property name="cameraOffsetX" value="450.0"/>
+      <property name="cameraOffsetY" value="300.0"/>
+    </doubleProperties>
+  </cameraData>
+
+
+  <layers>
+    <layer name="backGround" width="500" height="1000" z="10">
+      <data>
+      <object id="60" coordinates="(92,0), (684,0), (1276,0), (1868,0), (2460,0), (3052,0), (3644,0), (4236,0), (4828,0), (5420,0), (6012,0), (6604,0), (7196,0), (7788,0), (8380,0), (8972,0), (9564,0), (10156,0), (10748,0), (11340,0)" uid="ded02bff-854b-4336-92c9-a3e116c56702, da714bc3-250b-4155-a8cc-df13c33d8b1a, 9cdf0f43-f7e2-4898-abd1-b373348d1493, de4e3350-f872-4868-9e94-78a3fb28835e, a435bb42-b224-4ec9-b606-d97fd857bee3, 6667d3ad-2eba-494d-8893-a31c7dd1e7ee, 49cc8685-1cbf-4ece-b2bb-0d54bc5ddf86, 6da1e670-9590-439f-9233-75a6f1e6a98b, 67099ae8-eac4-43cb-b467-c22e7b20b7e0, 9b288e1a-9845-4f2e-9561-abe0566499ba, add68509-5898-4833-a39c-32ce5e5f901a, 69904279-16bb-4a30-aad9-6e8c6fe2a6fa, ff5bea38-66e0-4472-8f8c-5fe70e7d22a5, 1a08e42c-0bd9-431e-b253-742d7b739b16, 4ccca3c1-9349-4f8f-981e-cdf7bb5d977c, 9c2b2c61-dd7c-4197-88be-0fbbb180a94c, a15cf507-9a1f-476c-97a2-478424da6a3e, 5d44c473-7abf-46b4-9aee-d2b5debb6fce, 0a2242d4-2766-4580-9f2c-63210068555b, 0e3244fa-a386-4920-a261-17e3d221d3aa" />
+      </data>
+    </layer>
+    <layer name="entities" width="2000" height="1000" z="1">
+      <data>
+        <object id="200" coordinates="(250,500)" uid="00000000-0000-0000-0000-000000000001"/>
+        <object id="201" coordinates="(-450,0), (-400,0), (-350,0), (-300,0), (-250,0), (-200,0), (-150,0), (-100,0), (-50,0), (0,0), (50,0), (100,0), (150,0), (200,0), (250,0), (300,0), (350,0), (400,0), (450,0), (500,0), (550,0), (600,0), (650,0), (700,0), (750,0), (800,0), (850,0), (900,0), (950,0), (1000,0), (1050,0), (1100,0), (1150,0), (1200,0), (1250,0), (1300,0), (1350,0), (1400,0), (1450,0), (1500,0), (1550,0), (1600,0), (1650,0), (1700,0), (1750,0), (1800,0), (1850,0), (1900,0), (1950,0), (2000,0)" uid="0e5beaa9-a786-4842-b8a6-cecfdc6d450f, a15ac91f-be99-420d-9c10-145226b13a21, f30b7c4f-d6d2-4b7a-9f11-f77f91437088, 72e15d7e-9bc1-49ef-b30d-9fca53ba2f85, cc292ef4-bd32-4e1c-b39a-4053f7d76eae, 18b3f69e-f133-4013-8cf3-92489581d3d7, 686bc6a9-d1a5-45a6-afda-d4397a83b036, 7674da2e-c55d-46d5-8ec7-fb36a42d3a2f, 7777474a-f828-4fce-93a6-00426c73d7ec, f5442844-0ace-4286-af6a-e9c43d290fa6, bd555c4c-1d11-4328-9749-ae016da70197, 0a617546-863e-4b6c-955c-a9621a8a9a58, 1ba4feb7-7920-404c-9d48-4dec505016c8, fd7c83b9-c75e-4250-975e-b93b8a3edc17, 579aea7b-b2b4-440a-9bb7-e41bbe4463ca, 267783b2-e27f-4053-a096-510feec6b3fe, b38fe65b-51fe-4a91-a5de-fe8a0a7959f9, 8055d8d6-6429-46b8-a579-14579675eb2a, cb9960c1-cd1d-4077-9c98-81fdc685f415, ac8cf4f0-71c4-4956-96fd-a7d2a090884e, e9e47435-d8f8-497b-9a99-ae1c8174ac0b, 894b1ca4-a150-4797-ae3b-1cb361120e15, 3490d49f-cdd4-4e9e-89d6-4f2335a0be5f, 589148e9-7c46-41c7-b8e6-dd4e94c0238d, 87a9a253-1a35-4c21-9a50-70428da429e1, 33434156-0b7f-4e92-94c7-2145333f3b99, 33d5eb5e-b15a-4460-b05e-03b4cd32cc42, 531b0841-c1b8-4e4e-af05-17c210b1a4e8, c422f95a-0fa1-4755-b2fa-0106665840c8, 8eb8b91f-8fa2-414e-b606-b87a008b316e, a7262077-d706-482a-869d-74c8dddfd96a, c38c9d50-f43f-4d0a-8b36-3fb3267fdb22, 1d18ce96-e62e-4cd6-b18f-870852ff903f, 9003d43f-c2a6-4594-8e6d-a37a4aca8e8b, c5685d59-e90a-49e4-a8a8-0118e08e3f4d, bba19ed3-c8e0-4572-8afe-f88e68a61533, d0499db0-0fcc-4d7d-be16-245890308974, 4a02cede-209e-4181-aacf-f592bb0f07ea, 1964ae7e-fe28-4bb8-8350-c8bca716c485, 0cb19418-f862-49a4-84f5-1c001b4f988c, db17f61d-533b-465b-91bc-052769b58ba0, 360aa606-1028-4358-aa7f-dd0905831e87, de78a269-236a-4e89-b573-2aaee1716cac, 8fe7ac52-6a76-4485-bba5-10dbed8bdf51, 949f9dbd-f306-4c7a-9e9f-5067049bbf9d, 7ea27e9a-6459-4eba-8b70-1f5b6fc7ab0a, 11d82b75-7927-4a1d-91ef-0c2abef047c3, 62c35194-2599-4a8d-a3ba-0ddfba691c10, adc66920-bf98-4404-b66e-d82e24b1a4a4, 7ace2942-df59-4bd2-8281-72cc99dcd7e2" />      </data>
+    </layer>
+  </layers>
+
+  <game name="flappybird">
+    <objectGroup name="backgrounds">
+      <object type="background" id="60" spriteFile="day-scene.xml" spriteName="day-scene"
+        hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0" rotation="0" flipped="false">
+      </object>
+    </objectGroup>
+
+
+    <objectGroup name="entities">
+      <object spriteName="tube-high" type="platform" id="201" spriteFile="tube-high.xml"
+        hitBoxWidth="70" hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+      <object spriteName="tube-low" type="platform" id="202"
+        spriteFile="tube-low.xml" hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+  </game>
+
+
+  <game name="doodlejump">
+    <objectGroup name="entities">
+
+
+      <object spriteName="platform-weak" type="platform" id="203" spriteFile="weakplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+
+    <objectGroup name="checkpoints">
+      <object spriteName="blackhole" type="checkpoint" id="1" spriteFile="blackhole.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+
+    <objectGroup name="players">
+      <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
+        eventIDs="1,3,4,5,6,7,8,10,11" velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives,distance"/>
+        <properties>
+          <stringProperties/>
+          <doubleProperties>
+            <property name="lives" value="3"/>
+            <property name="score" value="0"/>
+            <property name="distance" value="0"/>
+            <property name="maxDist" value="0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+
+  </game>
+
+
+  <events>
+    <event type="input" id="1">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="SPACE"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="4.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <event type="physics" id="2">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="2.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="3">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platform"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR"/>
+      </outcomes>
+    </event>
+
+
+    <event type="input" id="4">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="a"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_LEFT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="SET_BASE_FRAME">
+          <stringParameters>
+            <parameter name="frameName" value="doodle_left"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="input" id="5">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="d"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="SET_BASE_FRAME">
+          <stringParameters>
+            <parameter name="frameName" value="doodle_right"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="6">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="lives"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="LOSE_GAME">
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="7">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_Y">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="y" value="5000"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="lives"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-1"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="TELEPORT_TO_POINT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x" value="250"/>
+            <parameter name="y" value="500"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="8">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_Y">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="y" value="500"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="score"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value=".1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="9">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="player"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="DESTROY_OBJECT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="input" id="10">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RUN_OBJECT_ANIMATIONS">
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="11">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="checkpoint"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SELECT_LEVEL">
+          <stringParameters>
+            <parameter name="levelPath" value="data/gameData/levels/doodlejump/Level2.xml"/>
+          </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+  </events>
+</map>

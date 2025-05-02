@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<spriteFile height="512" imagePath="flappy-bird-sprites.png" width="512">
+    <sprite height="255" name="flappy-day-scene" width="143" x="0" y="0"/>
+    <sprite height="255" name="flappy-night-scene" width="143" x="146" y="0"/>
+    <sprite height="160" name="tube-high" width="25" x="57" y="324"/>
+    <sprite height="162" name="tube-low" width="25" x="85" y="323"/>
+    <sprite height="20" name="flappy-bird-player" width="22" x="0" y="489"/>
+</spriteFile>

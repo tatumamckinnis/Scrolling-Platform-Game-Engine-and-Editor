@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-generated sprite sheet for track (crossyroad)
+-->
+<spriteFile imagePath="crossyroad-track.png">
+    <sprite name="track" x="0" y="0" width="600" height="49">
+        <frames>
+            <frame name="track" x="0" y="0" width="600" height="49"/>
+        </frames>
+        <animations>
+        </animations>
+    </sprite>
+</spriteFile>

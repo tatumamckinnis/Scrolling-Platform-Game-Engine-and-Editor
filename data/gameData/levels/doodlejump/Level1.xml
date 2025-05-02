@@ -87,6 +87,15 @@
     <layer name="entities" width="2000" height="1000" z="1">
       <data>
         <object id="1" coordinates="(250,-4500)" uid="f1460102-aaaa-bbbb-cccc-101015101020"/>
+        <object id="2" coordinates="(350,4800)" uid="f1010100-aaaa-bbbb-cccc-101015101014"/>
+        <object id="6" coordinates="(345,-20)" uid="f1078100-aaaa-bbbb-cccc-101015101014"/>
+        <object id="5" coordinates="(-450,550), (-400,3600), (100,2200), (123,-900), (-250,0)"
+          uid="542f5880-6e08-46e7-9e0d-2be7619ac248, fffca796-ea41-4538-9c58-0622e260d5ac, b03666e6-fb07-4f31-9924-7c9b92c2332f, 51b61725-ba49-4a99-8dec-7fbbb773bb4b, a8fe4867-b4c3-43a9-aaf4-7dedc1b9d702"/>
+        <object id="7" coordinates="(250,-300)" uid="00000000-0000-0000-0000-000000500001"/>
+        <object id="7" coordinates="(100,0)" uid="00000000-0000-0000-0000-000000600001"/>
+        <object id="7" coordinates="(200,-3000)" uid="00200000-0000-0000-0000-000000600001"/>
+        <object id="7" coordinates="(300,-500)" uid="00000000-0000-0000-0090-000000600001"/>
+        ç
         <object id="200" coordinates="(250,4700)" uid="00000000-0000-0000-0000-000000000001"/>
         <object id="203" coordinates="(200,600)" uid="c1111111-aaaa-bbbb-cccc-111111111111"/>
         <object id="201" coordinates="(250,4900)" uid="c1342222-aaaa-bbbb-cccc-222222222222"/>
@@ -214,6 +223,27 @@
           <doubleProperties/>
         </properties>
       </object>
+
+
+      <object spriteName="platform-weak" type="platform" id="7" spriteFile="weakplatform.xml"
+        hitBoxWidth="70"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9,13" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+
+      <object spriteName="spring-loaded" type="spring" id="6" spriteFile="spring.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="40" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
     </objectGroup>
 
 
@@ -230,19 +260,33 @@
     </objectGroup>
 
 
+    <objectGroup name="powerups">
+      <object spriteName="doodlejump-rocket-0.png" type="powerups" id="2"
+        spriteFile="doodlejump-rocket.xml"
+        hitBoxWidth="80" hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
+        velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
+    </objectGroup>
+
+
     <objectGroup name="players">
       <object spriteName="DoodlePlayer" type="player" id="200" spriteFile="doodlejump-player.xml"
         hitBoxWidth="50"
         hitBoxHeight="50" hitBoxShape="RECTANGLE" spriteDx="0" spriteDy="0"
-        eventIDs="1,2,3,4,5,6,7,8,10,11" velocityX="0" velocityY="0" rotation="0" flipped="false">
-        <displayedProperties propertyList="score,lives,distance"/>
+        eventIDs="1,2,3,4,5,6,7,8,10,11,12,evt-trigger-rocket,evt-decrement-rocket,evt-apply-rocket,evt-reset-rocket"
+        velocityX="0" velocityY="0" rotation="0" flipped="false">
+        <displayedProperties propertyList="score,lives"/>
         <properties>
           <stringProperties/>
           <doubleProperties>
+            <property name="rocket_duration" value="0"/>
             <property name="lives" value="3"/>
             <property name="score" value="0"/>
-            <property name="distance" value="0"/>
-            <property name="maxDist" value="0"/>
           </doubleProperties>
         </properties>
       </object>
@@ -253,6 +297,21 @@
       <object type="background" id="60" spriteFile="backgrounds.xml" spriteName="base-background"
         hitBoxWidth="1" hitBoxHeight="1" spriteDx="0" spriteDy="0" eventIDs="" velocityX="0"
         velocityY="0" rotation="0" flipped="false"/>
+    </objectGroup>
+  </game>
+
+
+  <game name="supermario">
+    <objectGroup name="collectable">
+      <object spriteName="coin-sprite" type="coin" id="5" spriteFile="coin-sprite.xml"
+        hitBoxWidth="50"
+        hitBoxHeight="20" spriteDx="0" spriteDy="0" eventIDs="9" velocityX="0" velocityY="0"
+        rotation="0" flipped="false">
+        <properties>
+          <stringProperties/>
+          <doubleProperties/>
+        </properties>
+      </object>
     </objectGroup>
   </game>
 
@@ -415,11 +474,11 @@
     <event type="physics" id="8">
       <conditions>
         <conditionSet>
-          <condition name="AT_OR_BEYOND_Y">
+          <condition name="COLLIDED_WITH_GROUP">
             <stringParameters>
+              <parameter name="group" value="coin"/>
             </stringParameters>
             <doubleParameters>
-              <parameter name="y" value="500"/>
             </doubleParameters>
           </condition>
         </conditionSet>
@@ -430,7 +489,7 @@
             <parameter name="variable" value="score"/>
           </stringParameters>
           <doubleParameters>
-            <parameter name="delta" value=".1"/>
+            <parameter name="delta" value="10.0"/>
           </doubleParameters>
         </outcome>
       </outcomes>
@@ -485,10 +544,150 @@
         </conditionSet>
       </conditions>
       <outcomes>
-        <outcome name="SELECT_LEVEL">
+        <outcome name="WIN_GAME">
           <stringParameters>
-            <parameter name="levelPath" value="data/gameData/levels/doodlejump/Level2.xml"/>
           </stringParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="evt-trigger-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="powerups"/>
+            </stringParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="3"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 3️⃣ Event: every frame/tick, decrement rocket_duration by 0.2 -->
+    <event type="physics" id="evt-decrement-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE"/>  <!-- always fires -->
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-0.2"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 4️⃣ Event: while rocket_duration > 0, apply the rocket boost -->
+    <event type="physics" id="evt-apply-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="GREATER_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="rocket_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="ROCKET">
+          <doubleParameters>
+            <parameter name="amount" value="10"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+    <!-- 5️⃣ (Optional) Event: when rocket_duration falls below zero, reset any flags -->
+    <event type="physics" id="evt-reset-rocket">
+      <conditions>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="rocket_duration"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <!-- e.g. turn off any visual effect or restore normal max jump -->
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="rocket_duration"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="0"/>
+          </doubleParameters>
+        </outcome>
+        <!-- if you had a flag you could also turn it off here -->
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="12">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="spring"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RELATIVE_TELEPORT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x_offset" value="0"/>
+            <parameter name="y_offset" value="300"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+
+
+    <event type="physics" id="13">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PATROL">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="MovementAmount" value="4.0"/>
+          </doubleParameters>
         </outcome>
       </outcomes>
     </event>

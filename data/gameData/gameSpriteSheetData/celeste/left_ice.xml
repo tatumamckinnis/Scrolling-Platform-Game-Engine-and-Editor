@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<spriteFile imagePath="celeste-sprites.png"><sprite name="left_ice" x="1" y="64" width="8" height="8"><frames><frame name="left_ice" x="1" y="64" width="8" height="8" /></frames><animations /></sprite></spriteFile>

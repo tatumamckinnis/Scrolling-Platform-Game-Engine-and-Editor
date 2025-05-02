@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for single_block (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="single_block" x="55" y="10" width="8" height="8">
+    <frames>
+      <frame name="single_block" x="55" y="10" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
