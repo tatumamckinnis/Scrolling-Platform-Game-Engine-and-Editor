@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map minX="0" minY="-32" maxX="112" maxY="16">
+<map minX="0" minY="-32" maxX="64" maxY="16">
   <cameraData type="Tracker">
     <stringProperties>
+      <property name="objectToTrack" value="acb7396a-ef1a-4d85-9f1c-c04554f14d1c"/>
     </stringProperties>
     <doubleProperties>
       <property name="zoom" value="1.0"/>
+      <property name="cameraOffsetX" value="0.0"/>
+      <property name="cameraOffsetY" value="0.0"/>
     </doubleProperties>
   </cameraData>
   <layers>
-    <layer name="layer_0" width="112" height="48" z="0">
+    <layer name="layer_0" width="64" height="48" z="0">
       <data>
-        <object name = "Entity_48_0" id="1" coordinates="(48,0), (32,0), (16,0), (0,0)" uid="822a4ebb-7489-4594-87bf-f6d0cb92f780, ee2069e3-ce46-418f-a84e-3792304c3209, d9979f92-7b64-4fa0-a4a6-d232bd31cab3, 8576d44a-278b-43aa-8b14-86a31a5ff5c8" />
-        <object name = "Entity_96_-16" id="2" coordinates="(96,-16)" uid="9cb47539-9903-408e-b1b9-464667d61971" />
-        <object name = "Entity_16_-32" id="3" coordinates="(16,-32)" uid="d5f0e2f5-a6bf-4a14-9792-329a1934dd2e" />
+        <object name = "Entity_0_0" id="1" coordinates="(0,0), (48,0), (16,0), (32,0)" uid="15b1c9c5-73ff-43b8-922c-e42c39be6aec, 4dc933ae-c4d3-488c-a2be-2fbe5e5dbe17, 021ca0fd-b07e-4804-be21-b149a58e39d0, cb0eef39-6d02-412b-b30f-4eed22fc65ae" />
+        <object name = "Entity_16_-32" id="2" coordinates="(16,-32)" uid="acb7396a-ef1a-4d85-9f1c-c04554f14d1c" />
       </data>
     </layer>
   </layers>
-  <game name="demo">
+  <game name="untitled_game">
     <objectGroup name="ENTITY">
       <object
   spriteName="ground_green"
@@ -42,39 +44,16 @@
         </properties>
       </object>
       <object
-  spriteName="ground_orange"
-  type="platform"
-  id="2"
-  spriteFile="ground_green.xml"
-  hitBoxWidth="16"
-  hitBoxHeight="16"
-  hitBoxShape="RECTANGLE"
-  spriteDx="0"
-  spriteDy="0"
-  eventIDs=""
-  velocityX="0.00"
-  velocityY="0.00"
-  rotation="0.00">
-        <properties>
-          <stringProperties>
-          </stringProperties>
-          <doubleProperties>
-            <property name="gravity" value="0.0"/>
-            <property name="jump_force" value="0.0"/>
-          </doubleProperties>
-        </properties>
-      </object>
-      <object
   spriteName="king"
   type="ENTITY"
-  id="3"
-  spriteFile="ground_green.xml"
+  id="2"
+  spriteFile="king.xml"
   hitBoxWidth="15"
   hitBoxHeight="22"
   hitBoxShape="RECTANGLE"
   spriteDx="0"
   spriteDy="0"
-  eventIDs="gravity,collide_platform,move_left,move_right,jump"
+  eventIDs="collide_platform"
   velocityX="0.00"
   velocityY="0.00"
   rotation="0.00">
@@ -90,27 +69,6 @@
     </objectGroup>
   </game>
   <events>
-    <event type="Input" id="gravity">
-      <conditions>
-        <conditionSet>
-          <condition name="TRUE">
-            <stringParameters>
-            </stringParameters>
-            <doubleParameters>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="APPLY_GRAVITY">
-          <stringParameters>
-          </stringParameters>
-          <doubleParameters>
-            <parameter name="ApplyGravityAmount" value="0.4"/>
-          </doubleParameters>
-        </outcome>
-      </outcomes>
-    </event>
     <event type="Input" id="collide_platform">
       <conditions>
         <conditionSet>
@@ -126,74 +84,9 @@
       <outcomes>
         <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR">
           <stringParameters>
+            <parameter name="type" value="platform"/>
           </stringParameters>
           <doubleParameters>
-          </doubleParameters>
-        </outcome>
-      </outcomes>
-    </event>
-    <event type="Input" id="move_left">
-      <conditions>
-        <conditionSet>
-          <condition name="KEY_PRESSED">
-            <stringParameters>
-              <parameter name="key" value="left_arrow"/>
-            </stringParameters>
-            <doubleParameters>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="MOVE_LEFT">
-          <stringParameters>
-          </stringParameters>
-          <doubleParameters>
-            <parameter name="Speed" value="0.5"/>
-          </doubleParameters>
-        </outcome>
-      </outcomes>
-    </event>
-    <event type="Input" id="move_right">
-      <conditions>
-        <conditionSet>
-          <condition name="KEY_PRESSED">
-            <stringParameters>
-              <parameter name="key" value="right_arrow"/>
-            </stringParameters>
-            <doubleParameters>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="MOVE_RIGHT">
-          <stringParameters>
-          </stringParameters>
-          <doubleParameters>
-            <parameter name="Speed" value="0.5"/>
-          </doubleParameters>
-        </outcome>
-      </outcomes>
-    </event>
-    <event type="Input" id="jump">
-      <conditions>
-        <conditionSet>
-          <condition name="KEY_PRESSED">
-            <stringParameters>
-              <parameter name="key" value="space"/>
-            </stringParameters>
-            <doubleParameters>
-            </doubleParameters>
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="JUMP">
-          <stringParameters>
-          </stringParameters>
-          <doubleParameters>
-            <parameter name="JumpAmount" value="3.0"/>
           </doubleParameters>
         </outcome>
       </outcomes>
