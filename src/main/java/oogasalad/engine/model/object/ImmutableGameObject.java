@@ -12,7 +12,12 @@ import oogasalad.fileparser.records.FrameData;
  * <p>This promotes encapsulation and ensures that the view cannot alter the game state.
  */
 public interface ImmutableGameObject {
-
+  /**
+   * Returns the group name this object belongs to (e.g., "enemies", "platforms").
+   *
+   * @return group name as a string
+   */
+  String getGroup(); // Add this line
   /**
    * Returns the unique identifier (UUID) of the game object.
    *

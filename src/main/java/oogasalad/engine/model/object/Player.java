@@ -45,10 +45,11 @@ public class Player extends GameObject implements ImmutablePlayer {
    * @param stringParams   string-based parameters passed to the player
    * @param doubleParams   numeric parameters passed to the player (e.g., jump strength)
    */
-  public Player(UUID uuid, String type, int layer, double xVelocity, double yVelocity,
+  public Player(UUID uuid, String type, String group, int layer, double xVelocity, double yVelocity, // Add 'String group' here
       HitBox hitBox, Sprite spriteInfo, List<Event> events, List<String> displayedStats,
       Map<String, String> stringParams, Map<String, Double> doubleParams) {
-    super(uuid, type, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
+    // Add 'group' to the super() call
+    super(uuid, type, group, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
         doubleParams);
     currentPowerUps = new ArrayList<>();
     this.displayedStats = displayedStats;

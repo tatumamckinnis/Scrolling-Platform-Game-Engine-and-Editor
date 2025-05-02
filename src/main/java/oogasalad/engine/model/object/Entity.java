@@ -33,10 +33,12 @@ public class Entity extends GameObject {
    * @param stringParams map of string-based parameters
    * @param doubleParams map of numerical parameters
    */
-  public Entity(UUID uuid, String type, int layer, double xVelocity, double yVelocity,
+  public Entity(UUID uuid, String type, String group, int layer, double xVelocity, double yVelocity,
+      // Add 'String group' here
       HitBox hitBox, Sprite spriteInfo, List<Event> events,
       Map<String, String> stringParams, Map<String, Double> doubleParams) {
-    super(uuid, type, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
+    // Add 'group' to the super() call
+    super(uuid, type, group, layer, xVelocity, yVelocity, hitBox, spriteInfo, events, stringParams,
         doubleParams);
   }
 }

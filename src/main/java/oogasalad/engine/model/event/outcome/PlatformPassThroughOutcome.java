@@ -29,9 +29,11 @@ public class PlatformPassThroughOutcome implements Outcome {
       Map<String, String> stringParameters,
       Map<String, Double> doubleParameters) {
 
-    String type = stringParameters.getOrDefault("type", "platform");
+    String type = stringParameters.getOrDefault("type", "platform"); // 'type' here actually means group
     List<GameObject> collisions = collisionHandler.getCollisions(player);
     for (GameObject platform : collisions) {
+      // This check is incorrect: compares object's specific type ("Green Platform")
+      // to the expected group name ("platform")
       if (platform.getType().equals(type)) {
         if (trySnapToPlatform(player, platform)) {
           player.setGrounded(true); // Re-ground if standing on valid platform

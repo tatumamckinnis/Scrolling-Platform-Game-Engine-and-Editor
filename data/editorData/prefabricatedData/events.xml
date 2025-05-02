@@ -1,17 +1,41 @@
-<!--The id is a string in the data so we can make the id the name for the editor in the prefabs-->
+<?xml version="1.0" encoding="UTF-8"?>
 <events>
 
-  <event>
-    <conditions>
-      <conditionSet>
-        <condition/>
-      </conditionSet>
-    </conditions>
-    <outcomes>
-      <outcome/>
-    </outcomes>
+  <event id="1">
+    <condition type="KEY_INPUT_PRESSED" key="D"/>
+    <outcome type="MOVE_RIGHT" multiplier="1"/>
+    <outcome type="SET_BASE_FRAME" base_frame="right"/> </event>
+  <event id="2">
+    <condition type="KEY_INPUT_PRESSED" key="A"/>
+    <outcome type="MOVE_LEFT" multiplier="1"/>
+    <outcome type="SET_BASE_FRAME" base_frame="left"/> </event>
+  <event id="3">
+    <condition type="KEY_INPUT_RELEASED" key="D"/>
+    <condition type="KEY_INPUT_NOT_PRESSED" key="A"/> <outcome type="RESET_X_VELOCITY"/> </event>
+  <event id="4">
+    <condition type="KEY_INPUT_RELEASED" key="A"/>
+    <condition type="KEY_INPUT_NOT_PRESSED" key="D"/>
+    <outcome type="RESET_X_VELOCITY"/>
   </event>
 
+  <event id="5">
+    <condition type="KEY_INPUT_PRESSED" key="W"/>
+    <outcome type="JUMP" JumpAmount="100"/> </event>
+
+  <event id="6">
+    <condition type="TRUE"/> <outcome type="GRAVITY"/> </event>
+
+  <event id="9">
+    <condition type="AT_OR_BEYOND_Y" y="1000"/> <outcome type="LOSE_GAME"/> </event>
+
+  <event id="23">
+    <condition type="COLLIDED_WITH_GROUP" group="platform"/>
+    <outcome type="PLATFORM_PASS_THROUGH_BEHAVIOR"/> </event>
+
+  <event id="90">
+    <condition type="COLLIDED_WITH_GROUP" group="player"/>
+    <outcome type="JUMP" JumpAmount="200"/>
+  </event>
 
   <event type="input" id="DINO_POWER_UP" description="A Power-up for the dino.">
     <conditions>
@@ -28,19 +52,20 @@
     </outcomes>
   </event>
 
-    <event type="physics" id="Restart-Level" description="Restart the level to the beginning.">
-      <conditions>
-        <conditionSet>
-          <condition name="R_KEY_PRESSED">
-          </condition>
-        </conditionSet>
-      </conditions>
-      <outcomes>
-        <outcome name="RESTART_LEVEL">
-          <doubleParameters>
-            <parameter name="placeholder" value="0.1"/>
-          </doubleParameters>
-        </outcome>
-      </outcomes>
-    </event>
+  <event type="physics" id="Restart-Level" description="Restart the level to the beginning.">
+    <conditions>
+      <conditionSet>
+        <condition name="R_KEY_PRESSED">
+        </condition>
+      </conditionSet>
+    </conditions>
+    <outcomes>
+      <outcome name="RESTART_LEVEL">
+        <doubleParameters>
+          <parameter name="placeholder" value="0.1"/>
+        </doubleParameters>
+      </outcome>
+    </outcomes>
+  </event>
+
 </events>

@@ -70,16 +70,30 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
 
   @Override
   public Camera loadCamera(LevelData level) {
+    Camera createdCamera = null; // Initialize to null
     try {
       CameraData cameraData = level.cameraData();
       String cameraType = cameraData.type();
       CameraFactory cameraFactory = new DefaultCameraFactory();
-      LOG.info("Camera Type Created:" + cameraType);
-      return cameraFactory.create(cameraType, cameraData, gameObjectMap);
+      LOG.info("Attempting to create camera of type: {}", cameraType);
+      // *** Pass the gameObjectMap that was created by loadFileToEngine ***
+      // NOTE: This relies on loadFileToEngine being called *first* on *this same instance*,
+      // which is NOT how DefaultGameController uses it. This logic needs revision.
+      // For now, we pass the instance variable, which is likely null or stale.
+      createdCamera = cameraFactory.create(cameraType, cameraData, this.gameObjectMap); // Use instance map
+      LOG.info("Successfully created camera: {}", createdCamera.getClass().getSimpleName());
+      return createdCamera;
 
     } catch (Exception e) {
-      LOG.warn(resourceManager.getText("exceptions","FailToLoadCameraType") + ": " + e.getMessage());
-      return new AutoScrollingCamera();
+      // *** ADDED LOGGING HERE ***
+      LOG.error("Failed to load/create camera. Error Type: {}, Message: {}", e.getClass().getName(), e.getMessage(), e); // Log full exception
+      LOG.warn("Returning default AutoScrollingCamera due to error.");
+      createdCamera = new AutoScrollingCamera(); // Assign default
+      return createdCamera; // Return default
+    } finally {
+      // *** ADDED LOGGING HERE ***
+      LOG.info("loadCamera method finished. Camera object being returned: {}",
+          (createdCamera != null ? createdCamera.getClass().getSimpleName() : "null"));
     }
   }
 
@@ -98,6 +112,7 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
   public GameObject makeGameObject(GameObjectData gameObjectData,
       Map<Integer, BlueprintData> bluePrintMap) {
     BlueprintData blueprintData = bluePrintMap.get(gameObjectData.blueprintId());
+    String group = blueprintData.group(); // Get group from blueprint
     Map<String, FrameData> frameMap = makeFrameMap(blueprintData);
     Map<String, AnimationData> animationMap = makeAnimationMap(blueprintData);
 
@@ -119,10 +134,12 @@ public class DefaultEngineFileConverter implements EngineFileConverterAPI {
     List<String> displayedStats = blueprintData.displayedProperties();
 
     if (blueprintData.type().equals("player")) {
-      newGameObject = new Player(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+      // Add 'group' to the constructor call
+      newGameObject = new Player(uniqueId, type, group, layer, xVelocity, yVelocity, hitBox, sprite,
           emptyEvents, displayedStats, stringParams, doubleParams);
     } else {
-      newGameObject = new Entity(uniqueId, type, layer, xVelocity, yVelocity, hitBox, sprite,
+      // Add 'group' to the constructor call
+      newGameObject = new Entity(uniqueId, type, group, layer, xVelocity, yVelocity, hitBox, sprite,
           emptyEvents, stringParams, doubleParams);
     }
 

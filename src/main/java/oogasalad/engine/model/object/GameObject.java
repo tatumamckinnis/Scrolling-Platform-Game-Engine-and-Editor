@@ -32,6 +32,7 @@ public abstract class GameObject implements ImmutableGameObject{
   private Map<String, String> stringParams;
   private Map<String, Double> doubleParams;
   private boolean isGrounded;
+  private String group;
 
   /**
    * Constructs a new {@code GameObject} with all necessary components.
@@ -47,7 +48,7 @@ public abstract class GameObject implements ImmutableGameObject{
    * @param stringParams string-based runtime parameters
    * @param doubleParams numeric runtime parameters
    */
-  public GameObject(UUID uuid, String type, int layer, double xVelocity, double yVelocity,
+  public GameObject(UUID uuid, String type, String group, int layer, double xVelocity, double yVelocity,
       HitBox hitBox, Sprite spriteInfo, List<Event> events,
       Map<String, String> stringParams, Map<String, Double> doubleParams) {
     this.uuid = uuid;
@@ -61,8 +62,16 @@ public abstract class GameObject implements ImmutableGameObject{
     this.stringParams = stringParams;
     this.doubleParams = doubleParams;
     this.isGrounded = true;
-  }
+    this.group = group; // Store the group
 
+  }
+  /**
+   * @return the group name this object belongs to
+   */
+  @Override // Add this implementation
+  public String getGroup() {
+    return group;
+  }
   /**
    * Updates the object's position based on current velocity and clamps position to within screen
    * bounds (default 500x500).
