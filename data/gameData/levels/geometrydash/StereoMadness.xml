@@ -35,10 +35,10 @@ interact with each other -->
     </layer>
     <layer name="entities" width="4000" height="500" z="1">
       <data>
-        <object id="12" coordinates="(319,400), (1030,200), (1316,200), (1597,400), (1886,400), (2159,400), (2404,400), (2639,400)" uid="8764685f-8329-4a9e-9329-aa1aa0dbff30, 7952dada-1d3c-4af6-a668-11f2688e005a, b9f907db-1fa4-4144-bdc4-f8c6c25dfa1b, f9fbde62-4b21-4e7e-ba0d-ca52027d68e5, 9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd, 80f45a6d-f145-4d73-a81b-57f91af8ce88, 3337c661-e1a1-46e1-b48b-082a74046d4c" />
+        <object id="12" coordinates="(319,400), (829,400), (1597,400), (2159,400)" uid="9ec4dd5c-f253-4e7c-b292-87072844985e, 93824da0-3328-476d-a515-f86fbc14afec, e683560b-f840-48f9-9ce9-81a6c1b61cf9, 5165f664-89a6-4587-89d0-110a5dc4b2cd" />
         <object id="111" coordinates="(100,400)" uid="e816f04c-3047-4e30-9e20-2e601a99dde8"/>
-        <object id="1002" coordinates="(500,360)" uid="e816f04c-3047-4e30-9e20-2e601a99dde9" />
-        <object id="14" coordinates="(400,400), (616,200), (616,200), (891,400), (891,400), (1097,400), (1097,400), (1298,400), (1298,400), (1546,400)" uid="dbdc5bdf-e70a-46ad-8803-7f5be6838629, 0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
+        <object id="1002" coordinates="(2500,360)" uid="e816f04c-3047-4e30-9e20-2e601a99dde9"/>
+        <object id="14" coordinates="(616,400), (1097,400), (1298,400), (1546,400)" uid="0698c184-b61e-43c4-b478-af6b5c973e6b, 80cad290-cc89-4cc3-86cd-8b7de84b389f, f320e242-842a-4ddb-bbca-58ca71c15762, f500c882-afa4-444b-a164-3d3dd213b967" />
       </data>
     </layer>
     <layer name="events" width="500" height="500" z="1">
@@ -140,7 +140,7 @@ interact with each other -->
       <outcomes>
         <outcome name="JUMP">
           <doubleParameters>
-            <parameter name="JumpAmount" value="100"/>
+            <parameter name="JumpAmount" value="75"/>
           </doubleParameters>
           <stringParameters>
             <parameter name="jumpType" value="Floaty"/>
@@ -158,7 +158,7 @@ interact with each other -->
       <outcomes>
         <outcome name="MOVE_RIGHT">
           <doubleParameters>
-            <parameter name="amount" value="5" />
+            <parameter name="amount" value="10" />
           </doubleParameters>
         </outcome>
         <outcome name="CHANGE_VAR">
@@ -289,7 +289,7 @@ interact with each other -->
         <conditionSet>
           <condition name="AT_OR_BEYOND_X">
             <doubleParameters>
-              <parameter name="x" value="2000"/>
+              <parameter name="x" value="3500"/>
             </doubleParameters>
           </condition>
         </conditionSet>
