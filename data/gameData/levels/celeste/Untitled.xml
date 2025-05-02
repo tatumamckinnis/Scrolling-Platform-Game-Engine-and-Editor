@@ -1,0 +1,1243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map minX="24" minY="304" maxX="724" maxY="1060">
+  <cameraData type="Tracker">
+    <stringProperties>
+      <property name="objectToTrack" value="8e810253-076b-4a54-8ada-6c13bd9bb3aa"/>
+    </stringProperties>
+    <doubleProperties>
+      <property name="zoom" value="2.4"/>
+      <property name="cameraOffsetX" value="1820.0"/>
+      <property name="cameraOffsetY" value="520.0"/>
+    </doubleProperties>
+  </cameraData>
+  <layers>
+    <layer name="layer_1" width="700" height="756" z="1">
+      <data>
+        <object name = "Player_0_0_03eb" id="23" coordinates="(200,800)" uid="30673134-a17c-4dbf-9f2e-7e0f7f74f62c" />
+      </data>
+    </layer>
+    <layer name="layer_2" width="700" height="756" z="2">
+      <data>
+        <object name = "platform_424_352_3336" id="1" coordinates="(424,352), (344,896), (280,360), (256,528), (208,432), (304,896), (248,408), (216,552), (288,896), (216,896)" uid="f920b412-78ec-41bf-a118-a3f944fcd67c, e1c47b68-5e67-4937-bf04-a1b4311caea1, 88223acf-07cc-4c9f-a3f2-ccc1953a6aba, 3dbec7ac-ad55-4693-ab6f-505419f14223, 89501217-c1ae-45de-9fe7-a53e6c01508a, bf920aa5-ff27-4c68-8ddd-2f4854b309a5, 9a3e939c-23a6-453b-8b7f-a822c9107b28, eea2271e-e3b2-4c41-877e-d661492798b0, 268ef6c0-fd38-40de-b999-58420ecae917, 6f163125-2e7e-4cc9-932c-85fccc6619de" />
+        <object name = "platform_232_528_ba9e" id="3" coordinates="(232,528), (272,896), (448,320), (464,320), (160,408), (280,896), (264,360), (232,896), (192,408), (248,528), (208,552), (600,664), (184,408), (256,360), (360,352), (200,408), (248,360), (608,704), (272,360), (176,432), (568,664), (184,432), (368,352), (592,664), (248,896), (400,352), (240,408), (216,408), (320,896), (328,896), (240,528), (208,896), (408,352), (192,552), (576,664), (200,896), (416,352), (616,664), (240,896), (192,896), (616,704), (208,408), (200,552), (392,352), (200,432), (376,352), (240,360), (384,352), (608,664), (456,320), (584,664), (176,408), (168,408), (192,432), (336,896), (440,320)" uid="2e9a95a4-0ccc-43ad-a0f1-e90878d23973, 28281e31-dd8e-4f53-9bd2-182b02decdf8, 7afb0d6b-84e9-4107-93b0-8aa487eef8a0, 24230a5f-ac65-455b-8c70-cc72f7193c7e, c2dd42a9-b427-425e-b1d3-1d58f9f3f358, 7843a3af-0581-472d-998f-d39f9439db21, bfed788e-b2f8-4596-abec-14f4e6e555bf, a49fcd48-2acc-4f40-bfc9-12db1e27e70e, d1c3280e-7438-483f-a746-8fd60587e854, 39aa9771-56eb-4f7d-9699-7c3f4cb915de, de72ba50-ee95-40dc-9c8d-f6b40c3874d0, 61c47c37-a670-4f52-8fe6-28622b1b1089, 3b54be47-864c-4dd5-bd8a-17e4315e9d6c, 33345914-7d52-48c9-8cfd-808d6c30d724, 648b9cb5-efba-4784-954d-0f68065e917b, 4afa7b09-49ea-4ebe-96f8-b50b96e29ab5, 39da1b77-cc1f-4cdf-a173-f916498c76b1, cdbc25d9-ad3a-43a5-ae68-e2ee55031e40, 118bfcae-2ecb-455c-9faa-b48a810481d6, 567bc370-a4e3-48a4-918e-e18e8e80ce84, 46b4cf00-7464-4deb-bbf9-4b6159c7b42a, eece5f57-efad-4ed2-b951-49b1c5e59cb0, 42adf63f-02ea-4273-9c3a-3c5ef84be573, c94c54a2-e08e-4418-8b62-b37d5d0add36, 46d1429b-6940-4be0-8162-5f932be8d696, da8844e0-71d0-4453-8a77-7ffbced0b5c6, a50fa9cc-fa1a-4317-b65e-4259aa7e322c, 0d46d71f-5e6a-4367-b2c6-23f23bc65000, a1926f1a-ff68-4787-ae41-0d625dfbd519, 2a212549-c0eb-4da4-a534-a7b71f0d2a1a, 9b324051-292c-44a5-874f-17e78fba1446, 4b281919-7843-454b-ac8e-b0bdb79fe954, e1ac29da-3ba2-426b-bffb-c7e03ff2f386, 9031f8c6-a93b-4189-a338-2e894ee62aff, 54756965-21e5-4d4c-8a29-064cac71e7a6, 0802808b-29ef-4b5e-813e-c71794cf469d, 4c1b3d76-e329-4d84-acf9-a79875a6eb4c, 2a4be86b-d594-4b34-9eb3-71d067ebbe59, 76d73c9c-4acb-473c-8e3a-6847bded825f, e6e5c723-d5ff-47aa-b4db-c9fac9a815bd, 8682d71a-408f-453e-a1e9-df2593d8538c, 38f3571d-0921-4dbb-8991-99e7e873bc74, a166c1d1-6584-4210-ac80-ce4e5d6b578d, 380d7169-723c-49fa-86c2-14d3d81c23bc, b0a14d14-e704-44a6-8386-d96c84c78b1f, 68597550-6011-4035-95c4-3eef79bff88c, 9f041df2-b5dc-491c-b723-4a403105ed1c, 2450ac22-c391-4bbe-9a10-ebd0351717f4, 8e039d44-3733-4e59-be0c-b5d098c656ba, ef18b44d-0396-4689-aa1f-07f18e72ee7c, 427ca9d4-ef39-447d-9453-1c2b9ad545ee, 8ab1f66c-8859-4438-aa51-0aa3719c8268, 97bc1cf3-1c50-47b2-81d5-35bbfc007b02, 21f0996f-8ce1-485f-8b98-5989986e4d8e, 32db83e8-6021-486d-b8c6-db355433256f, 9fee0d87-cdc8-4342-8ce4-644332e25152" />
+        <object name = "platform_256_808_387b" id="4" coordinates="(536,864), (568,640), (192,824), (616,680), (280,880), (232,888), (200,872), (544,872), (608,656), (200,536), (336,816), (528,864), (208,856), (328,888), (608,640), (200,544), (248,520), (192,880), (512,880), (200,816), (320,840), (200,856), (584,656), (336,880), (328,848), (336,792), (208,872), (336,856), (576,640), (208,816), (576,648), (208,520), (576,656), (208,832), (608,680), (328,816), (320,808), (544,864), (200,848), (248,504), (232,512), (320,856), (328,856), (584,640), (232,520), (192,888), (208,888), (240,512), (192,856), (320,832), (536,872), (240,520), (272,888), (240,888), (248,888), (328,840), (328,808), (568,648), (192,872), (208,840), (192,520), (208,864), (592,648), (616,656), (208,880), (520,888), (280,872), (328,872), (320,880), (320,872), (336,888), (328,824), (336,864), (536,888), (520,880), (200,832), (192,544), (192,848), (528,880), (600,640), (584,648), (208,536), (248,512), (328,864), (192,864), (320,816), (536,880), (320,800), (192,528), (200,840), (200,528), (208,528), (208,848), (600,648), (232,496), (592,640), (544,880), (616,640), (208,824), (320,824), (512,872), (200,888), (272,880), (336,872), (192,840), (200,880), (192,536), (616,688), (336,800), (336,848), (248,496), (280,888), (208,544), (320,888), (544,896), (200,520), (528,896), (336,808), (520,896), (240,504), (616,648), (200,824), (512,896), (200,864), (616,696), (520,872), (328,800), (336,840), (328,880), (272,872), (320,848), (600,656), (328,832), (240,496), (536,896), (232,504), (336,824), (592,656), (328,792), (528,872), (608,696), (520,864), (568,656), (320,864), (192,816), (544,888), (192,832), (336,832), (512,888), (528,888), (512,864), (320,792), (608,688), (608,648)" uid="8aab4643-5ab5-4708-8f70-3f89db1f2aba, 95c49941-2311-402c-9e35-da6a4bf32c18, 9a287de6-34e1-47b3-a1e6-8e93504997b7, 7391b99c-1c85-4cff-98f8-19b5c7138035, 69072397-0b2e-4264-ba37-1730c272448a, a50c8a69-8721-4520-af3b-d135e0da5796, 5e58f7fa-96c6-46ed-9333-410d7eba8527, 077f3dda-a006-43d6-a146-c1e157d70629, e17dcd7e-9f60-4065-bd43-390060feb38a, 66ae268c-f11d-4844-a978-0482de66aed5, 3abb259b-03cf-444c-9f61-f4c6b3672c5f, db0a0453-fc04-4e4d-95e1-f6363cfeb67c, cf433110-ba1f-4b48-8575-67c54b02b6ff, 07653ce3-0fa7-4323-bb6a-7e88ac80ce2a, a5e67013-c0cf-4aeb-81ab-f2286e1c8203, 89a7581d-96d3-4686-979c-de75f8d7849f, 09906aa7-09c6-43f5-86c3-f3fcf6d96ead, dd88f4c3-0cbc-4871-9822-2538001738d9, 2b0b2ed9-0481-40d4-951f-e96186a9b703, 18b77e55-efae-4854-addf-8d9f16845fbc, 2d5be41a-13db-4b2f-a984-b6d53a816c08, f3a0a54b-0d22-4198-a146-387ddacf4525, 527ea024-5c29-488a-bf7d-8f84ce1b8899, bf1bef32-96be-4297-83eb-e47a5e4e0d52, 2d7ad79a-69cd-457e-9d5d-d299c784c685, 8d2f3de6-2572-4ac8-990a-8fcdd81d1934, 13e2cc0e-00fa-4ec6-b52f-ade79d6764d1, 86e8f6a5-a364-49ce-b75f-bec81e00cddf, cfad8438-59e4-4fbf-8345-37d948fedd1c, d420198f-3ff7-415c-adaa-d3dc6b7b4abd, f46a76b9-283d-4169-a4c6-5cd261a232fe, e127ed8c-a15f-4836-809c-81cc91bcb5fd, 312918bd-8d1a-4283-b7e2-ebbfcba2552a, 0b7d117c-b3e1-41dd-9910-828dace4239a, c84d0eea-b4ed-4c1f-b9b9-14b291b4ba0e, c0c3bfb7-97d5-4ddf-8612-e5e3b4cee2a8, 36b2a546-f363-4e12-a3df-39892bd3f3ea, d8f7f6c7-a3f5-4364-8369-f7d3f845feae, 914cfec7-b5bc-46c0-8dc5-1aea8777bc5c, 6c7530cf-c124-4d29-9e6f-2bc53c833c9a, bab4b75e-0f66-4dfe-897d-49b98b15f9a5, e9cbb561-f9ce-47ff-b1fa-f9fa70753ff5, 2c648b47-2073-46dc-8245-0a5d4a7056d1, 7068c42b-978c-4794-b580-8aa99cc97e8e, 158476d4-f97a-428c-b4ad-d44e9e91a7ef, cdbe15d3-4a7c-488a-8e63-9e6e990b86da, d52e46e9-f733-4cbb-a920-8bc8abede80d, 3887234a-9bde-487c-bb7f-bd0a7ab4ede7, c7c24768-180c-4b05-82d8-782facb890bd, 9acf231a-6821-4802-9d74-e3ecb6136c2e, eee37030-e7c8-45e0-88b6-67e091f9470d, 3cae536e-9b3d-4b13-abd7-9c6ec2aaf7a4, 95735699-701d-41f7-aa44-14f738008dec, 2e4f8894-ab97-408c-9800-c639d69f2ce0, 46337c50-99d0-4c75-b113-9dfd08ed3253, f02079ff-efed-4d38-951f-eee609db28bf, 8ea24be4-c311-414e-b433-e93fac9d9713, a2dcb2b0-c31d-407b-bf63-c1e44be987c3, bd46f0d7-daa4-4fa8-853f-952f85bc0c98, c89a6f9c-da7a-40fe-8b5e-3b3778b988e2, 360cfa51-0774-4700-8e2b-4256d54fd4ae, fa2e92e1-83e6-4dc0-a774-ad5c9868a114, fc077d8b-b547-40d6-a633-1070a3afb84c, 4af639c8-92f9-4f09-b664-c6a572c99d00, 9dd00b65-4e93-4508-a021-c90c55a39c78, 8a59888b-3b8d-444a-8364-a997a91cef20, f6af1505-530f-45ae-a766-f383154da578, ca989aeb-667a-470a-bd7b-b2d07c619317, 1bf40ddd-5655-4172-8315-29349ae48414, a09ed6f9-52dd-40a3-8357-7c32141d3286, 42c548d4-5be1-4f77-abb2-00aadb952be1, abd1676b-42ca-44fd-bb08-85f692169f97, 261c9c68-e10d-40ff-922e-8f3ebc42332c, 4656af48-ce5a-40f0-9e17-2a9f040c3acb, afed0b48-c959-49f6-b94a-cf89129969af, f5fa7a0e-f2d9-4ac3-bdf2-68340775ab59, c17c7901-ab97-48f0-960f-53f08f2cbfce, 2fd7039b-9cd4-440f-a06f-29bca8ab7be7, 67294833-69e1-4e85-82fa-42634f691d9d, 78b839f3-72d8-4213-bee8-1fc7c0cb1a71, 6a93dc99-cad2-4c10-a80a-0bfa6788dea6, c6a534ee-d4d9-467d-868a-414c6a6ac754, 545e455e-8b28-4afa-bfb6-5b17c800fa6e, 7917dea4-8c3e-4000-9d10-0a1986fd6066, a9cb5f7f-bcb7-42de-98e7-135a0bb17ef1, c17b84b5-a772-4646-947e-f1f7a3adfcfb, 95ba7509-c8cc-4310-9005-4b2c7eb61cd8, 26c748f9-e314-4615-a2dd-4a54aeb8db27, 4c75c1a1-56ef-4b77-9313-b5d70e5e3ee5, 2390ad16-157d-447d-9e64-545bffa95c28, 42e8f847-1efb-43c6-8887-976b4a43c405, 972f753b-eefb-43c4-ab48-441af53a2f07, 869cfa15-c1bf-4cfb-b26b-84a63e4abb04, 1b61cdd9-540e-4894-a5f0-be4204a24f6b, 307d7f2f-1625-4f88-9d6f-01415e5eaed6, 2bcedbfe-ff9f-481d-a80c-28766be77e48, b8ac8e6c-3908-40d2-82a5-f4a0e7fc0c88, 93355a7b-a9b8-416e-8ed4-1fa4cba56921, 31892c90-3b94-4838-a0c6-58997eb2f22c, 669ec856-5f9c-4471-bf85-6f86ad145a46, 97b93f89-4cf4-4f51-827b-b37a028f526c, 6967926b-9aec-463e-a1af-e0045211361c, 0a26eaba-6034-40a4-a67e-a5af06191fb8, b257e8ac-3578-4cb4-b8cb-a1c4d1eed560, 5002671a-0705-4ebe-a54f-9d1dc4c2508f, 5e7eda5a-8fc9-4294-b2bd-0e5ce5fe0ada, cb63026c-ade3-4057-a138-713bcc28a240, 1bec3c5a-b60a-4b82-b6a4-42e6ddba8d17, 6aa379d4-2d7d-47e2-b5b4-5bcace5bb72e, d6d88879-39cd-4c71-9b5e-da6b9af56e39, ef7eeec7-bd38-48e9-8a38-0806daa45a01, 0caeb047-01c8-48c3-b279-d3fb5ae8947e, 8535c610-6e27-43c2-a9cf-8b6c08b0e3d1, 9bdb7964-b6ba-4d6c-b7b9-bbf9b113eb37, afe2f005-9da6-490c-a914-3d002a2baa6b, e9acf889-72fc-49b5-a0b4-1378b884023e, a05ca290-fb75-4a8b-b08d-b25fb481ca7f, 2d815f41-10a8-4227-a9c8-78307e6ec8f9, 836f0f73-fa2a-4018-b699-114cdfbfe96d, 9a6a9a9d-5735-448e-af1f-4d6e28ed82e0, 74fd9c56-c7c3-49d6-8883-b42ee459657b, b17c5a50-7f96-4dae-8b59-1a334581dac5, f06afe49-6f37-45e2-9f7e-5da90dd768ca, 1b3cd3ec-471f-4c6a-bb96-9744602c1419, aed4a838-b1e2-462e-a3d2-f9b4c22c2222, 987f846b-831a-49b7-817b-1606537361ff, 0972f137-295f-44b0-8529-1532d012a6ee, 7e5d53b2-b638-4e49-8128-aa261a694bb6, ff49e68c-329d-4ecd-a254-bc1f4a161a9c, 11fcb68b-2817-4f44-a2f0-251c07f65766, cb441e89-1a33-4b38-b27b-e3c49ed894ff, 26714c22-1aba-449d-825b-42a0758bf666, a7828afb-ef21-41fe-adc8-2d1e816fc97c, bfbbbc26-9a18-4b12-988f-af021a5bc026, a91589ff-dab3-4aae-b343-64b69106416d, bae0dd21-a8ab-4aac-973d-ff4611d70b1a, f8a54701-8acc-4fe2-9dec-607bc5779112, 9d4305f2-dedb-4f93-ac8d-36d4c50b61d6, cc548f3d-e37b-4a77-b7e5-4ec13e10b6da, 5223a2ea-e8a0-4a09-8698-cfc8f2d2da72, dd01c416-2cb9-4972-a80e-727349fc08cb, 7960b984-38e3-462b-8b60-cb992d08447b, 7e07d583-4efe-4c8d-86e9-dacf3f48f926, 120e26d0-b030-4d3a-b3b6-74bc55e4d4eb, 073689a1-782a-4f1f-866b-84c9ac0258d6, b7aa4fc4-f4a4-4d7f-985c-6ab92764f3ec, e43db3ab-5457-4259-bc0c-885b05dda7f2, f79f679e-c668-4ac5-8625-fed7f4bdb303, 7e989189-af7e-44fb-91ed-33843863bd6e, 3a9a0ec3-c3a7-4d81-a076-b24a5168a2d9, ec8a6bb5-22e7-4638-b9b3-a33b764ed8d4, bb08775d-5353-4264-a30c-b3239dab0710, 33c62d87-b70e-4906-9b9d-2b9c4058d3e8, 512d35b5-911b-4ea3-8e17-15b6639b68e1" />
+        <object name = "platform_280_336_83bf" id="5" coordinates="(280,336), (344,864), (256,496), (248,376), (256,896), (552,864), (424,328), (216,528), (344,832), (552,872), (248,400), (216,888), (344,848), (288,888), (216,848), (256,504), (288,880), (216,872), (344,840), (344,856), (344,800), (216,824), (216,816), (216,536), (280,320), (344,808), (216,520), (216,544), (344,816), (344,880), (344,888), (552,896), (280,344), (256,888), (216,856), (552,880), (216,864), (216,832), (344,824), (280,328), (344,792), (552,888), (256,520), (280,352), (424,344), (248,392), (216,880), (248,384), (424,336), (288,872), (304,888), (344,872), (216,840), (256,512)" uid="b9f25466-7a29-4291-a640-fb5ce7a57f9a, 795bd898-7a97-4003-bd22-21543eb39987, a5bd81a4-ae19-4c03-a7b7-35851099d4bf, 88693c24-c322-4daa-9b7c-deae0b11a420, d558b86c-02cb-4f0b-9c13-0947eb6e169f, d22440d8-d211-4695-964e-54a61b66c7ad, 53c2655a-8bdc-4f61-994a-64b86e6bc9c8, bb821b18-3b81-49b2-b665-904e8fcb073d, 588418a1-c4ca-4d0a-b5d7-1e12637fe9d3, d942c3f3-7fe0-47c9-acb5-4ce992a764cb, b7b8e834-a632-4888-b2cc-25414f2c952b, ad7a65bf-9d8e-4202-b9d0-dd279a52cd3c, b8c65805-9f40-45df-a447-9f26d9685080, 4d111564-b199-44b2-a916-2ea3c9e67fdb, 284c6ddc-ba18-43f0-8ee6-4400ff62e119, 7ad13f9a-7f06-4f84-8499-1dbccb45faac, b7788135-abdc-4eea-ac2c-6209d697caeb, 23b689a8-370f-4eb2-afe3-ab1821ad9bdd, 2c695955-8317-470c-9ece-e92199dcf220, d218513a-ca67-4d67-93cd-bb3f9f4a1a0e, 969094cb-4746-4994-a58c-098631742855, 5749f7de-aba8-48fa-977a-8632e9bdce83, f7891d8c-601c-4005-80f6-46e9d6f0ff49, 2e7c815a-bb8f-4eac-aad0-bb66dc09de06, f6c15f04-67dc-4d6f-b2b4-1970aed4afdb, a464d8f3-c965-4ca2-a218-0f3c0edf4770, 1073cd14-ae00-4def-ac36-a5b13a94e47d, c6c657c4-8b97-4f20-ac26-e8bb5cf6cfdc, 4a1772b3-226c-4bd6-b36d-d628d5aabbde, e2332f04-1759-4e55-9f92-8601eb2ebcc1, e5a04d36-2d4b-4e83-a6b1-b86f836efcb8, be57933f-4342-464d-a905-caa9aaebe377, e1ee5345-b4a5-4293-9bf0-350c4790437d, 7ead20d9-eb72-4381-8407-d1b26e9cf30e, 2c21bb3c-a45a-40a7-ae63-7d55307f921c, 8698a321-d828-4b93-b6a1-dbeeb177a4ff, 795160cf-6122-44c9-aaf8-b65f82b57cac, 1f538c3b-fc29-419a-894f-463e5b999ce6, a26b6ce5-0907-4838-b37e-49059ccd07de, fd1afe90-50cc-4810-b6f8-30cea6f81178, 1b32aaca-b074-4409-8480-951f3ec6c039, 883993a8-62d4-460e-839d-21a7764079d9, 5d6a234c-cd09-4a2b-bacd-8f5d557d6b02, 6c2485dc-ed31-4409-924d-93e3449aa71b, 73280d3c-7073-43d7-9ab5-04f27ad1ffd7, 975c8a12-4284-49f1-968b-735e5625a33d, c9195b71-d6fe-42a0-94ec-ee0296dded09, 7136ca73-3fc1-4bc4-a8b4-3d511ceac976, 43f86783-86eb-4084-8261-96c093e4c26b, 295c49ec-3aa1-4055-9136-43da7684f5b6, c0c66d1d-49a2-48b4-a829-c6c75c3bb9ae, 56fa548c-0b7c-427b-b6b7-e7c22ac4df00, 0c677e32-0f17-4d85-a87d-ab7c4c46505e, 2dc7ad92-644b-410f-b168-5c6581b26e40" />
+        <object name = "platform_248_880_1464" id="6" coordinates="(248,880), (272,864), (192,512), (200,808), (576,632), (232,488), (200,512), (240,488), (328,784), (544,856), (336,784), (208,512), (320,784), (608,672), (616,672), (568,632), (584,632), (512,856), (280,864), (248,488), (528,856), (600,632), (592,632), (208,808), (240,368), (608,632), (520,856), (192,808), (232,880), (616,632), (240,880), (536,856)" uid="1bf6aeb7-dc4a-42ef-88b2-0da9178c4d7c, 25e2ac57-5b8f-41de-a925-6f9cb359ea24, 8377e3e1-fa8c-4359-83a1-46df19d0f95e, 2673b93e-def2-4f5d-9662-b42c01586540, 523cf591-cb73-4bf1-983c-e1c89b22112b, 592ad30c-30da-43ad-b503-c92c0a5f77c4, 26390611-24f3-405f-8815-41172ea00a75, a3802475-5892-4908-a295-013ed7a4e3e0, 7f47f3bd-f9b1-4eb3-af09-3ae9726ebdf0, c48498ca-86ba-4e9d-8f66-b688add41dc8, 40e41af2-63ab-4a65-a4ba-235468d5757c, 47f40267-a4c9-4d07-a648-4ab68cec81fd, bd007438-a1ad-4551-a8e5-4a788aff8870, a6f65205-4e8b-4e1f-a517-aae9ac296243, 83b200fe-9360-4461-b78c-8ab1364276c5, 628c7560-f0d2-4cae-b240-0a139175ab4c, cd2ce622-6c8d-4327-8dc5-4f72eaabda9e, e2ceb6bb-5a97-4d90-bc56-6b95dc0ade87, f55323ae-88a3-4452-871e-aa976c1e6dd6, e7bf22ff-4a88-4b10-9ae5-db9fee3ee917, 282f6b33-a263-40bc-a817-b7e9400c34be, 53625003-fb99-42d6-9d92-5c8be79a5264, 0160789e-71e9-4379-88e3-a85af82b7d33, 6a7513d4-bff6-4e76-80ab-2fa800ade16c, 6a6ad8d3-d6a5-41cc-a2c7-21ab5c3cfc64, 1fbe5b82-b552-43cc-8151-f7434553e6c5, 15ff9240-4c41-44ea-8aa0-0e69d13c41d2, 74f72887-34a7-443c-90bb-7e358b4c1669, 42724715-1fbd-4f76-b5e0-dcd69fc2103d, 684f9a3e-094f-4629-becb-a02c626e463d, d1817d28-f6ca-473f-823a-f17e2e0eebda, 3c44fd42-2678-46f7-8247-11477438a552" />
+        <object name = "enemy_208_504_7d27" id="7" coordinates="(208,504), (544,848), (288,856), (232,872), (248,872), (536,848), (512,848), (528,848), (240,872), (184,504), (224,872), (296,872), (304,872), (192,504), (216,504), (504,848), (552,848), (520,848), (264,856), (256,872), (280,856), (272,856), (200,504)" uid="350a088c-a01c-4f32-8373-d1e03abdee9e, 9d4647db-e891-474a-a16e-64c0b867c0c0, 980e2f50-0767-4200-9a2f-83895bd93483, 50773d96-8ae6-4353-b8ec-9b1b81ec8681, 8a6a5942-b644-4a15-8227-5420f76b62e0, e6c95d8e-b645-4038-b68e-fbb5424bff69, 24f43f39-beab-4623-a621-a404425f6212, 902dfc40-faf6-4de2-990b-670119e35518, c594847b-2b3f-42f1-bc34-cae4c0636f4c, 84e11f83-e248-4a95-ac23-d40d360acf98, 61c93e11-547a-43e9-9f73-e7a5d64f50cd, 9fa7ba1f-cde8-4457-bb0a-ec1a7bc8c28d, 30e65547-de7f-4187-aa64-233804850d1b, 8937375d-ca77-4ae2-bf33-bc575c3d6b68, fcf53acd-f0d1-4c26-bd32-6d4a2f9b5bd6, 04d290b4-62d8-417d-9448-f36f1dd33a27, 0f638103-9e47-4316-a83a-e5afd9c09472, ed5a6b6e-382c-48b1-abf2-55f90840bbc8, 47f83a7d-658d-4723-8d39-4c6aceaec3a0, 66c7420b-1bf6-43d6-8151-e434beddf4ce, 3a85dab3-0600-49c5-b496-4378344f73cc, a4a232be-712d-4053-a00d-418924f0cdb6, 20b25450-4add-4541-958b-51f20ba64f1f" />
+        <object name = "platform_560_632_e059" id="8" coordinates="(296,880), (224,880), (264,864), (184,808), (184,512), (560,632), (600,672), (312,784), (504,856), (224,488)" uid="1e328285-830c-4e60-9b4c-cb95a723523c, e86ba826-907e-44d2-adf9-124a68867b01, b1057417-5585-4935-a8cb-c5f5897da8cf, 12062d57-5c01-403d-a67f-c08ec207e6ef, 75f3ad59-4ba2-4a52-b61d-e21e7e091a83, 690e1f15-2af3-41b5-a4ae-f2376fb53675, 3075d663-c44e-450e-a00f-558831d769e9, ad2a62ff-f011-4b8b-a187-9ccb985bdadc, 72e2ce1c-0b13-4003-b10f-d161bcfe6ccb, dbed24d5-efdc-49b1-8bcb-564273e964dc" />
+        <object name = "platform_224_512_63e2" id="9" coordinates="(224,512), (184,824), (184,840), (184,864), (312,816), (224,504), (184,856), (504,888), (560,640), (312,872), (312,840), (312,800), (504,864), (184,520), (312,824), (184,544), (312,864), (312,880), (352,336), (184,528), (296,888), (352,328), (504,872), (432,304), (352,344), (312,856), (560,656), (264,888), (312,832), (600,696), (312,808), (312,888), (184,872), (184,848), (312,792), (224,888), (264,880), (184,888), (560,648), (184,536), (352,312), (224,520), (224,496), (184,832), (352,320), (184,816), (312,848), (264,872), (184,880), (600,688), (432,312), (504,896), (600,680), (504,880)" uid="6017157b-022c-40ed-a6f6-6220b393cccd, a991df89-e05b-4944-9ba2-2f5996ef5d35, 2e6dd0a2-09f2-4f72-a2e8-cad54819bc46, c176e183-1ed7-4184-bffb-8b6390cfc7aa, c6df5110-0eb9-43fd-963b-cb646af5f548, c6c6a6f4-56bf-4a7d-a8d6-cc60a95a199a, c6431507-66fe-4186-acfd-b6d08234488a, 73570927-ada9-4e36-add9-d594247e8d17, eba3258a-d49f-4076-86fb-feb45da6b7f0, a789f4b1-ddce-4449-b552-56e19faa4643, 2b331696-bbaf-4d91-a671-4cb7b2d14284, 60c35366-0d95-4906-83b8-1cbe78796156, 83986489-6eae-4820-807b-27a0918656dd, 0a83b6ab-08f2-42d6-833a-5f6244e40b94, b6e3b17e-9074-4848-9592-7584067fe4ed, 13426009-e9d1-4ca0-be65-0b4221e70fce, a34e325b-44d9-4708-9958-0ceb866ee82c, df0676eb-6c8d-483c-888b-8914b4c30979, 061ba4e7-1658-4b24-9537-cd993e49601c, e5d9b4c6-55a1-4384-a327-c8c5df887e2f, 4096c2a2-d600-490a-863a-21a4e3ef40c9, 33a58130-ff9d-4b5c-94c0-57ee9446b8a6, 45f8a44f-965d-4fe1-ad5f-fee4eeb2c4a3, c75de38e-8f6a-4c5a-8a91-2327cd94c66d, b12f340c-10ea-4f2b-9d8d-2a75ef1ee7ab, b894956d-ddce-47ff-a78e-d7425004b128, b2925636-afd6-4783-9d38-94209829abed, fbd9a59a-426f-464b-be28-fa5326777a5d, 0af3ed99-47f3-43bc-96f4-29041c736aec, b983a6f1-04f0-4558-8c5b-4fb4b333d453, c492b3ef-f45f-4e1a-95f4-6cc2d1cc97aa, be8eaa90-5732-4f38-85ae-44a57997f6e0, e290abe8-d851-43eb-842c-b31276b05ddd, cf73f394-392b-406f-b24f-80d8111ee084, b15c028d-a6de-409f-b792-4a12c435169a, 0e4eb3e8-0ac3-4514-8f56-d339cb9a9f44, 6619d1ee-5010-4db5-a323-996999988b59, 29af3833-474d-4f39-ab34-5dd0b476a189, 88598908-060c-4685-ac01-3b445f33a684, 2d5a8da5-1627-4a7f-8cce-510eee5d4c16, 1e73e319-7601-4afb-93e4-5f109c0ed247, 43b41583-15a8-49de-b2bf-0841d1e6061d, ac6023f3-6037-4004-86ba-7fd289004885, 3412c0e3-debe-42f1-ab9e-fe507ca04a80, 4544c1bb-e3ef-465b-8aa8-8b01e450b3e0, 9d1867f7-1e04-479f-a945-25296b53c72d, a2c9692c-135e-4b2e-9231-caae54a8f827, 5a7e633c-d1e1-4d96-bd9a-5ab97d5f84dc, 64bc8e04-4d84-4c80-8ecf-2fc19702ea1d, 9fd7a16a-8138-4363-a363-a7c6eadc7525, 4b52bcf8-1345-494f-b818-000f07c9b5bf, 499075a6-c525-46a7-89c1-751b15c0756b, 45ee7754-5e96-4a1e-900d-881b97ea0216, 267ea86d-a03b-4d74-a011-8eebf8077657" />
+        <object name = "platform_296_456_8ac2" id="10" coordinates="(296,456), (424,456), (408,456), (416,456), (544,456), (376,400), (304,456), (552,456), (536,456)" uid="610019c3-9f45-428d-850f-8ffd16eb8538, cbbf1925-7b62-47c8-b1ae-23efe66722d0, e810b017-ed14-4b07-acdc-3ead806ddcde, 3b10af99-be87-438c-bed2-30e86d9a7b37, fe9a2c65-f8b2-49a4-8255-550286a17765, 4b5b41a8-14ea-4394-9ca6-b87108ea8b84, c5f6fd0b-c9f0-4c16-af5f-cb984b6ed48e, bd839753-afa0-42b2-8993-c1fd32d04323, 06256800-4ee4-46be-ab51-df2323abf21a" />
+        <object name = "platform_232_360_37cf" id="11" coordinates="(232,360), (600,704), (184,896), (560,664), (296,896), (224,528), (312,896), (264,896), (184,552), (224,896), (352,352)" uid="904dde6c-9eae-4e00-a441-d36d0b61c6f4, 3eb83fcd-e0c1-4b98-9fdd-b03bebcbda5b, ca8f2051-fa8b-4713-a727-a74a2315384c, 1ffd7d84-c1a2-4183-9a30-b94516877f68, 9e736280-88f4-4971-bda0-f0f7193c8de8, 5dd38cd9-d3c4-400a-af3b-394aa3a74e15, f707db3d-e39a-4bdd-a0cf-310d568daebe, 1e0b64e9-1271-476b-a9ef-cb1dd64f02a3, b0c9e9ed-10e2-4ecb-89b3-4f414b7d8f7f, 9a9aa12f-7de8-4fc2-81be-7ea43153bd7a, 4e6d18f7-e274-410f-8649-1a96b3b1d1d9" />
+        <object name = "platform_216_808_0e42" id="12" coordinates="(216,808), (256,488), (256,880), (304,880), (288,864), (344,784), (552,856), (216,512), (248,368)" uid="e01594d5-db76-4ab6-870f-1b6c6f7c325e, e34dfa26-12f6-4ce9-9c08-2ad26b630f9e, 20179faf-6998-49d2-a70d-522f86b5c5f7, 6e8e0ff8-7a07-4557-b7af-c47463af4bb7, e03d2d88-6bdc-4ca5-9479-f38c7d450e33, ca1ba623-6e0a-4fb5-b45d-27ca1969a5b9, 48bc7833-9ccd-4276-b2d6-ee3f46c96eff, 561aa525-f9a6-43a3-ad18-0b2d7d60797c, 262747f3-ba98-462d-b341-6bed0a819c08" />
+        <object name = "platform_512_664_4e71" id="2" coordinates="(512,664), (576,416)" uid="c75c038f-8f62-4250-8a22-a79b510f5990, 0fef4e31-dbd1-4a25-af24-8e47b4862053" />
+        <object name = "decoration_576_624_0ba2" id="15" coordinates="(576,624), (232,480), (256,480)" uid="7b25c33d-d1ba-4e2e-af51-3c5af9e1bdac, 9e476086-9ee6-4a1d-b3f1-232acb7d2e52, 6f63386a-fded-4e64-a08a-d974930af599" />
+        <object name = "platform_488_752_6cab" id="18" coordinates="(488,752)" uid="a1d4703a-2f4c-4ec7-a446-285bc219b74d" />
+        <object name = "platform_488_760_fb27" id="21" coordinates="(488,760)" uid="a5ccee45-c3ef-4416-9c8b-b88abfd93ae1" />
+        <object name = "platform_568_416_df17" id="14" coordinates="(568,416), (504,664)" uid="8bf44c11-25c7-41ce-9fac-3c2f47299eb4, 1a7a27d3-0ee7-4a1c-9e2c-42a765d6175d" />
+        <object name = "Entity_376_376" id="24" coordinates="(376,376)" uid="9bce1839-baee-43d3-b355-88b8e6b19182" />
+        <object name = "platform_480_760_837a" id="25" coordinates="(480,760)" uid="030aa7f1-bbed-41b4-813d-2125b9b84522" />
+        <object name = "decoration_224_480_327d" id="26" coordinates="(224,480)" uid="c3c7661e-ec9e-4e87-bc9a-7e81c926eeb9" />
+        <object name = "platform_480_752_82f4" id="27" coordinates="(480,752)" uid="42e15b7f-0a6f-442d-9736-61364ae17969" />
+        <object name = "enemy_24_904_2ec7" id="28" coordinates="(24,1020)" uid="6016214f-6d90-4062-a23f-e92b769b57e7" />
+        <object name = "decoration_592_624_b900" id="22" coordinates="(592,624), (248,480)" uid="e2455209-9032-41cd-957a-d394897554f3, fb3ccbf4-47f2-48f2-83ea-b60c3649372b" />
+        <object name = "platform_416_472_59dd" id="13" coordinates="(416,472)" uid="dd0b4f50-5a19-4ac3-aa0b-fe4e6f3fa24a" />
+        <object name = "Entity_416_480" id="29" coordinates="(416,480)" uid="801e8b5d-3b8d-4743-99c2-18302dc00c6a" />
+        <object name = "platform_416_320_1651" id="4" coordinates="(416,320), (400,344), (248,328), (392,344), (456,312), (240,352), (256,352), (456,304), (272,344), (256,320), (240,320), (200,400), (408,320), (264,320), (384,336), (240,344), (408,312), (360,328), (376,344), (384,320), (440,312), (400,320), (400,328), (264,352), (368,312), (176,424), (208,400), (256,336), (408,336), (256,328), (256,336), (240,392), (416,336), (384,344), (376,320), (384,312), (264,344), (360,344), (368,344), (392,336), (216,400), (272,328), (360,312), (248,352), (192,424), (272,320), (416,312), (448,304), (400,336), (448,312), (240,384), (368,336), (240,336), (408,344), (240,376), (184,400), (464,312), (248,344), (416,328), (464,304), (440,304), (264,328), (272,336), (360,320), (360,336), (184,424), (376,336), (240,328), (392,328), (416,344), (392,320), (368,320), (376,312), (376,328), (392,312), (248,336), (240,400), (256,344), (384,328), (400,312), (264,336), (368,328), (176,400), (408,328), (192,400), (272,352), (248,320), (200,424)" uid="e26bfa3a-1e43-40cf-8460-693f8388e007, 83bf8801-97a2-403e-b45d-1ac07bddbd75, 941537a1-1a01-4d63-8fab-9be0a412c8a0, afc1f44e-6153-4095-96a2-14299b805b7c, 0a16697d-682a-447c-b7c5-089daa8836a0, 922958ae-33a7-4901-beed-e139aca4a309, a5ab5588-742f-4f04-bc80-62d11743fa41, afece61d-7184-4446-979a-9ed5e2d47bf3, 70a8d1dc-bbe0-4386-9916-1b3ae1886ae8, 27bb04f2-0656-4f61-881f-939463227a89, 506e12d8-b484-4e42-abdd-5655dd2c94bd, db736bcf-e441-40f0-ba96-46549b3bdf99, fcb78f6f-f33a-4b03-95e9-124ecaec6ad9, fec27e22-3005-4927-9a3e-42dfeb3c6e6a, 147ee60d-5d67-4062-9381-61c8f96f9827, 1b4afaf5-d1bf-4aab-b018-7e3c82880e90, 1e5264c3-8e2b-4369-ba9f-03acbae8ec97, 131056e1-6f69-49a2-9a5c-a9290008f0e3, 3018d0b4-6a57-42a8-b81c-ff07db846c75, 9fbd79e8-7361-4ceb-9512-0eb97408bac6, 6db9bd5f-26b3-4193-b6bd-252deb6c8bda, 46d118c7-9b11-4f0c-b7aa-1ad55b7068e5, 9e09f248-c9db-4e69-9df6-a4fe1f9fc994, d7b86fe0-d338-468f-a103-d12a65b73087, ebdfe633-4110-4613-af0b-745561c97d72, b4985d44-a690-49c5-94a8-fc9cfe6031c6, e3d54d4c-4752-47f9-9e55-720140686712, 8b48b589-c62b-46d3-a33c-d3d923f61035, b64f33b2-855b-4ece-8fa7-f331f9c3a61e, f7b2cbca-b774-4d34-8a83-f7d548569217, e83abf4b-c836-4dfd-abb2-a20306786848, 42da7154-2d63-47eb-8253-4a54d509954d, e63e914d-6d85-4c19-8b95-4a2060466a51, 60b60143-8601-4586-8577-021591b125f6, ba584918-af23-4394-ad7a-970cfb3137e8, 8ed3ef9c-c4fe-49ce-a62e-201a0c12e3c9, 443c320c-e894-4956-b20f-c2d379ceef77, 64a7de66-c92e-4093-b86a-80de509762c5, 8f6aa063-3dae-42c5-8fbb-273dd7bc4ac2, 7f757980-4ec1-4e9d-aee9-4d757f4af3e5, ec968199-aabe-49b1-b07a-feede61e3717, bc6b849a-8224-43aa-bc9d-8250820b001f, a6673f0e-cdac-4d86-baff-0f95687cade6, 3f2de702-3d3e-4cef-8224-afdb2771eac4, 83a4154e-0977-4177-9c3c-bd37b0502655, 09551de5-c2f1-448c-9c1f-b7a402ad8e30, 16fbd128-78bc-4cb5-856b-78a8965fa644, 0d791128-dbe4-49de-82c3-e9af3a35bd21, 345349fe-b348-4070-af9c-70bd14b89319, d3170ba3-7abb-4c29-89d9-bb5a47388d8b, 4630dec5-6547-4d4c-9b57-d966f91af1f9, 41c28645-ce67-4967-b1b0-46984613a785, 5b20aa5b-2d17-4974-a5ee-de12511f81b8, bc6d9036-c70c-413f-acf8-2b1384edcf3b, 565c4741-82d7-46cc-bc28-fd86748f8e79, 6e7d4f42-b929-466c-bb6c-058d621dc8f8, c4b6fded-50ff-44de-86a0-363a4ca27fc9, cecab1a9-4413-49ef-9234-d6722876cc20, 96e8d9ff-ba5d-4946-bed1-82cde0bfb23e, c7e63597-d35f-485c-9c1b-3dcc8cdcf2cc, e224f43d-1970-493d-9798-b73b51f921b1, eb4dcaeb-99b5-4581-b1ec-2b6f8d5d78ac, 9a26c0b9-92f6-4b96-8fc0-5c344c92e27d, 3de7d4ca-89b8-4bba-b8a7-7cff9c9f590e, 71b80f57-da90-4313-aaab-e3c1053685ca, 8d8931ae-a2ac-4181-a808-18e712c943d2, 7369f57f-a684-4f35-a846-9223831efddc, 7f42ea56-a24f-4fb9-af11-9b8929e22691, add41730-38a2-4d8f-a4e6-97c4778d246d, 96596d34-df86-4a9c-89dc-4ff03f48e81e, abc3e23d-19e5-4dec-af9a-4c92ef68bebc, 3a75e96d-5c01-4831-ad51-08262534bc47, a89947a7-8ff4-4999-8956-6e44b54b9c39, 57b2c7d8-1ef9-4abb-aeaf-2ad1fc04df06, 034cbda3-a2ec-47ac-bd0d-904fad3d288e, 9e1855b6-ba92-4245-854e-0a8f592a7ef5, 8a1fd5e7-6fa5-4815-a3f7-6dd127a94ebb, fb43f1a8-7dc5-48ad-8c5b-dac35efbb09c, 650cabb3-0ec1-491a-ab52-3bc969b22fcf, abc5282d-409f-4219-8931-3dce16668060, f6a84ba5-272a-408e-8249-4fd0958bb925, 9a989139-6b12-464e-b220-91a78780a165, 8b7b59ba-9de5-4fde-81fa-8cf4763c486f, b8d52905-4d12-49b9-a792-767afd8ac6b0, e5573be2-f914-4171-86ef-b09d50edebe2, e4cf0b53-4c19-40f4-8109-727166f50548, 377881da-7992-4b2b-a9d8-7d83a107d698, 1d6b376c-91ac-427c-b328-b0df83d24609" />
+        <object name = "platform_192_392_154c" id="6" coordinates="(192,392), (176,392), (216,392), (208,392), (200,392), (200,416), (192,416), (184,416), (184,392), (176,416)" uid="14a0ec36-b086-47fd-9089-e44e45608200, 5ab4ce3d-6a6c-494d-99e6-932bf54df043, 6a47d9ce-4ed8-4d47-a2b7-db9e7f510ab2, c2682361-0829-4d56-8321-4d6619fb6248, fe3632b8-69a9-4c4b-b1fa-120e5f7bac24, 55fa202a-8de6-44d8-9ccb-b298c5676dfb, 08590e6b-7f21-4fcb-bc69-5d7118901976, 7765ae2f-b084-42c4-96b1-fc84f20eb17d, 87602c63-2385-4dbf-a193-2c8e025a04f3, 217961da-43c1-4d1c-a179-f2a14b6b49a2" />
+        <object name = "platform_232_392_dc12" id="9" coordinates="(232,392), (232,384), (232,400), (232,376)" uid="8f193015-a07f-4206-9ddd-242c712c95d9, 3a8a22a8-790f-4d10-ad7b-4205f4d66770, fa63064d-21cd-4c18-aa0e-18f11c159d72, da265799-2dd3-4ecf-9de6-0b081f7fdc2a" />
+        <object name = "platform_224_392_6702" id="12" coordinates="(224,392), (208,416)" uid="0be656a7-e9ce-48db-86d9-ab835b6d12e6, 4ac10839-4d13-4760-a081-172cd1c00025" />
+        <object name = "platform_432_320_d684" id="11" coordinates="(432,320), (232,408)" uid="62f87b96-826c-4dd3-96ec-e3cd077f8422, 8b5fcb4b-6aa9-4856-bbeb-e5835644a004" />
+        <object name = "platform_232_368_7877" id="8" coordinates="(232,368)" uid="3429bf40-bde5-48dc-8825-4f200ebbb729" />
+        <object name = "platform_424_312_aedd" id="5" coordinates="(424,312), (224,400), (424,320), (208,424), (472,304), (472,312)" uid="9662bd4e-1735-4235-a665-4c0ffb3c5656, 850f0e78-6db6-46a9-b7df-6f6d9c435e8e, 4d0f1711-2e55-4be0-8f40-0126f68d1975, b2fdc33b-6390-4505-8a99-f73dbb2f5ef6, 9807dd5e-5786-477d-9d32-d70a15868955, 75ff5e28-a1a9-4b93-b590-3cbc9338ac2a" />
+        <object name = "platform_472_320_0c22" id="1" coordinates="(472,320), (224,408)" uid="0f31cb46-cdbf-449a-9b7a-617f168edc94, 91e3bace-32a8-4f8e-a7e2-d61b33110db2" />
+        <object name = "decoration_216_384_89d4" id="15" coordinates="(216,384), (176,384)" uid="4fe269f3-5d88-4625-ac5d-034ce9473e2f, e3ddaff9-badd-49a9-8627-4ced599afa1f" />
+        <object name = "decoration_200_384_9ead" id="26" coordinates="(200,384)" uid="f568f4c0-ff4b-47df-ad69-3eebb0f8403a" />
+        <object name = "decoration_192_384_9de3" id="22" coordinates="(192,384)" uid="a92cbcc0-66a2-4c4c-95a3-d06ecdf0dce7" />
+      </data>
+    </layer>
+    <layer name="layer_3" width="700" height="756" z="3">
+      <data>
+        <object name = "platform_352_752_80cb" id="2" coordinates="(352,752), (432,768), (472,712)" uid="c4b6ce5b-2cfd-432e-ae33-01d1d923a3fa, feffc784-793e-460c-8997-6b1b10135838, b637a5da-d54c-444a-a565-fe30c086d268" />
+        <object name = "Entity_488_744" id="13" coordinates="(488,744)" uid="583e7e64-d3cb-4cd8-b98b-9cd7be9206e4" />
+        <object name = "platform_344_752_dfd8" id="14" coordinates="(344,752), (464,712), (424,768)" uid="498e8178-e39d-4df4-beef-edf8b3f58e1a, a9995df8-0ced-4d2d-acaa-ae01e1d7ee67, f0d801d1-98b9-4cdb-9932-e02c628fa5c5" />
+        <object name = "platform_344_752_dfd8" id="16" coordinates="(456,560), (576,584), (288,608), (552,544), (192,592), (344,536), (336,576)" uid="38db9444-b60c-4c99-ae1c-f478e8d32c55, 58ef1023-aa21-4ab6-b22a-0f9d7cd72474, 53d0a6f8-cb4f-4796-ac08-1f0080e1df75, e4974cad-348b-4864-b491-84c5af6f7a15, ddd86f37-9a6a-4d31-9906-0710d0a6d558, 892862e2-9ae0-470c-8154-b5ee36f1dab1, 3e17747d-cda1-4531-916b-0ab354986e65" />
+        <object name = "platform_352_752_80cb" id="19" coordinates="(560,544), (296,608), (344,576), (584,584), (464,560), (352,536), (200,592)" uid="2875a065-1bd4-444a-8d74-467e9f9eaa2a, 961b8bec-1a0f-4310-bb92-f3f215ddc834, 0d047cbb-4a95-40be-a091-0f2f63ecce44, c78ba7d1-4859-44ef-8f6e-b18ca18ac5c9, a5df4dc3-0cf7-4664-85a9-7c8b70d28512, 4de66017-b61d-45aa-a844-c5dd983000f3, acb0cdf7-64b7-4628-a7c6-e6f0a2b1b39e" />
+        <object name = "Entity_288_456" id="20" coordinates="(288,456)" uid="4d50f1ac-0f75-43c2-b64c-fa3789d9bcab" />
+        <object name = "decoration_312_776_22d8" id="22" coordinates="(312,776)" uid="26809ad6-051e-4f26-b725-ca61a0006ecb" />
+        <object name = "decoration_336_776_e469" id="15" coordinates="(336,776), (184,800)" uid="a7c7d923-66c5-46cd-8c78-dd466836c9fb, 08e142e6-5f56-4631-b69c-a57333923d6d" />
+        <object name = "decoration_216_800_45c8" id="26" coordinates="(216,800)" uid="d0926b99-a5b7-4a32-8b11-f7a01cc07399" />
+      </data>
+    </layer>
+    <layer name="layer_1000" width="700" height="756" z="1000">
+      <data>
+        <object name = "background_200_800_9e84" id="17" coordinates="(184,700)" uid="8e810253-076b-4a54-8ada-6c13bd9bb3aa" />
+      </data>
+    </layer>
+  </layers>
+  <game name="celeste">
+    <objectGroup name="entities">
+      <object
+  spriteName="spike"
+  type="enemy"
+  id="7"
+  spriteFile="spike.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="strawberry"
+  type="ENTITY"
+  id="24"
+  spriteFile="strawberry.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="bobbing"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="spike"
+  type="enemy"
+  id="28"
+  spriteFile="spike.xml"
+  hitBoxWidth="700"
+  hitBoxHeight="40"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="scroll"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="background">
+      <object
+  spriteName="background_space"
+  type="background"
+  id="17"
+  spriteFile="background_space.xml"
+  hitBoxWidth="32"
+  hitBoxHeight="32"
+  hitBoxShape="RECTANGLE"
+  spriteDx="-184"
+  spriteDy="-700"
+  eventIDs="scroll"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="blocks">
+      <object
+  spriteName="bottom_block3"
+  type="platform"
+  id="1"
+  spriteFile="bottom_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="cloud2"
+  type="platform"
+  id="2"
+  spriteFile="cloud2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="bottom_block2"
+  type="platform"
+  id="3"
+  spriteFile="bottom_block2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="center_block1"
+  type="platform"
+  id="4"
+  spriteFile="center_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="right_block"
+  type="platform"
+  id="5"
+  spriteFile="right_block.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block2"
+  type="platform"
+  id="6"
+  spriteFile="top_block2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block1"
+  type="platform"
+  id="8"
+  spriteFile="top_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="left_block"
+  type="platform"
+  id="9"
+  spriteFile="left_block.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="temporary_block3"
+  type="platform"
+  id="10"
+  spriteFile="temporary_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="bottom_block1"
+  type="platform"
+  id="11"
+  spriteFile="bottom_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="top_block3"
+  type="platform"
+  id="12"
+  spriteFile="top_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="spring2"
+  type="spring"
+  id="13"
+  spriteFile="spring2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="collide_spring_animate,run_animation"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="cloud1"
+  type="platform"
+  id="14"
+  spriteFile="cloud1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="cloud1"
+  type="platform"
+  id="16"
+  spriteFile="cloud1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="move_cloud,teleport_cloud"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block2"
+  type="platform"
+  id="18"
+  spriteFile="destructible_block2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="cloud2"
+  type="platform"
+  id="19"
+  spriteFile="cloud2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="move_cloud,teleport_cloud"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="temporary_block3"
+  type="platform"
+  id="20"
+  spriteFile="temporary_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="decay_timer,decay_touch_player,destroy_block,run_animation"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+            <property name="decay" value="-1.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block4"
+  type="platform"
+  id="21"
+  spriteFile="destructible_block4.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block3"
+  type="platform"
+  id="25"
+  spriteFile="destructible_block3.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="destructible_block1"
+  type="platform"
+  id="27"
+  spriteFile="destructible_block1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="single_block"
+  type="wall"
+  id="29"
+  spriteFile="single_block.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="foreground">
+      <object
+  spriteName="grass1"
+  type="decoration"
+  id="15"
+  spriteFile="grass1.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="flower"
+  type="decoration"
+  id="22"
+  spriteFile="flower.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+      <object
+  spriteName="grass2"
+  type="decoration"
+  id="26"
+  spriteFile="grass2.xml"
+  hitBoxWidth="8"
+  hitBoxHeight="8"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs=""
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+    <objectGroup name="player">
+      <object
+  spriteName="madeline_walk_back"
+  type="player"
+  id="23"
+  spriteFile="madeline_walk_back.xml"
+  hitBoxWidth="7"
+  hitBoxHeight="7"
+  hitBoxShape="RECTANGLE"
+  spriteDx="0"
+  spriteDy="0"
+  eventIDs="collide,collide_spring,death,gravity,jump,left,right,wall_collide"
+  velocityX="0.00"
+  velocityY="0.00"
+  rotation="0.00">
+        <properties>
+          <stringProperties>
+          </stringProperties>
+          <doubleProperties>
+            <property name="jump_force" value="0.0"/>
+            <property name="gravity" value="0.0"/>
+          </doubleProperties>
+        </properties>
+      </object>
+    </objectGroup>
+  </game>
+  <events>
+    <event type="Input" id="collide_spring_animate">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="player"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="activate_spring"/>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="run_animation">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RUN_OBJECT_ANIMATIONS">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="move_cloud">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="angle" value="180.0"/>
+            <parameter name="amount" value="-1.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="teleport_cloud">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_X">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="x" value="650.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RELATIVE_TELEPORT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="y_offset" value="0.0"/>
+            <parameter name="x_offset" value="-500.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="scroll">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="angle" value="270.0"/>
+            <parameter name="amount" value="1.0E-4"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="move_cloud">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="angle" value="180.0"/>
+            <parameter name="amount" value="-1.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="teleport_cloud">
+      <conditions>
+        <conditionSet>
+          <condition name="AT_OR_BEYOND_X">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="x" value="650.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RELATIVE_TELEPORT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="y_offset" value="0.0"/>
+            <parameter name="x_offset" value="-500.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="decay_timer">
+      <conditions>
+        <conditionSet>
+          <condition name="GREATER_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="decay"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="CHANGE_VAR">
+          <stringParameters>
+            <parameter name="variable" value="decay"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="delta" value="-1.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="decay_touch_player">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="player"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+        <conditionSet>
+          <condition name="LESS_THAN_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="decay"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="-0.5"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="decay"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="30.0"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="ADD_ANIMATION">
+          <stringParameters>
+            <parameter name="animationName" value="decay_block"/>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+        <outcome name="RUN_OBJECT_ANIMATIONS">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="destroy_block">
+      <conditions>
+        <conditionSet>
+          <condition name="EQUAL_VARIABLE_THRESHOLD">
+            <stringParameters>
+              <parameter name="variable" value="decay"/>
+            </stringParameters>
+            <doubleParameters>
+              <parameter name="threshold" value="0.0"/>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="SET_VAR">
+          <stringParameters>
+            <parameter name="variable" value="decay"/>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="-1.0"/>
+          </doubleParameters>
+        </outcome>
+        <outcome name="TELEPORT_TO_POINT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="x" value="-100.0"/>
+            <parameter name="y" value="0.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="run_animation">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RUN_OBJECT_ANIMATIONS">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="collide">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="platform"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="PLATFORM_PASS_THROUGH_BEHAVIOR">
+          <stringParameters>
+            <parameter name="type" value="platform"/>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="collide_spring">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="spring"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RESET_VELOCITY">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+        <outcome name="ROCKET">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="amount" value="8.0"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="death">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="enemy"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="RESTART_LEVEL">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="gravity">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="APPLY_GRAVITY">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="ApplyGravityAmount" value="0.2"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="jump">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="z"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="JUMP">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="JumpAmount" value="4.0"/>
+            <parameter name="Speed" value="0.3"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="left">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="left_arrow"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_LEFT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="Speed" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="right">
+      <conditions>
+        <conditionSet>
+          <condition name="KEY_PRESSED">
+            <stringParameters>
+              <parameter name="key" value="right_arrow"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE_RIGHT">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="Speed" value="0.1"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="wall_collide">
+      <conditions>
+        <conditionSet>
+          <condition name="COLLIDED_WITH_GROUP">
+            <stringParameters>
+              <parameter name="group" value="wall"/>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="WALL_COLLIDE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+    <event type="Input" id="bobbing">
+      <conditions>
+      </conditions>
+      <outcomes>
+      </outcomes>
+    </event>
+    <event type="Input" id="scroll">
+      <conditions>
+        <conditionSet>
+          <condition name="TRUE">
+            <stringParameters>
+            </stringParameters>
+            <doubleParameters>
+            </doubleParameters>
+          </condition>
+        </conditionSet>
+      </conditions>
+      <outcomes>
+        <outcome name="MOVE">
+          <stringParameters>
+          </stringParameters>
+          <doubleParameters>
+            <parameter name="angle" value="270.0"/>
+            <parameter name="amount" value="1.0E-4"/>
+          </doubleParameters>
+        </outcome>
+      </outcomes>
+    </event>
+  </events>
+</map>

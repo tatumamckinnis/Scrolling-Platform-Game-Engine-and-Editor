@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for background_space (celeste)
+-->
+<spriteFile imagePath="celeste-background.png">
+  <sprite name="background_space" x="0" y="0" width="4000" height="2000">
+    <frames>
+      <frame name="background_space" x="0" y="0" width="4000" height="2000"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

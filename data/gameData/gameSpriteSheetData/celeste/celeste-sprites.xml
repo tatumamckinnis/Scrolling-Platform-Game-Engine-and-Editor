@@ -15,7 +15,7 @@
     <sprite height="8" name="destructible_block1" width="8" x="1" y="37"/>
     <sprite height="8" name="destructible_block2" width="8" x="10" y="37"/>
     <sprite height="8" name="destructible_block3" width="8" x="1" y="46"/>
-    <sprite height="8" name="breakable4" width="8" x="10" y="46"/>
+    <sprite height="8" name="destructible_block4" width="8" x="10" y="46"/>
     <sprite height="8" name="top_ice1" width="8" x="1" y="55"/>
     <sprite height="8" name="top_ice2" width="8" x="10" y="55"/>
     <sprite height="8" name="top_ice3" width="8" x="19" y="55"/>
@@ -46,11 +46,11 @@
     <sprite height="8" name="balloon_string3" width="8" x="28" y="123"/>
     <sprite height="8" name="cloud1" width="8" x="1" y="132"/>
     <sprite height="8" name="cloud2" width="8" x="10" y="132"/>
-    <sprite height="8" name="temporary_block1" width="8" x="1" y="141"/>
+    <sprite height="8" name="temporary_block3" width="8" x="1" y="141"/>
     <sprite height="8" name="temporary_block2" width="8" x="10" y="141"/>
-    <sprite height="8" name="temporary_block3" width="8" x="19" y="141"/>
-    <sprite height="8" name="spring_up" width="8" x="1" y="150"/>
-    <sprite height="8" name="spring_down" width="8" x="10" y="150"/>
+    <sprite height="8" name="temporary_block1" width="8" x="19" y="141"/>
+    <sprite height="8" name="spring2" width="8" x="1" y="150"/>
+    <sprite height="8" name="spring1" width="8" x="10" y="150"/>
     <sprite height="8" name="big_chest1" width="8" x="1" y="159"/>
     <sprite height="8" name="big_chest2" width="8" x="10" y="159"/>
     <sprite height="8" name="powerup" width="8" x="19" y="159"/>
@@ -60,13 +60,13 @@
     <sprite height="8" name="flag2" width="8" x="10" y="177"/>
     <sprite height="8" name="flag3" width="8" x="19" y="177"/>
     <sprite height="30" name="celeste_logo" width="56" x="49" y="156"/>
-    <sprite height="8" name="madeline_turn" width="8" x="73" y="132"/>
-    <sprite height="8" name="madeline_land" width="8" x="73" y="123"/>
-    <sprite height="8" name="madeline_look_up" width="8" x="82" y="123"/>
-    <sprite height="8" name="madeline_walk_up" width="8" x="73" y="114"/>
-    <sprite height="8" name="madeline_stand" width="8" x="73" y="105"/>
-    <sprite height="8" name="madeline_walk_front" width="8" x="82" y="105"/>
-    <sprite height="8" name="madeline_walk_back" width="8" x="91" y="105"/>
+    <sprite height="7" name="madeline_turn" width="7" x="73" y="133"/>
+    <sprite height="6" name="madeline_land" width="7" x="73" y="125"/>
+    <sprite height="7" name="madeline_look_up" width="7" x="82" y="124"/>
+    <sprite height="7" name="madeline_walk_up" width="7" x="73" y="115"/>
+    <sprite height="7" name="madeline_stand" width="7" x="73" y="106"/>
+    <sprite height="7" name="madeline_walk_front" width="7" x="82" y="106"/>
+    <sprite height="7" name="madeline_walk_back" width="7" x="91" y="106"/>
     <sprite height="3" name="hair_small" width="3" x="73" y="101"/>
     <sprite height="3" name="hair_medium" width="3" x="77" y="101"/>
     <sprite height="5" name="hair_large" width="5" x="81" y="99"/>
@@ -92,4 +92,5 @@
     <sprite height="8" name="background1" width="8" x="73" y="37"/>
     <sprite height="8" name="background_small" width="8" x="82" y="37"/>
     <sprite height="8" name="background2" width="8" x="73" y="46"/>
+    <sprite height="8" name="background_space" width="8" x="77" y="175"/>
 </spriteFile>

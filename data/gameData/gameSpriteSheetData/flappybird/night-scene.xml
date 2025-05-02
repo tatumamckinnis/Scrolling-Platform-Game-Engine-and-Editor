@@ -1,0 +1,3 @@
+<spriteFile imagePath="flappy-bird-sprites.png" width="640" height="1024">
+  <sprite height="255" name="flappy-night-scene" width="143" x="146" y="0"/>
+</spriteFile>

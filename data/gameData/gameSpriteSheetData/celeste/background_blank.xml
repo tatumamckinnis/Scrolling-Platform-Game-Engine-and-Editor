@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for background_blank (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="background_blank" x="64" y="37" width="8" height="8">
+    <frames>
+      <frame name="background_blank" x="64" y="37" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

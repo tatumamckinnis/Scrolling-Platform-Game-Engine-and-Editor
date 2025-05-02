@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for top_block3 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="top_block3" x="19" y="10" width="8" height="8">
+    <frames>
+      <frame name="top_block3" x="19" y="10" width="8" height="8"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>

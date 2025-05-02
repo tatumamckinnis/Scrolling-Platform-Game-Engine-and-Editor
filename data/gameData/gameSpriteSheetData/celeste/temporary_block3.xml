@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for temporary_block3 (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="temporary_block3" x="1" y="141" width="8" height="8">
+    <frames>
+      <frame name="temporary_block3" x="1" y="141" width="8" height="8"/>
+      <frame name="temporary_block2" x="10" y="141" width="8" height="8"/>
+      <frame name="temporary_block1" x="19" y="141" width="8" height="8"/>
+    </frames>
+    <animations>
+      <animation name="decay_block" frameLen="10.0" frames="temporary_block3,temporary_block2,temporary_block1"/>
+    </animations>
+  </sprite>
+</spriteFile>

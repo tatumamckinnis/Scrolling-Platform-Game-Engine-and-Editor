@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Auto-generated sprite sheet for madeline_walk_back (celeste)
+-->
+<spriteFile imagePath="celeste-sprites.png">
+  <sprite name="madeline_walk_back" x="91" y="106" width="7" height="7">
+    <frames>
+      <frame name="madeline_walk_back" x="91" y="106" width="7" height="7"/>
+      <frame name="madeline_walk_up" x="73" y="115" width="7" height="7"/>
+      <frame name="madeline_land" x="73" y="125" width="7" height="6"/>
+      <frame name="madeline_walk_front" x="82" y="106" width="7" height="7"/>
+      <frame name="madeline_turn" x="73" y="133" width="7" height="7"/>
+      <frame name="madeline_look_up" x="82" y="124" width="7" height="7"/>
+      <frame name="madeline_stand" x="73" y="106" width="7" height="7"/>
+    </frames>
+    <animations>
+    </animations>
+  </sprite>
+</spriteFile>
