@@ -2,7 +2,7 @@
 
 ## It's Thyme to Eat: SALAD
 
-## Billy McCune, Alana Zinkin
+## Billy McCune, Alana Zinkin, Tatum McKinnis, Jacob You, Aksel Bell, Gage Garcia, Luke Nam
 
 This project implements an authoring environment and player for multiple related games.
 
